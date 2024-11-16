@@ -1,7 +1,16 @@
-pub fn rework_target_name(target_name: &str) -> String {
-    let mut name = target_name;
-    name = name.strip_suffix(".so").unwrap_or(name);
-    name = name.strip_suffix(".a").unwrap_or(name);
+#[macro_export]
+macro_rules! error {
+    ($message:expr) => {
+        Err(format!("{0}:{1}: {2}", file!(), line!(), $message))
+    };
+}
+pub use error;
+
+pub fn rework_target_name(target_name: &str, prefix: &str) -> String {
+    let mut name = prefix.to_string();
+    name += target_name;
+    name = name.strip_suffix(".so").unwrap_or(&name).to_string();
+    name = name.strip_suffix(".a").unwrap_or(&name).to_string();
     return name.replace("/", "__").replace(".", "__");
 }
 
@@ -74,7 +83,7 @@ pub fn rework_command(
 ) -> Result<String, String> {
     let command = match command.split_once(" && ") {
         Some(split) => split.1,
-        None => return Err(format!("Could not split command: {command}")),
+        None => return error!(format!("Could not split command: {command}")),
     };
     let command = if let Some(split) = command.split_once(" -d ") {
         split.0

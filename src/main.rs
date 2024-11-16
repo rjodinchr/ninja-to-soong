@@ -1,35 +1,78 @@
 use std::fs::File;
 use std::io::Write;
 
+mod generator;
 mod parser;
 mod target;
-mod generator;
 mod utils;
 
 fn main() {
-    let device_targets = match parser::parse_build_ninja(
-        "/usr/local/google/home/rjodin/aluminium/external/angle/third_party/clvk/build/build.ninja",
+    let source_root = "/usr/local/google/home/rjodin/aluminium/external/angle/";
+    let build_root =
+        "/usr/local/google/home/rjodin/aluminium/external/angle/third_party/clvk/build/";
+    let device_native_lib_root =
+        "/usr/local/google/home/rjodin/aluminium/external/angle/third_party/clvk/android-ndk-r27c/";
+    let host_native_lib_root = "/usr/lib/x86_64-linux-gnu/";
+
+    const HOST_PREFIX: &str = "external/clspv/third_party/llvm/NATIVE/";
+    let host_targets =
+        match parser::parse_build_ninja(&(build_root.to_string() + HOST_PREFIX + "build.ninja")) {
+            Ok(targets) => targets,
+            Err(err) => {
+                println!("Could not parse host build.ninja: '{err}'");
+                return;
+            }
+        };
+    let android_host_bp = match generator::generate_android_bp(
+        vec![
+            "bin/clang".to_string(),
+            "bin/llvm-link".to_string(),
+            "bin/llvm-as".to_string(),
+            "bin/opt".to_string(),
+            "bin/prepare_builtins".to_string(),
+            "bin/llvm-min-tblgen".to_string(),
+            "bin/llvm-tblgen".to_string(),
+            "bin/clang-tblgen".to_string(),
+        ],
+        &host_targets,
+        source_root,
+        host_native_lib_root,
+        build_root,
+        HOST_PREFIX,
+        true,
     ) {
+        Ok(result) => result,
+        Err(err) => {
+            println!("generate_android_bp for host failed: {err}");
+            return;
+        }
+    };
+
+    let device_targets = match parser::parse_build_ninja(&(build_root.to_string() + "build.ninja"))
+    {
         Ok(targets) => targets,
         Err(err) => {
             println!("Could not parse build.ninja: '{err}'");
             return;
         }
     };
-    let device_targets_map = target::create_map(&device_targets);
-    let android_bp = match generator::generate_android_bp(
+    let mut android_bp = match generator::generate_android_bp(
         vec![String::from("libOpenCL.so")],
-        device_targets_map,
-        "/usr/local/google/home/rjodin/aluminium/external/angle/",
-        "/usr/local/google/home/rjodin/aluminium/external/angle/third_party/clvk/android-ndk-r27c/",
-        "/usr/local/google/home/rjodin/aluminium/external/angle/third_party/clvk/build/",
+        &device_targets,
+        source_root,
+        device_native_lib_root,
+        build_root,
+        "",
+        false,
     ) {
         Ok(result) => result,
         Err(err) => {
-            println!("generate_android_bp failed: {err}");
+            println!("generate_android_bp for device failed: {err}");
             return;
         }
     };
+
+    android_bp += &android_host_bp;
 
     let mut file = match File::create("Android.bp") {
         Ok(file) => file,

@@ -2,6 +2,7 @@ use std::collections::HashMap;
 use std::collections::HashSet;
 
 use crate::target::BuildTarget;
+use crate::utils::error;
 
 fn print_hashset(set: HashSet<String>, set_name: &str, fct: fn(&mut String, &String)) -> String {
     let mut result = String::new();
@@ -25,8 +26,10 @@ fn generate_object(
     target: &BuildTarget,
     targets_map: &HashMap<String, &BuildTarget>,
     source_root: &str,
-    ndk_root: &str,
+    native_lib_root: &str,
     build_root: &str,
+    prefix: &str,
+    optimize_for_size: bool,
 ) -> Result<(String, Vec<String>), String> {
     let mut targets: Vec<String> = Vec::new();
     let mut result = String::new();
@@ -34,7 +37,7 @@ fn generate_object(
     result += " {\n";
 
     result += "\tname: \"";
-    result += &crate::utils::rework_target_name(crate::target::get_name(target));
+    result += &crate::utils::rework_target_name(&crate::target::get_name(target), prefix);
     result += "\",\n";
 
     let mut includes: HashSet<String> = HashSet::new();
@@ -42,15 +45,16 @@ fn generate_object(
     result += "\tsrcs: [\n";
     for input in crate::target::get_inputs(target) {
         result += "\t\t\"";
-        let (src, src_includes, src_defines) =
-            match crate::target::get_compiler_target_info(input, targets_map, source_root) {
-                Ok(return_values) => return_values,
-                Err(err) => return Err(err),
-            };
+        let (src, src_includes, src_defines) = match crate::target::get_compiler_target_info(
+            input,
+            targets_map,
+            source_root,
+            build_root,
+        ) {
+            Ok(return_values) => return_values,
+            Err(err) => return Err(err),
+        };
         for inc in src_includes {
-            if inc.starts_with(build_root) {
-                continue;
-            }
             includes.insert(inc);
         }
         for def in src_defines {
@@ -67,14 +71,18 @@ fn generate_object(
     result += &print_hashset(defines, "cflags", |result, element| {
         result.push_str(&format!("-D{element}"))
     });
-    result += &print_hashset(
-        crate::target::get_link_flags(target, source_root),
-        "ldflags",
-        |result, element| result.push_str(element),
-    );
+    let (version_script, link_flags) = crate::target::get_link_flags(target, source_root);
+    result += &print_hashset(link_flags, "ldflags", |result, element| {
+        result.push_str(element)
+    });
+    if let Some(vs) = version_script {
+        result += "\tversion_script: \"";
+        result += &vs;
+        result += "\",\n";
+    }
 
     let (static_libs, shared_libs, system_shared_libs, mut deps) =
-        match crate::target::get_link_libraries(target, ndk_root) {
+        match crate::target::get_link_libraries(target, native_lib_root, prefix) {
             Ok(return_values) => return_values,
             Err(err) => return Err(err),
         };
@@ -91,13 +99,18 @@ fn generate_object(
         result.push_str(element)
     });
 
-    let generated_headers = match crate::target::get_generated_headers(target, &targets_map) {
+    let generated_headers = match crate::target::get_generated_headers(target, &targets_map, prefix)
+    {
         Ok(generated_headers) => generated_headers,
         Err(err) => return Err(err),
     };
     result += &print_hashset(generated_headers, "generated_headers", |result, element| {
         result.push_str(element)
     });
+
+    if optimize_for_size {
+        result += "\toptimize_for_size: true,\n";
+    }
 
     result += "}\n\n";
     return Ok((result, targets));
@@ -108,12 +121,13 @@ fn generate_genrule(
     command: String,
     source_root: &str,
     build_root: &str,
+    prefix: &str,
 ) -> Result<String, String> {
     let mut result = String::new();
     result += "cc_genrule {\n";
 
     result += "\tname: \"";
-    result += &crate::utils::rework_target_name(crate::target::get_name(target));
+    result += &crate::utils::rework_target_name(&crate::target::get_name(target), prefix);
     result += "\",\n";
 
     let inputs = crate::target::get_inputs(target);
@@ -160,7 +174,7 @@ fn generate_genrule(
     result += "\t],\n";
 
     if tools.len() > 1 {
-        return Err(format!(
+        return error!(format!(
             "Unsupported tools '{tools:#?}' for target: {target:#?}"
         ));
     }
@@ -168,14 +182,14 @@ fn generate_genrule(
         result += "\ttools: [\n";
         for tool in tools {
             result += "\t\t\"";
-            result += &crate::utils::rework_target_name(tool);
+            result += &crate::utils::rework_target_name(tool, prefix);
             result += "\",\n";
         }
         result += "\t],\n";
     }
 
     if tool_files.len() > 1 {
-        return Err(format!(
+        return error!(format!(
             "Unsupported tool_files '{tool_files:#?}' for target: {target:#?}"
         ));
     }
@@ -197,19 +211,69 @@ fn generate_genrule(
     return Ok(result);
 }
 
+fn generate_simple_genrule(
+    target: &BuildTarget,
+    source_root: &str,
+    prefix: &str,
+    command: &str,
+    error_prefix: &str,
+) -> Result<String, String> {
+    let mut result = String::new();
+    result += "cc_genrule {\n";
+
+    result += "\tname: \"";
+    result += &crate::utils::rework_target_name(&crate::target::get_name(target), prefix);
+    result += "\",\n";
+
+    let inputs = crate::target::get_inputs(target);
+    let outputs = crate::target::get_outputs(target);
+    if inputs.len() != 1 || outputs.len() != 1 {
+        return error!(format!(
+            "{0} with wrong number of input/output: {target:#?}",
+            error_prefix,
+        ));
+    }
+
+    result += "\tsrcs: [\n";
+    for input in inputs {
+        result += "\t\t\"";
+        result += &crate::utils::rework_source_path(input, source_root);
+        result += "\",\n";
+    }
+    result += "\t],\n";
+
+    result += "\tout: [\n";
+    for output in outputs {
+        result += "\t\t\"";
+        result += &crate::utils::rework_output_path(output);
+        result += "\",\n";
+    }
+    result += "\t],\n";
+
+    result += "\tcmd: \"";
+    result += command;
+    result += "\",\n";
+
+    result += "}\n\n";
+    return Ok(result);
+}
+
 pub fn generate_android_bp(
     entry_targets: Vec<String>,
-    targets_map: HashMap<String, &BuildTarget>,
+    targets: &Vec<BuildTarget>,
     source_root: &str,
-    ndk_root: &str,
+    native_lib_root: &str,
     build_root: &str,
+    prefix: &str,
+    host: bool,
 ) -> Result<String, String> {
     let mut result = String::new();
     let mut target_seen: HashSet<String> = HashSet::new();
     let mut target_to_generate = entry_targets;
+    let targets_map = crate::target::create_map(targets);
 
     while let Some(input) = target_to_generate.pop() {
-        println!("target: {input}");
+        println!("target: {prefix}{input}");
         if target_seen.contains(&input) || input.contains("llvm/bin/") {
             continue;
         }
@@ -217,14 +281,21 @@ pub fn generate_android_bp(
             continue;
         };
 
-        if crate::target::get_rule(target).starts_with("CXX_SHARED_LIBRARY") {
+        let rule = crate::target::get_rule(target);
+        if rule.starts_with("CXX_SHARED_LIBRARY") {
             let (generated_target, mut next_targets) = match generate_object(
-                "cc_library_shared",
+                if host {
+                    "cc_library_host_shared"
+                } else {
+                    "cc_library_shared"
+                },
                 target,
                 &targets_map,
                 source_root,
-                ndk_root,
+                native_lib_root,
                 build_root,
+                prefix,
+                false,
             ) {
                 Ok(return_value) => return_value,
                 Err(err) => return Err(err),
@@ -235,14 +306,20 @@ pub fn generate_android_bp(
             for input in crate::target::get_inputs(target) {
                 target_seen.insert(input.clone());
             }
-        } else if crate::target::get_rule(target).starts_with("CXX_STATIC_LIBRARY") {
+        } else if rule.starts_with("CXX_STATIC_LIBRARY") {
             let (generated_target, mut next_targets) = match generate_object(
-                "cc_library_static",
+                if host {
+                    "cc_library_host_static"
+                } else {
+                    "cc_library_static"
+                },
                 target,
                 &targets_map,
                 source_root,
-                ndk_root,
+                native_lib_root,
                 build_root,
+                prefix,
+                !host,
             ) {
                 Ok(return_value) => return_value,
                 Err(err) => return Err(err),
@@ -253,22 +330,29 @@ pub fn generate_android_bp(
             for input in crate::target::get_inputs(target) {
                 target_seen.insert(input.clone());
             }
-        } else if crate::target::get_rule(target).starts_with("CXX_EXECUTABLE") {
-            let (generated_target, mut next_targets) =
-                match generate_object("cc_binary", target, &targets_map, source_root, ndk_root, build_root)
-                {
-                    Ok(return_value) => return_value,
-                    Err(err) => return Err(err),
-                };
+        } else if rule.starts_with("CXX_EXECUTABLE") {
+            let (generated_target, mut next_targets) = match generate_object(
+                if host { "cc_binary_host" } else { "cc_binary" },
+                target,
+                &targets_map,
+                source_root,
+                native_lib_root,
+                build_root,
+                prefix,
+                false,
+            ) {
+                Ok(return_value) => return_value,
+                Err(err) => return Err(err),
+            };
             result += &generated_target;
             target_to_generate.append(&mut next_targets);
             target_to_generate.append(&mut crate::target::get_all_inputs(target));
             for input in crate::target::get_inputs(target) {
                 target_seen.insert(input.clone());
             }
-        } else if crate::target::get_rule(target) == "phony" {
+        } else if rule == "phony" {
             target_to_generate.append(&mut crate::target::get_all_inputs(target));
-        } else if crate::target::get_rule(target) == "CUSTOM_COMMAND" {
+        } else if rule == "CUSTOM_COMMAND" {
             let command = match crate::target::get_command(target) {
                 Ok(option) => match option {
                     Some(command) => command,
@@ -276,16 +360,41 @@ pub fn generate_android_bp(
                 },
                 Err(err) => return Err(err),
             };
-            result += &match generate_genrule(target, command, source_root, build_root) {
+            if command == crate::target::COPY_TARGET {
+                result += &match generate_simple_genrule(
+                    target,
+                    source_root,
+                    prefix,
+                    "cp $(in) $(out)",
+                    "Copy",
+                ) {
+                    Ok(return_value) => return_value,
+                    Err(err) => return Err(err),
+                }
+            } else {
+                result += &match generate_genrule(target, command, source_root, build_root, prefix)
+                {
+                    Ok(return_value) => return_value,
+                    Err(err) => return Err(err),
+                };
+            }
+            target_to_generate.append(&mut crate::target::get_all_inputs(target));
+        } else if rule.starts_with("CXX_COMPILER") || rule.starts_with("C_COMPILER") {
+            continue;
+        } else if rule.starts_with("CMAKE_SYMLINK") {
+            result += &match generate_simple_genrule(
+                target,
+                source_root,
+                prefix,
+                "ln -s $(in) $(out)",
+                "Symlink",
+            ) {
                 Ok(return_value) => return_value,
                 Err(err) => return Err(err),
             };
-        } else if crate::target::get_rule(target).starts_with("CXX_COMPILER")
-            || crate::target::get_rule(target).starts_with("C_COMPILER")
-        {
-            continue;
+            target_to_generate.append(&mut crate::target::get_all_inputs(target));
         } else {
-            return Err(format!("unsupported target: {target:#?}"));
+            return error!(format!("unsupported target: {target:#?}"));
         }
         for output in crate::target::get_outputs(target) {
             target_seen.insert(output.clone());

@@ -3,16 +3,17 @@ use std::fs::File;
 use std::io::Read;
 
 use crate::target::BuildTarget;
+use crate::utils::error;
 
 fn parse_build_target(line: &str, lines: &mut std::str::Lines<'_>) -> Result<BuildTarget, String> {
     let Some(line_stripped) = line.strip_prefix("build") else {
-        return Err(format!("No build prefix: '{line}'"));
+        return error!(format!("No build prefix: '{line}'"));
     };
 
     let mut split_column = line_stripped.split(":");
     let split_column_count = split_column.clone().count();
     if split_column_count != 2 {
-        return Err(format!(
+        return error!(format!(
             "Error while parsing column (expected 2, got {0}): '{split_column:#?}'",
             split_column_count,
         ));
@@ -22,7 +23,7 @@ fn parse_build_target(line: &str, lines: &mut std::str::Lines<'_>) -> Result<Bui
 
     let mut split_pipe_output_section = output_section.split("|");
     if split_pipe_output_section.clone().count() < 1 {
-        return Err(format!(
+        return error!(format!(
             "Error while parsing output section for pipe: '{output_section}'"
         ));
     }
@@ -40,7 +41,7 @@ fn parse_build_target(line: &str, lines: &mut std::str::Lines<'_>) -> Result<Bui
     let mut split_pipe_input_section = input_section.split("||");
     let split_pipe_input_section_count = split_pipe_input_section.clone().count();
     if split_pipe_input_section_count != 1 && split_pipe_input_section_count != 2 {
-        return Err(format!(
+        return error!(format!(
             "Error while parsing input section for double pipe: '{input_section}'"
         ));
     }
@@ -49,7 +50,7 @@ fn parse_build_target(line: &str, lines: &mut std::str::Lines<'_>) -> Result<Bui
     let mut split_pipe_input_and_dep_section = input_and_dep_section.split("|");
     let split_pipe_input_and_dep_section_count = split_pipe_input_and_dep_section.clone().count();
     if split_pipe_input_and_dep_section_count != 1 && split_pipe_input_and_dep_section_count != 2 {
-        return Err(format!(
+        return error!(format!(
             "Error while parsing input section for pipe: '{input_and_dep_section}'"
         ));
     }
@@ -57,7 +58,7 @@ fn parse_build_target(line: &str, lines: &mut std::str::Lines<'_>) -> Result<Bui
 
     let mut split_inputs_and_rule = inputs_and_rule.trim().split(" ");
     if split_inputs_and_rule.clone().count() < 1 {
-        return Err(format!(
+        return error!(format!(
             "Error while parsing inputs and rule: '{inputs_and_rule}'"
         ));
     }
@@ -84,7 +85,7 @@ fn parse_build_target(line: &str, lines: &mut std::str::Lines<'_>) -> Result<Bui
             break;
         }
         let Some(split) = next_line.split_once("=") else {
-            return Err(format!("Error while parsing variable: '{next_line}'"));
+            return error!(format!("Error while parsing variable: '{next_line}'"));
         };
         let key = String::from(split.0.trim());
         let val = String::from(split.1.trim());
@@ -106,11 +107,11 @@ pub fn parse_build_ninja(path: &str) -> Result<Vec<BuildTarget>, String> {
     let mut targets: Vec<BuildTarget> = Vec::new();
     let mut file = match File::open(path) {
         Ok(file) => file,
-        Err(err) => return Err(format!("Could not open '{path}': '{0}'", err)),
+        Err(err) => return error!(format!("Could not open '{path}': '{0}'", err)),
     };
     let mut content = String::new();
     if let Err(err) = file.read_to_string(&mut content) {
-        return Err(format!("Could not read '{path}': '{0}'", err));
+        return error!(format!("Could not read '{path}': '{0}'", err));
     }
     let mut lines = content.lines();
     while let Some(line) = lines.next() {
@@ -119,7 +120,7 @@ pub fn parse_build_ninja(path: &str) -> Result<Vec<BuildTarget>, String> {
         }
         match parse_build_target(line, &mut lines) {
             Ok(target) => targets.push(target),
-            Err(err) => return Err(format!("Could not parse build target: '{err}'")),
+            Err(err) => return error!(format!("Could not parse build target: '{err}'")),
         }
     }
     return Ok(targets);
