@@ -81,5 +81,11 @@ fn main() {
             return;
         }
     };
-    let _ = file.write_fmt(format_args!("{android_bp}"));
+    match file.write_fmt(format_args!("{android_bp}")) {
+        Ok(_) => (),
+        Err(err) => {
+            println!("Could not write into 'Android.bp': '{err:#?}");
+            return;
+        }
+    }
 }

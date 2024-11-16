@@ -145,7 +145,7 @@ pub fn parse_build_ninja(path: &str) -> Result<Vec<BuildTarget>, String> {
     };
     let mut content = String::new();
     if let Err(err) = file.read_to_string(&mut content) {
-        return error!(format!("Could not read '{path}': '{0}'", err));
+        return error!(format!("Could not read '{path}': '{err:#?}'"));
     }
     let mut lines = content.lines();
     while let Some(line) = lines.next() {
