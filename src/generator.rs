@@ -132,13 +132,13 @@ fn generate_genrule(
 
     let inputs = crate::target::get_inputs(target);
     let mut filtered_inputs: Vec<&String> = Vec::new();
-    let mut tools: Vec<&String> = Vec::new();
-    let mut tool_files: Vec<&String> = Vec::new();
+    let mut tools: HashSet<&String> = HashSet::new();
+    let mut tool_files: HashSet<&String> = HashSet::new();
     for input in inputs {
-        if input.contains("NATIVE/bin") {
-            tools.push(input);
+        if (prefix.to_string() + input).contains("NATIVE/bin") {
+            tools.insert(input);
         } else if input.ends_with(".py") {
-            tool_files.push(input);
+            tool_files.insert(input);
         } else {
             filtered_inputs.push(input);
         }
@@ -237,7 +237,11 @@ fn generate_simple_genrule(
     result += "\tsrcs: [\n";
     for input in inputs {
         result += "\t\t\"";
-        result += &crate::utils::rework_source_path(input, source_root);
+        if input == "bin/clang-20" {
+            result += &crate::utils::rework_target_name(input, prefix);
+        } else {
+            result += &crate::utils::rework_source_path(input, source_root);
+        }
         result += "\",\n";
     }
     result += "\t],\n";
@@ -302,10 +306,6 @@ pub fn generate_android_bp(
             };
             result += &generated_target;
             target_to_generate.append(&mut next_targets);
-            target_to_generate.append(&mut crate::target::get_all_inputs(target));
-            for input in crate::target::get_inputs(target) {
-                target_seen.insert(input.clone());
-            }
         } else if rule.starts_with("CXX_STATIC_LIBRARY") {
             let (generated_target, mut next_targets) = match generate_object(
                 if host {
@@ -326,10 +326,6 @@ pub fn generate_android_bp(
             };
             result += &generated_target;
             target_to_generate.append(&mut next_targets);
-            target_to_generate.append(&mut crate::target::get_all_inputs(target));
-            for input in crate::target::get_inputs(target) {
-                target_seen.insert(input.clone());
-            }
         } else if rule.starts_with("CXX_EXECUTABLE") {
             let (generated_target, mut next_targets) = match generate_object(
                 if host { "cc_binary_host" } else { "cc_binary" },
@@ -346,12 +342,6 @@ pub fn generate_android_bp(
             };
             result += &generated_target;
             target_to_generate.append(&mut next_targets);
-            target_to_generate.append(&mut crate::target::get_all_inputs(target));
-            for input in crate::target::get_inputs(target) {
-                target_seen.insert(input.clone());
-            }
-        } else if rule == "phony" {
-            target_to_generate.append(&mut crate::target::get_all_inputs(target));
         } else if rule == "CUSTOM_COMMAND" {
             let command = match crate::target::get_command(target) {
                 Ok(option) => match option {
@@ -378,9 +368,6 @@ pub fn generate_android_bp(
                     Err(err) => return Err(err),
                 };
             }
-            target_to_generate.append(&mut crate::target::get_all_inputs(target));
-        } else if rule.starts_with("CXX_COMPILER") || rule.starts_with("C_COMPILER") {
-            continue;
         } else if rule.starts_with("CMAKE_SYMLINK") {
             result += &match generate_simple_genrule(
                 target,
@@ -392,10 +379,15 @@ pub fn generate_android_bp(
                 Ok(return_value) => return_value,
                 Err(err) => return Err(err),
             };
-            target_to_generate.append(&mut crate::target::get_all_inputs(target));
-        } else {
+        } else if !(rule.starts_with("CXX_COMPILER")
+            || rule.starts_with("C_COMPILER")
+            || rule.starts_with("ASM_COMPILER")
+            || rule == "phony")
+        {
             return error!(format!("unsupported target: {target:#?}"));
         }
+
+        target_to_generate.append(&mut crate::target::get_all_inputs(target));
         for output in crate::target::get_outputs(target) {
             target_seen.insert(output.clone());
         }
