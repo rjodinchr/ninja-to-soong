@@ -148,9 +148,7 @@ pub fn get_link_libraries(
     let mut deps: Vec<String> = Vec::new();
     if let Some(libs) = target.variables.get("LINK_LIBRARIES") {
         for lib in libs.split(" ") {
-            if lib == "-pthread" {
-                system_shared_libraries.insert(String::from("pthread"));
-            } else if lib.strip_prefix("-Wl").is_some() {
+            if lib.strip_prefix("-Wl").is_some() || lib == "-lrt" || lib == "-pthread" || lib == "-latomic" {
                 continue;
             } else if let Some(stripped_lib) = lib.strip_prefix("-l") {
                 system_shared_libraries.insert("lib".to_string() + stripped_lib);
