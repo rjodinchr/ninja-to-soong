@@ -6,9 +6,10 @@ macro_rules! error {
 }
 pub use error;
 
+use std::collections::HashSet;
+
 pub fn rework_target_name(target_name: &str, prefix: &str) -> String {
-    let mut name = prefix.to_string();
-    name += target_name;
+    let mut name = prefix.to_string() + target_name;
     name = name.strip_suffix(".so").unwrap_or(&name).to_string();
     name = name.strip_suffix(".a").unwrap_or(&name).to_string();
     return name.replace("/", "__").replace(".", "__");
@@ -31,100 +32,66 @@ pub fn rework_output_path(output: &str) -> String {
 }
 
 fn replace_output_in_command(command: String, output: &String) -> String {
-    let reworked_output = rework_output_path(output);
-    let mut replace_output = String::from("$(location ");
-    replace_output += &reworked_output;
-    replace_output += ")";
-    let command = command.replace(output, &replace_output);
+    let marker = "<output>";
+    let space_and_marker = String::from(" ") + marker;
+    let space_and_last_output = String::from(" ") + output.split("/").last().unwrap();
 
-    let mut second_output_pattern = String::new();
-    second_output_pattern += "-o ";
-    second_output_pattern += output.split("/").last().unwrap();
-    second_output_pattern += " ";
+    let command = command.replace(output, marker);
+    let command = command.replace(&space_and_last_output, &space_and_marker);
 
-    let mut second_replace_output = String::new();
-    second_replace_output += "-o ";
-    second_replace_output += &replace_output;
-    second_replace_output += " ";
-
-    command.replace(&second_output_pattern, &second_replace_output)
+    let replace_output = String::from("$(location ") + &rework_output_path(output) + ")";
+    return command.replace(marker, &replace_output);
 }
 
 fn replace_input_in_command(command: String, input: &String, source_root: &str) -> String {
-    let mut replace_input = String::from("$(location ");
-    replace_input += &crate::utils::rework_source_path(input, source_root);
-    replace_input += ")";
+    let replace_input = String::from("$(location ") + &rework_source_path(input, source_root) + ")";
     return command.replace(input, &replace_input);
 }
 
-fn get_location_source_root(inputs: &Vec<&String>, source_root: &str) -> Option<String> {
-    if inputs.len() < 1 {
-        return None;
-    }
-    let input = crate::utils::rework_source_path(inputs[0], source_root);
-    let split = input.split("/");
-
-    let mut result = String::new();
-    result += "$$(dirname $(location ";
-    result += &input;
-    result += "))/";
-    for _ in 1..split.count() {
-        result += "../";
-    }
-    return Some(result);
+fn replace_dep_in_command(command: String, tool: &String, prefix: &str) -> String {
+    let replace_tool = "$(location ".to_string() + &rework_target_name(tool, prefix) + ")";
+    let tool_with_prefix = String::from(prefix) + tool;
+    let command = command.replace(&tool_with_prefix, &replace_tool);
+    return command.replace(tool, &replace_tool);
 }
 
-pub fn rework_command(
+fn replace_source_root_in_command(
     command: String,
-    inputs: &mut Vec<&String>,
+    source_root: &str,
+    input_ref_for_genrule: &String,
+) -> String {
+    let replace_with = String::from("$$(dirname $(location ") + input_ref_for_genrule + "))/";
+    return command.replace(source_root, &replace_with);
+}
+
+pub fn rework_command<'a>(
+    command: String,
+    inputs: &mut HashSet<&'a String>,
     outputs: &Vec<String>,
+    generated_deps: &HashSet<&String>,
     source_root: &str,
     build_root: &str,
+    prefix: &str,
+    input_ref_for_genrule: &'a String,
 ) -> Result<String, String> {
-    let command = match command.split_once(" && ") {
-        Some(split) => split.1,
-        None => return error!(format!("Could not split command: {command}")),
-    };
-    let command = if let Some(split) = command.split_once(" -d ") {
-        split.0
-    } else {
-        command
-    };
-
-    let split = command.split_once(" ").unwrap();
-    let mut command = if split.0.contains("python") {
-        split.1.split_once(" ").unwrap().1
-    } else {
-        split.1
-    }
-    .to_string();
-
+    let mut command = command.replace("/usr/bin/python3 ", "");
     command = command.replace(build_root, "");
+
     for output in outputs {
         command = replace_output_in_command(command, output);
     }
     for input in inputs.clone() {
         command = replace_input_in_command(command, input, source_root);
     }
-
-    if let Some(location_source_root) = get_location_source_root(inputs, source_root) {
-        while let Some(start_pos) = command.find(source_root) {
-            let to_replace = if let Some(end_pos) = command[start_pos..].find(" ") {
-                &command[start_pos..(start_pos + end_pos)]
-            } else {
-                &command[start_pos..]
-            };
-            let to_replace_reworked = crate::utils::rework_source_path(to_replace, source_root);
-            let mut replace_with = String::new();
-            replace_with += &location_source_root;
-            replace_with += &to_replace_reworked;
-            command = command.replace(to_replace, &replace_with);
-        }
+    for dep in generated_deps {
+        command = replace_dep_in_command(command, dep, prefix);
     }
 
-    let mut result = String::new();
-    result += "$(location) ";
-    result += &command;
+    let previous_command = command.clone();
+    command = replace_source_root_in_command(command, source_root, input_ref_for_genrule);
+    if previous_command != command {
+        inputs.insert(input_ref_for_genrule);
+    }
 
-    return Ok(result);
+    return Ok(command);
 }

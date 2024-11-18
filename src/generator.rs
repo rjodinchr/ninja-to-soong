@@ -122,6 +122,8 @@ fn generate_genrule(
     source_root: &str,
     build_root: &str,
     prefix: &str,
+    input_ref_for_genrule: &String,
+    host: bool,
 ) -> Result<String, String> {
     let mut result = String::new();
     result += "cc_genrule {\n";
@@ -131,16 +133,13 @@ fn generate_genrule(
     result += "\",\n";
 
     let inputs = crate::target::get_inputs(target);
-    let mut filtered_inputs: Vec<&String> = Vec::new();
-    let mut tools: HashSet<&String> = HashSet::new();
-    let mut tool_files: HashSet<&String> = HashSet::new();
+    let mut filtered_inputs: HashSet<&String> = HashSet::new();
+    let mut generated_deps: HashSet<&String> = HashSet::new();
     for input in inputs {
-        if (prefix.to_string() + input).contains("NATIVE/bin") {
-            tools.insert(input);
-        } else if input.ends_with(".py") {
-            tool_files.insert(input);
+        if input.starts_with(source_root) {
+            filtered_inputs.insert(input);
         } else {
-            filtered_inputs.push(input);
+            generated_deps.insert(input);
         }
     }
     let outputs = crate::target::get_outputs(target);
@@ -148,18 +147,26 @@ fn generate_genrule(
         command,
         &mut filtered_inputs,
         outputs,
+        &generated_deps,
         source_root,
         build_root,
+        prefix,
+        input_ref_for_genrule,
     ) {
         Ok(command) => command,
         Err(err) => return Err(err),
     };
 
-    if filtered_inputs.len() > 0 {
+    if filtered_inputs.len() + generated_deps.len() > 0 {
         result += "\tsrcs: [\n";
         for input in filtered_inputs {
             result += "\t\t\"";
             result += &crate::utils::rework_source_path(input, source_root);
+            result += "\",\n";
+        }
+        for dep in generated_deps {
+            result += "\t\t\":";
+            result += &crate::utils::rework_target_name(dep, prefix);
             result += "\",\n";
         }
         result += "\t],\n";
@@ -173,34 +180,8 @@ fn generate_genrule(
     }
     result += "\t],\n";
 
-    if tools.len() > 1 {
-        return error!(format!(
-            "Unsupported tools '{tools:#?}' for target: {target:#?}"
-        ));
-    }
-    if tools.len() == 1 {
-        result += "\ttools: [\n";
-        for tool in tools {
-            result += "\t\t\"";
-            result += &crate::utils::rework_target_name(tool, prefix);
-            result += "\",\n";
-        }
-        result += "\t],\n";
-    }
-
-    if tool_files.len() > 1 {
-        return error!(format!(
-            "Unsupported tool_files '{tool_files:#?}' for target: {target:#?}"
-        ));
-    }
-    if tool_files.len() == 1 {
-        result += "\ttool_files: [\n";
-        for tool in tool_files {
-            result += "\t\t\"";
-            result += &crate::utils::rework_source_path(tool, source_root);
-            result += "\",\n";
-        }
-        result += "\t],\n";
+    if !host {
+        result += "\thost_supported: true,\n";
     }
 
     result += "\tcmd: \"";
@@ -217,6 +198,7 @@ fn generate_simple_genrule(
     prefix: &str,
     command: &str,
     error_prefix: &str,
+    host: bool,
 ) -> Result<String, String> {
     let mut result = String::new();
     result += "cc_genrule {\n";
@@ -234,25 +216,23 @@ fn generate_simple_genrule(
         ));
     }
 
-    result += "\tsrcs: [\n";
-    for input in inputs {
-        result += "\t\t\"";
-        if input == "bin/clang-20" {
-            result += &crate::utils::rework_target_name(input, prefix);
-        } else {
-            result += &crate::utils::rework_source_path(input, source_root);
-        }
-        result += "\",\n";
+    let input = &inputs[0];
+    if input == "bin/clang-20" {
+        result += "\ttools: [\n\t\t\"";
+        result += &crate::utils::rework_target_name(input, prefix);
+    } else {
+        result += "\tsrcs: [\n\t\t\"";
+        result += &crate::utils::rework_source_path(input, source_root);
     }
-    result += "\t],\n";
+    result += "\",\n\t],\n";
 
-    result += "\tout: [\n";
-    for output in outputs {
-        result += "\t\t\"";
-        result += &crate::utils::rework_output_path(output);
-        result += "\",\n";
+    result += "\tout: [\n\t\t\"";
+    result += &crate::utils::rework_output_path(&outputs[0]);
+    result += "\",\n\t],\n";
+
+    if host {
+        result += "\thost_supported: true,\n";
     }
-    result += "\t],\n";
 
     result += "\tcmd: \"";
     result += command;
@@ -270,6 +250,7 @@ pub fn generate_android_bp(
     build_root: &str,
     prefix: &str,
     host: bool,
+    input_ref_for_genrule: &String,
 ) -> Result<String, String> {
     let mut result = String::new();
     let mut target_seen: HashSet<String> = HashSet::new();
@@ -357,13 +338,21 @@ pub fn generate_android_bp(
                     prefix,
                     "cp $(in) $(out)",
                     "Copy",
+                    host,
                 ) {
                     Ok(return_value) => return_value,
                     Err(err) => return Err(err),
                 }
             } else {
-                result += &match generate_genrule(target, command, source_root, build_root, prefix)
-                {
+                result += &match generate_genrule(
+                    target,
+                    command,
+                    source_root,
+                    build_root,
+                    prefix,
+                    input_ref_for_genrule,
+                    host,
+                ) {
                     Ok(return_value) => return_value,
                     Err(err) => return Err(err),
                 };
@@ -375,6 +364,7 @@ pub fn generate_android_bp(
                 prefix,
                 "ln -s $(in) $(out)",
                 "Symlink",
+                host,
             ) {
                 Ok(return_value) => return_value,
                 Err(err) => return Err(err),

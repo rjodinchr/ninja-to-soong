@@ -148,7 +148,11 @@ pub fn get_link_libraries(
     let mut deps: Vec<String> = Vec::new();
     if let Some(libs) = target.variables.get("LINK_LIBRARIES") {
         for lib in libs.split(" ") {
-            if lib.strip_prefix("-Wl").is_some() || lib == "-lrt" || lib == "-pthread" || lib == "-latomic" {
+            if lib.strip_prefix("-Wl").is_some()
+                || lib == "-lrt"
+                || lib == "-pthread"
+                || lib == "-latomic"
+            {
                 continue;
             } else if let Some(stripped_lib) = lib.strip_prefix("-l") {
                 system_shared_libraries.insert("lib".to_string() + stripped_lib);
@@ -238,12 +242,21 @@ pub fn get_command(target: &BuildTarget) -> Result<Option<String>, String> {
     let Some(command) = target.variables.get("COMMAND") else {
         return error!(format!("No command in CUSTOM_COMMAND: {target:#?}"));
     };
-    if command.contains("cmake -E copy_if_different") {
-        return Ok(Some(COPY_TARGET.to_string()));
-    } else if command.contains("/usr/bin/cmake") {
-        return Ok(None);
+    let mut split = command.split(" && ");
+    let split_count = split.clone().count();
+    if split_count < 2 {
+        return error!(format!(
+            "Could not find enough split in command (expected at least 2, got {split_count}"
+        ));
     }
-    return Ok(Some(command.clone()));
+    let command = split.nth(1).unwrap();
+    return Ok(if command.contains("cmake -E copy_if_different") {
+        Some(COPY_TARGET.to_string())
+    } else if command.contains("/usr/bin/cmake") {
+        None
+    } else {
+        Some(command.to_string())
+    });
 }
 
 pub fn get_generated_headers(

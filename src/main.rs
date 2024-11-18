@@ -14,6 +14,7 @@ fn main() {
         "/usr/local/google/home/rjodin/aluminium/external/angle/third_party/clvk/android-ndk-r27c/";
     let host_native_lib_root = "/usr/lib/x86_64-linux-gnu/";
 
+    let input_ref_for_genrule = String::from("README.md");
     const HOST_PREFIX: &str = "external/clspv/third_party/llvm/NATIVE/";
     let host_targets =
         match parser::parse_build_ninja(&(build_root.to_string() + HOST_PREFIX + "build.ninja")) {
@@ -40,6 +41,7 @@ fn main() {
         build_root,
         HOST_PREFIX,
         true,
+        &input_ref_for_genrule,
     ) {
         Ok(result) => result,
         Err(err) => {
@@ -64,6 +66,7 @@ fn main() {
         build_root,
         "",
         false,
+        &input_ref_for_genrule,
     ) {
         Ok(result) => result,
         Err(err) => {
