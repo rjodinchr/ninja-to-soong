@@ -1,7 +1,7 @@
 use std::fs::File;
 use std::io::Write;
 
-mod generator;
+mod generators;
 mod parser;
 mod target;
 mod utils;
@@ -13,6 +13,7 @@ fn main() {
     let device_native_lib_root =
         "/usr/local/google/home/rjodin/aluminium/external/angle/third_party/clvk/android-ndk-r27c/";
     let host_native_lib_root = "/usr/lib/x86_64-linux-gnu/";
+    let generator = generators::soong_generator::SoongGenerator();
 
     let input_ref_for_genrule = String::from("README.md");
     const HOST_PREFIX: &str = "external/clspv/third_party/llvm/NATIVE/";
@@ -24,7 +25,8 @@ fn main() {
                 return;
             }
         };
-    let android_host_bp = match generator::generate_android_bp(
+    let android_host_bp = match generators::generate(
+        &generator,
         vec![
             "bin/clang".to_string(),
             "bin/llvm-link".to_string(),
@@ -45,7 +47,7 @@ fn main() {
     ) {
         Ok(result) => result,
         Err(err) => {
-            println!("generate_android_bp for host failed: {err}");
+            println!("generate for host failed: {err}");
             return;
         }
     };
@@ -58,7 +60,8 @@ fn main() {
             return;
         }
     };
-    let mut android_bp = match generator::generate_android_bp(
+    let mut android_bp = match generators::generate(
+        &generator,
         vec![String::from("libOpenCL.so")],
         &device_targets,
         source_root,
@@ -70,7 +73,7 @@ fn main() {
     ) {
         Ok(result) => result,
         Err(err) => {
-            println!("generate_android_bp for device failed: {err}");
+            println!("generate for device failed: {err}");
             return;
         }
     };
