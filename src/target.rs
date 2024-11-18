@@ -74,10 +74,6 @@ pub fn get_outputs(target: &BuildTarget) -> &Vec<String> {
     &target.outputs
 }
 
-pub fn get_implicit_outputs(target: &BuildTarget) -> &Vec<String> {
-    &target.implicit_outputs
-}
-
 pub fn get_name(target: &BuildTarget) -> &String {
     return &target.outputs[0];
 }
@@ -94,6 +90,17 @@ pub fn get_all_inputs(target: &BuildTarget) -> Vec<String> {
         inputs.push(input.clone());
     }
     return inputs;
+}
+
+pub fn get_all_outputs(target: &BuildTarget) -> Vec<String> {
+    let mut outputs: Vec<String> = Vec::new();
+    for output in &target.outputs {
+        outputs.push(output.clone());
+    }
+    for output in &target.implicit_outputs {
+        outputs.push(output.clone());
+    }
+    return outputs;
 }
 
 pub fn create_map(targets: &Vec<BuildTarget>) -> HashMap<String, &BuildTarget> {

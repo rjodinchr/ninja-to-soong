@@ -175,11 +175,8 @@ pub fn generate(
         }
 
         target_to_generate.append(&mut crate::target::get_all_inputs(target));
-        for output in crate::target::get_outputs(target) {
-            target_seen.insert(output.clone());
-        }
-        for output in crate::target::get_implicit_outputs(target) {
-            target_seen.insert(output.clone());
+        for output in crate::target::get_all_outputs(target) {
+            target_seen.insert(output);
         }
     }
     return Ok(result);
