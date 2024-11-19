@@ -3,7 +3,7 @@ use std::fs::File;
 use std::io::Read;
 
 use crate::target::BuildTarget;
-use crate::utils::error;
+use crate::macros::error;
 
 fn parse_output_section(section: &str) -> Result<(Vec<String>, Vec<String>), String> {
     let mut split = section.split("|");

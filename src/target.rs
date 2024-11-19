@@ -1,7 +1,18 @@
 use std::collections::HashMap;
 use std::collections::HashSet;
 
-use crate::utils::error;
+use crate::macros::error;
+
+pub fn rework_target_name(target_name: &str, prefix: &str) -> String {
+    let mut name = prefix.to_string() + target_name;
+    name = name.strip_suffix(".so").unwrap_or(&name).to_string();
+    name = name.strip_suffix(".a").unwrap_or(&name).to_string();
+    return name.replace("/", "__").replace(".", "__");
+}
+
+pub fn rework_source_path(source: &str, source_root: &str) -> String {
+    return source.replace(source_root, "");
+}
 
 #[derive(Debug)]
 pub struct BuildTarget {
@@ -12,34 +23,6 @@ pub struct BuildTarget {
     implicit_dependencies: Vec<String>,
     order_only_dependencies: Vec<String>,
     variables: HashMap<String, String>,
-}
-
-fn get_defines(target: &BuildTarget) -> HashSet<String> {
-    let mut defines: HashSet<String> = HashSet::new();
-
-    if let Some(defs) = target.variables.get("DEFINES") {
-        for def in defs.trim().split("-D") {
-            defines.insert(def.replace(" ", ""));
-        }
-    };
-    defines.remove("");
-    return defines;
-}
-
-fn get_includes(target: &BuildTarget, source_root: &str, build_root: &str) -> HashSet<String> {
-    let mut includes: HashSet<String> = HashSet::new();
-    if let Some(incs) = target.variables.get("INCLUDES") {
-        for inc in incs.split(" ") {
-            if inc.contains(build_root) {
-                continue;
-            }
-            if let Some(stripped_inc) = inc.strip_prefix("-I") {
-                includes.insert(crate::utils::rework_source_path(stripped_inc, source_root));
-            }
-        }
-    }
-    includes.remove("");
-    return includes;
 }
 
 pub fn create(
@@ -128,7 +111,7 @@ pub fn get_link_flags(
             if flag.contains("-Bsymbolic") {
                 link_flags.insert(flag.replace(source_root, ""));
             } else if let Some(vs) = flag.strip_prefix("-Wl,--version-script=") {
-                version_script = Some(crate::utils::rework_source_path(vs, source_root));
+                version_script = Some(rework_source_path(vs, source_root));
             }
         }
     }
@@ -140,19 +123,10 @@ pub fn get_link_libraries(
     target: &BuildTarget,
     native_lib_root: &str,
     prefix: &str,
-) -> Result<
-    (
-        HashSet<String>,
-        HashSet<String>,
-        HashSet<String>,
-        Vec<String>,
-    ),
-    String,
-> {
+) -> Result<(HashSet<String>, HashSet<String>, HashSet<String>), String> {
     let mut static_libraries: HashSet<String> = HashSet::new();
     let mut shared_libraries: HashSet<String> = HashSet::new();
     let mut system_shared_libraries: HashSet<String> = HashSet::new();
-    let mut deps: Vec<String> = Vec::new();
     if let Some(libs) = target.variables.get("LINK_LIBRARIES") {
         for lib in libs.split(" ") {
             if lib.strip_prefix("-Wl").is_some()
@@ -169,12 +143,13 @@ pub fn get_link_libraries(
                     static_libraries.insert(String::from(new_lib_stripped));
                 } else if let Some(new_lib_stripped) = new_lib.strip_suffix(".so") {
                     shared_libraries.insert(String::from(new_lib_stripped));
+                } else {
+                    return error!(format!(
+                        "unsupported library '{lib}' from target: {target:#?}"
+                    ));
                 }
             } else {
-                let lib_name = crate::utils::rework_target_name(lib, prefix);
-                if lib != "" {
-                    deps.push(String::from(lib));
-                }
+                let lib_name = rework_target_name(lib, prefix);
                 if lib.ends_with(".a") {
                     static_libraries.insert(lib_name);
                 } else if lib.ends_with(".so") {
@@ -192,12 +167,35 @@ pub fn get_link_libraries(
     static_libraries.remove("");
     shared_libraries.remove("");
     system_shared_libraries.remove("");
-    return Ok((
-        static_libraries,
-        shared_libraries,
-        system_shared_libraries,
-        deps,
-    ));
+    return Ok((static_libraries, shared_libraries, system_shared_libraries));
+}
+
+fn get_defines(target: &BuildTarget) -> HashSet<String> {
+    let mut defines: HashSet<String> = HashSet::new();
+
+    if let Some(defs) = target.variables.get("DEFINES") {
+        for def in defs.trim().split("-D") {
+            defines.insert(def.replace(" ", ""));
+        }
+    };
+    defines.remove("");
+    return defines;
+}
+
+fn get_includes(target: &BuildTarget, source_root: &str, build_root: &str) -> HashSet<String> {
+    let mut includes: HashSet<String> = HashSet::new();
+    if let Some(incs) = target.variables.get("INCLUDES") {
+        for inc in incs.split(" ") {
+            if inc.contains(build_root) {
+                continue;
+            }
+            if let Some(stripped_inc) = inc.strip_prefix("-I") {
+                includes.insert(rework_source_path(stripped_inc, source_root));
+            }
+        }
+    }
+    includes.remove("");
+    return includes;
 }
 
 pub fn get_compiler_target_info(
@@ -234,7 +232,7 @@ pub fn get_compiler_target_info(
         defines.insert(def);
     }
     let includes = get_includes(input_target, source_root, build_root);
-    let src = crate::utils::rework_source_path(&input_target.inputs[0], source_root);
+    let src = rework_source_path(&input_target.inputs[0], source_root);
     return Ok((src, includes, defines));
 }
 
@@ -282,25 +280,22 @@ pub fn get_generated_headers(
         let Some(target) = targets_map.get(&target_name) else {
             continue;
         };
-        for output in &target.outputs {
-            target_seen.insert(output.clone());
+        
+        target_to_parse.append(&mut get_all_inputs(target));
+        for output in get_all_outputs(target) {
+            target_seen.insert(output);
         }
-        for output in &target.implicit_outputs {
-            target_seen.insert(output.clone());
-        }
+
         if target.rule == "CUSTOM_COMMAND" {
             match get_command(target) {
                 Ok(option) => match option {
                     Some(_) => {
-                        generated_headers
-                            .insert(crate::utils::rework_target_name(&get_name(target), prefix));
+                        generated_headers.insert(rework_target_name(&get_name(target), prefix));
                     }
                     None => continue,
                 },
                 Err(err) => return Err(err),
             }
-        } else {
-            target_to_parse.append(&mut get_all_inputs(target));
         }
     }
 

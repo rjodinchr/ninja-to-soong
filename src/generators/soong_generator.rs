@@ -1,8 +1,8 @@
 use std::collections::HashMap;
 use std::collections::HashSet;
 
+use crate::macros::error;
 use crate::target::BuildTarget;
-use crate::utils::error;
 
 fn rework_output_path(output: &str) -> String {
     let rework_output = if let Some(split) = output.split_once("include/") {
@@ -29,13 +29,13 @@ fn replace_output_in_command(command: String, output: &String) -> String {
 
 fn replace_input_in_command(command: String, input: &String, source_root: &str) -> String {
     let replace_input =
-        String::from("$(location ") + &crate::utils::rework_source_path(input, source_root) + ")";
+        String::from("$(location ") + &crate::target::rework_source_path(input, source_root) + ")";
     return command.replace(input, &replace_input);
 }
 
 fn replace_dep_in_command(command: String, tool: &String, prefix: &str) -> String {
     let replace_tool =
-        "$(location ".to_string() + &crate::utils::rework_target_name(tool, prefix) + ")";
+        "$(location ".to_string() + &crate::target::rework_target_name(tool, prefix) + ")";
     let tool_with_prefix = String::from(prefix) + tool;
     let command = command.replace(&tool_with_prefix, &replace_tool);
     return command.replace(tool, &replace_tool);
@@ -108,14 +108,13 @@ fn generate_object(
     build_root: &str,
     prefix: &str,
     optimize_for_size: bool,
-) -> Result<(String, Vec<String>), String> {
-    let mut targets: Vec<String> = Vec::new();
+) -> Result<String, String> {
     let mut result = String::new();
     result += name;
     result += " {\n";
 
     result += "\tname: \"";
-    result += &crate::utils::rework_target_name(&crate::target::get_name(target), prefix);
+    result += &crate::target::rework_target_name(&crate::target::get_name(target), prefix);
     result += "\",\n";
 
     let mut includes: HashSet<String> = HashSet::new();
@@ -159,12 +158,11 @@ fn generate_object(
         result += "\",\n";
     }
 
-    let (static_libs, shared_libs, system_shared_libs, mut deps) =
+    let (static_libs, shared_libs, system_shared_libs) =
         match crate::target::get_link_libraries(target, native_lib_root, prefix) {
             Ok(return_values) => return_values,
             Err(err) => return Err(err),
         };
-    targets.append(&mut deps);
     result += &print_hashset(
         system_shared_libs,
         "system_shared_libs",
@@ -191,7 +189,7 @@ fn generate_object(
     }
 
     result += "}\n\n";
-    return Ok((result, targets));
+    return Ok(result);
 }
 
 fn generate_simple_genrule(
@@ -206,7 +204,7 @@ fn generate_simple_genrule(
     result += "cc_genrule {\n";
 
     result += "\tname: \"";
-    result += &crate::utils::rework_target_name(&crate::target::get_name(target), prefix);
+    result += &crate::target::rework_target_name(&crate::target::get_name(target), prefix);
     result += "\",\n";
 
     let inputs = crate::target::get_inputs(target);
@@ -221,10 +219,10 @@ fn generate_simple_genrule(
     let input = &inputs[0];
     if input == "bin/clang-20" {
         result += "\ttools: [\n\t\t\"";
-        result += &crate::utils::rework_target_name(input, prefix);
+        result += &crate::target::rework_target_name(input, prefix);
     } else {
         result += "\tsrcs: [\n\t\t\"";
-        result += &crate::utils::rework_source_path(input, source_root);
+        result += &crate::target::rework_source_path(input, source_root);
     }
     result += "\",\n\t],\n";
 
@@ -256,7 +254,7 @@ impl crate::generators::Generator for SoongGenerator {
         build_root: &str,
         prefix: &str,
         host: bool,
-    ) -> Result<(String, Vec<String>), String> {
+    ) -> Result<String, String> {
         generate_object(
             if host {
                 "cc_library_host_shared"
@@ -281,7 +279,7 @@ impl crate::generators::Generator for SoongGenerator {
         build_root: &str,
         prefix: &str,
         host: bool,
-    ) -> Result<(String, Vec<String>), String> {
+    ) -> Result<String, String> {
         generate_object(
             if host {
                 "cc_library_host_static"
@@ -306,7 +304,7 @@ impl crate::generators::Generator for SoongGenerator {
         build_root: &str,
         prefix: &str,
         host: bool,
-    ) -> Result<(String, Vec<String>), String> {
+    ) -> Result<String, String> {
         generate_object(
             if host { "cc_binary_host" } else { "cc_binary" },
             target,
@@ -332,7 +330,7 @@ impl crate::generators::Generator for SoongGenerator {
         result += "cc_genrule {\n";
 
         result += "\tname: \"";
-        result += &crate::utils::rework_target_name(&crate::target::get_name(target), prefix);
+        result += &crate::target::rework_target_name(&crate::target::get_name(target), prefix);
         result += "\",\n";
 
         let inputs = crate::target::get_inputs(target);
@@ -364,12 +362,12 @@ impl crate::generators::Generator for SoongGenerator {
             result += "\tsrcs: [\n";
             for input in filtered_inputs {
                 result += "\t\t\"";
-                result += &crate::utils::rework_source_path(input, source_root);
+                result += &crate::target::rework_source_path(input, source_root);
                 result += "\",\n";
             }
             for dep in generated_deps {
                 result += "\t\t\":";
-                result += &crate::utils::rework_target_name(dep, prefix);
+                result += &crate::target::rework_target_name(dep, prefix);
                 result += "\",\n";
             }
             result += "\t],\n";
@@ -383,7 +381,7 @@ impl crate::generators::Generator for SoongGenerator {
         }
         result += "\t],\n";
 
-        if !host {
+        if host {
             result += "\thost_supported: true,\n";
         }
 
@@ -401,7 +399,14 @@ impl crate::generators::Generator for SoongGenerator {
         prefix: &str,
         host: bool,
     ) -> Result<String, String> {
-        generate_simple_genrule(target, source_root, prefix, "cp $(in) $(out)", "Copy", host)
+        generate_simple_genrule(
+            target,
+            source_root,
+            prefix,
+            "cp $(in) $(out)",
+            "Copy",
+            host,
+        )
     }
     fn generate_cmake_link(
         &self,
