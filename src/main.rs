@@ -6,6 +6,25 @@ mod macros;
 mod parser;
 mod target;
 
+fn write_file(path: &str, content: String) {
+    match File::create(path) {
+        Ok(mut file) => match file.write_fmt(format_args!("{content}")) {
+            Ok(_) => {
+                println!("'{path}' created successfully!");
+                return;
+            }
+            Err(err) => {
+                println!("Could not write into '{path}': '{err:#?}");
+                return;
+            }
+        },
+        Err(err) => {
+            println!("Could not create '{path}': '{err}'");
+            return;
+        }
+    }
+}
+
 fn main() {
     let source_root = "/usr/local/google/home/rjodin/aluminium/external/angle/";
     let build_root =
@@ -75,19 +94,5 @@ fn main() {
         }
     };
 
-    match File::create("Android.bp") {
-        Ok(mut file) => match file.write_fmt(format_args!("{android_bp}")) {
-            Ok(_) => {
-                println!("Android.bp created successfully!");
-                return},
-            Err(err) => {
-                println!("Could not write into 'Android.bp': '{err:#?}");
-                return;
-            }
-        },
-        Err(err) => {
-            println!("Could not create 'Android.bp': '{err}'");
-            return;
-        }
-    };
+    write_file("Android.bp", android_bp);
 }
