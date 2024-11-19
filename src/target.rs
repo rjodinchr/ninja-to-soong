@@ -100,22 +100,18 @@ pub fn create_map(targets: &Vec<BuildTarget>) -> HashMap<String, &BuildTarget> {
     return map;
 }
 
-pub fn get_link_flags(
-    target: &BuildTarget,
-    source_root: &str,
-) -> (Option<String>, HashSet<String>) {
+pub fn get_link_flags(target: &BuildTarget, source_root: &str) -> (String, HashSet<String>) {
     let mut link_flags: HashSet<String> = HashSet::new();
-    let mut version_script: Option<String> = None;
+    let mut version_script = String::from("");
     if let Some(flags) = target.variables.get("LINK_FLAGS") {
         for flag in flags.split(" ") {
             if flag.contains("-Bsymbolic") {
                 link_flags.insert(flag.replace(source_root, ""));
             } else if let Some(vs) = flag.strip_prefix("-Wl,--version-script=") {
-                version_script = Some(rework_source_path(vs, source_root));
+                version_script = rework_source_path(vs, source_root);
             }
         }
     }
-    link_flags.remove("");
     return (version_script, link_flags);
 }
 
@@ -164,9 +160,6 @@ pub fn get_link_libraries(
             }
         }
     }
-    static_libraries.remove("");
-    shared_libraries.remove("");
-    system_shared_libraries.remove("");
     return Ok((static_libraries, shared_libraries, system_shared_libraries));
 }
 
@@ -178,7 +171,6 @@ fn get_defines(target: &BuildTarget) -> HashSet<String> {
             defines.insert(def.replace(" ", ""));
         }
     };
-    defines.remove("");
     return defines;
 }
 
@@ -194,7 +186,6 @@ fn get_includes(target: &BuildTarget, source_root: &str, build_root: &str) -> Ha
             }
         }
     }
-    includes.remove("");
     return includes;
 }
 
@@ -280,7 +271,7 @@ pub fn get_generated_headers(
         let Some(target) = targets_map.get(&target_name) else {
             continue;
         };
-        
+
         target_to_parse.append(&mut get_all_inputs(target));
         for output in get_all_outputs(target) {
             target_seen.insert(output);

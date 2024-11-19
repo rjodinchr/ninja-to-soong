@@ -4,6 +4,117 @@ use std::collections::HashSet;
 use crate::macros::error;
 use crate::target::BuildTarget;
 
+#[derive(Debug)]
+struct SoongPackage {
+    name: String,
+    single_string_map: HashMap<String, String>,
+    list_string_map: HashMap<String, HashSet<String>>,
+    optimize_for_size: bool,
+    host_supported: bool,
+}
+
+impl SoongPackage {
+    fn new(name: &str, optimize_for_size: bool, host_supported: bool) -> Self {
+        Self {
+            name: name.to_string(),
+            single_string_map: HashMap::new(),
+            list_string_map: HashMap::new(),
+            optimize_for_size,
+            host_supported,
+        }
+    }
+
+    fn add_single_string(&mut self, key: &str, value: String) {
+        self.single_string_map.insert(key.to_string(), value);
+    }
+
+    fn add_list_string(&mut self, key: &str, set: HashSet<String>) {
+        self.list_string_map.insert(key.to_string(), set);
+    }
+
+    fn add_list_string_single(&mut self, key: &str, value: String) {
+        let mut set: HashSet<String> = HashSet::new();
+        set.insert(value);
+        self.list_string_map.insert(key.to_string(), set);
+    }
+
+    fn print_single_string(&mut self, entry: &str) -> String {
+        let mut result = String::new();
+        let Some((key, value)) = self.single_string_map.remove_entry(entry) else {
+            return result;
+        };
+        if value == "" {
+            return result;
+        }
+        result += "    ";
+        result += &key;
+        result += ": \"";
+        result += &value;
+        result += "\",\n";
+
+        return result;
+    }
+
+    fn print_list_string(&mut self, entry: &str) -> String {
+        let mut result = String::new();
+        let Some((key, mut set)) = self.list_string_map.remove_entry(entry) else {
+            return result;
+        };
+        set.remove("");
+        if set.len() == 0 {
+            return result;
+        }
+        result += "    ";
+        result += &key;
+        result += ": ";
+
+        result += "[\n";
+        for value in set {
+            result += "        \"";
+            result += &value;
+            result += "\",\n";
+        }
+        result += "    ],\n";
+        return result;
+    }
+
+    fn print(mut self) -> Result<String, String> {
+        let mut result = String::new();
+        result += &self.name;
+        result += " {\n";
+
+        if !self.single_string_map.contains_key("name") {
+            return error!(format!("no 'name' in soong package: '{self:#?}"));
+        }
+        result += &self.print_single_string("name");
+        result += &self.print_list_string("srcs");
+        result += &self.print_list_string("out");
+        result += &self.print_list_string("tools");
+        result += &self.print_list_string("cflags");
+        result += &self.print_list_string("ldflags");
+        result += &self.print_single_string("version_script");
+        result += &self.print_list_string("system_shared_libs");
+        result += &self.print_list_string("shared_libs");
+        result += &self.print_list_string("static_libs");
+        result += &self.print_list_string("local_include_dirs");
+        result += &self.print_list_string("generated_headers");
+        result += &self.print_single_string("cmd");
+
+        if self.single_string_map.len() > 0 || self.list_string_map.len() > 0 {
+            return error!(format!("entries not consumed in: '{self:#?}"));
+        }
+        if self.optimize_for_size {
+            result += "    optimize_for_size: true,\n";
+        }
+        if self.host_supported {
+            result += "    host_supported: true,\n";
+        }
+
+        result += "}\n\n";
+        return Ok(result);
+    }
+}
+
 fn rework_output_path(output: &str) -> String {
     let rework_output = if let Some(split) = output.split_once("include/") {
         split.1
@@ -35,7 +146,7 @@ fn replace_input_in_command(command: String, input: &String, source_root: &str) 
 
 fn replace_dep_in_command(command: String, tool: &String, prefix: &str) -> String {
     let replace_tool =
-        "$(location ".to_string() + &crate::target::rework_target_name(tool, prefix) + ")";
+        "$(location :".to_string() + &crate::target::rework_target_name(tool, prefix) + ")";
     let tool_with_prefix = String::from(prefix) + tool;
     let command = command.replace(&tool_with_prefix, &replace_tool);
     return command.replace(tool, &replace_tool);
@@ -82,23 +193,6 @@ fn rework_command<'a>(
     return Ok(command);
 }
 
-fn print_hashset(set: HashSet<String>, set_name: &str, fct: fn(&mut String, &String)) -> String {
-    let mut result = String::new();
-    if set.len() == 0 {
-        return result;
-    }
-    result += "\t";
-    result += set_name;
-    result += ": [\n";
-    for set_element in &set {
-        result += "\t\t\"";
-        fct(&mut result, set_element);
-        result += "\",\n";
-    }
-    result += "\t],\n";
-    return result;
-}
-
 fn generate_object(
     name: &str,
     target: &BuildTarget,
@@ -108,20 +202,23 @@ fn generate_object(
     build_root: &str,
     prefix: &str,
     optimize_for_size: bool,
+    copy_for_device: bool,
 ) -> Result<String, String> {
-    let mut result = String::new();
-    result += name;
-    result += " {\n";
-
-    result += "\tname: \"";
-    result += &crate::target::rework_target_name(&crate::target::get_name(target), prefix);
-    result += "\",\n";
+    let mut package = SoongPackage::new(name, optimize_for_size, false);
+    let target_name = crate::target::rework_target_name(crate::target::get_name(target), prefix);
+    package.add_single_string(
+        "name",
+        if copy_for_device {
+            "HOST_".to_string() + &target_name
+        } else {
+            target_name.clone()
+        },
+    );
 
     let mut includes: HashSet<String> = HashSet::new();
     let mut defines: HashSet<String> = HashSet::new();
-    result += "\tsrcs: [\n";
+    let mut srcs: HashSet<String> = HashSet::new();
     for input in crate::target::get_inputs(target) {
-        result += "\t\t\"";
         let (src, src_includes, src_defines) = match crate::target::get_compiler_target_info(
             input,
             targets_map,
@@ -135,60 +232,56 @@ fn generate_object(
             includes.insert(inc);
         }
         for def in src_defines {
-            defines.insert(def);
+            defines.insert(String::from("-D") + &def);
         }
-        result += &src;
-        result += "\",\n";
+        srcs.insert(src);
     }
-    result += "\t],\n";
+    package.add_list_string("srcs", srcs);
+    package.add_list_string("local_include_dirs", includes);
+    package.add_list_string("cflags", defines);
 
-    result += &print_hashset(includes, "local_include_dirs", |result, element| {
-        result.push_str(element)
-    });
-    result += &print_hashset(defines, "cflags", |result, element| {
-        result.push_str(&format!("-D{element}"))
-    });
     let (version_script, link_flags) = crate::target::get_link_flags(target, source_root);
-    result += &print_hashset(link_flags, "ldflags", |result, element| {
-        result.push_str(element)
-    });
-    if let Some(vs) = version_script {
-        result += "\tversion_script: \"";
-        result += &vs;
-        result += "\",\n";
-    }
+    package.add_list_string("ldflags", link_flags);
+    package.add_single_string("version_script", version_script);
 
     let (static_libs, shared_libs, system_shared_libs) =
         match crate::target::get_link_libraries(target, native_lib_root, prefix) {
             Ok(return_values) => return_values,
             Err(err) => return Err(err),
         };
-    result += &print_hashset(
-        system_shared_libs,
-        "system_shared_libs",
-        |result, element| result.push_str(element),
-    );
-    result += &print_hashset(static_libs, "static_libs", |result, element| {
-        result.push_str(element)
-    });
-    result += &print_hashset(shared_libs, "shared_libs", |result, element| {
-        result.push_str(element)
-    });
+
+    package.add_list_string("system_shared_libs", system_shared_libs);
+    package.add_list_string("static_libs", static_libs);
+    package.add_list_string("shared_libs", shared_libs);
 
     let generated_headers = match crate::target::get_generated_headers(target, &targets_map, prefix)
     {
         Ok(generated_headers) => generated_headers,
         Err(err) => return Err(err),
     };
-    result += &print_hashset(generated_headers, "generated_headers", |result, element| {
-        result.push_str(element)
-    });
+    package.add_list_string("generated_headers", generated_headers);
 
-    if optimize_for_size {
-        result += "\toptimize_for_size: true,\n";
+    let mut result = match package.print() {
+        Ok(return_value) => return_value,
+        Err(err) => return Err(err),
+    };
+
+    if copy_for_device {
+        let mut copy_package = SoongPackage::new("genrule", false, false);
+        copy_package.add_single_string("name", target_name.clone());
+        copy_package.add_list_string_single("tools", ":HOST_".to_string() + &target_name);
+        copy_package.add_list_string_single("out", crate::target::get_name(target).clone());
+        copy_package.add_single_string(
+            "cmd",
+            "cp $(location :HOST_".to_string() + &target_name + ") $(out)",
+        );
+
+        result += &match copy_package.print() {
+            Ok(return_value) => return_value,
+            Err(err) => return Err(err),
+        };
     }
 
-    result += "}\n\n";
     return Ok(result);
 }
 
@@ -200,12 +293,11 @@ fn generate_simple_genrule(
     error_prefix: &str,
     host: bool,
 ) -> Result<String, String> {
-    let mut result = String::new();
-    result += "cc_genrule {\n";
-
-    result += "\tname: \"";
-    result += &crate::target::rework_target_name(&crate::target::get_name(target), prefix);
-    result += "\",\n";
+    let mut package = SoongPackage::new("cc_genrule", false, host);
+    package.add_single_string(
+        "name",
+        crate::target::rework_target_name(&crate::target::get_name(target), prefix),
+    );
 
     let inputs = crate::target::get_inputs(target);
     let outputs = crate::target::get_outputs(target);
@@ -218,28 +310,17 @@ fn generate_simple_genrule(
 
     let input = &inputs[0];
     if input == "bin/clang-20" {
-        result += "\ttools: [\n\t\t\"";
-        result += &crate::target::rework_target_name(input, prefix);
+        package.add_list_string_single("tools", crate::target::rework_target_name(input, prefix));
     } else {
-        result += "\tsrcs: [\n\t\t\"";
-        result += &crate::target::rework_source_path(input, source_root);
+        package.add_list_string_single(
+            "srcs",
+            crate::target::rework_source_path(input, source_root),
+        );
     }
-    result += "\",\n\t],\n";
+    package.add_list_string_single("out", rework_output_path(&outputs[0]));
+    package.add_single_string("cmd", command.to_string());
 
-    result += "\tout: [\n\t\t\"";
-    result += &rework_output_path(&outputs[0]);
-    result += "\",\n\t],\n";
-
-    if host {
-        result += "\thost_supported: true,\n";
-    }
-
-    result += "\tcmd: \"";
-    result += command;
-    result += "\",\n";
-
-    result += "}\n\n";
-    return Ok(result);
+    return package.print();
 }
 
 pub struct SoongGenerator();
@@ -268,6 +349,7 @@ impl crate::generators::Generator for SoongGenerator {
             build_root,
             prefix,
             false,
+            false,
         )
     }
     fn generate_static_library(
@@ -293,6 +375,7 @@ impl crate::generators::Generator for SoongGenerator {
             build_root,
             prefix,
             !host,
+            false,
         )
     }
     fn generate_executable(
@@ -314,6 +397,7 @@ impl crate::generators::Generator for SoongGenerator {
             build_root,
             prefix,
             false,
+            host,
         )
     }
     fn generate_custom_command(
@@ -326,12 +410,11 @@ impl crate::generators::Generator for SoongGenerator {
         input_ref_for_genrule: &String,
         host: bool,
     ) -> Result<String, String> {
-        let mut result = String::new();
-        result += "cc_genrule {\n";
-
-        result += "\tname: \"";
-        result += &crate::target::rework_target_name(&crate::target::get_name(target), prefix);
-        result += "\",\n";
+        let mut package = SoongPackage::new("cc_genrule", false, host);
+        package.add_single_string(
+            "name",
+            crate::target::rework_target_name(&crate::target::get_name(target), prefix),
+        );
 
         let inputs = crate::target::get_inputs(target);
         let mut filtered_inputs: HashSet<&String> = HashSet::new();
@@ -358,39 +441,23 @@ impl crate::generators::Generator for SoongGenerator {
             Err(err) => return Err(err),
         };
 
-        if filtered_inputs.len() + generated_deps.len() > 0 {
-            result += "\tsrcs: [\n";
-            for input in filtered_inputs {
-                result += "\t\t\"";
-                result += &crate::target::rework_source_path(input, source_root);
-                result += "\",\n";
-            }
-            for dep in generated_deps {
-                result += "\t\t\":";
-                result += &crate::target::rework_target_name(dep, prefix);
-                result += "\",\n";
-            }
-            result += "\t],\n";
+        let mut srcs_set: HashSet<String> = HashSet::new();
+        for input in filtered_inputs {
+            srcs_set.insert(crate::target::rework_source_path(input, source_root));
         }
+        for dep in generated_deps {
+            srcs_set.insert(":".to_string() + &crate::target::rework_target_name(dep, prefix));
+        }
+        package.add_list_string("srcs", srcs_set);
 
-        result += "\tout: [\n";
+        let mut out_set: HashSet<String> = HashSet::new();
         for output in outputs {
-            result += "\t\t\"";
-            result += &rework_output_path(output);
-            result += "\",\n";
+            out_set.insert(rework_output_path(output));
         }
-        result += "\t],\n";
+        package.add_list_string("out", out_set);
+        package.add_single_string("cmd", command.to_string());
 
-        if host {
-            result += "\thost_supported: true,\n";
-        }
-
-        result += "\tcmd: \"";
-        result += command;
-        result += "\",\n";
-
-        result += "}\n\n";
-        return Ok(result);
+        return package.print();
     }
     fn generate_copy(
         &self,
@@ -399,21 +466,13 @@ impl crate::generators::Generator for SoongGenerator {
         prefix: &str,
         host: bool,
     ) -> Result<String, String> {
-        generate_simple_genrule(
-            target,
-            source_root,
-            prefix,
-            "cp $(in) $(out)",
-            "Copy",
-            host,
-        )
+        generate_simple_genrule(target, source_root, prefix, "cp $(in) $(out)", "Copy", host)
     }
     fn generate_cmake_link(
         &self,
         target: &BuildTarget,
         source_root: &str,
         prefix: &str,
-        host: bool,
     ) -> Result<String, String> {
         generate_simple_genrule(
             target,
@@ -421,7 +480,7 @@ impl crate::generators::Generator for SoongGenerator {
             prefix,
             "ln -s $(in) $(out)",
             "Symlink",
-            host,
+            false,
         )
     }
 }

@@ -59,7 +59,6 @@ pub trait Generator {
         target: &BuildTarget,
         source_root: &str,
         prefix: &str,
-        host: bool,
     ) -> Result<String, String>;
 
     fn generate_rule(
@@ -126,7 +125,7 @@ pub trait Generator {
                 )
             }
         } else if rule.starts_with("CMAKE_SYMLINK") {
-            self.generate_cmake_link(target, source_root, prefix, host)
+            self.generate_cmake_link(target, source_root, prefix)
         } else if rule.starts_with("CXX_COMPILER")
             || rule.starts_with("C_COMPILER")
             || rule.starts_with("ASM_COMPILER")
