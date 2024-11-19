@@ -2,8 +2,8 @@ use std::collections::HashMap;
 use std::fs::File;
 use std::io::Read;
 
-use crate::target::BuildTarget;
 use crate::macros::error;
+use crate::target::BuildTarget;
 
 fn parse_output_section(section: &str) -> Result<(Vec<String>, Vec<String>), String> {
     let mut split = section.split("|");
@@ -126,7 +126,7 @@ fn parse_build_target(line: &str, lines: &mut std::str::Lines<'_>) -> Result<Bui
         target_variables.insert(key, val);
     }
 
-    return Ok(crate::target::create(
+    return Ok(crate::target::BuildTarget::new(
         target_rule,
         target_outputs,
         target_implicit_outputs,

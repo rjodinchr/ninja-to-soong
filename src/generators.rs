@@ -104,7 +104,7 @@ pub trait Generator {
                 host,
             )
         } else if rule == "CUSTOM_COMMAND" {
-            let command = match crate::target::get_command(target) {
+            let command = match target.get_command() {
                 Ok(option) => match option {
                     Some(command) => command,
                     None => return Ok(None),
@@ -167,13 +167,13 @@ pub fn generate(
             continue;
         };
 
-        target_to_generate.append(&mut crate::target::get_all_inputs(target));
-        for output in crate::target::get_all_outputs(target) {
+        target_to_generate.append(&mut target.get_all_inputs());
+        for output in target.get_all_outputs() {
             target_seen.insert(output);
         }
 
         result += &match generator.generate_rule(
-            crate::target::get_rule(target),
+            target.get_rule(),
             target,
             &targets_map,
             source_root,

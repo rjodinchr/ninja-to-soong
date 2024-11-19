@@ -205,7 +205,7 @@ fn generate_object(
     copy_for_device: bool,
 ) -> Result<String, String> {
     let mut package = SoongPackage::new(name, optimize_for_size, false);
-    let target_name = crate::target::rework_target_name(crate::target::get_name(target), prefix);
+    let target_name = crate::target::rework_target_name(target.get_name(), prefix);
     package.add_single_string(
         "name",
         if copy_for_device {
@@ -218,16 +218,15 @@ fn generate_object(
     let mut includes: HashSet<String> = HashSet::new();
     let mut defines: HashSet<String> = HashSet::new();
     let mut srcs: HashSet<String> = HashSet::new();
-    for input in crate::target::get_inputs(target) {
-        let (src, src_includes, src_defines) = match crate::target::get_compiler_target_info(
-            input,
-            targets_map,
-            source_root,
-            build_root,
-        ) {
-            Ok(return_values) => return_values,
-            Err(err) => return Err(err),
+    for input in target.get_inputs() {
+        let Some(target) = targets_map.get(input) else {
+            return error!(format!("unsupported input for library: {input}"));
         };
+        let (src, src_includes, src_defines) =
+            match target.get_compiler_target_info(source_root, build_root) {
+                Ok(return_values) => return_values,
+                Err(err) => return Err(err),
+            };
         for inc in src_includes {
             includes.insert(inc);
         }
@@ -240,12 +239,12 @@ fn generate_object(
     package.add_list_string("local_include_dirs", includes);
     package.add_list_string("cflags", defines);
 
-    let (version_script, link_flags) = crate::target::get_link_flags(target, source_root);
+    let (version_script, link_flags) = target.get_link_flags(source_root);
     package.add_list_string("ldflags", link_flags);
     package.add_single_string("version_script", version_script);
 
     let (static_libs, shared_libs, system_shared_libs) =
-        match crate::target::get_link_libraries(target, native_lib_root, prefix) {
+        match target.get_link_libraries(native_lib_root, prefix) {
             Ok(return_values) => return_values,
             Err(err) => return Err(err),
         };
@@ -254,8 +253,7 @@ fn generate_object(
     package.add_list_string("static_libs", static_libs);
     package.add_list_string("shared_libs", shared_libs);
 
-    let generated_headers = match crate::target::get_generated_headers(target, &targets_map, prefix)
-    {
+    let generated_headers = match target.get_generated_headers(&targets_map, prefix) {
         Ok(generated_headers) => generated_headers,
         Err(err) => return Err(err),
     };
@@ -270,7 +268,7 @@ fn generate_object(
         let mut copy_package = SoongPackage::new("genrule", false, false);
         copy_package.add_single_string("name", target_name.clone());
         copy_package.add_list_string_single("tools", ":HOST_".to_string() + &target_name);
-        copy_package.add_list_string_single("out", crate::target::get_name(target).clone());
+        copy_package.add_list_string_single("out", target.get_name().clone());
         copy_package.add_single_string(
             "cmd",
             "cp $(location :HOST_".to_string() + &target_name + ") $(out)",
@@ -296,11 +294,11 @@ fn generate_simple_genrule(
     let mut package = SoongPackage::new("cc_genrule", false, host);
     package.add_single_string(
         "name",
-        crate::target::rework_target_name(&crate::target::get_name(target), prefix),
+        crate::target::rework_target_name(&target.get_name(), prefix),
     );
 
-    let inputs = crate::target::get_inputs(target);
-    let outputs = crate::target::get_outputs(target);
+    let inputs = target.get_inputs();
+    let outputs = target.get_outputs();
     if inputs.len() != 1 || outputs.len() != 1 {
         return error!(format!(
             "{0} with wrong number of input/output: {target:#?}",
@@ -413,20 +411,19 @@ impl crate::generators::Generator for SoongGenerator {
         let mut package = SoongPackage::new("cc_genrule", false, host);
         package.add_single_string(
             "name",
-            crate::target::rework_target_name(&crate::target::get_name(target), prefix),
+            crate::target::rework_target_name(&target.get_name(), prefix),
         );
 
-        let inputs = crate::target::get_inputs(target);
         let mut filtered_inputs: HashSet<&String> = HashSet::new();
         let mut generated_deps: HashSet<&String> = HashSet::new();
-        for input in inputs {
+        for input in target.get_inputs() {
             if input.starts_with(source_root) {
                 filtered_inputs.insert(input);
             } else {
                 generated_deps.insert(input);
             }
         }
-        let outputs = crate::target::get_outputs(target);
+        let outputs = target.get_outputs();
         let command = &match rework_command(
             command,
             &mut filtered_inputs,
