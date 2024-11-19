@@ -167,6 +167,7 @@ impl BuildTarget {
                 defines.insert(def.replace(" ", ""));
             }
         };
+        defines.remove("");
         return defines;
     }
     fn get_includes(&self, source_root: &str, build_root: &str) -> HashSet<String> {
