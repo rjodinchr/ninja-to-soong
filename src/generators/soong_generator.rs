@@ -308,7 +308,10 @@ fn generate_simple_genrule(
 
     let input = &inputs[0];
     if input == "bin/clang-20" {
-        package.add_list_string_single("tools", crate::target::rework_target_name(input, prefix));
+        package.add_list_string_single(
+            "srcs",
+            ":".to_string() + &crate::target::rework_target_name(input, prefix),
+        );
     } else {
         package.add_list_string_single(
             "srcs",
