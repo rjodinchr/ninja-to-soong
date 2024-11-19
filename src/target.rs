@@ -16,20 +16,6 @@ pub fn rework_source_path(source: &str, source_root: &str) -> String {
     return source.replace(source_root, "");
 }
 
-pub fn create_map(targets: &Vec<BuildTarget>) -> HashMap<String, &BuildTarget> {
-    let mut map: HashMap<String, &BuildTarget> = HashMap::new();
-    for target in targets {
-        for output in &target.outputs {
-            map.insert(output.clone(), target);
-        }
-        for output in &target.implicit_outputs {
-            map.insert(output.clone(), target);
-        }
-    }
-
-    return map;
-}
-
 #[derive(Debug)]
 pub struct BuildTarget {
     rule: String,

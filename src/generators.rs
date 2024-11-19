@@ -142,6 +142,17 @@ pub trait Generator {
     }
 }
 
+fn create_map(targets: &Vec<BuildTarget>) -> HashMap<String, &BuildTarget> {
+    let mut map: HashMap<String, &BuildTarget> = HashMap::new();
+    for target in targets {
+        for output in &target.get_all_outputs() {
+            map.insert(output.clone(), target);
+        }
+    }
+
+    return map;
+}
+
 pub fn generate(
     generator: &dyn Generator,
     entry_targets: Vec<String>,
@@ -156,7 +167,7 @@ pub fn generate(
     let mut result = String::new();
     let mut target_seen: HashSet<String> = HashSet::new();
     let mut target_to_generate = entry_targets;
-    let targets_map = crate::target::create_map(targets);
+    let targets_map = create_map(targets);
 
     while let Some(input) = target_to_generate.pop() {
         println!("target: {prefix}{input}");
