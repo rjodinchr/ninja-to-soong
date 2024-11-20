@@ -98,6 +98,7 @@ impl SoongPackage {
         if self.optimize_for_size {
             result += "    optimize_for_size: true,\n";
         }
+        result += "    use_clang_lld: true,\n";
 
         result += "}\n\n";
         return Ok(result);
