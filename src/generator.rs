@@ -72,7 +72,7 @@ impl SoongPackage {
 
     fn print(mut self) -> Result<String, String> {
         if let Some(set) = self.list_string_map.get_mut("cflags") {
-            set.insert("-Wno-implicit-fallthrough".to_string());
+            set.insert("-Wno-error".to_string());
         }
         let mut result = String::new();
         result += &self.name;

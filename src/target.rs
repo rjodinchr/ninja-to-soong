@@ -194,7 +194,8 @@ impl BuildTarget {
                 for output in target.get_all_outputs() {
                     if !(output.ends_with(".inc")
                         || output.ends_with(".h")
-                        || output.ends_with(".hpp"))
+                        || output.ends_with(".hpp")
+                        || output.ends_with(".def"))
                     {
                         continue;
                     }

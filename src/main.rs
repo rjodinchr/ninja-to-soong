@@ -115,6 +115,11 @@ fn main() {
         "external/clspv/third_party/llvm/include/llvm/Config/abi-breaking.h",
         "external/clspv/third_party/llvm/include/llvm/Config/config.h",
         "external/clspv/third_party/llvm/include/llvm/Config/Targets.def",
+        "external/clspv/third_party/llvm/include/llvm/Config/AsmPrinters.def",
+        "external/clspv/third_party/llvm/include/llvm/Config/AsmParsers.def",
+        "external/clspv/third_party/llvm/include/llvm/Support/Extension.def",
+        "external/clspv/third_party/llvm/tools/clang/include/clang/Basic/Version.inc",
+        "external/clspv/third_party/llvm/tools/clang/include/clang/Config/config.h",
     ];
     for header in other_generated_headers {
         generated_headers.insert(header.to_string());
