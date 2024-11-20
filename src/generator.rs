@@ -106,7 +106,7 @@ impl SoongPackage {
 }
 
 #[derive(Debug)]
-pub struct SoongFile {
+struct SoongFile {
     content: String,
     generated_headers: HashSet<String>,
     generated_directories: HashSet<String>,
@@ -190,7 +190,7 @@ impl SoongFile {
         Ok(())
     }
 
-    pub fn finish(self) -> (String, HashSet<String>, HashSet<String>) {
+    fn finish(self) -> (String, HashSet<String>, HashSet<String>) {
         (
             self.content,
             self.generated_headers,
@@ -217,7 +217,7 @@ pub fn generate(
     native_lib_root: &str,
     build_root: &str,
     cmake_build_files_root: &str,
-) -> Result<SoongFile, String> {
+) -> Result<(String, HashSet<String>, HashSet<String>), String> {
     let mut target_seen: HashSet<String> = HashSet::new();
     let mut target_to_generate = entry_targets;
     let targets_map = create_map(targets);
@@ -267,5 +267,5 @@ pub fn generate(
             Err(err) => return Err(err),
         };
     }
-    return Ok(soong_file);
+    return Ok(soong_file.finish());
 }

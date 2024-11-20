@@ -78,13 +78,12 @@ fn main() {
         build_root,
         cmake_build_files_root,
     ) {
-        Ok(return_value) => return_value,
+        Ok(return_values) => return_values,
         Err(err) => {
             println!("generate for device failed: {err}");
             return;
         }
-    }
-    .finish();
+    };
 
     match write_file("Android.bp", content) {
         Ok(msg) => println!("{msg}"),
