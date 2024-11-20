@@ -73,6 +73,7 @@ impl SoongPackage {
     fn print(mut self) -> Result<String, String> {
         if let Some(set) = self.list_string_map.get_mut("cflags") {
             set.insert("-Wno-error".to_string());
+            set.insert("-Wno-unreachable-code-loop-increment".to_string());
         }
         let mut result = String::new();
         result += &self.name;
@@ -90,6 +91,7 @@ impl SoongPackage {
         result += &self.print_list_string("shared_libs");
         result += &self.print_list_string("static_libs");
         result += &self.print_list_string("local_include_dirs");
+        result += &self.print_list_string("include_dirs");
 
         if self.single_string_map.len() > 0 || self.list_string_map.len() > 0 {
             return error!(format!("entries not consumed in: '{self:#?}"));
