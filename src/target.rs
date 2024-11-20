@@ -3,10 +3,8 @@ use std::collections::HashSet;
 
 use crate::macros::error;
 
-pub const COPY_TARGET: &str = "cmake_copy_if_different";
-
-pub fn rework_target_name(target_name: &str, prefix: &str) -> String {
-    let mut name = prefix.to_string() + target_name;
+pub fn rework_target_name(target_name: &str) -> String {
+    let mut name = target_name.to_string();
     name = name.strip_suffix(".so").unwrap_or(&name).to_string();
     name = name.strip_suffix(".a").unwrap_or(&name).to_string();
     return name.replace("/", "__").replace(".", "__");
@@ -53,9 +51,6 @@ impl BuildTarget {
     pub fn get_rule(&self) -> &String {
         &self.rule
     }
-    pub fn get_outputs(&self) -> &Vec<String> {
-        &self.outputs
-    }
     pub fn get_name(&self) -> &String {
         return &self.outputs[0];
     }
@@ -99,19 +94,16 @@ impl BuildTarget {
     pub fn get_link_libraries(
         &self,
         native_lib_root: &str,
-        prefix: &str,
     ) -> Result<(HashSet<String>, HashSet<String>, HashSet<String>), String> {
         let mut static_libraries: HashSet<String> = HashSet::new();
         let mut shared_libraries: HashSet<String> = HashSet::new();
         let mut system_shared_libraries: HashSet<String> = HashSet::new();
         if let Some(libs) = self.variables.get("LINK_LIBRARIES") {
             for lib in libs.split(" ") {
-                if lib.strip_prefix("-Wl").is_some()
-                    || lib == "-lrt"
-                    || lib == "-pthread"
-                    || lib == "-latomic"
-                    || lib == "-ldl"
-                    || lib == "-lm"
+                if lib.strip_prefix("-Wl").is_some() || lib == "-pthread" || lib == "-latomic"
+                // || lib == "-lrt"
+                // || lib == "-ldl"
+                // || lib == "-lm"
                 {
                     continue;
                 } else if let Some(stripped_lib) = lib.strip_prefix("-l") {
@@ -128,7 +120,7 @@ impl BuildTarget {
                         ));
                     }
                 } else {
-                    let lib_name = rework_target_name(lib, prefix);
+                    let lib_name = rework_target_name(lib);
                     if lib.ends_with(".a") {
                         static_libraries.insert(lib_name);
                     } else if lib.ends_with(".so") {
@@ -156,49 +148,31 @@ impl BuildTarget {
         defines.remove("");
         return defines;
     }
-    fn get_includes(&self, source_root: &str, build_root: &str) -> HashSet<String> {
+    fn get_includes(
+        &self,
+        source_root: &str,
+        build_root: &str,
+        cmake_build_files_root: &str,
+    ) -> HashSet<String> {
         let mut includes: HashSet<String> = HashSet::new();
         if let Some(incs) = self.variables.get("INCLUDES") {
             for inc in incs.split(" ") {
-                if inc.contains(build_root) {
-                    continue;
-                }
+                let inc = inc.replace(build_root, cmake_build_files_root);
                 if let Some(stripped_inc) = inc.strip_prefix("-I") {
                     includes.insert(rework_source_path(stripped_inc, source_root));
+                } else if inc == "-isystem" {
+                    continue;
+                } else if inc != "" {
+                    includes.insert(rework_source_path(&inc, source_root));
                 }
             }
         }
         return includes;
     }
-    pub fn get_command(&self) -> Result<Option<String>, String> {
-        if self.rule != "CUSTOM_COMMAND" {
-            return error!(format!(
-                "Can only look for command in CUSTOM_COMMAND: {self:#?}"
-            ));
-        }
-        let Some(command) = self.variables.get("COMMAND") else {
-            return error!(format!("No command in CUSTOM_COMMAND: {self:#?}"));
-        };
-        let mut split = command.split(" && ");
-        let split_count = split.clone().count();
-        if split_count < 2 {
-            return error!(format!(
-                "Could not find enough split in command (expected at least 2, got {split_count}"
-            ));
-        }
-        let command = split.nth(1).unwrap();
-        return Ok(if command.contains("cmake -E copy_if_different") {
-            Some(COPY_TARGET.to_string())
-        } else if command.contains("/usr/bin/cmake") {
-            None
-        } else {
-            Some(command.to_string())
-        });
-    }
+
     pub fn get_generated_headers(
         &self,
         targets_map: &HashMap<String, &BuildTarget>,
-        prefix: &str,
     ) -> Result<HashSet<String>, String> {
         let mut generated_headers: HashSet<String> = HashSet::new();
         let mut target_seen: HashSet<String> = HashSet::new();
@@ -212,22 +186,22 @@ impl BuildTarget {
                 continue;
             };
 
-            target_to_parse.append(&mut target.get_all_inputs());
             for output in target.get_all_outputs() {
                 target_seen.insert(output);
             }
 
             if target.rule == "CUSTOM_COMMAND" {
-                match target.get_command() {
-                    Ok(option) => match option {
-                        Some(_) => {
-                            generated_headers
-                                .insert(rework_target_name(&target.get_name(), prefix));
-                        }
-                        None => continue,
-                    },
-                    Err(err) => return Err(err),
+                for output in target.get_all_outputs() {
+                    if !(output.ends_with(".inc")
+                        || output.ends_with(".h")
+                        || output.ends_with(".hpp"))
+                    {
+                        continue;
+                    }
+                    generated_headers.insert(output.replace("${cmake_ninja_workdir}", ""));
                 }
+            } else {
+                target_to_parse.append(&mut target.get_all_inputs());
             }
         }
 
@@ -237,6 +211,7 @@ impl BuildTarget {
         &self,
         source_root: &str,
         build_root: &str,
+        cmake_build_files_root: &str,
     ) -> Result<(String, HashSet<String>, HashSet<String>), String> {
         let mut defines_no_assembly: HashSet<String> = HashSet::new();
         if self.rule.starts_with("ASM_COMPILER") {
@@ -256,7 +231,7 @@ impl BuildTarget {
         for def in defines_no_assembly {
             defines.insert(def);
         }
-        let includes = self.get_includes(source_root, build_root);
+        let includes = self.get_includes(source_root, build_root, cmake_build_files_root);
         let src = rework_source_path(&self.inputs[0], source_root);
         return Ok((src, includes, defines));
     }
