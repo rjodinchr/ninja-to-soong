@@ -10,7 +10,7 @@ pub fn rework_target_name(target_name: &str) -> String {
     return name.replace("/", "__").replace(".", "__");
 }
 
-pub fn rework_source_path(source: &str, source_root: &str) -> String {
+fn rework_source_path(source: &str, source_root: &str) -> String {
     return source.replace(source_root, "");
 }
 
@@ -162,7 +162,7 @@ impl BuildTarget {
                     includes.insert(rework_source_path(stripped_inc, source_root));
                 } else if inc == "-isystem" {
                     continue;
-                } else if inc != "" {
+                } else {
                     includes.insert(rework_source_path(&inc, source_root));
                 }
             }

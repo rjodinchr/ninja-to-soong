@@ -71,6 +71,9 @@ impl SoongPackage {
     }
 
     fn print(mut self) -> Result<String, String> {
+        if let Some(set) = self.list_string_map.get_mut("cflags") {
+            set.insert("-Wno-implicit-fallthrough".to_string());
+        }
         let mut result = String::new();
         result += &self.name;
         result += " {\n";
@@ -104,6 +107,7 @@ impl SoongPackage {
 pub struct SoongFile {
     content: String,
     generated_headers: HashSet<String>,
+    generated_directories: HashSet<String>,
 }
 
 impl SoongFile {
@@ -111,6 +115,7 @@ impl SoongFile {
         SoongFile {
             content: String::new(),
             generated_headers: HashSet::new(),
+            generated_directories: HashSet::new(),
         }
     }
     fn generate_object(
@@ -125,8 +130,7 @@ impl SoongFile {
         optimize_for_size: bool,
     ) -> Result<(), String> {
         let mut package = SoongPackage::new(name, optimize_for_size);
-        let target_name = crate::target::rework_target_name(target.get_name());
-        package.add_single_string("name", target_name.clone());
+        package.add_single_string("name", crate::target::rework_target_name(target.get_name()));
 
         let mut includes: HashSet<String> = HashSet::new();
         let mut defines: HashSet<String> = HashSet::new();
@@ -144,7 +148,10 @@ impl SoongFile {
                 Err(err) => return Err(err),
             };
             for inc in src_includes {
-                includes.insert(inc);
+                includes.insert(inc.clone());
+                if inc.contains(cmake_build_files_root) {
+                    self.generated_directories.insert(inc);
+                }
             }
             for def in src_defines {
                 defines.insert(String::from("-D") + &def);
@@ -164,19 +171,17 @@ impl SoongFile {
                 Ok(return_values) => return_values,
                 Err(err) => return Err(err),
             };
-
         package.add_list_string("system_shared_libs", system_shared_libs);
         package.add_list_string("static_libs", static_libs);
         package.add_list_string("shared_libs", shared_libs);
 
-        match target.get_generated_headers(&targets_map) {
-            Ok(generated_headers) => {
-                for header in generated_headers {
-                    self.generated_headers.insert(header);
-                }
-            }
+        let generated_headers = match target.get_generated_headers(&targets_map) {
+            Ok(return_value) => return_value,
             Err(err) => return Err(err),
         };
+        for header in generated_headers {
+            self.generated_headers.insert(header);
+        }
 
         match package.print() {
             Ok(return_value) => self.content += &return_value,
@@ -184,11 +189,13 @@ impl SoongFile {
         };
         Ok(())
     }
-    pub fn get_content(&self) -> &String {
-        &self.content
-    }
-    pub fn get_generated_headers(&self) -> &HashSet<String> {
-        &self.generated_headers
+
+    pub fn finish(self) -> (String, HashSet<String>, HashSet<String>) {
+        (
+            self.content,
+            self.generated_headers,
+            self.generated_directories,
+        )
     }
 }
 
@@ -217,11 +224,8 @@ pub fn generate(
     let mut soong_file = SoongFile::new();
 
     while let Some(input) = target_to_generate.pop() {
-        println!("target: {input}");
-        if target_seen.contains(&input)
-            || input.contains("llvm/bin/")
-            || input.contains("llvm/NATIVE/bin")
-        {
+        //println!("target: {input}");
+        if target_seen.contains(&input) {
             continue;
         }
         let Some(target) = targets_map.get(&input) else {
