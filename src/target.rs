@@ -94,39 +94,27 @@ impl BuildTarget {
     pub fn get_link_libraries(
         &self,
         native_lib_root: &str,
-    ) -> Result<(HashSet<String>, HashSet<String>, HashSet<String>), String> {
+    ) -> Result<(HashSet<String>, HashSet<String>), String> {
         let mut static_libraries: HashSet<String> = HashSet::new();
         let mut shared_libraries: HashSet<String> = HashSet::new();
-        let mut system_shared_libraries: HashSet<String> = HashSet::new();
         if let Some(libs) = self.variables.get("LINK_LIBRARIES") {
             for lib in libs.split(" ") {
-                if lib.strip_prefix("-Wl").is_some() || lib == "-pthread" || lib == "-latomic"
-                // || lib == "-lrt"
-                // || lib == "-ldl"
-                // || lib == "-lm"
-                {
+                if lib.starts_with("-") || lib == "" {
                     continue;
-                } else if let Some(stripped_lib) = lib.strip_prefix("-l") {
-                    system_shared_libraries.insert("lib".to_string() + stripped_lib);
-                } else if lib.starts_with(native_lib_root) {
-                    let new_lib = lib.split("/").last().unwrap();
-                    if let Some(new_lib_stripped) = new_lib.strip_suffix(".a") {
-                        static_libraries.insert(String::from(new_lib_stripped));
-                    } else if let Some(new_lib_stripped) = new_lib.strip_suffix(".so") {
-                        shared_libraries.insert(String::from(new_lib_stripped));
-                    } else {
-                        return error!(format!(
-                            "unsupported library '{lib}' from target: {self:#?}"
-                        ));
-                    }
                 } else {
-                    let lib_name = rework_target_name(lib);
+                    let lib_name = if lib.starts_with(native_lib_root) {
+                        lib.split("/")
+                            .last()
+                            .unwrap()
+                            .replace(".a", "")
+                            .replace(".so", "")
+                    } else {
+                        rework_target_name(lib)
+                    };
                     if lib.ends_with(".a") {
                         static_libraries.insert(lib_name);
                     } else if lib.ends_with(".so") {
                         shared_libraries.insert(lib_name);
-                    } else if lib == "" {
-                        continue;
                     } else {
                         return error!(format!(
                             "unsupported library '{lib}' from target: {self:#?}"
@@ -135,7 +123,7 @@ impl BuildTarget {
                 }
             }
         }
-        return Ok((static_libraries, shared_libraries, system_shared_libraries));
+        return Ok((static_libraries, shared_libraries));
     }
     fn get_defines(&self) -> HashSet<String> {
         let mut defines: HashSet<String> = HashSet::new();

@@ -87,7 +87,6 @@ impl SoongPackage {
         result += &self.print_list_string("cflags");
         result += &self.print_list_string("ldflags");
         result += &self.print_single_string("version_script");
-        result += &self.print_list_string("system_shared_libs");
         result += &self.print_list_string("shared_libs");
         result += &self.print_list_string("static_libs");
         result += &self.print_list_string("local_include_dirs");
@@ -168,12 +167,10 @@ impl SoongFile {
         package.add_list_string("ldflags", link_flags);
         package.add_single_string("version_script", version_script);
 
-        let (static_libs, shared_libs, system_shared_libs) =
-            match target.get_link_libraries(native_lib_root) {
-                Ok(return_values) => return_values,
-                Err(err) => return Err(err),
-            };
-        package.add_list_string("system_shared_libs", system_shared_libs);
+        let (static_libs, shared_libs) = match target.get_link_libraries(native_lib_root) {
+            Ok(return_values) => return_values,
+            Err(err) => return Err(err),
+        };
         package.add_list_string("static_libs", static_libs);
         package.add_list_string("shared_libs", shared_libs);
 
