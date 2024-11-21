@@ -106,29 +106,40 @@ impl SoongPackage {
 }
 
 #[derive(Debug)]
-struct SoongFile {
+struct SoongFile<'a> {
     content: String,
     generated_headers: HashSet<String>,
     generated_directories: HashSet<String>,
+    targets_map: &'a HashMap<String, &'a BuildTarget>,
+    source_root: &'a str,
+    native_lib_root: &'a str,
+    build_root: &'a str,
+    cmake_build_files_root: &'a str,
 }
 
-impl SoongFile {
-    fn new() -> Self {
+impl<'a> SoongFile<'a> {
+    fn new(
+        targets_map: &'a HashMap<String, &'a BuildTarget>,
+        source_root: &'a str,
+        native_lib_root: &'a str,
+        build_root: &'a str,
+        cmake_build_files_root: &'a str,
+    ) -> Self {
         SoongFile {
             content: String::new(),
             generated_headers: HashSet::new(),
             generated_directories: HashSet::new(),
+            targets_map,
+            source_root,
+            native_lib_root,
+            build_root,
+            cmake_build_files_root,
         }
     }
     fn generate_object(
         &mut self,
         name: &str,
         target: &BuildTarget,
-        targets_map: &HashMap<String, &BuildTarget>,
-        source_root: &str,
-        native_lib_root: &str,
-        build_root: &str,
-        cmake_build_files_root: &str,
         optimize_for_size: bool,
     ) -> Result<(), String> {
         let mut package = SoongPackage::new(name, optimize_for_size);
@@ -138,20 +149,20 @@ impl SoongFile {
         let mut defines: HashSet<String> = HashSet::new();
         let mut srcs: HashSet<String> = HashSet::new();
         for input in target.get_inputs() {
-            let Some(target) = targets_map.get(input) else {
+            let Some(target) = self.targets_map.get(input) else {
                 return error!(format!("unsupported input for library: {input}"));
             };
             let (src, src_includes, src_defines) = match target.get_compiler_target_info(
-                source_root,
-                build_root,
-                cmake_build_files_root,
+                self.source_root,
+                self.build_root,
+                self.cmake_build_files_root,
             ) {
                 Ok(return_values) => return_values,
                 Err(err) => return Err(err),
             };
             for inc in src_includes {
                 includes.insert(inc.clone());
-                if inc.contains(cmake_build_files_root) {
+                if inc.contains(self.cmake_build_files_root) {
                     self.generated_directories.insert(inc);
                 }
             }
@@ -164,18 +175,18 @@ impl SoongFile {
         package.add_list_string("local_include_dirs", includes);
         package.add_list_string("cflags", defines);
 
-        let (version_script, link_flags) = target.get_link_flags(source_root);
+        let (version_script, link_flags) = target.get_link_flags(self.source_root);
         package.add_list_string("ldflags", link_flags);
         package.add_single_string("version_script", version_script);
 
-        let (static_libs, shared_libs) = match target.get_link_libraries(native_lib_root) {
+        let (static_libs, shared_libs) = match target.get_link_libraries(self.native_lib_root) {
             Ok(return_values) => return_values,
             Err(err) => return Err(err),
         };
         package.add_list_string("static_libs", static_libs);
         package.add_list_string("shared_libs", shared_libs);
 
-        let generated_headers = match target.get_generated_headers(&targets_map) {
+        let generated_headers = match target.get_generated_headers(self.targets_map) {
             Ok(return_value) => return_value,
             Err(err) => return Err(err),
         };
@@ -221,7 +232,13 @@ pub fn generate(
     let mut target_seen: HashSet<String> = HashSet::new();
     let mut target_to_generate = entry_targets;
     let targets_map = create_map(targets);
-    let mut soong_file = SoongFile::new();
+    let mut soong_file = SoongFile::new(
+        &targets_map,
+        source_root,
+        native_lib_root,
+        build_root,
+        cmake_build_files_root,
+    );
 
     while let Some(input) = target_to_generate.pop() {
         //println!("target: {input}");
@@ -238,27 +255,9 @@ pub fn generate(
 
         let rule = target.get_rule();
         let result = if rule.starts_with("CXX_SHARED_LIBRARY") {
-            soong_file.generate_object(
-                "cc_library_shared",
-                target,
-                &targets_map,
-                source_root,
-                native_lib_root,
-                build_root,
-                cmake_build_files_root,
-                false,
-            )
+            soong_file.generate_object("cc_library_shared", target, false)
         } else if rule.starts_with("CXX_STATIC_LIBRARY") {
-            soong_file.generate_object(
-                "cc_library_static",
-                target,
-                &targets_map,
-                source_root,
-                native_lib_root,
-                build_root,
-                cmake_build_files_root,
-                true,
-            )
+            soong_file.generate_object("cc_library_static", target, true)
         } else {
             continue;
         };
