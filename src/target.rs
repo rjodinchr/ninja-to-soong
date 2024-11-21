@@ -3,17 +3,6 @@ use std::collections::HashSet;
 
 use crate::macros::error;
 
-pub fn rework_target_name(target_name: &str) -> String {
-    let mut name = target_name.to_string();
-    name = name.strip_suffix(".so").unwrap_or(&name).to_string();
-    name = name.strip_suffix(".a").unwrap_or(&name).to_string();
-    return name.replace("/", "__").replace(".", "__");
-}
-
-fn rework_source_path(source: &str, source_root: &str) -> String {
-    return source.replace(source_root, "");
-}
-
 #[derive(Debug)]
 pub struct BuildTarget {
     rule: String,
@@ -51,8 +40,14 @@ impl BuildTarget {
     pub fn get_rule(&self) -> &String {
         &self.rule
     }
-    pub fn get_name(&self) -> &String {
-        return &self.outputs[0];
+    fn rework_target_name(target_name: String) -> String {
+        let mut name = target_name;
+        name = name.strip_suffix(".so").unwrap_or(&name).to_string();
+        name = name.strip_suffix(".a").unwrap_or(&name).to_string();
+        return name.replace("/", "_").replace(".", "_");
+    }
+    pub fn get_name(&self) -> String {
+        return Self::rework_target_name(self.outputs[0].to_string());
     }
     pub fn get_all_inputs(&self) -> Vec<String> {
         let mut inputs: Vec<String> = Vec::new();
@@ -85,7 +80,7 @@ impl BuildTarget {
                 if flag.contains("-Bsymbolic") {
                     link_flags.insert(flag.replace(source_root, ""));
                 } else if let Some(vs) = flag.strip_prefix("-Wl,--version-script=") {
-                    version_script = rework_source_path(vs, source_root);
+                    version_script = vs.replace(source_root, "");
                 }
             }
         }
@@ -97,29 +92,30 @@ impl BuildTarget {
     ) -> Result<(HashSet<String>, HashSet<String>), String> {
         let mut static_libraries: HashSet<String> = HashSet::new();
         let mut shared_libraries: HashSet<String> = HashSet::new();
-        if let Some(libs) = self.variables.get("LINK_LIBRARIES") {
-            for lib in libs.split(" ") {
-                if lib.starts_with("-") || lib == "" {
-                    continue;
+        let Some(libs) = self.variables.get("LINK_LIBRARIES") else {
+            return Ok((static_libraries, shared_libraries));
+        };
+        for lib in libs.split(" ") {
+            if lib.starts_with("-") || lib == "" {
+                continue;
+            } else {
+                let lib_name = if lib.starts_with(native_lib_root) {
+                    lib.split("/")
+                        .last()
+                        .unwrap()
+                        .replace(".a", "")
+                        .replace(".so", "")
                 } else {
-                    let lib_name = if lib.starts_with(native_lib_root) {
-                        lib.split("/")
-                            .last()
-                            .unwrap()
-                            .replace(".a", "")
-                            .replace(".so", "")
-                    } else {
-                        rework_target_name(lib)
-                    };
-                    if lib.ends_with(".a") {
-                        static_libraries.insert(lib_name);
-                    } else if lib.ends_with(".so") {
-                        shared_libraries.insert(lib_name);
-                    } else {
-                        return error!(format!(
-                            "unsupported library '{lib}' from target: {self:#?}"
-                        ));
-                    }
+                    Self::rework_target_name(lib.to_string())
+                };
+                if lib.ends_with(".a") {
+                    static_libraries.insert(lib_name);
+                } else if lib.ends_with(".so") {
+                    shared_libraries.insert(lib_name);
+                } else {
+                    return error!(format!(
+                        "unsupported library '{lib}' from target: {self:#?}"
+                    ));
                 }
             }
         }
@@ -143,16 +139,17 @@ impl BuildTarget {
         cmake_build_files_root: &str,
     ) -> HashSet<String> {
         let mut includes: HashSet<String> = HashSet::new();
-        if let Some(incs) = self.variables.get("INCLUDES") {
-            for inc in incs.split(" ") {
-                let inc = inc.replace(build_root, cmake_build_files_root);
-                if let Some(stripped_inc) = inc.strip_prefix("-I") {
-                    includes.insert(rework_source_path(stripped_inc, source_root));
-                } else if inc == "-isystem" {
-                    continue;
-                } else {
-                    includes.insert(rework_source_path(&inc, source_root));
-                }
+        let Some(incs) = self.variables.get("INCLUDES") else {
+            return includes;
+        };
+        for inc in incs.split(" ") {
+            let inc = inc.replace(build_root, cmake_build_files_root);
+            if let Some(stripped_inc) = inc.strip_prefix("-I") {
+                includes.insert(stripped_inc.replace(source_root, ""));
+            } else if inc == "-isystem" {
+                continue;
+            } else {
+                includes.insert(inc.replace(source_root, ""));
             }
         }
         return includes;
@@ -164,7 +161,7 @@ impl BuildTarget {
     ) -> Result<HashSet<String>, String> {
         let mut generated_headers: HashSet<String> = HashSet::new();
         let mut target_seen: HashSet<String> = HashSet::new();
-        let mut target_to_parse = vec![self.get_name().clone()];
+        let mut target_to_parse = vec![self.outputs[0].clone()];
 
         while let Some(target_name) = target_to_parse.pop() {
             if target_seen.contains(&target_name) {
@@ -221,7 +218,7 @@ impl BuildTarget {
             defines.insert(def);
         }
         let includes = self.get_includes(source_root, build_root, cmake_build_files_root);
-        let src = rework_source_path(&self.inputs[0], source_root);
+        let src = self.inputs[0].replace(source_root, "");
         return Ok((src, includes, defines));
     }
 }

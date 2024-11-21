@@ -143,7 +143,7 @@ impl<'a> SoongFile<'a> {
         optimize_for_size: bool,
     ) -> Result<(), String> {
         let mut package = SoongPackage::new(name, optimize_for_size);
-        package.add_single_string("name", crate::target::rework_target_name(target.get_name()));
+        package.add_single_string("name", target.get_name());
 
         let mut includes: HashSet<String> = HashSet::new();
         let mut defines: HashSet<String> = HashSet::new();
