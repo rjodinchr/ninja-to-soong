@@ -22,11 +22,11 @@ impl SoongPackage {
         }
     }
 
-    fn add_single_string(&mut self, key: &str, value: String) {
+    fn add_str(&mut self, key: &str, value: String) {
         self.str_map.insert(key.to_string(), value);
     }
 
-    fn add_list_string(&mut self, key: &str, set: HashSet<String>) {
+    fn add_set(&mut self, key: &str, set: HashSet<String>) {
         self.set_map.insert(key.to_string(), set);
     }
 
@@ -141,7 +141,7 @@ impl<'a> SoongFile<'a> {
         optimize_for_size: bool,
     ) -> Result<(), String> {
         let mut package = SoongPackage::new(name, optimize_for_size);
-        package.add_single_string("name", target.get_name());
+        package.add_str("name", target.get_name());
 
         let mut includes: HashSet<String> = HashSet::new();
         let mut defines: HashSet<String> = HashSet::new();
@@ -165,20 +165,20 @@ impl<'a> SoongFile<'a> {
             self.sources.insert(src.clone());
             srcs.insert(src);
         }
-        package.add_list_string("srcs", srcs);
-        package.add_list_string("local_include_dirs", includes);
-        package.add_list_string("cflags", defines);
+        package.add_set("srcs", srcs);
+        package.add_set("local_include_dirs", includes);
+        package.add_set("cflags", defines);
 
         let (version_script, link_flags) = target.get_link_flags(self.src_root);
-        package.add_list_string("ldflags", link_flags);
-        package.add_single_string("version_script", version_script);
+        package.add_set("ldflags", link_flags);
+        package.add_str("version_script", version_script);
 
         let (static_libs, shared_libs) = match target.get_link_libraries(self.ndk_root) {
             Ok(return_values) => return_values,
             Err(err) => return Err(err),
         };
-        package.add_list_string("static_libs", static_libs);
-        package.add_list_string("shared_libs", shared_libs);
+        package.add_set("static_libs", static_libs);
+        package.add_set("shared_libs", shared_libs);
 
         let generated_headers = match target.get_generated_headers(self.targets_map) {
             Ok(return_value) => return_value,
