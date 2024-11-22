@@ -47,14 +47,13 @@ pub fn copy_files(
 
 fn header_to_copy(name: OsString) -> bool {
     let name = name.to_str().unwrap();
-    return name.ends_with(".h") || name.ends_with(".hpp") || name.ends_with(".def");
+    return name.ends_with(".h")
+        || name.ends_with(".hpp")
+        || name.ends_with(".hpp11")
+        || name.ends_with(".def");
 }
 
-fn copy_headers_from(
-    include_dir: &String,
-    src_root: &str,
-    dst_root: &str,
-) -> Result<(), String> {
+fn copy_headers_from(include_dir: &String, src_root: &str, dst_root: &str) -> Result<(), String> {
     let directory_path = src_root.to_string() + include_dir;
     let Ok(entries) = std::fs::read_dir(&directory_path) else {
         return Ok(());
