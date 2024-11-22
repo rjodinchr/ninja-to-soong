@@ -7,8 +7,8 @@ use crate::target::BuildTarget;
 #[derive(Debug)]
 struct SoongPackage {
     name: String,
-    single_string_map: HashMap<String, String>,
-    list_string_map: HashMap<String, HashSet<String>>,
+    str_map: HashMap<String, String>,
+    set_map: HashMap<String, HashSet<String>>,
     optimize_for_size: bool,
 }
 
@@ -16,23 +16,23 @@ impl SoongPackage {
     fn new(name: &str, optimize_for_size: bool) -> Self {
         Self {
             name: name.to_string(),
-            single_string_map: HashMap::new(),
-            list_string_map: HashMap::new(),
+            str_map: HashMap::new(),
+            set_map: HashMap::new(),
             optimize_for_size,
         }
     }
 
     fn add_single_string(&mut self, key: &str, value: String) {
-        self.single_string_map.insert(key.to_string(), value);
+        self.str_map.insert(key.to_string(), value);
     }
 
     fn add_list_string(&mut self, key: &str, set: HashSet<String>) {
-        self.list_string_map.insert(key.to_string(), set);
+        self.set_map.insert(key.to_string(), set);
     }
 
-    fn print_single_string(&mut self, entry: &str) -> String {
+    fn print_str(&mut self, entry: &str) -> String {
         let mut result = String::new();
-        let Some((key, value)) = self.single_string_map.remove_entry(entry) else {
+        let Some((key, value)) = self.str_map.remove_entry(entry) else {
             return result;
         };
         if value == "" {
@@ -47,9 +47,9 @@ impl SoongPackage {
         return result;
     }
 
-    fn print_list_string(&mut self, entry: &str) -> String {
+    fn print_set(&mut self, entry: &str) -> String {
         let mut result = String::new();
-        let Some((key, mut set)) = self.list_string_map.remove_entry(entry) else {
+        let Some((key, mut set)) = self.set_map.remove_entry(entry) else {
             return result;
         };
         set.remove("");
@@ -71,7 +71,7 @@ impl SoongPackage {
     }
 
     fn print(mut self) -> Result<String, String> {
-        if let Some(set) = self.list_string_map.get_mut("cflags") {
+        if let Some(set) = self.set_map.get_mut("cflags") {
             set.insert("-Wno-error".to_string());
             set.insert("-Wno-unreachable-code-loop-increment".to_string());
         }
@@ -79,20 +79,19 @@ impl SoongPackage {
         result += &self.name;
         result += " {\n";
 
-        if !self.single_string_map.contains_key("name") {
+        if !self.str_map.contains_key("name") {
             return error!(format!("no 'name' in soong package: '{self:#?}"));
         }
-        result += &self.print_single_string("name");
-        result += &self.print_list_string("srcs");
-        result += &self.print_list_string("cflags");
-        result += &self.print_list_string("ldflags");
-        result += &self.print_single_string("version_script");
-        result += &self.print_list_string("shared_libs");
-        result += &self.print_list_string("static_libs");
-        result += &self.print_list_string("local_include_dirs");
-        result += &self.print_list_string("include_dirs");
+        result += &self.print_str("name");
+        result += &self.print_set("srcs");
+        result += &self.print_set("cflags");
+        result += &self.print_set("ldflags");
+        result += &self.print_str("version_script");
+        result += &self.print_set("shared_libs");
+        result += &self.print_set("static_libs");
+        result += &self.print_set("local_include_dirs");
 
-        if self.single_string_map.len() > 0 || self.list_string_map.len() > 0 {
+        if self.str_map.len() > 0 || self.set_map.len() > 0 {
             return error!(format!("entries not consumed in: '{self:#?}"));
         }
         if self.optimize_for_size {
@@ -108,32 +107,31 @@ impl SoongPackage {
 #[derive(Debug)]
 struct SoongFile<'a> {
     content: String,
+    sources: HashSet<String>,
     generated_headers: HashSet<String>,
-    generated_directories: HashSet<String>,
+    include_directories: HashSet<String>,
     targets_map: &'a HashMap<String, &'a BuildTarget>,
-    source_root: &'a str,
-    native_lib_root: &'a str,
+    src_root: &'a str,
+    ndk_root: &'a str,
     build_root: &'a str,
-    cmake_build_files_root: &'a str,
 }
 
 impl<'a> SoongFile<'a> {
     fn new(
         targets_map: &'a HashMap<String, &'a BuildTarget>,
-        source_root: &'a str,
-        native_lib_root: &'a str,
+        src_root: &'a str,
+        ndk_root: &'a str,
         build_root: &'a str,
-        cmake_build_files_root: &'a str,
     ) -> Self {
         SoongFile {
             content: String::new(),
+            sources: HashSet::new(),
             generated_headers: HashSet::new(),
-            generated_directories: HashSet::new(),
+            include_directories: HashSet::new(),
             targets_map,
-            source_root,
-            native_lib_root,
+            src_root,
+            ndk_root,
             build_root,
-            cmake_build_files_root,
         }
     }
     fn generate_object(
@@ -152,34 +150,30 @@ impl<'a> SoongFile<'a> {
             let Some(target) = self.targets_map.get(input) else {
                 return error!(format!("unsupported input for library: {input}"));
             };
-            let (src, src_includes, src_defines) = match target.get_compiler_target_info(
-                self.source_root,
-                self.build_root,
-                self.cmake_build_files_root,
-            ) {
-                Ok(return_values) => return_values,
-                Err(err) => return Err(err),
-            };
+            let (src, src_includes, src_defines) =
+                match target.get_compiler_target_info(self.src_root, self.build_root) {
+                    Ok(return_values) => return_values,
+                    Err(err) => return Err(err),
+                };
             for inc in src_includes {
                 includes.insert(inc.clone());
-                if inc.contains(self.cmake_build_files_root) {
-                    self.generated_directories.insert(inc);
-                }
+                self.include_directories.insert(inc);
             }
             for def in src_defines {
                 defines.insert(String::from("-D") + &def);
             }
+            self.sources.insert(src.clone());
             srcs.insert(src);
         }
         package.add_list_string("srcs", srcs);
         package.add_list_string("local_include_dirs", includes);
         package.add_list_string("cflags", defines);
 
-        let (version_script, link_flags) = target.get_link_flags(self.source_root);
+        let (version_script, link_flags) = target.get_link_flags(self.src_root);
         package.add_list_string("ldflags", link_flags);
         package.add_single_string("version_script", version_script);
 
-        let (static_libs, shared_libs) = match target.get_link_libraries(self.native_lib_root) {
+        let (static_libs, shared_libs) = match target.get_link_libraries(self.ndk_root) {
             Ok(return_values) => return_values,
             Err(err) => return Err(err),
         };
@@ -201,11 +195,12 @@ impl<'a> SoongFile<'a> {
         Ok(())
     }
 
-    fn finish(self) -> (String, HashSet<String>, HashSet<String>) {
+    fn finish(self) -> (String, HashSet<String>, HashSet<String>, HashSet<String>) {
         (
             self.content,
+            self.sources,
             self.generated_headers,
-            self.generated_directories,
+            self.include_directories,
         )
     }
 }
@@ -224,24 +219,16 @@ fn create_map(targets: &Vec<BuildTarget>) -> HashMap<String, &BuildTarget> {
 pub fn generate(
     entry_targets: Vec<String>,
     targets: &Vec<BuildTarget>,
-    source_root: &str,
-    native_lib_root: &str,
+    src_root: &str,
+    ndk_root: &str,
     build_root: &str,
-    cmake_build_files_root: &str,
-) -> Result<(String, HashSet<String>, HashSet<String>), String> {
+) -> Result<(String, HashSet<String>, HashSet<String>, HashSet<String>), String> {
     let mut target_seen: HashSet<String> = HashSet::new();
     let mut target_to_generate = entry_targets;
     let targets_map = create_map(targets);
-    let mut soong_file = SoongFile::new(
-        &targets_map,
-        source_root,
-        native_lib_root,
-        build_root,
-        cmake_build_files_root,
-    );
+    let mut soong_file = SoongFile::new(&targets_map, src_root, ndk_root, build_root);
 
     while let Some(input) = target_to_generate.pop() {
-        //println!("target: {input}");
         if target_seen.contains(&input) {
             continue;
         }

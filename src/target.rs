@@ -72,15 +72,15 @@ impl BuildTarget {
         }
         return outputs;
     }
-    pub fn get_link_flags(&self, source_root: &str) -> (String, HashSet<String>) {
+    pub fn get_link_flags(&self, src_root: &str) -> (String, HashSet<String>) {
         let mut link_flags: HashSet<String> = HashSet::new();
         let mut version_script = String::from("");
         if let Some(flags) = self.variables.get("LINK_FLAGS") {
             for flag in flags.split(" ") {
                 if flag.contains("-Bsymbolic") {
-                    link_flags.insert(flag.replace(source_root, ""));
+                    link_flags.insert(flag.replace(src_root, ""));
                 } else if let Some(vs) = flag.strip_prefix("-Wl,--version-script=") {
-                    version_script = vs.replace(source_root, "");
+                    version_script = vs.replace(src_root, "");
                 }
             }
         }
@@ -88,7 +88,7 @@ impl BuildTarget {
     }
     pub fn get_link_libraries(
         &self,
-        native_lib_root: &str,
+        ndk_root: &str,
     ) -> Result<(HashSet<String>, HashSet<String>), String> {
         let mut static_libraries: HashSet<String> = HashSet::new();
         let mut shared_libraries: HashSet<String> = HashSet::new();
@@ -99,7 +99,7 @@ impl BuildTarget {
             if lib.starts_with("-") || lib == "" {
                 continue;
             } else {
-                let lib_name = if lib.starts_with(native_lib_root) {
+                let lib_name = if lib.starts_with(ndk_root) {
                     lib.split("/")
                         .last()
                         .unwrap()
@@ -132,24 +132,19 @@ impl BuildTarget {
         defines.remove("");
         return defines;
     }
-    fn get_includes(
-        &self,
-        source_root: &str,
-        build_root: &str,
-        cmake_build_files_root: &str,
-    ) -> HashSet<String> {
+    fn get_includes(&self, src_root: &str, build_root: &str) -> HashSet<String> {
         let mut includes: HashSet<String> = HashSet::new();
         let Some(incs) = self.variables.get("INCLUDES") else {
             return includes;
         };
         for inc in incs.split(" ") {
-            let inc = inc.replace(build_root, cmake_build_files_root);
+            let inc = inc.replace(build_root, "").replace(src_root, "");
             if let Some(stripped_inc) = inc.strip_prefix("-I") {
-                includes.insert(stripped_inc.replace(source_root, ""));
+                includes.insert(stripped_inc.to_string());
             } else if inc == "-isystem" {
                 continue;
             } else {
-                includes.insert(inc.replace(source_root, ""));
+                includes.insert(inc);
             }
         }
         return includes;
@@ -195,9 +190,8 @@ impl BuildTarget {
     }
     pub fn get_compiler_target_info(
         &self,
-        source_root: &str,
+        src_root: &str,
         build_root: &str,
-        cmake_build_files_root: &str,
     ) -> Result<(String, HashSet<String>, HashSet<String>), String> {
         let mut defines_no_assembly: HashSet<String> = HashSet::new();
         if self.rule.starts_with("ASM_COMPILER") {
@@ -217,8 +211,8 @@ impl BuildTarget {
         for def in defines_no_assembly {
             defines.insert(def);
         }
-        let includes = self.get_includes(source_root, build_root, cmake_build_files_root);
-        let src = self.inputs[0].replace(source_root, "");
+        let includes = self.get_includes(src_root, build_root);
+        let src = self.inputs[0].replace(src_root, "");
         return Ok((src, includes, defines));
     }
 }
