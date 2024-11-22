@@ -114,6 +114,7 @@ struct SoongFile<'a> {
     src_root: &'a str,
     ndk_root: &'a str,
     build_root: &'a str,
+    dst_build_prefix: &'a str,
 }
 
 impl<'a> SoongFile<'a> {
@@ -122,6 +123,7 @@ impl<'a> SoongFile<'a> {
         src_root: &'a str,
         ndk_root: &'a str,
         build_root: &'a str,
+        dst_build_prefix: &'a str,
     ) -> Self {
         SoongFile {
             content: String::new(),
@@ -132,6 +134,7 @@ impl<'a> SoongFile<'a> {
             src_root,
             ndk_root,
             build_root,
+            dst_build_prefix,
         }
     }
     fn generate_object(
@@ -150,11 +153,14 @@ impl<'a> SoongFile<'a> {
             let Some(target) = self.targets_map.get(input) else {
                 return error!(format!("unsupported input for library: {input}"));
             };
-            let (src, src_includes, src_defines) =
-                match target.get_compiler_target_info(self.src_root, self.build_root) {
-                    Ok(return_values) => return_values,
-                    Err(err) => return Err(err),
-                };
+            let (src, src_includes, src_defines) = match target.get_compiler_target_info(
+                self.src_root,
+                self.build_root,
+                self.dst_build_prefix,
+            ) {
+                Ok(return_values) => return_values,
+                Err(err) => return Err(err),
+            };
             for inc in src_includes {
                 includes.insert(inc.clone());
                 self.include_directories.insert(inc);
@@ -225,11 +231,18 @@ pub fn generate(
     src_root: &str,
     ndk_root: &str,
     build_root: &str,
+    dst_build_prefix: &str,
 ) -> Result<(String, HashSet<String>, HashSet<String>, HashSet<String>), String> {
     let mut target_seen: HashSet<String> = HashSet::new();
     let mut target_to_generate = entry_targets;
     let targets_map = create_map(targets);
-    let mut soong_file = SoongFile::new(&targets_map, src_root, ndk_root, build_root);
+    let mut soong_file = SoongFile::new(
+        &targets_map,
+        src_root,
+        ndk_root,
+        build_root,
+        dst_build_prefix,
+    );
 
     while let Some(input) = target_to_generate.pop() {
         if target_seen.contains(&input) {

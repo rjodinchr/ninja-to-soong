@@ -132,13 +132,20 @@ impl BuildTarget {
         defines.remove("");
         return defines;
     }
-    fn get_includes(&self, src_root: &str, build_root: &str) -> HashSet<String> {
+    fn get_includes(
+        &self,
+        src_root: &str,
+        build_root: &str,
+        dst_build_prefix: &str,
+    ) -> HashSet<String> {
         let mut includes: HashSet<String> = HashSet::new();
         let Some(incs) = self.variables.get("INCLUDES") else {
             return includes;
         };
         for inc in incs.split(" ") {
-            let inc = inc.replace(build_root, "").replace(src_root, "");
+            let inc = inc
+                .replace(build_root, dst_build_prefix)
+                .replace(src_root, "");
             if let Some(stripped_inc) = inc.strip_prefix("-I") {
                 includes.insert(stripped_inc.to_string());
             } else if inc == "-isystem" {
@@ -192,6 +199,7 @@ impl BuildTarget {
         &self,
         src_root: &str,
         build_root: &str,
+        dst_build_prefix: &str,
     ) -> Result<(String, HashSet<String>, HashSet<String>), String> {
         let mut defines_no_assembly: HashSet<String> = HashSet::new();
         if self.rule.starts_with("ASM_COMPILER") {
@@ -211,7 +219,7 @@ impl BuildTarget {
         for def in defines_no_assembly {
             defines.insert(def);
         }
-        let includes = self.get_includes(src_root, build_root);
+        let includes = self.get_includes(src_root, build_root, dst_build_prefix);
         let src = self.inputs[0].replace(src_root, "");
         return Ok((src, includes, defines));
     }

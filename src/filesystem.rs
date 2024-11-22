@@ -96,8 +96,12 @@ pub fn copy_include_directories(
     include_directories: &HashSet<String>,
     src_root: &str,
     dst_root: &str,
+    dst_build_prefix: &str
 ) -> Result<String, String> {
     for include_dir in include_directories {
+        if include_dir.contains(dst_build_prefix) {
+            continue;
+        }
         if let Err(err) = copy_headers_from(&include_dir, src_root, dst_root) {
             return Err(err);
         }

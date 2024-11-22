@@ -11,6 +11,7 @@ fn main() {
     let build_root = "/usr/local/google/home/rjodin/work/clvk/build_android/";
     let ndk_root = "/usr/local/google/home/rjodin/work/android-ndk-r27c/";
     let dst_root = "/usr/local/google/home/rjodin/android-internal/external/clvk/";
+    let dst_build_prefix = "cmake_generated/";
 
     let (content, sources, mut generated_headers, mut include_directories) =
         match generator::generate(
@@ -25,6 +26,7 @@ fn main() {
             src_root,
             ndk_root,
             build_root,
+            dst_build_prefix,
         ) {
             Ok(return_values) => return_values,
             Err(err) => {
@@ -41,7 +43,7 @@ fn main() {
         }
     }
 
-    let dirs_to_remove = vec!["src", "external"];
+    let dirs_to_remove = vec!["src", "external", dst_build_prefix];
     for dir_to_remove in dirs_to_remove {
         let dir = dst_root.to_string() + dir_to_remove;
         if touch::exists(&dir) {
@@ -72,7 +74,11 @@ fn main() {
     for header in missing_generated_headers {
         generated_headers.insert(header.to_string());
     }
-    match filesystem::copy_files(generated_headers, build_root, dst_root) {
+    match filesystem::copy_files(
+        generated_headers,
+        build_root,
+        &(dst_root.to_string() + dst_build_prefix),
+    ) {
         Ok(msg) => println!("{msg}"),
         Err(err) => {
             println!("{err}");
@@ -86,7 +92,12 @@ fn main() {
             return;
         }
     }
-    match filesystem::copy_include_directories(&include_directories, src_root, dst_root) {
+    match filesystem::copy_include_directories(
+        &include_directories,
+        src_root,
+        dst_root,
+        dst_build_prefix,
+    ) {
         Ok(msg) => println!("{msg}"),
         Err(err) => {
             println!("{err}");
