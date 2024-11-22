@@ -42,7 +42,7 @@ pub fn copy_files(
             return Err(err);
         }
     }
-    return Ok(format!("Files created successfully in '{dst_root}'"));
+    return Ok(format!("Files created successfully in '{dst_root}' from '{src_root}'"));
 }
 
 fn header_to_copy(name: OsString) -> bool {

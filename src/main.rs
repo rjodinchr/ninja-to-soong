@@ -56,7 +56,7 @@ fn main() {
         include_directories.insert(source.rsplit_once("/").unwrap().0.to_string());
     }
 
-    let other_generated_headers = vec![
+    let missing_generated_headers = vec![
         "external/clspv/third_party/llvm/include/llvm/Config/llvm-config.h",
         "external/clspv/third_party/llvm/include/llvm/Config/abi-breaking.h",
         "external/clspv/third_party/llvm/include/llvm/Config/config.h",
@@ -69,14 +69,10 @@ fn main() {
         "external/clspv/third_party/llvm/tools/clang/include/clang/Basic/Version.inc",
         "external/clspv/third_party/llvm/tools/clang/include/clang/Config/config.h",
     ];
-    for header in other_generated_headers {
+    for header in missing_generated_headers {
         generated_headers.insert(header.to_string());
     }
-    match filesystem::copy_files(
-        generated_headers,
-        build_root,
-        dst_root,
-    ) {
+    match filesystem::copy_files(generated_headers, build_root, dst_root) {
         Ok(msg) => println!("{msg}"),
         Err(err) => {
             println!("{err}");
@@ -90,11 +86,7 @@ fn main() {
             return;
         }
     }
-    match filesystem::copy_include_directories(
-        &include_directories,
-        src_root,
-        dst_root,
-    ) {
+    match filesystem::copy_include_directories(&include_directories, src_root, dst_root) {
         Ok(msg) => println!("{msg}"),
         Err(err) => {
             println!("{err}");
