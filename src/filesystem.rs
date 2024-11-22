@@ -47,10 +47,11 @@ pub fn copy_files(
 
 fn header_to_copy(name: OsString) -> bool {
     let name = name.to_str().unwrap();
-    return name.ends_with(".h")
+    return name.ends_with(".inc")
+        || name.ends_with(".def")
+        || name.ends_with(".h")
         || name.ends_with(".hpp")
-        || name.ends_with(".hpp11")
-        || name.ends_with(".def");
+        || name.ends_with(".hpp11");
 }
 
 fn copy_headers_from(include_dir: &String, src_root: &str, dst_root: &str) -> Result<(), String> {
