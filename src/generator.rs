@@ -171,7 +171,10 @@ impl<'a> SoongFile<'a> {
 
         let (version_script, link_flags) = target.get_link_flags(self.src_root);
         package.add_set("ldflags", link_flags);
-        package.add_str("version_script", version_script);
+        if let Some(vs) = version_script {
+            self.sources.insert(vs.clone());
+            package.add_str("version_script", vs);
+        }
 
         let (static_libs, shared_libs) = match target.get_link_libraries(self.ndk_root) {
             Ok(return_values) => return_values,

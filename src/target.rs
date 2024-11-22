@@ -72,15 +72,15 @@ impl BuildTarget {
         }
         return outputs;
     }
-    pub fn get_link_flags(&self, src_root: &str) -> (String, HashSet<String>) {
+    pub fn get_link_flags(&self, src_root: &str) -> (Option<String>, HashSet<String>) {
         let mut link_flags: HashSet<String> = HashSet::new();
-        let mut version_script = String::from("");
+        let mut version_script = None;
         if let Some(flags) = self.variables.get("LINK_FLAGS") {
             for flag in flags.split(" ") {
                 if flag.contains("-Bsymbolic") {
                     link_flags.insert(flag.replace(src_root, ""));
                 } else if let Some(vs) = flag.strip_prefix("-Wl,--version-script=") {
-                    version_script = vs.replace(src_root, "");
+                    version_script = Some(vs.replace(src_root, ""));
                 }
             }
         }
