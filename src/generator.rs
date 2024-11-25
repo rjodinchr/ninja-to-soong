@@ -85,6 +85,7 @@ impl SoongPackage {
             return error!(format!("no 'name' in soong package: '{self:#?}"));
         }
         result += &self.print_str("name");
+        result += &self.print_str("stem");
         result += &self.print_set("srcs");
         result += &self.print_set("cflags");
         result += &self.print_set("ldflags");
@@ -146,7 +147,11 @@ impl<'a> SoongFile<'a> {
         optimize_for_size: bool,
     ) -> Result<(), String> {
         let mut package = SoongPackage::new(name, optimize_for_size);
-        package.add_str("name", target.get_name());
+        let name = target.get_name();
+        package.add_str("name", name.clone());
+        if name == "clvk_libOpenCL_so" {
+            package.add_str("stem", "libclvk".to_string());
+        }
 
         let mut includes: HashSet<String> = HashSet::new();
         let mut defines: HashSet<String> = HashSet::new();
