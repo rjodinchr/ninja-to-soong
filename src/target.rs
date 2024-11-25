@@ -41,10 +41,7 @@ impl BuildTarget {
         &self.rule
     }
     fn rework_target_name(target_name: String) -> String {
-        let mut name = target_name;
-        name = name.strip_suffix(".so").unwrap_or(&name).to_string();
-        name = name.strip_suffix(".a").unwrap_or(&name).to_string();
-        return name.replace("/", "_").replace(".", "_");
+        return "clvk_".to_string() + &target_name.replace("/", "_").replace(".", "_");
     }
     pub fn get_name(&self) -> String {
         return Self::rework_target_name(self.outputs[0].to_string());
