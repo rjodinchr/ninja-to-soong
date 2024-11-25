@@ -61,7 +61,9 @@ impl SoongPackage {
         result += ": ";
 
         result += "[\n";
-        for value in set {
+        let mut sorted = Vec::from_iter(set);
+        sorted.sort();
+        for value in sorted {
             result += "        \"";
             result += &value;
             result += "\",\n";
