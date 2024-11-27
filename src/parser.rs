@@ -138,15 +138,18 @@ fn parse_build_target(line: &str, lines: &mut std::str::Lines<'_>) -> Result<Bui
 }
 
 pub fn parse_build_ninja(path: &str) -> Result<Vec<BuildTarget>, String> {
-    let mut targets: Vec<BuildTarget> = Vec::new();
-    let mut file = match File::open(path) {
+    let ninja_file_path = &(path.to_string() + "build.ninja");
+    let mut file = match File::open(ninja_file_path) {
         Ok(file) => file,
-        Err(err) => return error!(format!("Could not open '{path}': '{0}'", err)),
+        Err(err) => return error!(format!("Could not open '{ninja_file_path}': '{0}'", err)),
     };
+
     let mut content = String::new();
     if let Err(err) = file.read_to_string(&mut content) {
-        return error!(format!("Could not read '{path}': '{err:#?}'"));
+        return error!(format!("Could not read '{ninja_file_path}': '{err:#?}'"));
     }
+
+    let mut targets: Vec<BuildTarget> = Vec::new();
     let mut lines = content.lines();
     while let Some(line) = lines.next() {
         if !line.trim().starts_with("build") {
@@ -157,5 +160,6 @@ pub fn parse_build_ninja(path: &str) -> Result<Vec<BuildTarget>, String> {
             Err(err) => return error!(format!("Could not parse build target: '{err}'")),
         }
     }
+    
     return Ok(targets);
 }
