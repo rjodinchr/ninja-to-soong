@@ -48,8 +48,21 @@ fn main() {
         project::llvm::LLVM::new(&project_source_directory, &build_source_directory)
             .generate(targets)
     } else if project == "clspv" {
-        project::clspv::CLSPV::new(&project_source_directory, &build_source_directory)
-            .generate(targets)
+        if args.len() < number_common_arg + 3 {
+            println!("USAGE: {0} clspv <project_source_directory> <build_ninja_source_directory> <spirv_headers_directory> <spirv_tools_directory> <llvm_project_directory>", args[0]);
+            return;
+        }
+        let spirv_headers_directory = &args[number_common_arg];
+        let spirv_tools_directory = &args[number_common_arg + 1];
+        let llvm_project_directory = &args[number_common_arg + 2];
+        project::clspv::CLSPV::new(
+            &project_source_directory,
+            &build_source_directory,
+            spirv_headers_directory,
+            spirv_tools_directory,
+            llvm_project_directory,
+        )
+        .generate(targets)
     } else {
         println!("unknown project '{project}'");
         return;

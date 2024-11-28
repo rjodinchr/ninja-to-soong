@@ -2,9 +2,9 @@ use std::collections::HashMap;
 use std::collections::HashSet;
 
 use crate::project::Project;
+use crate::soongmodule::SoongModule;
 use crate::target::BuildTarget;
-use crate::utils::add_slash_suffix;
-use crate::utils::error;
+use crate::utils::*;
 
 #[derive(Debug)]
 pub struct SoongFile<'a> {
@@ -33,6 +33,14 @@ impl<'a> SoongFile<'a> {
             build_root,
             target_prefix,
         }
+    }
+
+    pub fn add_module(&mut self, module: SoongModule) -> Result<(), String> {
+        self.content += &match module.print() {
+            Ok(content) => content,
+            Err(err) => return Err(err),
+        };
+        return Ok(());
     }
 
     pub fn write(self, path: &str) -> Result<String, String> {

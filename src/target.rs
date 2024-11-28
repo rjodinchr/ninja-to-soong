@@ -2,8 +2,7 @@ use std::collections::HashMap;
 use std::collections::HashSet;
 
 use crate::project::Project;
-use crate::utils::add_slash_suffix;
-use crate::utils::error;
+use crate::utils::*;
 
 #[derive(Debug)]
 pub struct BuildTarget {

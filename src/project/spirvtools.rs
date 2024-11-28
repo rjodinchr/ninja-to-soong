@@ -3,9 +3,7 @@ use std::collections::HashSet;
 use crate::soongfile::SoongFile;
 use crate::soongmodule::SoongModule;
 use crate::target::BuildTarget;
-use crate::utils::add_slash_suffix;
-
-const SPIRV_HEADERS: &str = "SPIRV-Headers";
+use crate::utils::*;
 
 pub struct SpirvTools<'a> {
     src_root: &'a str,
@@ -14,11 +12,6 @@ pub struct SpirvTools<'a> {
 }
 
 impl<'a> SpirvTools<'a> {
-    fn spirv_headers_name(&self, str: &String) -> String {
-        str.replace(self.spirv_headers_root, SPIRV_HEADERS)
-            .replace("/", "_")
-            .replace(".", "_")
-    }
     pub fn new(src_root: &'a str, build_root: &'a str, spirv_headers_root: &'a str) -> Self {
         SpirvTools {
             src_root,
@@ -26,38 +19,30 @@ impl<'a> SpirvTools<'a> {
             spirv_headers_root,
         }
     }
-    fn generate_spirv_headers(&self, files: HashSet<String>) -> Result<String, String> {
-        let mut spirv_headers_package = String::new();
+    fn generate_spirv_headers(&self, mut files: HashSet<String>) -> Result<String, String> {
+        let mut spirv_headers = SoongFile::new("", "", "", "");
 
-        let mut cc_library_headers = SoongModule::new("cc_library_headers");
-        cc_library_headers.add_set("visibility", ["//visibility:public".to_string()].into());
-        cc_library_headers.add_set("export_include_dirs", ["include".to_string()].into());
-        cc_library_headers.add_str("name", SPIRV_HEADERS.to_string());
-        spirv_headers_package += &match cc_library_headers.print() {
-            Ok(content) => content,
-            Err(err) => return Err(err),
-        };
-
-        for file in files {
-            let mut genrule = SoongModule::new("genrule");
-            genrule.add_str("name", self.spirv_headers_name(&file));
-            genrule.add_set("visibility", ["//visibility:public".to_string()].into());
-            genrule.add_set(
-                "srcs",
-                [file.replace(&add_slash_suffix(self.spirv_headers_root), "")].into(),
-            );
-            genrule.add_set("out", [file.rsplit_once("/").unwrap().1.to_string()].into());
-            genrule.add_str("cmd", "cp $(in) $(out)".to_string());
-            spirv_headers_package += &match genrule.print() {
-                Ok(content) => content,
-                Err(err) => return Err(err),
-            };
+        if let Err(err) = spirv_headers.add_module(SoongModule::new_cc_library_headers(
+            SPIRV_HEADERS,
+            "include",
+        )) {
+            return Err(err);
         }
 
-        return crate::filesystem::write_file(
-            &(self.spirv_headers_root.to_string() + "/Android.bp"),
-            spirv_headers_package,
-        );
+        files.insert(self.spirv_headers_root.to_string() + "/include/spirv/unified1/spirv.hpp"); // for clspv
+        let mut sorted = Vec::from_iter(files);
+        sorted.sort();
+        for file in sorted {
+            if let Err(err) = spirv_headers.add_module(SoongModule::new_copy_genrule(
+                spirv_headers_name(self.spirv_headers_root, &file),
+                file.replace(&add_slash_suffix(self.spirv_headers_root), ""),
+                file.rsplit_once("/").unwrap().1.to_string(),
+            )) {
+                return Err(err);
+            }
+        }
+
+        return spirv_headers.write(self.spirv_headers_root);
     }
 }
 
@@ -93,7 +78,7 @@ impl<'a> crate::project::Project<'a> for SpirvTools<'a> {
             if input.contains(self.spirv_headers_root) {
                 generated_deps.insert((
                     input.clone(),
-                    ":".to_string() + &self.spirv_headers_name(input),
+                    ":".to_string() + &spirv_headers_name(self.spirv_headers_root, input),
                 ));
             } else {
                 filtered_inputs.insert(input.clone());

@@ -21,6 +21,24 @@ impl SoongModule {
         }
     }
 
+    pub fn new_cc_library_headers(name: &str, include_dir: &str) -> Self {
+        let mut module = Self::new("cc_library_headers");
+        module.add_str("name", name.to_string());
+        module.add_set("export_include_dirs", [include_dir.to_string()].into());
+        module.add_set("visibility", ["//visibility:public".to_string()].into());
+        module
+    }
+
+    pub fn new_copy_genrule(name: String, src: String, out: String) -> Self {
+        let mut module = Self::new("genrule");
+        module.add_str("name", name);
+        module.add_set("visibility", ["//visibility:public".to_string()].into());
+        module.add_set("srcs", [src].into());
+        module.add_set("out", [out].into());
+        module.add_str("cmd", "cp $(in) $(out)".to_string());
+        module
+    }
+
     pub fn add_str(&mut self, key: &str, value: String) {
         self.str_map.insert(key.to_string(), value);
     }

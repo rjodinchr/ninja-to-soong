@@ -2,9 +2,9 @@ use std::collections::HashSet;
 
 use crate::filesystem;
 use crate::soongfile::SoongFile;
+use crate::soongmodule::SoongModule;
 use crate::target::BuildTarget;
-use crate::utils::add_slash_suffix;
-use crate::utils::error;
+use crate::utils::*;
 
 const DST_BUILD_PREFIX: &str = "cmake_generated";
 
@@ -143,6 +143,45 @@ impl<'a> crate::project::Project<'a> for LLVM<'a> {
         {
             Ok(msg) => println!("{msg}"),
             Err(err) => return Err(err),
+        }
+
+        if let Err(err) = file.add_module(SoongModule::new_cc_library_headers(
+            LLVM_HEADERS,
+            "llvm/include",
+        )) {
+            return Err(err);
+        }
+        if let Err(err) = file.add_module(SoongModule::new_cc_library_headers(
+            CLANG_HEADERS,
+            "clang/include",
+        )) {
+            return Err(err);
+        }
+
+        // for clspv
+        let opencl_c_base = "clang/lib/Headers/opencl-c-base.h";
+        if let Err(err) = file.add_module(SoongModule::new_copy_genrule(
+            clang_headers_name("clang", opencl_c_base),
+            opencl_c_base.to_string(),
+            opencl_c_base.rsplit_once("/").unwrap().1.to_string(),
+        )) {
+            return Err(err);
+        }
+        let clspv_bc = DST_BUILD_PREFIX.to_string() + "/tools/libclc/clspv--.bc";
+        if let Err(err) = file.add_module(SoongModule::new_copy_genrule(
+            llvm_headers_name(DST_BUILD_PREFIX, &clspv_bc),
+            clspv_bc.clone(),
+            clspv_bc.rsplit_once("/").unwrap().1.to_string(),
+        )) {
+            return Err(err);
+        }
+        let clspv64_bc = DST_BUILD_PREFIX.to_string() + "/tools/libclc/clspv64--.bc";
+        if let Err(err) = file.add_module(SoongModule::new_copy_genrule(
+            llvm_headers_name(DST_BUILD_PREFIX, &clspv64_bc),
+            clspv64_bc.clone(),
+            clspv64_bc.rsplit_once("/").unwrap().1.to_string(),
+        )) {
+            return Err(err);
         }
 
         return file.write(self.src_root);

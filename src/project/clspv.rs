@@ -2,18 +2,32 @@ use std::collections::HashSet;
 
 use crate::soongfile::SoongFile;
 use crate::target::BuildTarget;
-use crate::utils::add_slash_suffix;
+use crate::utils::*;
+
+const LLVM_PREFIX: &str = "third_party/llvm";
 
 pub struct CLSPV<'a> {
     src_root: &'a str,
     build_root: &'a str,
+    spirv_headers_root: &'a str,
+    spirv_tools_root: &'a str,
+    llvm_project_root: &'a str,
 }
 
 impl<'a> CLSPV<'a> {
-    pub fn new(src_root: &'a str, build_root: &'a str) -> Self {
+    pub fn new(
+        src_root: &'a str,
+        build_root: &'a str,
+        spirv_headers_root: &'a str,
+        spirv_tools_root: &'a str,
+        llvm_project_root: &'a str,
+    ) -> Self {
         CLSPV {
             src_root,
             build_root,
+            spirv_headers_root,
+            spirv_tools_root,
+            llvm_project_root,
         }
     }
 }
@@ -29,32 +43,51 @@ impl<'a> crate::project::Project<'a> for CLSPV<'a> {
     fn parse_custom_command_inputs(
         &self,
         inputs: &Vec<String>,
-    ) -> Result<
-        (
-            HashSet<String>,
-            HashSet<String>,
-            HashSet<(String, String)>,
-        ),
-        String,
-    > {
+    ) -> Result<(HashSet<String>, HashSet<String>, HashSet<(String, String)>), String> {
         let mut srcs: HashSet<String> = HashSet::new();
         let mut filtered_inputs: HashSet<String> = HashSet::new();
+        let mut generated_deps: HashSet<(String, String)> = HashSet::new();
+        let clang_root = &(self.llvm_project_root.to_string() + "/clang");
+
         for input in inputs {
-            filtered_inputs.insert(input.clone());
+            if input.contains(self.spirv_headers_root) {
+                generated_deps.insert((
+                    input.clone(),
+                    ":".to_string() + &spirv_headers_name(self.spirv_headers_root, input),
+                ));
+            } else if input.contains(clang_root) {
+                generated_deps.insert((
+                    input.clone(),
+                    ":".to_string() + &clang_headers_name(clang_root, input),
+                ));
+            } else if input.contains(LLVM_PREFIX) {
+                generated_deps.insert((
+                    input.clone(),
+                    ":".to_string() + &llvm_headers_name(LLVM_PREFIX, input),
+                ));
+            } else {
+                filtered_inputs.insert(input.clone());
+            }
         }
         for input in &filtered_inputs {
             srcs.insert(input.replace(&add_slash_suffix(self.src_root), ""));
         }
-        return Ok((srcs, filtered_inputs, HashSet::new()));
+        for (_, dep) in &generated_deps {
+            srcs.insert(dep.clone());
+        }
+        return Ok((srcs, filtered_inputs, generated_deps));
     }
     fn get_default_defines(&self) -> HashSet<String> {
         return HashSet::new();
     }
-    fn ignore_target(&self, _: &String) -> bool {
-        false
+    fn ignore_target(&self, target: &String) -> bool {
+        target.starts_with("third_party/")
     }
-    fn ignore_include(&self, _: &str) -> bool {
-        false
+    fn ignore_include(&self, include: &str) -> bool {
+        include.contains(self.build_root)
+            || include.contains(self.spirv_headers_root)
+            || include.contains(self.spirv_tools_root)
+            || include.contains(self.llvm_project_root)
     }
     fn rework_include(&self, include: &str) -> String {
         include.to_string()
@@ -65,11 +98,18 @@ impl<'a> crate::project::Project<'a> for CLSPV<'a> {
     fn get_headers_to_generate(&self, headers: &HashSet<String>) -> HashSet<String> {
         let mut set = HashSet::new();
         for header in headers {
-            set.insert(header.clone());
+            if !header.contains(LLVM_PREFIX) {
+                set.insert(header.clone());
+            }
         }
         return set;
     }
     fn get_object_header_libs(&self) -> HashSet<String> {
-        return HashSet::new();
+        [
+            SPIRV_HEADERS.to_string(),
+            LLVM_HEADERS.to_string(),
+            CLANG_HEADERS.to_string(),
+        ]
+        .into()
     }
 }
