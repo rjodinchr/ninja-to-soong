@@ -1,7 +1,9 @@
 use std::collections::HashMap;
 use std::collections::HashSet;
 
-use crate::macros::error;
+use crate::project::Project;
+use crate::utils::add_slash_suffix;
+use crate::utils::error;
 
 #[derive(Debug)]
 pub struct BuildTarget {
@@ -146,23 +148,18 @@ impl BuildTarget {
         return defines;
     }
 
-    fn get_includes(
-        &self,
-        src_root: &str,
-        build_root: &str,
-        dst_build_prefix: &str,
-    ) -> HashSet<String> {
+    fn get_includes(&self, src_root: &str, project: &dyn Project) -> HashSet<String> {
         let mut includes: HashSet<String> = HashSet::new();
         let Some(incs) = self.variables.get("INCLUDES") else {
             return includes;
         };
         for inc in incs.split(" ") {
-            let llvm_build_root = build_root.to_string() + "external/clspv/third_party/llvm/";
-            if inc.contains(build_root) && !inc.contains(&llvm_build_root) {
+            if project.ignore_include(inc) {
                 continue;
             }
-            let inc = inc
-                .replace(build_root, dst_build_prefix)
+            let inc = project
+                .rework_include(inc)
+                .replace(&add_slash_suffix(src_root), "")
                 .replace(src_root, "");
 
             if let Some(stripped_inc) = inc.strip_prefix("-I") {
@@ -216,8 +213,7 @@ impl BuildTarget {
     pub fn get_compiler_target_info(
         &self,
         src_root: &str,
-        build_root: &str,
-        dst_build_prefix: &str,
+        project: &dyn Project,
     ) -> Result<(String, HashSet<String>, HashSet<String>), String> {
         let mut defines_no_assembly: HashSet<String> = HashSet::new();
         if self.rule.starts_with("ASM_COMPILER") {
@@ -237,8 +233,8 @@ impl BuildTarget {
         for def in defines_no_assembly {
             defines.insert(def);
         }
-        let includes = self.get_includes(src_root, build_root, dst_build_prefix);
-        let src = self.inputs[0].replace(src_root, "");
+        let includes = self.get_includes(src_root, project);
+        let src = self.inputs[0].replace(&add_slash_suffix(src_root), "");
         return Ok((src, includes, defines));
     }
 

@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 use std::collections::HashSet;
 
-use crate::macros::error;
+use crate::utils::error;
 
 #[derive(Debug)]
 pub struct SoongModule {
@@ -90,10 +90,6 @@ impl SoongModule {
     }
 
     pub fn print(mut self) -> Result<String, String> {
-        if let Some(set) = self.set_map.get_mut("cflags") {
-            set.insert("-Wno-error".to_string());
-            set.insert("-Wno-unreachable-code-loop-increment".to_string());
-        }
         let mut result = String::new();
         result += &self.name;
         result += " {\n";
@@ -114,7 +110,10 @@ impl SoongModule {
             "shared_libs",
             "static_libs",
             "local_include_dirs",
+            "export_include_dirs",
+            "header_libs",
             "generated_headers",
+            "visibility",
         ];
         for entry in sets {
             result += &self.print_set(entry);

@@ -2,7 +2,7 @@ use std::collections::HashSet;
 use std::fs::File;
 use std::io::Write;
 
-use crate::macros::error;
+use crate::utils::error;
 
 pub fn write_file(path: &str, content: String) -> Result<String, String> {
     match File::create(path) {

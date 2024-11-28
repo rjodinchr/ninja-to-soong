@@ -5,3 +5,7 @@ macro_rules! error {
     };
 }
 pub use error;
+
+pub fn add_slash_suffix(str: &str) -> String {
+    str.to_string() + "/"
+}

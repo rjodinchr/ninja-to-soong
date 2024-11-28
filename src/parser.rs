@@ -2,7 +2,7 @@ use std::collections::HashMap;
 use std::fs::File;
 use std::io::Read;
 
-use crate::macros::error;
+use crate::utils::error;
 use crate::target::BuildTarget;
 
 fn parse_output_section(section: &str) -> Result<(Vec<String>, Vec<String>), String> {
@@ -138,7 +138,7 @@ fn parse_build_target(line: &str, lines: &mut std::str::Lines<'_>) -> Result<Bui
 }
 
 pub fn parse_build_ninja(path: &str) -> Result<Vec<BuildTarget>, String> {
-    let ninja_file_path = &(path.to_string() + "build.ninja");
+    let ninja_file_path = &(path.to_string() + "/build.ninja");
     let mut file = match File::open(ninja_file_path) {
         Ok(file) => file,
         Err(err) => return error!(format!("Could not open '{ninja_file_path}': '{0}'", err)),
