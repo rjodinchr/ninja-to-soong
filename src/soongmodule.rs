@@ -21,10 +21,10 @@ impl SoongModule {
         }
     }
 
-    pub fn new_cc_library_headers(name: &str, include_dir: &str) -> Self {
+    pub fn new_cc_library_headers(name: &str, include_dirs: HashSet<String>) -> Self {
         let mut module = Self::new("cc_library_headers");
         module.add_str("name", name.to_string());
-        module.add_set("export_include_dirs", [include_dir.to_string()].into());
+        module.add_set("export_include_dirs", include_dirs);
         module.add_set("visibility", ["//visibility:public".to_string()].into());
         module
     }

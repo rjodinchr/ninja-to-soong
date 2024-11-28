@@ -14,7 +14,7 @@ pub const SPIRV_HEADERS: &str = "SPIRV-Headers";
 pub const LLVM_HEADERS: &str = "LLVM-Headers";
 pub const CLANG_HEADERS: &str = "CLANG-Headers";
 
-fn rework_name(origin: &str, from: &str, to: &str) -> String {
+pub fn rework_name(origin: &str, from: &str, to: &str) -> String {
     origin.replace(from, to).replace("/", "_").replace(".", "_")
 }
 

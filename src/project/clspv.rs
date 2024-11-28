@@ -5,6 +5,7 @@ use crate::target::BuildTarget;
 use crate::utils::*;
 
 const LLVM_PREFIX: &str = "third_party/llvm";
+const TARGET_PREFIX: &str = "clspv_";
 
 pub struct CLSPV<'a> {
     src_root: &'a str,
@@ -34,7 +35,7 @@ impl<'a> CLSPV<'a> {
 
 impl<'a> crate::project::Project<'a> for CLSPV<'a> {
     fn generate(self, targets: Vec<BuildTarget>) -> Result<String, String> {
-        let mut file = SoongFile::new(self.src_root, "", self.build_root, "clspv_");
+        let mut file = SoongFile::new(self.src_root, "", self.build_root, TARGET_PREFIX);
         if let Err(err) = file.generate(vec!["libclspv_core.a"], targets, &self) {
             return Err(err);
         }
@@ -65,6 +66,11 @@ impl<'a> crate::project::Project<'a> for CLSPV<'a> {
                     input.clone(),
                     ":".to_string() + &llvm_headers_name(LLVM_PREFIX, input),
                 ));
+            } else if !input.contains(self.src_root) {
+                generated_deps.insert((
+                    input.clone(),
+                    ":".to_string() + TARGET_PREFIX + &rework_name(input, self.build_root, ""),
+                ));
             } else {
                 filtered_inputs.insert(input.clone());
             }
@@ -78,7 +84,7 @@ impl<'a> crate::project::Project<'a> for CLSPV<'a> {
         return Ok((srcs, filtered_inputs, generated_deps));
     }
     fn get_default_defines(&self) -> HashSet<String> {
-        return HashSet::new();
+        return ["-Wno-unreachable-code-loop-increment".to_string()].into();
     }
     fn ignore_target(&self, target: &String) -> bool {
         target.starts_with("third_party/")

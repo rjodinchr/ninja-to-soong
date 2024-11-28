@@ -24,7 +24,7 @@ impl<'a> SpirvTools<'a> {
 
         if let Err(err) = spirv_headers.add_module(SoongModule::new_cc_library_headers(
             SPIRV_HEADERS,
-            "include",
+            ["include".to_string()].into(),
         )) {
             return Err(err);
         }

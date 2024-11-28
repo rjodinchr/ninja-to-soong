@@ -147,13 +147,18 @@ impl<'a> crate::project::Project<'a> for LLVM<'a> {
 
         if let Err(err) = file.add_module(SoongModule::new_cc_library_headers(
             LLVM_HEADERS,
-            "llvm/include",
+            [
+                "llvm/include".to_string(),
+                DST_BUILD_PREFIX.to_string() + "/include",
+                DST_BUILD_PREFIX.to_string() + "/tools/clang/include",
+            ]
+            .into(),
         )) {
             return Err(err);
         }
         if let Err(err) = file.add_module(SoongModule::new_cc_library_headers(
             CLANG_HEADERS,
-            "clang/include",
+            ["clang/include".to_string()].into(),
         )) {
             return Err(err);
         }
