@@ -7,7 +7,6 @@ use crate::target::BuildTarget;
 #[derive(Debug)]
 struct SoongFile<'a> {
     content: String,
-    sources: HashSet<String>,
     generated_headers: HashSet<String>,
     include_directories: HashSet<String>,
     targets_map: &'a HashMap<String, &'a BuildTarget>,
@@ -15,7 +14,6 @@ struct SoongFile<'a> {
     ndk_root: &'a str,
     build_root: &'a str,
     target_prefix: &'a str,
-    host_targets: bool,
     input_ref_for_genrule: &'a str,
     dst_build_prefix: &'a str,
 }
@@ -27,13 +25,11 @@ impl<'a> SoongFile<'a> {
         ndk_root: &'a str,
         build_root: &'a str,
         target_prefix: &'a str,
-        host_targets: bool,
         input_ref_for_genrule: &'a str,
         dst_build_prefix: &'a str,
     ) -> Self {
         SoongFile {
             content: String::new(),
-            sources: HashSet::new(),
             generated_headers: HashSet::new(),
             include_directories: HashSet::new(),
             targets_map,
@@ -41,39 +37,20 @@ impl<'a> SoongFile<'a> {
             ndk_root,
             build_root,
             target_prefix,
-            host_targets,
             input_ref_for_genrule,
             dst_build_prefix,
         }
     }
 
-    fn finish(self) -> (String, HashSet<String>, HashSet<String>, HashSet<String>) {
+    fn finish(self) -> (String, HashSet<String>, HashSet<String>) {
         (
             self.content,
-            self.sources,
             self.generated_headers,
             self.include_directories,
         )
     }
 
     fn generate_object(&mut self, name: &str, target: &BuildTarget) -> Result<String, String> {
-        let mut module = crate::soongmodule::SoongModule::new(name);
-        let copy_for_device = name == "cc_binary_host";
-        let optimize_for_size = name == "cc_library_static";
-        let name = if copy_for_device {
-            "HOST_".to_string() + &target.get_name(self.target_prefix)
-        } else {
-            target.get_name(self.target_prefix)
-        };
-        module.add_str("name", name.clone());
-        if name == "libOpenCL_so" {
-            module.add_str("stem", "libclvk".to_string());
-        }
-        if optimize_for_size {
-            module.add_bool("optimize_for_size", true);
-        }
-        module.add_bool("use_clang_lld", true);
-
         let mut includes: HashSet<String> = HashSet::new();
         let mut defines: HashSet<String> = HashSet::new();
         let mut srcs: HashSet<String> = HashSet::new();
@@ -96,55 +73,52 @@ impl<'a> SoongFile<'a> {
             for def in src_defines {
                 defines.insert(String::from("-D") + &def);
             }
-            self.sources.insert(src.clone());
             srcs.insert(src);
         }
-        module.add_set("srcs", srcs);
-        module.add_set("local_include_dirs", includes);
-        module.add_set("cflags", defines);
 
         let (version_script, link_flags) = target.get_link_flags(self.src_root);
-        module.add_set("ldflags", link_flags);
-        if let Some(vs) = version_script {
-            self.sources.insert(vs.clone());
-            module.add_str("version_script", vs);
-        }
 
         let (static_libs, shared_libs) =
-            match target.get_link_libraries(self.ndk_root, self.target_prefix) {
+            match target.get_link_libraries(self.ndk_root, self.target_prefix, self.targets_map) {
                 Ok(return_values) => return_values,
                 Err(err) => return Err(err),
             };
-        module.add_set("static_libs", static_libs);
-        module.add_set("shared_libs", shared_libs);
 
-        let generated_headers =
-            match target.get_generated_headers(self.targets_map, self.target_prefix) {
-                Ok(return_value) => return_value,
-                Err(err) => return Err(err),
-            };
-        module.add_set("generated_headers", generated_headers.clone());
-        for header in generated_headers {
-            self.generated_headers.insert(header);
-        }
-
-        let mut result = match module.print() {
+        let generated_headers = match target.get_generated_headers(self.targets_map) {
             Ok(return_value) => return_value,
             Err(err) => return Err(err),
         };
-
-        if copy_for_device {
-            let mut copy_module = crate::soongmodule::SoongModule::new("genrule");
-            copy_module.add_str("name", target.get_name(self.target_prefix));
-            copy_module.add_set("tools", [name.clone()].into());
-            copy_module.add_set("out", [target.get_name(self.target_prefix)].into());
-            copy_module.add_str("cmd", "cp $(location ".to_string() + &name + ") $(out)");
-            result += &match copy_module.print() {
-                Ok(return_value) => return_value,
-                Err(err) => return Err(err),
-            };
+        let mut generated_headers_filtered: HashSet<String> = HashSet::new();
+        for header in generated_headers {
+            if header.contains("external/clspv/third_party/llvm/") {
+                self.generated_headers.insert(header);
+            } else {
+                generated_headers_filtered.insert(match self.targets_map.get(&header) {
+                    Some(target_header) => target_header.get_name(self.target_prefix),
+                    None => return error!(format!("Could not find target for '{header}'")),
+                });
+            }
         }
-        return Ok(result);
+        let target_name = target.get_name(self.target_prefix);
+
+        let mut module = crate::soongmodule::SoongModule::new(name);
+        module.add_str("name", target_name.clone());
+        if target_name == "clvk_libOpenCL_so" {
+            module.add_str("stem", "libclvk".to_string());
+        }
+        if name == "cc_library_static" {
+            module.add_bool("optimize_for_size", true);
+        }
+        module.add_bool("use_clang_lld", true);
+        module.add_set("srcs", srcs);
+        module.add_set("local_include_dirs", includes);
+        module.add_set("cflags", defines);
+        module.add_set("ldflags", link_flags);
+        module.add_str("version_script", version_script);
+        module.add_set("static_libs", static_libs);
+        module.add_set("shared_libs", shared_libs);
+        module.add_set("generated_headers", generated_headers_filtered);
+        return module.print();
     }
 
     fn rework_output_path(output: &str) -> String {
@@ -156,39 +130,6 @@ impl<'a> SoongFile<'a> {
             output
         };
         return String::from(rework_output);
-    }
-
-    fn generate_simple_genrule(
-        &mut self,
-        target: &BuildTarget,
-        command: &str,
-        error_prefix: &str,
-    ) -> Result<String, String> {
-        let mut module = crate::soongmodule::SoongModule::new("cc_genrule");
-        module.add_str("name", target.get_name(self.target_prefix));
-        if self.host_targets {
-            module.add_bool("host_supported", true);
-        }
-
-        let inputs = target.get_inputs();
-        let outputs = target.get_outputs();
-        if inputs.len() != 1 || outputs.len() != 1 {
-            return error!(format!(
-                "{0} with wrong number of input/output: {target:#?}",
-                error_prefix,
-            ));
-        }
-        let input = &inputs[0];
-        let input_set: HashSet<String> = [if input == "bin/clang-20" {
-            ":".to_string() + &crate::target::rework_target_name(input.clone(), self.target_prefix)
-        } else {
-            input.replace(self.src_root, "")
-        }]
-        .into();
-        module.add_set("srcs", input_set);
-        module.add_set("out", [Self::rework_output_path(&outputs[0])].into());
-        module.add_str("cmd", command.to_string());
-        return module.print();
     }
 
     fn replace_output_in_command(command: String, output: &String) -> String {
@@ -204,13 +145,18 @@ impl<'a> SoongFile<'a> {
         let replace_input = String::from("$(location ") + &input.replace(self.src_root, "") + ")";
         return command.replace(input, &replace_input);
     }
-    fn replace_dep_in_command(&self, command: String, tool: &String, prefix: &str) -> String {
-        let replace_tool = "$(location :".to_string()
-            + &crate::target::rework_target_name(tool.clone(), self.target_prefix)
-            + ")";
+    fn replace_dep_in_command(
+        &self,
+        command: String,
+        tool: &String,
+        tool_target_name: &String,
+        prefix: &str,
+    ) -> String {
+        let replace_tool = "$(location ".to_string() + &tool_target_name + ")";
         let tool_with_prefix = String::from(prefix) + tool;
-        let command = command.replace(&tool_with_prefix, &replace_tool);
-        return command.replace(tool, &replace_tool);
+        return command
+            .replace(&tool_with_prefix, &replace_tool)
+            .replace(tool, &replace_tool);
     }
     fn replace_source_root_in_command(
         &self,
@@ -226,7 +172,7 @@ impl<'a> SoongFile<'a> {
         command: String,
         inputs: &HashSet<&String>,
         outputs: &Vec<String>,
-        generated_deps: &HashSet<&String>,
+        generated_deps: &HashSet<(String, String)>,
     ) -> Result<(String, bool), String> {
         let mut command = command.replace("/usr/bin/python3 ", "");
         command = command.replace(self.build_root, "");
@@ -236,8 +182,9 @@ impl<'a> SoongFile<'a> {
         for input in inputs.clone() {
             command = self.replace_input_in_command(command, input);
         }
-        for dep in generated_deps {
-            command = self.replace_dep_in_command(command, dep, self.target_prefix);
+        for (tool, tool_target_name) in generated_deps {
+            command =
+                self.replace_dep_in_command(command, tool, tool_target_name, self.target_prefix);
         }
         let previous_command = command.clone();
         command =
@@ -250,19 +197,26 @@ impl<'a> SoongFile<'a> {
         target: &BuildTarget,
         command: String,
     ) -> Result<String, String> {
-        let mut module = crate::soongmodule::SoongModule::new("cc_genrule");
-        module.add_str("name", target.get_name(self.target_prefix));
-        if self.host_targets {
-            module.add_bool("host_supported", true);
-        }
-
         let mut filtered_inputs: HashSet<&String> = HashSet::new();
-        let mut generated_deps: HashSet<&String> = HashSet::new();
+        let mut generated_deps: HashSet<(String, String)> = HashSet::new();
         for input in target.get_inputs() {
             if input.starts_with(self.src_root) {
                 filtered_inputs.insert(input);
             } else {
-                generated_deps.insert(input);
+                let llvm_prefix = "external/clspv/third_party/llvm/";
+                let dep = if input.contains(llvm_prefix) {
+                    input.replace(
+                        llvm_prefix,
+                        &(self.dst_build_prefix.to_string() + llvm_prefix),
+                    )
+                } else {
+                    let dep_target_name = match self.targets_map.get(input) {
+                        Some(target) => target.get_name(&self.target_prefix),
+                        None => return error!(format!("Could not get target for '{input}'")),
+                    };
+                    ":".to_string() + &dep_target_name
+                };
+                generated_deps.insert((input.clone(), dep));
             }
         }
         let outputs = target.get_outputs();
@@ -281,17 +235,18 @@ impl<'a> SoongFile<'a> {
         for input in filtered_inputs {
             srcs_set.insert(input.replace(self.src_root, ""));
         }
-        for dep in generated_deps {
-            srcs_set.insert(
-                ":".to_string()
-                    + &crate::target::rework_target_name(dep.clone(), self.target_prefix),
-            );
+        for (_, dep) in generated_deps {
+            srcs_set.insert(dep);
         }
-        module.add_set("srcs", srcs_set);
+        
         let mut out_set: HashSet<String> = HashSet::new();
         for output in outputs {
             out_set.insert(Self::rework_output_path(output));
         }
+
+        let mut module = crate::soongmodule::SoongModule::new("cc_genrule");
+        module.add_str("name", target.get_name(self.target_prefix));
+        module.add_set("srcs", srcs_set);
         module.add_set("out", out_set);
         module.add_str("cmd", command.to_string());
         return module.print();
@@ -300,34 +255,11 @@ impl<'a> SoongFile<'a> {
     fn generate_target(&mut self, target: &BuildTarget) -> Result<(), String> {
         let rule = target.get_rule();
         let result = if rule.starts_with("CXX_SHARED_LIBRARY") {
-            self.generate_object(
-                if self.host_targets {
-                    "cc_libary_host_shared"
-                } else {
-                    "cc_library_shared"
-                },
-                target,
-            )
+            self.generate_object("cc_library_shared", target)
         } else if rule.starts_with("CXX_STATIC_LIBRARY") {
-            self.generate_object(
-                if self.host_targets {
-                    "cc_library_host_static"
-                } else {
-                    "cc_library_static"
-                },
-                target,
-            )
+            self.generate_object("cc_library_static", target)
         } else if rule.starts_with("CXX_EXECUTABLE") {
-            self.generate_object(
-                if self.host_targets {
-                    "cc_binary_host"
-                } else {
-                    "cc_binary"
-                },
-                target,
-            )
-        } else if rule.starts_with("CMAKE_SYMLINK") {
-            self.generate_simple_genrule(target, "ls -s $(in) $(out)", "Symlink")
+            self.generate_object("cc_binary", target)
         } else if rule.starts_with("CUSTOM_COMMAND") {
             let command = match target.get_command() {
                 Ok(option) => match option {
@@ -336,11 +268,7 @@ impl<'a> SoongFile<'a> {
                 },
                 Err(err) => return Err(err),
             };
-            if command == crate::target::COPY_TARGET {
-                self.generate_simple_genrule(target, "cp $(in) $(out)", "Copy")
-            } else {
-                self.generate_custom_command(target, command)
-            }
+            self.generate_custom_command(target, command)
         } else if rule.starts_with("CXX_COMPILER")
             || rule.starts_with("C_COMPILER")
             || rule.starts_with("ASM_COMPILER")
@@ -378,10 +306,9 @@ pub fn generate(
     ndk_root: &str,
     build_root: &str,
     target_prefix: &str,
-    host_targets: bool,
     input_ref_for_genrule: &str,
     dst_build_prefix: &str,
-) -> Result<(String, HashSet<String>, HashSet<String>, HashSet<String>), String> {
+) -> Result<(String, HashSet<String>, HashSet<String>), String> {
     let mut target_seen: HashSet<String> = HashSet::new();
     let mut target_to_generate = entry_targets
         .into_iter()
@@ -396,13 +323,15 @@ pub fn generate(
         ndk_root,
         build_root,
         target_prefix,
-        host_targets,
         input_ref_for_genrule,
         dst_build_prefix,
     );
 
     while let Some(input) = target_to_generate.pop() {
-        if target_seen.contains(&input) || input.contains("llvm/bin") {
+        if target_seen.contains(&input)
+            || (input.contains("external/clspv/third_party/llvm")
+                && !input.contains("external/clspv/third_party/llvm/lib/"))
+        {
             continue;
         }
         let Some(target) = targets_map.get(&input) else {
@@ -418,13 +347,5 @@ pub fn generate(
             return Err(err);
         }
     }
-    // let _ = crate::filesystem::write_file(
-    //     if host_targets {
-    //         "host_targets.txt"
-    //     } else {
-    //         "targets.txt"
-    //     },
-    //     format!("{target_seen:#?}"),
-    // );
     return Ok(soong_file.finish());
 }

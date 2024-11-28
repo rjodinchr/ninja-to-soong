@@ -1,5 +1,4 @@
 use std::collections::HashSet;
-use std::ffi::OsString;
 use std::fs::File;
 use std::io::Write;
 
@@ -42,78 +41,13 @@ pub fn copy_files(
             return Err(err);
         }
     }
-    return Ok(format!("Files created successfully in '{dst_root}' from '{src_root}'"));
+    return Ok(format!(
+        "Files created successfully in '{dst_root}' from '{src_root}'"
+    ));
 }
 
-fn header_to_copy(name: OsString) -> bool {
-    let name = name.to_str().unwrap();
-    return name.ends_with(".inc")
-        || name.ends_with(".def")
-        || name.ends_with(".h")
-        || name.ends_with(".hpp")
-        || name.ends_with(".hpp11");
-}
-
-fn copy_headers_from(include_dir: &String, src_root: &str, dst_root: &str) -> Result<(), String> {
-    let directory_path = src_root.to_string() + include_dir;
-    let Ok(entries) = std::fs::read_dir(&directory_path) else {
-        return Ok(());
-    };
-    for entry in entries {
-        let Ok(item) = entry else {
-            return error!(format!("Could not read entry in {directory_path}"));
-        };
-        let Ok(file_type) = item.file_type() else {
-            return error!(format!("Could not get file type for {item:#?}"));
-        };
-        if file_type.is_dir() {
-            let dir = include_dir.clone() + "/" + item.file_name().to_str().unwrap();
-            if let Err(err) = copy_headers_from(&dir, src_root, dst_root) {
-                return Err(err);
-            }
-        } else if file_type.is_file() && header_to_copy(item.file_name()) {
-            if let Err(err) = copy_file(
-                &(item.file_name().to_str().unwrap().to_string()),
-                &(item
-                    .path()
-                    .to_str()
-                    .unwrap()
-                    .rsplit_once("/")
-                    .unwrap()
-                    .0
-                    .to_string()
-                    + "/"),
-                &(dst_root.to_string() + include_dir + "/"),
-            ) {
-                return Err(err);
-            }
-        }
-    }
-    return Ok(());
-}
-
-pub fn copy_include_directories(
-    include_directories: &HashSet<String>,
-    src_root: &str,
-    dst_root: &str,
-    dst_build_prefix: &str
-) -> Result<String, String> {
-    for include_dir in include_directories {
-        if include_dir.contains(dst_build_prefix) {
-            continue;
-        }
-        if let Err(err) = copy_headers_from(&include_dir, src_root, dst_root) {
-            return Err(err);
-        }
-    }
-    return Ok(format!("Include directories created successfully!"));
-}
-
-pub fn touch_include_directories(
-    include_directories: &HashSet<String>,
-    dst_root: &str,
-) -> Result<String, String> {
-    for include_dir in include_directories {
+pub fn touch_directories(directories: &HashSet<String>, dst_root: &str) -> Result<String, String> {
+    for include_dir in directories {
         let dir = dst_root.to_string() + include_dir;
         if touch::exists(&dir) {
             continue;

@@ -3,14 +3,6 @@ use std::collections::HashSet;
 
 use crate::macros::error;
 
-pub const COPY_TARGET: &str = "cmake_copy_if_different";
-
-pub fn rework_target_name(target_name: String, prefix: &str) -> String {
-    return (prefix.to_string() + &target_name)
-        .replace("/", "_")
-        .replace(".", "_");
-}
-
 #[derive(Debug)]
 pub struct BuildTarget {
     rule: String,
@@ -52,7 +44,9 @@ impl BuildTarget {
     }
 
     pub fn get_name(&self, prefix: &str) -> String {
-        return rework_target_name(self.outputs[0].to_string(), prefix);
+        return (prefix.to_string() + &self.outputs[0])
+            .replace("/", "_")
+            .replace(".", "_");
     }
 
     pub fn get_outputs(&self) -> &Vec<String> {
@@ -84,15 +78,15 @@ impl BuildTarget {
         return outputs;
     }
 
-    pub fn get_link_flags(&self, src_root: &str) -> (Option<String>, HashSet<String>) {
+    pub fn get_link_flags(&self, src_root: &str) -> (String, HashSet<String>) {
         let mut link_flags: HashSet<String> = HashSet::new();
-        let mut version_script = None;
+        let mut version_script = String::new();
         if let Some(flags) = self.variables.get("LINK_FLAGS") {
             for flag in flags.split(" ") {
                 if flag.contains("-Bsymbolic") {
                     link_flags.insert(flag.replace(src_root, ""));
                 } else if let Some(vs) = flag.strip_prefix("-Wl,--version-script=") {
-                    version_script = Some(vs.replace(src_root, ""));
+                    version_script = vs.replace(src_root, "");
                 }
             }
         }
@@ -103,6 +97,7 @@ impl BuildTarget {
         &self,
         ndk_root: &str,
         target_prefix: &str,
+        targets_map: &HashMap<String, &BuildTarget>,
     ) -> Result<(HashSet<String>, HashSet<String>), String> {
         let mut static_libraries: HashSet<String> = HashSet::new();
         let mut shared_libraries: HashSet<String> = HashSet::new();
@@ -120,7 +115,10 @@ impl BuildTarget {
                         .replace(".a", "")
                         .replace(".so", "")
                 } else {
-                    rework_target_name(lib.to_string(), target_prefix)
+                    match targets_map.get(lib) {
+                        Some(target_lib) => target_lib.get_name(target_prefix),
+                        None => return error!(format!("Could not find target for '{lib}'")),
+                    }
                 };
                 if lib.ends_with(".a") {
                     static_libraries.insert(lib_name);
@@ -159,12 +157,14 @@ impl BuildTarget {
             return includes;
         };
         for inc in incs.split(" ") {
-            if inc.contains(build_root) {
+            let llvm_build_root = build_root.to_string() + "external/clspv/third_party/llvm/";
+            if inc.contains(build_root) && !inc.contains(&llvm_build_root) {
                 continue;
             }
             let inc = inc
                 .replace(build_root, dst_build_prefix)
                 .replace(src_root, "");
+
             if let Some(stripped_inc) = inc.strip_prefix("-I") {
                 includes.insert(stripped_inc.to_string());
             } else if inc == "-isystem" {
@@ -179,7 +179,6 @@ impl BuildTarget {
     pub fn get_generated_headers(
         &self,
         targets_map: &HashMap<String, &BuildTarget>,
-        target_prefix: &str,
     ) -> Result<HashSet<String>, String> {
         let mut generated_headers: HashSet<String> = HashSet::new();
         let mut target_seen: HashSet<String> = HashSet::new();
@@ -202,7 +201,7 @@ impl BuildTarget {
                 match target.get_command() {
                     Ok(option) => match option {
                         Some(_) => {
-                            generated_headers.insert(target.get_name(target_prefix));
+                            generated_headers.insert(target_name);
                         }
                         None => continue,
                     },
@@ -255,9 +254,7 @@ impl BuildTarget {
             ));
         }
         let command = split.nth(1).unwrap();
-        return Ok(if command.contains("cmake -E copy_if_different") {
-            Some(COPY_TARGET.to_string())
-        } else if command.contains("/usr/bin/cmake") {
+        return Ok(if command.contains("/usr/bin/cmake") {
             None
         } else {
             Some(command.to_string())
