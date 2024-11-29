@@ -16,22 +16,25 @@ jobs:
       - name: Checkout repos
         shell: bash
         run: |
-          mkdir external
-          for repo in ./tests/*
+          set -x
+          android_base=$(mktemp -d)
+          external=${android_base}/external
+          mkdir ${external}
+          for repo in tests/*
           do
             name=$(basename ${repo})
-            git init external/${name}
-            git -C external/${name} remote add origin $(cat ${repo}/REPO)
-            git -C external/${name} fetch --deps 1 origin $(cat ${repo}/VERSION)
-            git -C external/${name} checkout $(cat ${repo}/VERSION)
+            git init ${external}/${name}
+            git -C ${external}/${name} remote add origin $(cat ${repo}/REPO)
+            git -C ${external}/${name} fetch --deps 1 origin $(cat ${repo}/VERSION)
+            git -C ${external}/${name} checkout $(cat ${repo}/VERSION)
           done
           ndk=android-ndk-r27c
           ndk_zip=${ndk}-linux.zip
           wget https://dl.google.com/android/repository/${ndk-zip}
           unzip -q ${ndk-zip} -d ${ndk}
-          cargo run -- $(pwd) $(pwd)/${ndk} all
-          for repo in ./tests/*
+          cargo run -- ${android_base} $(pwd)/${ndk} all
+          for repo in tests/*
           do
             name=$(basename ${repo})
-            diff ${repo}/Android.bp external/${repo}/Android.bp
+            diff ${repo}/Android.bp ${external}/${name}/Android.bp
           done
