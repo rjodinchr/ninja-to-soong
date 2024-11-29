@@ -45,10 +45,7 @@ fn parse_input_and_dep_section(
         return error!(format!("parse_input_and_dep_section failed: '{section}'"));
     }
 
-    let (target_rule, target_inputs) = match parse_input_and_rule_section(split.nth(0).unwrap()) {
-        Ok(return_values) => return_values,
-        Err(err) => return Err(err),
-    };
+    let (target_rule, target_inputs) = parse_input_and_rule_section(split.nth(0).unwrap())?;
 
     let mut target_implicit_dependencies: Vec<String> = Vec::new();
     if let Some(implicit_dependencies) = split.next() {
@@ -69,10 +66,7 @@ fn parse_input_section(
     }
 
     let (target_rule, target_inputs, target_implicit_dependencies) =
-        match parse_input_and_dep_section(split.nth(0).unwrap()) {
-            Ok(return_values) => return_values,
-            Err(err) => return Err(err),
-        };
+        parse_input_and_dep_section(split.nth(0).unwrap())?;
 
     let mut target_order_only_dependencies: Vec<String> = Vec::new();
     if let Some(order_only_dependencies) = split.next() {
@@ -102,16 +96,9 @@ fn parse_build_target(line: &str, lines: &mut std::str::Lines<'_>) -> Result<Nin
         ));
     }
 
-    let (target_outputs, target_implicit_outputs) =
-        match parse_output_section(split.nth(0).unwrap()) {
-            Ok(return_values) => return_values,
-            Err(err) => return Err(err),
-        };
+    let (target_outputs, target_implicit_outputs) = parse_output_section(split.nth(0).unwrap())?;
     let (target_rule, target_inputs, target_implicit_dependencies, target_order_only_dependencies) =
-        match parse_input_section(split.nth(0).unwrap()) {
-            Ok(return_values) => return_values,
-            Err(err) => return Err(err),
-        };
+        parse_input_section(split.nth(0).unwrap())?;
 
     let mut target_variables: HashMap<String, String> = HashMap::new();
     while let Some(next_line) = lines.next() {
@@ -137,9 +124,9 @@ fn parse_build_target(line: &str, lines: &mut std::str::Lines<'_>) -> Result<Nin
     ));
 }
 
-pub fn parse_build_ninja(path: &str) -> Result<Vec<NinjaTarget>, String> {
-    let ninja_file_path = &(path.to_string() + "/build.ninja");
-    let mut file = match File::open(ninja_file_path) {
+pub fn parse_build_ninja(path: String) -> Result<Vec<NinjaTarget>, String> {
+    let ninja_file_path = path + "/build.ninja";
+    let mut file = match File::open(&ninja_file_path) {
         Ok(file) => file,
         Err(err) => return error!(format!("Could not open '{ninja_file_path}': '{0}'", err)),
     };

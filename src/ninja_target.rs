@@ -196,14 +196,11 @@ impl NinjaTarget {
             }
 
             if target.rule == "CUSTOM_COMMAND" {
-                match target.get_command() {
-                    Ok(option) => match option {
-                        Some(_) => {
-                            generated_headers.insert(target_name);
-                        }
-                        None => continue,
-                    },
-                    Err(err) => return Err(err),
+                match target.get_command()? {
+                    Some(_) => {
+                        generated_headers.insert(target_name);
+                    }
+                    None => continue,
                 }
             }
         }

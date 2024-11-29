@@ -6,93 +6,51 @@ mod soong_package;
 mod utils;
 
 use crate::project::Project;
+use crate::utils::*;
 
-fn main() {
+fn main() -> Result<(), String> {
     let args: Vec<String> = std::env::args().collect();
 
-    let number_common_arg = 5;
+    let number_common_arg = 4;
     if args.len() < number_common_arg {
-        println!(
-            "USAGE: {0} <project> <ndk_directory> <project_source_directory> <build_ninja_source_directory> [<project_arguments>...]",
+        return Err(format!(
+            "USAGE: {0} <android_dir> <ndk_r27c_dir> [<projects>]",
             args[0]
-        );
-        return;
+        ));
     }
-    let project = &args[1];
-    let ndk_directory = &args[2];
-    let project_source_directory = &args[3];
-    let build_source_directory = &args[4];
+    let android_dir = &args[1];
+    let ndk_dir = &args[2];
 
-    let targets = match parser::parse_build_ninja(&(build_source_directory)) {
-        Ok(targets) => targets,
-        Err(err) => {
-            println!("Could not parse build.ninja: '{err}'");
-            return;
-        }
-    };
-    match if project == "spirvtools" {
-        if args.len() < number_common_arg + 1 {
-            println!("USAGE: {0} spirvtools <ndk_directory> <project_source_directory> <build_ninja_source_directory> <spirv_headers_directory>", args[0]);
-            return;
-        }
-        let spirv_headers_directory = &args[number_common_arg];
-        project::spirv_tools::SpirvTools::new(
-            &project_source_directory,
-            &build_source_directory,
-            &ndk_directory,
-            spirv_headers_directory,
-        )
-        .generate(targets)
-    } else if project == "spirvheaders" {
-        if args.len() < number_common_arg + 1 {
-            println!("USAGE: {0} spirvtools <ndk_directory> <project_source_directory> <build_ninja_source_directory> <spirv_tools_directory>", args[0]);
-            return;
-        }
-        let spirv_tools_directory = &args[number_common_arg];
-        project::spirv_headers::SpirvHeaders::new(
-            &project_source_directory,
-            &build_source_directory,
-            &ndk_directory,
-            spirv_tools_directory,
-        )
-        .generate(targets)
-    } else if project == "llvm" {
-        project::llvm::LLVM::new(
-            &project_source_directory,
-            &build_source_directory,
-            &ndk_directory,
-        )
-        .generate(targets)
-    } else if project == "clspv" {
-        if args.len() < number_common_arg + 2 {
-            println!("USAGE: {0} clspv <ndk_directory> <project_source_directory> <build_ninja_source_directory> <spirv_headers_directory> <llvm_project_directory>", args[0]);
-            return;
-        }
-        let spirv_headers_directory = &args[number_common_arg];
-        let llvm_project_directory = &args[number_common_arg + 1];
-        project::clspv::CLSPV::new(
-            &project_source_directory,
-            &build_source_directory,
-            &ndk_directory,
-            spirv_headers_directory,
-            llvm_project_directory,
-        )
-        .generate(targets)
-    } else if project == "clvk" {
-        project::clvk::CLVK::new(
-            &project_source_directory,
-            &build_source_directory,
-            &ndk_directory,
-        )
-        .generate(targets)
-    } else {
-        println!("unknown project '{project}'");
-        return;
-    } {
-        Ok(message) => println!("{message}"),
-        Err(err) => {
-            println!("{err}");
-            return;
+    if ndk_dir.rsplit_once("/").unwrap().1 != "android-ndk-r27c" {
+        println!("WARN: ninja-to-soong expect to use 'android-ndk-r27c', which does not seem to be the ndk provided");
+    }
+
+    let temp_path = std::env::temp_dir().join("ninja-to-soong");
+    let temp_dir = temp_path.to_str().unwrap();
+
+    let spirv_tools = project::spirv_tools::SpirvTools::new(&android_dir, temp_dir, &ndk_dir);
+    let spirv_headers =
+        project::spirv_headers::SpirvHeaders::new(&android_dir, &ndk_dir, &spirv_tools);
+    let llvm = project::llvm::LLVM::new(&android_dir, temp_dir, &ndk_dir);
+    let clspv = project::clspv::CLSPV::new(&android_dir, temp_dir, &ndk_dir);
+    let clvk = project::clvk::CLVK::new(&android_dir, temp_dir, &ndk_dir);
+
+    let all_projects: Vec<&dyn Project> = vec![&spirv_tools, &spirv_headers, &llvm, &clspv, &clvk];
+
+    let first_project_index = number_common_arg - 1;
+    for project in all_projects {
+        if args[first_project_index] == "all"
+            || args[first_project_index..].contains(&project.get_name().to_string())
+        {
+            println!("\n############## {PRINT_BANNER} ##############");
+            println!("{PRINT_BANNER} Generating '{0}'", project.get_name());
+            println!("{PRINT_BANNER} \tget build directory...");
+            let build_directory = project.get_build_directory()?;
+            println!("{PRINT_BANNER} \tparsing build.ninja...");
+            let targets = crate::parser::parse_build_ninja(build_directory)?;
+            println!("{PRINT_BANNER} \tgenerating soong package...");
+            println!("{PRINT_BANNER} \t\t{0}", project.generate(targets)?);
         }
     }
+    Ok(())
 }

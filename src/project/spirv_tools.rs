@@ -6,31 +6,28 @@ use crate::soong_package::SoongPackage;
 use crate::utils::*;
 
 pub struct SpirvTools<'a> {
-    src_root: &'a str,
-    build_root: &'a str,
+    src_root: String,
+    build_root: String,
     ndk_root: &'a str,
-    spirv_headers_root: &'a str,
+    spirv_headers_root: String,
 }
 
+const SPIRV_TOOLS_PROJECT_NAME: &str = "spirv-tools";
+
 impl<'a> SpirvTools<'a> {
-    pub fn new(
-        src_root: &'a str,
-        build_root: &'a str,
-        ndk_root: &'a str,
-        spirv_headers_root: &'a str,
-    ) -> Self {
+    pub fn new(android_root: &'a str, temp_dir: &'a str, ndk_root: &'a str) -> Self {
         SpirvTools {
-            src_root,
-            build_root,
+            src_root: spirv_tools_dir(android_root),
+            build_root: temp_dir.to_string() + "/" + SPIRV_TOOLS_PROJECT_NAME,
             ndk_root,
-            spirv_headers_root,
+            spirv_headers_root: spirv_headers_dir(android_root),
         }
     }
     fn generate_package(&self, targets: Vec<NinjaTarget>) -> Result<SoongPackage, String> {
         let mut package = SoongPackage::new(
-            self.src_root,
+            &self.src_root,
             self.ndk_root,
-            self.build_root,
+            &self.build_root,
             "SPIRV-Tools_",
             "//visibility:public",
             "SPDX-license-identifier-Apache-2.0",
@@ -54,7 +51,7 @@ impl<'a> SpirvTools<'a> {
 
         return Ok(package);
     }
-    pub fn get_generated_deps(self, targets: Vec<NinjaTarget>) -> Result<HashSet<String>, String> {
+    pub fn get_generated_deps(&self, targets: Vec<NinjaTarget>) -> Result<HashSet<String>, String> {
         let package = match self.generate_package(targets) {
             Ok(package) => package,
             Err(err) => return Err(err),
@@ -64,12 +61,24 @@ impl<'a> SpirvTools<'a> {
 }
 
 impl<'a> crate::project::Project<'a> for SpirvTools<'a> {
-    fn generate(self, targets: Vec<NinjaTarget>) -> Result<String, String> {
+    fn get_name(&self) -> String {
+        SPIRV_TOOLS_PROJECT_NAME.to_string()
+    }
+    fn generate(&self, targets: Vec<NinjaTarget>) -> Result<String, String> {
         let package = match self.generate_package(targets) {
             Ok(package) => package,
             Err(err) => return Err(err),
         };
         return package.write();
+    }
+    fn get_build_directory(&self) -> Result<String, String> {
+        cmake_configure(
+            &self.src_root,
+            &self.build_root,
+            self.ndk_root,
+            vec![&("-DSPIRV-Headers_SOURCE_DIR=".to_string() + &self.spirv_headers_root)],
+        )?;
+        return Ok(self.build_root.clone());
     }
     fn parse_custom_command_inputs(
         &self,
@@ -80,17 +89,17 @@ impl<'a> crate::project::Project<'a> for SpirvTools<'a> {
         let mut generated_deps: HashSet<(String, String)> = HashSet::new();
 
         for input in inputs {
-            if input.contains(self.spirv_headers_root) {
+            if input.contains(&self.spirv_headers_root) {
                 generated_deps.insert((
                     input.clone(),
-                    ":".to_string() + &spirv_headers_name(self.spirv_headers_root, input),
+                    ":".to_string() + &spirv_headers_name(&self.spirv_headers_root, input),
                 ));
             } else {
                 filtered_inputs.insert(input.clone());
             }
         }
         for input in &filtered_inputs {
-            srcs.insert(input.replace(&add_slash_suffix(self.src_root), ""));
+            srcs.insert(input.replace(&add_slash_suffix(&self.src_root), ""));
         }
         for (_, dep) in &generated_deps {
             srcs.insert(dep.clone());
@@ -101,7 +110,7 @@ impl<'a> crate::project::Project<'a> for SpirvTools<'a> {
         ["-Wno-implicit-fallthrough".to_string()].into()
     }
     fn ignore_include(&self, include: &str) -> bool {
-        include.contains(self.build_root) || include.contains(self.spirv_headers_root)
+        include.contains(&self.build_root) || include.contains(&self.spirv_headers_root)
     }
     fn ignore_define(&self, _define: &str) -> bool {
         true

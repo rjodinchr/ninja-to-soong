@@ -5,44 +5,36 @@ use crate::soong_package::SoongPackage;
 use crate::utils::*;
 
 pub struct SpirvHeaders<'a> {
-    src_root: &'a str,
-    build_root: &'a str,
+    src_root: String,
     ndk_root: &'a str,
-    spirv_tools_root: &'a str,
+    spirv_tools: &'a SpirvTools<'a>,
 }
 
+const SPIRV_HEADERS_PROJECT_NAME: &str = "spirv-headers";
+
 impl<'a> SpirvHeaders<'a> {
-    pub fn new(
-        src_root: &'a str,
-        build_root: &'a str,
-        ndk_root: &'a str,
-        spirv_tools_root: &'a str,
-    ) -> Self {
+    pub fn new(android_root: &'a str, ndk_root: &'a str, spirv_tools: &'a SpirvTools) -> Self {
         SpirvHeaders {
-            src_root,
-            build_root,
+            src_root: spirv_headers_dir(android_root),
             ndk_root,
-            spirv_tools_root,
+            spirv_tools,
         }
     }
 }
 
 impl<'a> crate::project::Project<'a> for SpirvHeaders<'a> {
-    fn generate(self, targets: Vec<NinjaTarget>) -> Result<String, String> {
-        let spirvtools = SpirvTools::new(
-            self.spirv_tools_root,
-            self.build_root,
-            self.ndk_root,
-            self.src_root,
-        );
-        let mut files = match spirvtools.get_generated_deps(targets) {
+    fn get_name(&self) -> String {
+        SPIRV_HEADERS_PROJECT_NAME.to_string()
+    }
+    fn generate(&self, targets: Vec<NinjaTarget>) -> Result<String, String> {
+        let mut files = match self.spirv_tools.get_generated_deps(targets) {
             Ok(files) => files,
             Err(err) => return Err(err),
         };
         let mut package = SoongPackage::new(
             &self.src_root,
             &self.ndk_root,
-            &self.build_root,
+            "",
             "SPIRV-Headers_",
             "//visibility:public",
             "SPDX-license-identifier-MIT",
@@ -59,12 +51,15 @@ impl<'a> crate::project::Project<'a> for SpirvHeaders<'a> {
         sorted.sort();
         for file in sorted {
             package.add_module(SoongModule::new_copy_genrule(
-                spirv_headers_name(self.src_root, &file),
-                file.replace(&add_slash_suffix(self.src_root), ""),
+                spirv_headers_name(&self.src_root, &file),
+                file.replace(&add_slash_suffix(&self.src_root), ""),
                 file.rsplit_once("/").unwrap().1.to_string(),
             ));
         }
 
         return package.write();
+    }
+    fn get_build_directory(&self) -> Result<String, String> {
+        return self.spirv_tools.get_build_directory();
     }
 }

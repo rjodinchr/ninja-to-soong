@@ -6,6 +6,7 @@ use crate::soong_package::SoongPackage;
 use crate::utils::*;
 
 const CMAKE_GENERATED: &str = "cmake_generated";
+const LLVM_PROJECT_NAME: &str = "llvm";
 
 fn copy_files(files: HashSet<String>, src_root: &str, dst_root: &str) -> Result<String, String> {
     for file in files {
@@ -20,7 +21,7 @@ fn copy_files(files: HashSet<String>, src_root: &str, dst_root: &str) -> Result<
         }
     }
     return Ok(format!(
-        "Files created successfully in '{dst_root}' from '{src_root}'"
+        "Files created successfully in '{dst_root}' from '{src_root}'!"
     ));
 }
 
@@ -40,28 +41,40 @@ fn touch_directories(directories: &HashSet<String>, dst_root: &str) -> Result<St
     return Ok(format!("Touch include directories successfully!"));
 }
 
+fn remove_directory(directory: String) -> Result<String, String> {
+    if touch::exists(&directory) {
+        if let Err(err) = std::fs::remove_dir_all(&directory) {
+            return error!(format!("remove_dir_all failed: {err}"));
+        }
+    }
+    return Ok(format!("'{directory}' removed successfully!"));
+}
+
 pub struct LLVM<'a> {
-    src_root: &'a str,
-    build_root: &'a str,
+    src_root: String,
+    build_root: String,
     ndk_root: &'a str,
 }
 
 impl<'a> LLVM<'a> {
-    pub fn new(src_root: &'a str, build_root: &'a str, ndk_root: &'a str) -> Self {
+    pub fn new(android_root: &'a str, temp_dir: &'a str, ndk_root: &'a str) -> Self {
         LLVM {
-            src_root,
-            build_root,
+            src_root: llvm_project_dir(android_root),
+            build_root: temp_dir.to_string() + "/" + LLVM_PROJECT_NAME,
             ndk_root,
         }
     }
 }
 
 impl<'a> crate::project::Project<'a> for LLVM<'a> {
-    fn generate(self, targets: Vec<NinjaTarget>) -> Result<String, String> {
+    fn get_name(&self) -> String {
+        LLVM_PROJECT_NAME.to_string()
+    }
+    fn generate(&self, targets: Vec<NinjaTarget>) -> Result<String, String> {
         let mut package = SoongPackage::new(
-            self.src_root,
+            &self.src_root,
             self.ndk_root,
-            self.build_root,
+            &self.build_root,
             "llvm-project_",
             "//visibility:public",
             "SPDX-license-identifier-Apache-2.0",
@@ -136,22 +149,12 @@ impl<'a> crate::project::Project<'a> for LLVM<'a> {
                 "libclangSupport.a",
             ],
             targets,
-            &self,
+            self,
         ) {
             return Err(err);
         }
         let mut generated_deps = package.get_generated_deps();
         let include_directories = package.get_include_directories();
-
-        let dirs_to_remove = vec![CMAKE_GENERATED];
-        for dir_to_remove in dirs_to_remove {
-            let dir = add_slash_suffix(self.src_root) + dir_to_remove;
-            if touch::exists(&dir) {
-                if let Err(err) = std::fs::remove_dir_all(&dir) {
-                    return error!(format!("remove_dir_all failed: {err}"));
-                }
-            }
-        }
 
         let missing_generated_deps = vec![
             "include/llvm/Config/llvm-config.h",
@@ -173,18 +176,23 @@ impl<'a> crate::project::Project<'a> for LLVM<'a> {
         for header in missing_generated_deps {
             generated_deps.insert(header.to_string());
         }
-        match copy_files(
-            generated_deps,
-            &add_slash_suffix(self.build_root),
-            &(add_slash_suffix(self.src_root) + &add_slash_suffix(CMAKE_GENERATED)),
-        ) {
-            Ok(msg) => println!("{msg}"),
-            Err(err) => return Err(err),
-        }
-        match touch_directories(&include_directories, &add_slash_suffix(self.src_root)) {
-            Ok(msg) => println!("{msg}"),
-            Err(err) => return Err(err),
-        }
+
+        println!(
+            "{PRINT_BANNER} \t\t{0}",
+            remove_directory(add_slash_suffix(&self.src_root) + CMAKE_GENERATED)?
+        );
+        println!(
+            "{PRINT_BANNER} \t\t{0}",
+            copy_files(
+                generated_deps,
+                &add_slash_suffix(&self.build_root),
+                &(add_slash_suffix(&self.src_root) + &add_slash_suffix(CMAKE_GENERATED))
+            )?
+        );
+        println!(
+            "{PRINT_BANNER} \t\t{0}",
+            touch_directories(&include_directories, &add_slash_suffix(&self.src_root))?
+        );
 
         package.add_module(SoongModule::new_cc_library_headers(
             LLVM_HEADERS,
@@ -225,6 +233,31 @@ impl<'a> crate::project::Project<'a> for LLVM<'a> {
 
         return package.write();
     }
+
+    fn get_build_directory(&self) -> Result<String, String> {
+        if cmake_configure(
+            &(self.src_root.clone() + "/llvm"),
+            &self.build_root,
+            self.ndk_root,
+            vec![
+                LLVM_DISABLE_ZLIB,
+                "-DLLVM_ENABLE_PROJECTS=clang;libclc",
+                "-DLIBCLC_TARGETS_TO_BUILD=clspv--;clspv64--",
+                "-DLLVM_TARGETS_TO_BUILD=",
+            ],
+        )? {
+            cmake_build(
+                &self.build_root,
+                vec![
+                    "clang",
+                    "tools/libclc/clspv--.bc",
+                    "tools/libclc/clspv64--.bc",
+                ],
+            )?;
+        }
+        return Ok(self.build_root.clone());
+    }
+
     fn get_default_cflags(&self) -> HashSet<String> {
         [
             "-Wno-error".to_string(),
@@ -239,7 +272,7 @@ impl<'a> crate::project::Project<'a> for LLVM<'a> {
         true
     }
     fn rework_include(&self, include: &str) -> String {
-        include.replace(self.build_root, CMAKE_GENERATED)
+        include.replace(&self.build_root, CMAKE_GENERATED)
     }
     fn get_headers_to_copy(&self, headers: &HashSet<String>) -> HashSet<String> {
         let mut set = HashSet::new();

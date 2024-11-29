@@ -6,15 +6,23 @@ macro_rules! error {
 }
 pub use error;
 
-pub fn add_slash_suffix(str: &str) -> String {
-    str.to_string() + "/"
-}
+pub const PRINT_BANNER: &str = "[NINJA-TO-SOONG]";
 
 pub const SPIRV_TOOLS: &str = "SPIRV-Tools-includes";
 pub const SPIRV_HEADERS: &str = "SPIRV-Headers-includes";
 pub const LLVM_HEADERS: &str = "llvm-includes";
 pub const CLANG_HEADERS: &str = "clang-includes";
 pub const CLSPV_HEADERS: &str = "clspv-includes";
+
+pub const ANDROID_ISA: &str = "aarch64";
+pub const ANDROID_ABI: &str = "arm64-v8a";
+pub const ANDROID_PLATFORM: &str = "35";
+
+pub const LLVM_DISABLE_ZLIB: &str = "-DLLVM_ENABLE_ZLIB=OFF";
+
+pub fn add_slash_suffix(str: &str) -> String {
+    str.to_string() + "/"
+}
 
 pub fn rework_name(origin: String) -> String {
     origin.replace("/", "_").replace(".", "_")
@@ -30,4 +38,76 @@ pub fn clang_headers_name(clang_headers_root: &str, str: &str) -> String {
 
 pub fn llvm_headers_name(llvm_headers_root: &str, str: &str) -> String {
     rework_name(str.replace(llvm_headers_root, LLVM_HEADERS))
+}
+
+///////////////////////////////
+// Project name in Android tree
+///////////////////////////////
+
+pub fn clvk_dir(android_root: &str) -> String {
+    android_root.to_string() + "/external/clvk"
+}
+pub fn clspv_dir(android_root: &str) -> String {
+    android_root.to_string() + "/external/clspv"
+}
+pub fn llvm_project_dir(android_root: &str) -> String {
+    android_root.to_string() + "/external/llvm-project"
+}
+pub fn spirv_tools_dir(android_root: &str) -> String {
+    android_root.to_string() + "/external/SPIRV-Tools"
+}
+pub fn spirv_headers_dir(android_root: &str) -> String {
+    android_root.to_string() + "/external/SPIRV-Headers"
+}
+
+//////////////////////
+// cmake util commands
+//////////////////////
+
+pub fn cmake_configure(
+    source: &String,
+    build: &String,
+    ndk_root: &str,
+    args: Vec<&str>,
+) -> Result<bool, String> {
+    if std::env::var("NINJA_TO_SOONG_SKIP_CMAKE_CONFIGURE").is_ok() {
+        return Ok(false);
+    }
+    let mut command = std::process::Command::new("cmake");
+    command
+        .args([
+            "-B",
+            build,
+            "-S",
+            source,
+            "-G",
+            "Ninja",
+            "-DCMAKE_BUILD_TYPE=Release",
+            &("-DCMAKE_TOOLCHAIN_FILE=".to_string()
+                + ndk_root
+                + "/build/cmake/android.toolchain.cmake"),
+            &("-DANDROID_ABI=".to_string() + ANDROID_ABI),
+            &("-DANDROID_PLATFORM=".to_string() + ANDROID_PLATFORM),
+        ])
+        .args(args);
+    println!("{command:#?}");
+    if let Err(err) = command.status() {
+        return error!(format!("cmake from '{source}' to '{build}' failed: {err}"));
+    }
+    return Ok(true);
+}
+
+pub fn cmake_build(build: &String, targets: Vec<&str>) -> Result<(), String> {
+    let target_args = targets.into_iter().fold(Vec::new(), |mut vec, target| {
+        vec.push("--target");
+        vec.push(target);
+        vec
+    });
+    let mut command = std::process::Command::new("cmake");
+    command.args(["--build", &build]).args(target_args);
+    println!("{command:#?}");
+    if let Err(err) = command.status() {
+        return error!(format!("cmake build '{0}' failed: {err}", &build));
+    }
+    return Ok(());
 }

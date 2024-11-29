@@ -119,16 +119,8 @@ impl<'a> SoongPackage<'a> {
         }
 
         let (version_script, link_flags) = target.get_link_flags(self.src_root, project);
-
-        let (static_libs, shared_libs) = match target.get_link_libraries(self.ndk_root, project) {
-            Ok(return_values) => return_values,
-            Err(err) => return Err(err),
-        };
-
-        let generated_headers = match target.get_generated_headers(target_map) {
-            Ok(return_value) => return_value,
-            Err(err) => return Err(err),
-        };
+        let (static_libs, shared_libs) = target.get_link_libraries(self.ndk_root, project)?;
+        let generated_headers = target.get_generated_headers(target_map)?;
         self.generated_deps
             .extend(project.get_headers_to_copy(&generated_headers).into_iter());
         let generated_headers_filtered_raw = project.get_headers_to_generate(&generated_headers);
@@ -226,10 +218,7 @@ impl<'a> SoongPackage<'a> {
         project: &dyn Project,
     ) -> Result<String, String> {
         let (srcs_set, inputs, generated_deps) =
-            match project.parse_custom_command_inputs(target.get_inputs()) {
-                Ok(return_values) => return_values,
-                Err(err) => return Err(err),
-            };
+            project.parse_custom_command_inputs(target.get_inputs())?;
         for (dep, _) in &generated_deps {
             self.generated_deps.insert(dep.clone());
         }
@@ -263,12 +252,9 @@ impl<'a> SoongPackage<'a> {
         } else if rule.starts_with("CXX_STATIC_LIBRARY") {
             self.generate_library("cc_library_static", target, target_map, project)
         } else if rule.starts_with("CUSTOM_COMMAND") {
-            let command = match target.get_command() {
-                Ok(option) => match option {
-                    Some(command) => command,
-                    None => return Ok(()),
-                },
-                Err(err) => return Err(err),
+            let command = match target.get_command()? {
+                Some(command) => command,
+                None => return Ok(()),
             };
             self.generate_custom_command(target, command, project)
         } else if rule.starts_with("CXX_COMPILER")
@@ -280,13 +266,9 @@ impl<'a> SoongPackage<'a> {
         } else {
             error!(format!("unsupported rule ({rule}) for target: {target:#?}"))
         };
-        match result {
-            Ok(module) => {
-                self.package += &module;
-                return Ok(());
-            }
-            Err(err) => return Err(err),
-        }
+
+        self.package += &result?;
+        return Ok(());
     }
 
     fn create_target_map(targets: &Vec<NinjaTarget>) -> HashMap<String, &NinjaTarget> {

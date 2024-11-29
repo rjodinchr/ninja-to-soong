@@ -1,7 +1,7 @@
 use std::collections::HashSet;
 
 use crate::ninja_target::NinjaTarget;
-use crate::utils::error;
+use crate::utils::*;
 
 pub mod clspv;
 pub mod clvk;
@@ -10,7 +10,12 @@ pub mod spirv_headers;
 pub mod spirv_tools;
 
 pub trait Project<'a> {
-    fn generate(self, targets: Vec<NinjaTarget>) -> Result<String, String>;
+    // [MANDATORY]
+    fn get_name(&self) -> String;
+    fn get_build_directory(&self) -> Result<String, String>;
+    fn generate(&self, targets: Vec<NinjaTarget>) -> Result<String, String>;
+
+    // [OPTIONAL]
     fn parse_custom_command_inputs(
         &self,
         _: &Vec<String>,
