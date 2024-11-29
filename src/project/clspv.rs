@@ -10,23 +10,30 @@ const TARGET_PREFIX: &str = "clspv_";
 const CLSPV_PROJECT_NAME: &str = "clspv";
 
 pub struct CLSPV<'a> {
-    src_root: String,
+    src_root: &'a str,
     build_root: String,
     ndk_root: &'a str,
-    spirv_headers_root: String,
-    spirv_tools_root: String,
-    llvm_project_root: String,
+    spirv_headers_root: &'a str,
+    spirv_tools_root: &'a str,
+    llvm_project_root: &'a str,
 }
 
 impl<'a> CLSPV<'a> {
-    pub fn new(android_root: &'a str, temp_dir: &'a str, ndk_root: &'a str) -> Self {
+    pub fn new(
+        temp_dir: &'a str,
+        ndk_root: &'a str,
+        clspv_root: &'a str,
+        llvm_project_root: &'a str,
+        spirv_tools_root: &'a str,
+        spirv_headers_root: &'a str,
+    ) -> Self {
         CLSPV {
-            src_root: clspv_dir(android_root),
+            src_root: clspv_root,
             build_root: temp_dir.to_string() + "/" + CLSPV_PROJECT_NAME,
             ndk_root,
-            spirv_headers_root: spirv_headers_dir(android_root),
-            spirv_tools_root: spirv_tools_dir(android_root),
-            llvm_project_root: llvm_project_dir(android_root),
+            llvm_project_root,
+            spirv_tools_root,
+            spirv_headers_root,
         }
     }
 }
@@ -37,7 +44,7 @@ impl<'a> crate::project::Project<'a> for CLSPV<'a> {
     }
     fn generate(&self, targets: Vec<NinjaTarget>) -> Result<String, String> {
         let mut package = SoongPackage::new(
-            &self.src_root,
+            self.src_root,
             self.ndk_root,
             &self.build_root,
             TARGET_PREFIX,
@@ -56,16 +63,14 @@ impl<'a> crate::project::Project<'a> for CLSPV<'a> {
     }
 
     fn get_build_directory(&self) -> Result<String, String> {
-        let spirv_headers_dir =
-            "-DSPIRV_HEADERS_SOURCE_DIR=".to_string() + &self.spirv_headers_root;
-        let spirv_tools_dir = "-DSPIRV_TOOLS_SOURCE_DIR=".to_string() + &self.spirv_tools_root;
-        let llvm_dir = "-DCLSPV_LLVM_SOURCE_DIR=".to_string() + &self.llvm_project_root + "/llvm";
-        let clang_dir =
-            "-DCLSPV_CLANG_SOURCE_DIR=".to_string() + &self.llvm_project_root + "/clang";
+        let spirv_headers_dir = "-DSPIRV_HEADERS_SOURCE_DIR=".to_string() + self.spirv_headers_root;
+        let spirv_tools_dir = "-DSPIRV_TOOLS_SOURCE_DIR=".to_string() + self.spirv_tools_root;
+        let llvm_dir = "-DCLSPV_LLVM_SOURCE_DIR=".to_string() + self.llvm_project_root + "/llvm";
+        let clang_dir = "-DCLSPV_CLANG_SOURCE_DIR=".to_string() + self.llvm_project_root + "/clang";
         let libclc_dir =
-            "-DCLSPV_LIBCLC_SOURCE_DIR=".to_string() + &self.llvm_project_root + "/libclc";
+            "-DCLSPV_LIBCLC_SOURCE_DIR=".to_string() + self.llvm_project_root + "/libclc";
         cmake_configure(
-            &self.src_root,
+            self.src_root,
             &self.build_root,
             self.ndk_root,
             vec![
@@ -89,10 +94,10 @@ impl<'a> crate::project::Project<'a> for CLSPV<'a> {
         let clang_root = &(self.llvm_project_root.to_string() + "/clang");
 
         for input in inputs {
-            if input.contains(&self.spirv_headers_root) {
+            if input.contains(self.spirv_headers_root) {
                 generated_deps.insert((
                     input.clone(),
-                    ":".to_string() + &spirv_headers_name(&self.spirv_headers_root, input),
+                    ":".to_string() + &spirv_headers_name(self.spirv_headers_root, input),
                 ));
             } else if input.contains(clang_root) {
                 generated_deps.insert((
@@ -104,7 +109,7 @@ impl<'a> crate::project::Project<'a> for CLSPV<'a> {
                     input.clone(),
                     ":".to_string() + &llvm_headers_name(LLVM_PREFIX, input),
                 ));
-            } else if !input.contains(&self.src_root) {
+            } else if !input.contains(self.src_root) {
                 generated_deps.insert((
                     input.clone(),
                     ":".to_string()
@@ -116,7 +121,7 @@ impl<'a> crate::project::Project<'a> for CLSPV<'a> {
             }
         }
         for input in &filtered_inputs {
-            srcs.insert(input.replace(&add_slash_suffix(&self.src_root), ""));
+            srcs.insert(input.replace(&add_slash_suffix(self.src_root), ""));
         }
         for (_, dep) in &generated_deps {
             srcs.insert(dep.clone());
@@ -134,8 +139,8 @@ impl<'a> crate::project::Project<'a> for CLSPV<'a> {
     }
     fn ignore_include(&self, include: &str) -> bool {
         include.contains(&self.build_root)
-            || include.contains(&self.spirv_headers_root)
-            || include.contains(&self.llvm_project_root)
+            || include.contains(self.spirv_headers_root)
+            || include.contains(self.llvm_project_root)
     }
     fn get_headers_to_generate(&self, headers: &HashSet<String>) -> HashSet<String> {
         let mut set = HashSet::new();

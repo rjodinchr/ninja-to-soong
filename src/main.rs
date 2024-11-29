@@ -28,12 +28,38 @@ fn main() -> Result<(), String> {
     let temp_path = std::env::temp_dir().join("ninja-to-soong");
     let temp_dir = temp_path.to_str().unwrap();
 
-    let spirv_tools = project::spirv_tools::SpirvTools::new(&android_dir, temp_dir, &ndk_dir);
+    let clvk_root = android_dir.clone() + "/external/clvk";
+    let clspv_root = android_dir.clone() + "/external/clspv";
+    let llvm_root = android_dir.clone() + "/external/llvm-project";
+    let spirv_tools_root = android_dir.clone() + "/external/SPIRV-Tools";
+    let spirv_headers_root = android_dir.clone() + "/external/SPIRV-Headers";
+
+    let spirv_tools = project::spirv_tools::SpirvTools::new(
+        temp_dir,
+        &ndk_dir,
+        &spirv_tools_root,
+        &spirv_headers_root,
+    );
     let spirv_headers =
         project::spirv_headers::SpirvHeaders::new(&android_dir, &ndk_dir, &spirv_tools);
-    let llvm = project::llvm::LLVM::new(&android_dir, temp_dir, &ndk_dir);
-    let clspv = project::clspv::CLSPV::new(&android_dir, temp_dir, &ndk_dir);
-    let clvk = project::clvk::CLVK::new(&android_dir, temp_dir, &ndk_dir);
+    let llvm = project::llvm::LLVM::new(temp_dir, &ndk_dir, &llvm_root);
+    let clspv = project::clspv::CLSPV::new(
+        temp_dir,
+        &ndk_dir,
+        &clspv_root,
+        &llvm_root,
+        &spirv_tools_root,
+        &spirv_headers_root,
+    );
+    let clvk = project::clvk::CLVK::new(
+        temp_dir,
+        &ndk_dir,
+        &clvk_root,
+        &clspv_root,
+        &llvm_root,
+        &spirv_tools_root,
+        &spirv_headers_root,
+    );
 
     let all_projects: Vec<&dyn Project> = vec![&spirv_tools, &spirv_headers, &llvm, &clspv, &clvk];
 

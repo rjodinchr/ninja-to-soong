@@ -5,7 +5,7 @@ use crate::soong_package::SoongPackage;
 use crate::utils::*;
 
 pub struct SpirvHeaders<'a> {
-    src_root: String,
+    src_root: &'a str,
     ndk_root: &'a str,
     spirv_tools: &'a SpirvTools<'a>,
 }
@@ -13,9 +13,13 @@ pub struct SpirvHeaders<'a> {
 const SPIRV_HEADERS_PROJECT_NAME: &str = "spirv-headers";
 
 impl<'a> SpirvHeaders<'a> {
-    pub fn new(android_root: &'a str, ndk_root: &'a str, spirv_tools: &'a SpirvTools) -> Self {
+    pub fn new(
+        ndk_root: &'a str,
+        spirv_headers_root: &'a str,
+        spirv_tools: &'a SpirvTools,
+    ) -> Self {
         SpirvHeaders {
-            src_root: spirv_headers_dir(android_root),
+            src_root: spirv_headers_root,
             ndk_root,
             spirv_tools,
         }
@@ -32,8 +36,8 @@ impl<'a> crate::project::Project<'a> for SpirvHeaders<'a> {
             Err(err) => return Err(err),
         };
         let mut package = SoongPackage::new(
-            &self.src_root,
-            &self.ndk_root,
+            self.src_root,
+            self.ndk_root,
             "",
             "SPIRV-Headers_",
             "//visibility:public",
@@ -51,8 +55,8 @@ impl<'a> crate::project::Project<'a> for SpirvHeaders<'a> {
         sorted.sort();
         for file in sorted {
             package.add_module(SoongModule::new_copy_genrule(
-                spirv_headers_name(&self.src_root, &file),
-                file.replace(&add_slash_suffix(&self.src_root), ""),
+                spirv_headers_name(self.src_root, &file),
+                file.replace(&add_slash_suffix(self.src_root), ""),
                 file.rsplit_once("/").unwrap().1.to_string(),
             ));
         }

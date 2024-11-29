@@ -51,15 +51,15 @@ fn remove_directory(directory: String) -> Result<String, String> {
 }
 
 pub struct LLVM<'a> {
-    src_root: String,
+    src_root: &'a str,
     build_root: String,
     ndk_root: &'a str,
 }
 
 impl<'a> LLVM<'a> {
-    pub fn new(android_root: &'a str, temp_dir: &'a str, ndk_root: &'a str) -> Self {
+    pub fn new(temp_dir: &'a str, ndk_root: &'a str, llvm_project_root: &'a str) -> Self {
         LLVM {
-            src_root: llvm_project_dir(android_root),
+            src_root: llvm_project_root,
             build_root: temp_dir.to_string() + "/" + LLVM_PROJECT_NAME,
             ndk_root,
         }
@@ -72,7 +72,7 @@ impl<'a> crate::project::Project<'a> for LLVM<'a> {
     }
     fn generate(&self, targets: Vec<NinjaTarget>) -> Result<String, String> {
         let mut package = SoongPackage::new(
-            &self.src_root,
+            self.src_root,
             self.ndk_root,
             &self.build_root,
             "llvm-project_",
@@ -179,19 +179,19 @@ impl<'a> crate::project::Project<'a> for LLVM<'a> {
 
         println!(
             "{PRINT_BANNER} \t\t{0}",
-            remove_directory(add_slash_suffix(&self.src_root) + CMAKE_GENERATED)?
+            remove_directory(add_slash_suffix(self.src_root) + CMAKE_GENERATED)?
         );
         println!(
             "{PRINT_BANNER} \t\t{0}",
             copy_files(
                 generated_deps,
                 &add_slash_suffix(&self.build_root),
-                &(add_slash_suffix(&self.src_root) + &add_slash_suffix(CMAKE_GENERATED))
+                &(add_slash_suffix(self.src_root) + &add_slash_suffix(CMAKE_GENERATED))
             )?
         );
         println!(
             "{PRINT_BANNER} \t\t{0}",
-            touch_directories(&include_directories, &add_slash_suffix(&self.src_root))?
+            touch_directories(&include_directories, &add_slash_suffix(self.src_root))?
         );
 
         package.add_module(SoongModule::new_cc_library_headers(
@@ -236,7 +236,7 @@ impl<'a> crate::project::Project<'a> for LLVM<'a> {
 
     fn get_build_directory(&self) -> Result<String, String> {
         if cmake_configure(
-            &(self.src_root.clone() + "/llvm"),
+            &(self.src_root.to_string() + "/llvm"),
             &self.build_root,
             self.ndk_root,
             vec![

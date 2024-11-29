@@ -40,33 +40,9 @@ pub fn llvm_headers_name(llvm_headers_root: &str, str: &str) -> String {
     rework_name(str.replace(llvm_headers_root, LLVM_HEADERS))
 }
 
-///////////////////////////////
-// Project name in Android tree
-///////////////////////////////
-
-pub fn clvk_dir(android_root: &str) -> String {
-    android_root.to_string() + "/external/clvk"
-}
-pub fn clspv_dir(android_root: &str) -> String {
-    android_root.to_string() + "/external/clspv"
-}
-pub fn llvm_project_dir(android_root: &str) -> String {
-    android_root.to_string() + "/external/llvm-project"
-}
-pub fn spirv_tools_dir(android_root: &str) -> String {
-    android_root.to_string() + "/external/SPIRV-Tools"
-}
-pub fn spirv_headers_dir(android_root: &str) -> String {
-    android_root.to_string() + "/external/SPIRV-Headers"
-}
-
-//////////////////////
-// cmake util commands
-//////////////////////
-
 pub fn cmake_configure(
-    source: &String,
-    build: &String,
+    source: &str,
+    build: &str,
     ndk_root: &str,
     args: Vec<&str>,
 ) -> Result<bool, String> {
@@ -97,7 +73,7 @@ pub fn cmake_configure(
     return Ok(true);
 }
 
-pub fn cmake_build(build: &String, targets: Vec<&str>) -> Result<(), String> {
+pub fn cmake_build(build: &str, targets: Vec<&str>) -> Result<(), String> {
     let target_args = targets.into_iter().fold(Vec::new(), |mut vec, target| {
         vec.push("--target");
         vec.push(target);
