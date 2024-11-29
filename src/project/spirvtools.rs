@@ -72,7 +72,7 @@ impl<'a> crate::project::Project<'a> for SpirvTools<'a> {
         ) {
             return Err(err);
         }
-        match self.generate_spirv_headers(package.get_generated_headers()) {
+        match self.generate_spirv_headers(package.get_generated_deps()) {
             Ok(message) => println!("{message}"),
             Err(err) => return Err(err),
         }

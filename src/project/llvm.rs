@@ -100,7 +100,7 @@ impl<'a> crate::project::Project<'a> for LLVM<'a> {
         ) {
             return Err(err);
         }
-        let mut generated_headers = package.get_generated_headers();
+        let mut generated_deps = package.get_generated_deps();
         let include_directories = package.get_include_directories();
 
         let dirs_to_remove = vec![DST_BUILD_PREFIX];
@@ -113,7 +113,7 @@ impl<'a> crate::project::Project<'a> for LLVM<'a> {
             }
         }
 
-        let missing_generated_headers = vec![
+        let missing_generated_deps = vec![
             "include/llvm/Config/llvm-config.h",
             "include/llvm/Config/abi-breaking.h",
             "include/llvm/Config/config.h",
@@ -130,11 +130,11 @@ impl<'a> crate::project::Project<'a> for LLVM<'a> {
             "tools/libclc/clspv--.bc",
             "tools/libclc/clspv64--.bc",
         ];
-        for header in missing_generated_headers {
-            generated_headers.insert(header.to_string());
+        for header in missing_generated_deps {
+            generated_deps.insert(header.to_string());
         }
         match filesystem::copy_files(
-            generated_headers,
+            generated_deps,
             &add_slash_suffix(self.build_root),
             &(add_slash_suffix(self.src_root) + &add_slash_suffix(DST_BUILD_PREFIX)),
         ) {
@@ -152,7 +152,6 @@ impl<'a> crate::project::Project<'a> for LLVM<'a> {
             [
                 "llvm/include".to_string(),
                 DST_BUILD_PREFIX.to_string() + "/include",
-                DST_BUILD_PREFIX.to_string() + "/tools/clang/include",
             ]
             .into(),
         )) {
@@ -160,7 +159,11 @@ impl<'a> crate::project::Project<'a> for LLVM<'a> {
         }
         if let Err(err) = package.add_module(SoongModule::new_cc_library_headers(
             CLANG_HEADERS,
-            ["clang/include".to_string()].into(),
+            [
+                "clang/include".to_string(),
+                DST_BUILD_PREFIX.to_string() + "/tools/clang/include",
+            ]
+            .into(),
         )) {
             return Err(err);
         }

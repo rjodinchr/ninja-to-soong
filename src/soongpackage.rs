@@ -9,7 +9,7 @@ use crate::utils::*;
 #[derive(Debug)]
 pub struct SoongPackage<'a> {
     content: String,
-    generated_headers: HashSet<String>,
+    generated_deps: HashSet<String>,
     include_directories: HashSet<String>,
     src_root: &'a str,
     ndk_root: &'a str,
@@ -26,7 +26,7 @@ impl<'a> SoongPackage<'a> {
     ) -> Self {
         SoongPackage {
             content: String::new(),
-            generated_headers: HashSet::new(),
+            generated_deps: HashSet::new(),
             include_directories: HashSet::new(),
             src_root,
             ndk_root,
@@ -47,8 +47,8 @@ impl<'a> SoongPackage<'a> {
         crate::filesystem::write_file(&(path.to_string() + "/Android.bp"), self.content)
     }
 
-    pub fn get_generated_headers(&self) -> HashSet<String> {
-        self.generated_headers.to_owned()
+    pub fn get_generated_deps(&self) -> HashSet<String> {
+        self.generated_deps.to_owned()
     }
     pub fn get_include_directories(&self) -> HashSet<String> {
         self.include_directories.to_owned()
@@ -94,7 +94,7 @@ impl<'a> SoongPackage<'a> {
             Ok(return_value) => return_value,
             Err(err) => return Err(err),
         };
-        self.generated_headers
+        self.generated_deps
             .extend(project.get_headers_to_copy(&generated_headers).into_iter());
         let generated_headers_filtered_raw = project.get_headers_to_generate(&generated_headers);
         let mut generated_headers_filtered = HashSet::new();
@@ -127,24 +127,18 @@ impl<'a> SoongPackage<'a> {
         return module.print();
     }
 
-    fn rework_output_path(output: &str) -> String {
-        let rework_output = if let Some(split) = output.split_once("include/") {
-            split.1
-        } else if !output.contains("libclc") {
-            output.split("/").last().unwrap()
-        } else {
-            output
-        };
-        return String::from(rework_output);
-    }
-
-    fn replace_output_in_command(command: String, output: &String) -> String {
+    fn replace_output_in_command(
+        command: String,
+        output: &String,
+        project: &dyn Project,
+    ) -> String {
         let marker = "<output>";
         let space_and_marker = String::from(" ") + marker;
         let space_and_last_output = String::from(" ") + output.split("/").last().unwrap();
         let command = command.replace(output, marker);
         let command = command.replace(&space_and_last_output, &space_and_marker);
-        let replace_output = String::from("$(location ") + &Self::rework_output_path(output) + ")";
+        let replace_output =
+            String::from("$(location ") + &project.rework_output_path(output) + ")";
         return command.replace(marker, &replace_output);
     }
     fn replace_input_in_command(&self, command: String, input: String) -> String {
@@ -173,11 +167,12 @@ impl<'a> SoongPackage<'a> {
         inputs: HashSet<String>,
         outputs: &Vec<String>,
         generated_deps: HashSet<(String, String)>,
+        project: &dyn Project,
     ) -> String {
         let mut command = command.replace("/usr/bin/python3 ", "");
         command = command.replace(&(self.build_root.to_string() + "/"), "");
         for output in outputs {
-            command = Self::replace_output_in_command(command, output);
+            command = Self::replace_output_in_command(command, output, project);
         }
         for input in inputs.clone() {
             command = self.replace_input_in_command(command, input);
@@ -201,17 +196,17 @@ impl<'a> SoongPackage<'a> {
                 Err(err) => return Err(err),
             };
         for (dep, _) in &generated_deps {
-            self.generated_headers.insert(dep.clone());
+            self.generated_deps.insert(dep.clone());
         }
         let target_outputs = target.get_outputs();
         let out_set = target_outputs
             .into_iter()
             .fold(HashSet::new(), |mut set, output| {
-                set.insert(Self::rework_output_path(output));
+                set.insert(project.rework_output_path(output));
                 set
             });
 
-        let command = self.rework_command(command, inputs, target_outputs, generated_deps);
+        let command = self.rework_command(command, inputs, target_outputs, generated_deps, project);
 
         let mut module = crate::soongmodule::SoongModule::new("cc_genrule");
         module.add_str("name", target.get_name(self.target_prefix));

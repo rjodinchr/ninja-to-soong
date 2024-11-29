@@ -43,4 +43,7 @@ pub trait Project<'a> {
         library.to_string()
     }
     fn handle_link_flag(&self, _: &str, _: &mut HashSet<String>) {}
+    fn rework_output_path(&self, output: &str) -> String {
+        output.to_string()
+    }
 }
