@@ -25,7 +25,7 @@ jobs:
             name=$(basename ${repo})
             git init ${external}/${name}
             git -C ${external}/${name} remote add origin $(cat ${repo}/REPO)
-            git -C ${external}/${name} fetch --deps 1 origin $(cat ${repo}/VERSION)
+            git -C ${external}/${name} fetch --depth 1 origin $(cat ${repo}/VERSION)
             git -C ${external}/${name} checkout $(cat ${repo}/VERSION)
           done
           ndk=android-ndk-r27c
