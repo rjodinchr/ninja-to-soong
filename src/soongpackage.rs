@@ -83,7 +83,7 @@ impl<'a> SoongPackage<'a> {
             srcs.insert(src);
         }
 
-        let (version_script, link_flags) = target.get_link_flags(self.src_root);
+        let (version_script, link_flags) = target.get_link_flags(self.src_root, project);
 
         let (static_libs, shared_libs) = match target.get_link_libraries(self.ndk_root, project) {
             Ok(return_values) => return_values,

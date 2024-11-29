@@ -65,4 +65,9 @@ impl<'a> crate::project::Project<'a> for CLVK<'a> {
             .replace("/", "_")
             .replace(".", "_")
     }
+    fn handle_link_flag(&self, flag: &str, link_flags: &mut HashSet<String>) {
+        if flag == "-Wl,-Bsymbolic" {
+            link_flags.insert(flag.to_string());
+        }
+    }
 }

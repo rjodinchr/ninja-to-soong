@@ -42,4 +42,5 @@ pub trait Project<'a> {
     fn get_library_name(&self, library: &str) -> String {
         library.to_string()
     }
+    fn handle_link_flag(&self, _: &str, _: &mut HashSet<String>) {}
 }
