@@ -1,5 +1,7 @@
 use std::collections::HashMap;
 use std::collections::HashSet;
+use std::fs::File;
+use std::io::Write;
 
 use crate::project::Project;
 use crate::soongmodule::SoongModule;
@@ -62,8 +64,20 @@ impl<'a> SoongPackage<'a> {
         self.package += &module.print();
     }
 
-    pub fn write(self, path: &str) -> Result<String, String> {
-        crate::filesystem::write_file(&(path.to_string() + "/Android.bp"), self.package)
+    pub fn write(self) -> Result<String, String> {
+        let dir_path = self.src_root;
+        let file_path = dir_path.to_string() + "/Android.bp";
+        match File::create(&file_path) {
+            Ok(mut file) => {
+                if let Err(err) = file.write_fmt(format_args!("{0}", self.package)) {
+                    return error!(format!("Could not write into '{dir_path}': '{err:#?}"));
+                }
+            }
+            Err(err) => {
+                return error!(format!("Could not create '{dir_path}': '{err}'"));
+            }
+        }
+        return Ok(format!("'{file_path}' created successfully!"));
     }
 
     pub fn get_generated_deps(&self) -> HashSet<String> {

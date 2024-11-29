@@ -34,7 +34,7 @@ impl<'a> crate::project::Project<'a> for CLVK<'a> {
         if let Err(err) = package.generate(vec!["libOpenCL.so"], targets, &self) {
             return Err(err);
         }
-        return package.write(self.src_root);
+        return package.write();
     }
     fn parse_custom_command_inputs(
         &self,

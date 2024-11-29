@@ -1,12 +1,48 @@
 use std::collections::HashSet;
 
-use crate::filesystem;
 use crate::soongmodule::SoongModule;
 use crate::soongpackage::SoongPackage;
 use crate::target::BuildTarget;
 use crate::utils::*;
 
 const CMAKE_GENERATED: &str = "cmake_generated";
+
+fn copy_files(
+    files: HashSet<String>,
+    src_root: &str,
+    dst_root: &str,
+) -> Result<String, String> {
+    for file in files {
+        let from = src_root.to_string() + &file;
+        let to = dst_root.to_string() + &file;
+        let to_dir = to.rsplit_once("/").unwrap().0;
+        if let Err(err) = std::fs::create_dir_all(to_dir) {
+            return error!(format!("create_dir_all({to_dir}) failed: {err}"));
+        }
+        if let Err(err) = std::fs::copy(&from, &to) {
+            return error!(format!("copy({from}, {to}) failed: {err}"));
+        }
+    }
+    return Ok(format!(
+        "Files created successfully in '{dst_root}' from '{src_root}'"
+    ));
+}
+
+fn touch_directories(directories: &HashSet<String>, dst_root: &str) -> Result<String, String> {
+    for include_dir in directories {
+        let dir = dst_root.to_string() + include_dir;
+        if touch::exists(&dir) {
+            continue;
+        }
+        if let Err(err) = std::fs::create_dir_all(&dir) {
+            return error!(format!("create_dir_all({dir}) failed: {err}"));
+        }
+        if let Err(err) = touch::file::create(&(dir.clone() + "/touch"), false) {
+            return error!(format!("touch in '{dir}' failed: {err}"));
+        }
+    }
+    return Ok(format!("Touch include directories successfully!"));
+}
 
 pub struct LLVM<'a> {
     src_root: &'a str,
@@ -141,7 +177,7 @@ impl<'a> crate::project::Project<'a> for LLVM<'a> {
         for header in missing_generated_deps {
             generated_deps.insert(header.to_string());
         }
-        match filesystem::copy_files(
+        match copy_files(
             generated_deps,
             &add_slash_suffix(self.build_root),
             &(add_slash_suffix(self.src_root) + &add_slash_suffix(CMAKE_GENERATED)),
@@ -149,7 +185,7 @@ impl<'a> crate::project::Project<'a> for LLVM<'a> {
             Ok(msg) => println!("{msg}"),
             Err(err) => return Err(err),
         }
-        match filesystem::touch_directories(&include_directories, &add_slash_suffix(self.src_root))
+        match touch_directories(&include_directories, &add_slash_suffix(self.src_root))
         {
             Ok(msg) => println!("{msg}"),
             Err(err) => return Err(err),
@@ -192,7 +228,7 @@ impl<'a> crate::project::Project<'a> for LLVM<'a> {
             clspv64_bc.rsplit_once("/").unwrap().1.to_string(),
         ));
 
-        return package.write(self.src_root);
+        return package.write();
     }
     fn get_default_cflags(&self) -> HashSet<String> {
         [

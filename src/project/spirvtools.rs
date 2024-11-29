@@ -69,7 +69,7 @@ impl<'a> crate::project::Project<'a> for SpirvTools<'a> {
             Ok(package) => package,
             Err(err) => return Err(err),
         };
-        return package.write(self.src_root);
+        return package.write();
     }
     fn parse_custom_command_inputs(
         &self,

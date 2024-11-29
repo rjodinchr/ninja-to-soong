@@ -52,7 +52,7 @@ impl<'a> crate::project::Project<'a> for CLSPV<'a> {
             CLSPV_HEADERS,
             ["include".to_string()].into(),
         ));
-        return package.write(self.src_root);
+        return package.write();
     }
     fn parse_custom_command_inputs(
         &self,

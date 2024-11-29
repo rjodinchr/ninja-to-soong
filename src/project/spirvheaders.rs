@@ -65,6 +65,6 @@ impl<'a> crate::project::Project<'a> for SpirvHeaders<'a> {
             ));
         }
 
-        return package.write(self.src_root);
+        return package.write();
     }
 }
