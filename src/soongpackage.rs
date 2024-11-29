@@ -80,14 +80,14 @@ impl<'a> SoongPackage<'a> {
         targets_map: &HashMap<String, &BuildTarget>,
         project: &dyn Project,
     ) -> Result<String, String> {
-        let mut defines = project.get_default_defines();
+        let mut cflags = project.get_default_cflags();
         let mut includes: HashSet<String> = HashSet::new();
         let mut srcs: HashSet<String> = HashSet::new();
         for input in target.get_inputs() {
             let Some(target) = targets_map.get(input) else {
                 return error!(format!("unsupported input for library: {input}"));
             };
-            let (src, src_includes, src_defines) =
+            let (src, src_includes, defines) =
                 match target.get_compiler_target_info(self.src_root, project) {
                     Ok(return_values) => return_values,
                     Err(err) => return Err(err),
@@ -96,8 +96,8 @@ impl<'a> SoongPackage<'a> {
                 includes.insert(inc.clone());
                 self.include_directories.insert(inc);
             }
-            for def in src_defines {
-                defines.insert(String::from("-D") + &def);
+            for define in defines {
+                cflags.insert(String::from("-D") + &define);
             }
             srcs.insert(src);
         }
@@ -135,7 +135,7 @@ impl<'a> SoongPackage<'a> {
         module.add_bool("use_clang_lld", true);
         module.add_set("srcs", srcs);
         module.add_set("local_include_dirs", includes);
-        module.add_set("cflags", defines);
+        module.add_set("cflags", cflags);
         module.add_set("ldflags", link_flags);
         module.add_str("version_script", version_script);
         module.add_set("static_libs", static_libs);

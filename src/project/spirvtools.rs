@@ -97,11 +97,14 @@ impl<'a> crate::project::Project<'a> for SpirvTools<'a> {
         }
         return Ok((srcs, filtered_inputs, generated_deps));
     }
-    fn get_default_defines(&self) -> HashSet<String> {
+    fn get_default_cflags(&self) -> HashSet<String> {
         ["-Wno-implicit-fallthrough".to_string()].into()
     }
     fn ignore_include(&self, include: &str) -> bool {
         include.contains(self.build_root) || include.contains(self.spirv_headers_root)
+    }
+    fn ignore_define(&self, _define: &str) -> bool {
+        true
     }
     fn get_headers_to_generate(&self, headers: &HashSet<String>) -> HashSet<String> {
         let mut set = HashSet::new();
@@ -110,7 +113,7 @@ impl<'a> crate::project::Project<'a> for SpirvTools<'a> {
         }
         return set;
     }
-    fn get_target_header_libs(&self, _: &String) -> HashSet<String> {
+    fn get_target_header_libs(&self, _target: &String) -> HashSet<String> {
         [SPIRV_HEADERS.to_string()].into()
     }
 }

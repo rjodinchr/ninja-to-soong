@@ -6,8 +6,8 @@ use crate::utils::error;
 pub mod clspv;
 pub mod clvk;
 pub mod llvm;
-pub mod spirvtools;
 pub mod spirvheaders;
+pub mod spirvtools;
 
 pub trait Project<'a> {
     fn generate(self, targets: Vec<BuildTarget>) -> Result<String, String>;
@@ -19,7 +19,7 @@ pub trait Project<'a> {
             "parse_custom_command_inputs not implemented by this project"
         ))
     }
-    fn get_default_defines(&self) -> HashSet<String> {
+    fn get_default_cflags(&self) -> HashSet<String> {
         HashSet::new()
     }
     fn get_headers_to_copy(&self, _headers: &HashSet<String>) -> HashSet<String> {
@@ -44,6 +44,9 @@ pub trait Project<'a> {
         false
     }
     fn ignore_include(&self, _include: &str) -> bool {
+        false
+    }
+    fn ignore_define(&self, _define: &str) -> bool {
         false
     }
     fn rework_include(&self, include: &str) -> String {

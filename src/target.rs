@@ -135,12 +135,16 @@ impl BuildTarget {
         return Ok((static_libraries, shared_libraries));
     }
 
-    fn get_defines(&self) -> HashSet<String> {
+    fn get_defines(&self, project: &dyn Project) -> HashSet<String> {
         let mut defines: HashSet<String> = HashSet::new();
 
         if let Some(defs) = self.variables.get("DEFINES") {
-            for def in defs.trim().split("-D") {
-                defines.insert(def.replace(" ", ""));
+            for def in defs.split("-D") {
+                let trim_def = def.trim();
+                if project.ignore_define(trim_def) {
+                    continue;
+                }
+                defines.insert(trim_def.to_string());
             }
         };
         defines.remove("");
@@ -228,7 +232,7 @@ impl BuildTarget {
                 "Too many inputs in CXX_COMPILER input target for library: {self:#?}"
             ));
         }
-        let mut defines = self.get_defines();
+        let mut defines = self.get_defines(project);
         for def in defines_no_assembly {
             defines.insert(def);
         }

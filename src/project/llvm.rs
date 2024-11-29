@@ -194,7 +194,7 @@ impl<'a> crate::project::Project<'a> for LLVM<'a> {
 
         return package.write(self.src_root);
     }
-    fn get_default_defines(&self) -> HashSet<String> {
+    fn get_default_cflags(&self) -> HashSet<String> {
         [
             "-Wno-error".to_string(),
             "-Wno-unreachable-code-loop-increment".to_string(),
@@ -203,6 +203,9 @@ impl<'a> crate::project::Project<'a> for LLVM<'a> {
     }
     fn ignore_target(&self, input: &String) -> bool {
         !input.starts_with("lib")
+    }
+    fn ignore_define(&self, _define: &str) -> bool {
+        true
     }
     fn rework_include(&self, include: &str) -> String {
         include.replace(self.build_root, CMAKE_GENERATED)
@@ -214,7 +217,7 @@ impl<'a> crate::project::Project<'a> for LLVM<'a> {
         }
         return set;
     }
-    fn optimize_target_for_size(&self, _: &String) -> bool {
+    fn optimize_target_for_size(&self, _target: &String) -> bool {
         true
     }
 }

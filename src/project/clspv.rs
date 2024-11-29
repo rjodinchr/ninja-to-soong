@@ -96,8 +96,11 @@ impl<'a> crate::project::Project<'a> for CLSPV<'a> {
         }
         return Ok((srcs, filtered_inputs, generated_deps));
     }
-    fn get_default_defines(&self) -> HashSet<String> {
+    fn get_default_cflags(&self) -> HashSet<String> {
         return ["-Wno-unreachable-code-loop-increment".to_string()].into();
+    }
+    fn ignore_define(&self, _define: &str) -> bool {
+        true
     }
     fn ignore_target(&self, target: &String) -> bool {
         target.starts_with("third_party/")
@@ -116,7 +119,7 @@ impl<'a> crate::project::Project<'a> for CLSPV<'a> {
         }
         return set;
     }
-    fn get_target_header_libs(&self, _: &String) -> HashSet<String> {
+    fn get_target_header_libs(&self, _target: &String) -> HashSet<String> {
         [
             SPIRV_HEADERS.to_string(),
             LLVM_HEADERS.to_string(),
@@ -134,7 +137,7 @@ impl<'a> crate::project::Project<'a> for CLSPV<'a> {
         }
         .to_string()
     }
-    fn optimize_target_for_size(&self, _: &String) -> bool {
+    fn optimize_target_for_size(&self, _target: &String) -> bool {
         true
     }
 }

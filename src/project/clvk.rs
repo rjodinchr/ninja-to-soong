@@ -54,10 +54,10 @@ impl<'a> crate::project::Project<'a> for CLVK<'a> {
     fn ignore_target(&self, target: &String) -> bool {
         target.starts_with("external/")
     }
-    fn ignore_include(&self, _: &str) -> bool {
+    fn ignore_include(&self, _include: &str) -> bool {
         true
     }
-    fn get_target_header_libs(&self, _: &String) -> HashSet<String> {
+    fn get_target_header_libs(&self, _target: &String) -> HashSet<String> {
         [
             SPIRV_TOOLS.to_string(),
             SPIRV_HEADERS.to_string(),
