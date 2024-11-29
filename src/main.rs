@@ -1,5 +1,3 @@
-extern crate touch;
-
 mod ninja_target;
 mod parser;
 mod project;
