@@ -27,3 +27,14 @@
 ```
 <ninja-to-soong> $ cargo run -- <android_tree_root> <android_ndk_path> all
 ```
+
+# Tests
+
+`ninja-to-soong` uses github actions to check that changes do not bring regression. Do to that, it checks that the generated files match their reference (located in the `tests` folder).
+
+Each project in the `tests` folder contain the following files:
+ * `Android.bp`: the reference file to generate
+ * `REPO`: a file containing the github URL of the repository
+ * `VERSION`: a file containing the sha1 to use to generate the reference
+
+If you want more information take a look at the [github action script](.github/workflows/presubmit.yml)
