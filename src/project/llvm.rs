@@ -6,7 +6,7 @@ use crate::soongpackage::SoongPackage;
 use crate::target::BuildTarget;
 use crate::utils::*;
 
-const DST_BUILD_PREFIX: &str = "cmake_generated";
+const CMAKE_GENERATED: &str = "cmake_generated";
 
 pub struct LLVM<'a> {
     src_root: &'a str,
@@ -111,7 +111,7 @@ impl<'a> crate::project::Project<'a> for LLVM<'a> {
         let mut generated_deps = package.get_generated_deps();
         let include_directories = package.get_include_directories();
 
-        let dirs_to_remove = vec![DST_BUILD_PREFIX];
+        let dirs_to_remove = vec![CMAKE_GENERATED];
         for dir_to_remove in dirs_to_remove {
             let dir = add_slash_suffix(self.src_root) + dir_to_remove;
             if touch::exists(&dir) {
@@ -144,7 +144,7 @@ impl<'a> crate::project::Project<'a> for LLVM<'a> {
         match filesystem::copy_files(
             generated_deps,
             &add_slash_suffix(self.build_root),
-            &(add_slash_suffix(self.src_root) + &add_slash_suffix(DST_BUILD_PREFIX)),
+            &(add_slash_suffix(self.src_root) + &add_slash_suffix(CMAKE_GENERATED)),
         ) {
             Ok(msg) => println!("{msg}"),
             Err(err) => return Err(err),
@@ -159,7 +159,7 @@ impl<'a> crate::project::Project<'a> for LLVM<'a> {
             LLVM_HEADERS,
             [
                 "llvm/include".to_string(),
-                DST_BUILD_PREFIX.to_string() + "/include",
+                CMAKE_GENERATED.to_string() + "/include",
             ]
             .into(),
         ));
@@ -167,7 +167,7 @@ impl<'a> crate::project::Project<'a> for LLVM<'a> {
             CLANG_HEADERS,
             [
                 "clang/include".to_string(),
-                DST_BUILD_PREFIX.to_string() + "/tools/clang/include",
+                CMAKE_GENERATED.to_string() + "/tools/clang/include",
             ]
             .into(),
         ));
@@ -179,15 +179,15 @@ impl<'a> crate::project::Project<'a> for LLVM<'a> {
             opencl_c_base.to_string(),
             opencl_c_base.rsplit_once("/").unwrap().1.to_string(),
         ));
-        let clspv_bc = DST_BUILD_PREFIX.to_string() + "/tools/libclc/clspv--.bc";
+        let clspv_bc = CMAKE_GENERATED.to_string() + "/tools/libclc/clspv--.bc";
         package.add_module(SoongModule::new_copy_genrule(
-            llvm_headers_name(DST_BUILD_PREFIX, &clspv_bc),
+            llvm_headers_name(CMAKE_GENERATED, &clspv_bc),
             clspv_bc.clone(),
             clspv_bc.rsplit_once("/").unwrap().1.to_string(),
         ));
-        let clspv64_bc = DST_BUILD_PREFIX.to_string() + "/tools/libclc/clspv64--.bc";
+        let clspv64_bc = CMAKE_GENERATED.to_string() + "/tools/libclc/clspv64--.bc";
         package.add_module(SoongModule::new_copy_genrule(
-            llvm_headers_name(DST_BUILD_PREFIX, &clspv64_bc),
+            llvm_headers_name(CMAKE_GENERATED, &clspv64_bc),
             clspv64_bc.clone(),
             clspv64_bc.rsplit_once("/").unwrap().1.to_string(),
         ));
@@ -205,7 +205,7 @@ impl<'a> crate::project::Project<'a> for LLVM<'a> {
         !input.starts_with("lib")
     }
     fn rework_include(&self, include: &str) -> String {
-        include.replace(self.build_root, DST_BUILD_PREFIX)
+        include.replace(self.build_root, CMAKE_GENERATED)
     }
     fn get_headers_to_copy(&self, headers: &HashSet<String>) -> HashSet<String> {
         let mut set = HashSet::new();
