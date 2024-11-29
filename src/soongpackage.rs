@@ -8,7 +8,7 @@ use crate::utils::*;
 
 #[derive(Debug)]
 pub struct SoongPackage<'a> {
-    content: String,
+    package: String,
     generated_deps: HashSet<String>,
     include_directories: HashSet<String>,
     src_root: &'a str,
@@ -25,7 +25,7 @@ impl<'a> SoongPackage<'a> {
         target_prefix: &'a str,
     ) -> Self {
         SoongPackage {
-            content: String::new(),
+            package: String::new(),
             generated_deps: HashSet::new(),
             include_directories: HashSet::new(),
             src_root,
@@ -36,15 +36,15 @@ impl<'a> SoongPackage<'a> {
     }
 
     pub fn add_module(&mut self, module: SoongModule) -> Result<(), String> {
-        self.content += &match module.print() {
-            Ok(content) => content,
+        self.package += &match module.print() {
+            Ok(module) => module,
             Err(err) => return Err(err),
         };
         return Ok(());
     }
 
     pub fn write(self, path: &str) -> Result<String, String> {
-        crate::filesystem::write_file(&(path.to_string() + "/Android.bp"), self.content)
+        crate::filesystem::write_file(&(path.to_string() + "/Android.bp"), self.package)
     }
 
     pub fn get_generated_deps(&self) -> HashSet<String> {
@@ -248,8 +248,8 @@ impl<'a> SoongPackage<'a> {
             error!(format!("unsupported rule ({rule}) for target: {target:#?}"))
         };
         match result {
-            Ok(package) => {
-                self.content += &package;
+            Ok(module) => {
+                self.package += &module;
                 return Ok(());
             }
             Err(err) => return Err(err),
