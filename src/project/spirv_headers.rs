@@ -1,7 +1,7 @@
+use crate::ninja_target::NinjaTarget;
 use crate::project::spirv_tools::SpirvTools;
 use crate::soong_module::SoongModule;
 use crate::soong_package::SoongPackage;
-use crate::ninja_target::NinjaTarget;
 use crate::utils::*;
 
 pub struct SpirvHeaders<'a> {
@@ -40,9 +40,9 @@ impl<'a> crate::project::Project<'a> for SpirvHeaders<'a> {
             Err(err) => return Err(err),
         };
         let mut package = SoongPackage::new(
-            "",
-            "",
-            "",
+            &self.src_root,
+            &self.ndk_root,
+            &self.build_root,
             "SPIRV-Headers_",
             "//visibility:public",
             "SPDX-license-identifier-MIT",

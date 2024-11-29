@@ -1,10 +1,10 @@
 extern crate touch;
 
+mod ninja_target;
 mod parser;
 mod project;
 mod soong_module;
 mod soong_package;
-mod ninja_target;
 mod utils;
 
 use crate::project::Project;

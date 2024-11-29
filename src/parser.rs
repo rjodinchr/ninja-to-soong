@@ -2,8 +2,8 @@ use std::collections::HashMap;
 use std::fs::File;
 use std::io::Read;
 
-use crate::utils::error;
 use crate::ninja_target::NinjaTarget;
+use crate::utils::error;
 
 fn parse_output_section(section: &str) -> Result<(Vec<String>, Vec<String>), String> {
     let mut split = section.split("|");
@@ -160,6 +160,6 @@ pub fn parse_build_ninja(path: &str) -> Result<Vec<NinjaTarget>, String> {
             Err(err) => return error!(format!("Could not parse build target: '{err}'")),
         }
     }
-    
+
     return Ok(targets);
 }

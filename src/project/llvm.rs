@@ -1,17 +1,13 @@
 use std::collections::HashSet;
 
+use crate::ninja_target::NinjaTarget;
 use crate::soong_module::SoongModule;
 use crate::soong_package::SoongPackage;
-use crate::ninja_target::NinjaTarget;
 use crate::utils::*;
 
 const CMAKE_GENERATED: &str = "cmake_generated";
 
-fn copy_files(
-    files: HashSet<String>,
-    src_root: &str,
-    dst_root: &str,
-) -> Result<String, String> {
+fn copy_files(files: HashSet<String>, src_root: &str, dst_root: &str) -> Result<String, String> {
     for file in files {
         let from = src_root.to_string() + &file;
         let to = dst_root.to_string() + &file;
@@ -185,8 +181,7 @@ impl<'a> crate::project::Project<'a> for LLVM<'a> {
             Ok(msg) => println!("{msg}"),
             Err(err) => return Err(err),
         }
-        match touch_directories(&include_directories, &add_slash_suffix(self.src_root))
-        {
+        match touch_directories(&include_directories, &add_slash_suffix(self.src_root)) {
             Ok(msg) => println!("{msg}"),
             Err(err) => return Err(err),
         }

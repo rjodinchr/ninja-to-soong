@@ -1,8 +1,8 @@
 use std::collections::HashSet;
 
+use crate::ninja_target::NinjaTarget;
 use crate::soong_module::SoongModule;
 use crate::soong_package::SoongPackage;
-use crate::ninja_target::NinjaTarget;
 use crate::utils::*;
 
 pub struct SpirvTools<'a> {

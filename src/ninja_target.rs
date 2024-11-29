@@ -45,9 +45,7 @@ impl NinjaTarget {
     }
 
     pub fn get_name(&self, prefix: &str) -> String {
-        return (prefix.to_string() + &self.outputs[0])
-            .replace("/", "_")
-            .replace(".", "_");
+        return rework_name(prefix.to_string() + &self.outputs[0]);
     }
 
     pub fn get_outputs(&self) -> &Vec<String> {
@@ -135,7 +133,7 @@ impl NinjaTarget {
         return Ok((static_libraries, shared_libraries));
     }
 
-    fn get_defines(&self, project: &dyn Project) -> HashSet<String> {
+    pub fn get_defines(&self, project: &dyn Project) -> HashSet<String> {
         let mut defines: HashSet<String> = HashSet::new();
 
         if let Some(defs) = self.variables.get("DEFINES") {
@@ -151,7 +149,7 @@ impl NinjaTarget {
         return defines;
     }
 
-    fn get_includes(&self, src_root: &str, project: &dyn Project) -> HashSet<String> {
+    pub fn get_includes(&self, src_root: &str, project: &dyn Project) -> HashSet<String> {
         let mut includes: HashSet<String> = HashSet::new();
         let Some(incs) = self.variables.get("INCLUDES") else {
             return includes;
@@ -178,7 +176,7 @@ impl NinjaTarget {
 
     pub fn get_generated_headers(
         &self,
-        targets_map: &HashMap<String, &NinjaTarget>,
+        target_map: &HashMap<String, &NinjaTarget>,
     ) -> Result<HashSet<String>, String> {
         let mut generated_headers: HashSet<String> = HashSet::new();
         let mut target_seen: HashSet<String> = HashSet::new();
@@ -188,7 +186,7 @@ impl NinjaTarget {
             if target_seen.contains(&target_name) {
                 continue;
             }
-            let Some(target) = targets_map.get(&target_name) else {
+            let Some(target) = target_map.get(&target_name) else {
                 continue;
             };
 
@@ -211,32 +209,6 @@ impl NinjaTarget {
         }
 
         return Ok(generated_headers);
-    }
-
-    pub fn get_compiler_target_info(
-        &self,
-        src_root: &str,
-        project: &dyn Project,
-    ) -> Result<(String, HashSet<String>, HashSet<String>), String> {
-        let mut defines_no_assembly: HashSet<String> = HashSet::new();
-        if self.rule.starts_with("ASM_COMPILER") {
-            defines_no_assembly.insert("BLAKE3_NO_AVX512".to_string());
-            defines_no_assembly.insert("BLAKE3_NO_AVX2".to_string());
-            defines_no_assembly.insert("BLAKE3_NO_SSE41".to_string());
-            defines_no_assembly.insert("BLAKE3_NO_SSE2".to_string());
-        } else if !self.rule.starts_with("CXX_COMPILER") && !self.rule.starts_with("C_COMPILER") {
-            return error!(format!("unsupported input target: {self:#?}"));
-        }
-        if self.inputs.len() != 1 {
-            return error!(format!("Too many inputs in target: {self:#?}"));
-        }
-        let mut defines = self.get_defines(project);
-        for def in defines_no_assembly {
-            defines.insert(def);
-        }
-        let includes = self.get_includes(src_root, project);
-        let src = self.inputs[0].replace(&add_slash_suffix(src_root), "");
-        return Ok((src, includes, defines));
     }
 
     pub fn get_command(&self) -> Result<Option<String>, String> {

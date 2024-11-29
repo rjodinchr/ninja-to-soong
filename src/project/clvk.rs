@@ -1,7 +1,7 @@
 use std::collections::HashSet;
 
-use crate::soong_package::SoongPackage;
 use crate::ninja_target::NinjaTarget;
+use crate::soong_package::SoongPackage;
 use crate::utils::*;
 
 pub struct CLVK<'a> {

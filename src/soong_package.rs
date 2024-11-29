@@ -3,9 +3,9 @@ use std::collections::HashSet;
 use std::fs::File;
 use std::io::Write;
 
+use crate::ninja_target::NinjaTarget;
 use crate::project::Project;
 use crate::soong_module::SoongModule;
-use crate::ninja_target::NinjaTarget;
 use crate::utils::*;
 
 #[derive(Debug)]
@@ -74,7 +74,7 @@ impl<'a> SoongPackage<'a> {
                 }
             }
             Err(err) => {
-                return error!(format!("Could not create '{dir_path}': '{err}'"));
+                return error!(format!("Could not create '{file_path}': '{err}'"));
             }
         }
         return Ok(format!("'{file_path}' created successfully!"));
@@ -87,33 +87,35 @@ impl<'a> SoongPackage<'a> {
         self.include_directories.to_owned()
     }
 
-    fn generate_object(
+    fn generate_library(
         &mut self,
         name: &str,
         target: &NinjaTarget,
-        targets_map: &HashMap<String, &NinjaTarget>,
+        target_map: &HashMap<String, &NinjaTarget>,
         project: &dyn Project,
     ) -> Result<String, String> {
         let mut cflags = project.get_default_cflags();
         let mut includes: HashSet<String> = HashSet::new();
         let mut srcs: HashSet<String> = HashSet::new();
         for input in target.get_inputs() {
-            let Some(target) = targets_map.get(input) else {
+            let Some(target) = target_map.get(input) else {
                 return error!(format!("unsupported input for library: {input}"));
             };
-            let (src, src_includes, defines) =
-                match target.get_compiler_target_info(self.src_root, project) {
-                    Ok(return_values) => return_values,
-                    Err(err) => return Err(err),
-                };
-            for inc in src_includes {
+
+            let target_srcs = target.get_inputs();
+            if target_srcs.len() != 1 {
+                return error!(format!("Too many inputs in target: {self:#?}"));
+            }
+            srcs.insert(target_srcs[0].replace(&add_slash_suffix(self.src_root), ""));
+
+            for inc in target.get_includes(self.src_root, project) {
                 includes.insert(inc.clone());
                 self.include_directories.insert(inc);
             }
-            for define in defines {
+
+            for define in target.get_defines(project) {
                 cflags.insert(String::from("-D") + &define);
             }
-            srcs.insert(src);
         }
 
         let (version_script, link_flags) = target.get_link_flags(self.src_root, project);
@@ -123,7 +125,7 @@ impl<'a> SoongPackage<'a> {
             Err(err) => return Err(err),
         };
 
-        let generated_headers = match target.get_generated_headers(targets_map) {
+        let generated_headers = match target.get_generated_headers(target_map) {
             Ok(return_value) => return_value,
             Err(err) => return Err(err),
         };
@@ -132,7 +134,7 @@ impl<'a> SoongPackage<'a> {
         let generated_headers_filtered_raw = project.get_headers_to_generate(&generated_headers);
         let mut generated_headers_filtered = HashSet::new();
         for header in generated_headers_filtered_raw {
-            generated_headers_filtered.insert(match targets_map.get(&header) {
+            generated_headers_filtered.insert(match target_map.get(&header) {
                 Some(target_header) => target_header.get_name(self.target_prefix),
                 None => return error!(format!("Could not find target for '{header}'")),
             });
@@ -252,16 +254,14 @@ impl<'a> SoongPackage<'a> {
     fn generate_target(
         &mut self,
         target: &NinjaTarget,
-        targets_map: &HashMap<String, &NinjaTarget>,
+        target_map: &HashMap<String, &NinjaTarget>,
         project: &dyn Project,
     ) -> Result<(), String> {
         let rule = target.get_rule();
         let result = if rule.starts_with("CXX_SHARED_LIBRARY") {
-            self.generate_object("cc_library_shared", target, targets_map, project)
+            self.generate_library("cc_library_shared", target, target_map, project)
         } else if rule.starts_with("CXX_STATIC_LIBRARY") {
-            self.generate_object("cc_library_static", target, targets_map, project)
-        } else if rule.starts_with("CXX_EXECUTABLE") {
-            self.generate_object("cc_binary", target, targets_map, project)
+            self.generate_library("cc_library_static", target, target_map, project)
         } else if rule.starts_with("CUSTOM_COMMAND") {
             let command = match target.get_command() {
                 Ok(option) => match option {
@@ -289,7 +289,7 @@ impl<'a> SoongPackage<'a> {
         }
     }
 
-    fn create_map(targets: &Vec<NinjaTarget>) -> HashMap<String, &NinjaTarget> {
+    fn create_target_map(targets: &Vec<NinjaTarget>) -> HashMap<String, &NinjaTarget> {
         let mut map: HashMap<String, &NinjaTarget> = HashMap::new();
         for target in targets {
             for output in &target.get_all_outputs() {
@@ -315,13 +315,13 @@ impl<'a> SoongPackage<'a> {
                     vec
                 });
 
-        let targets_map = Self::create_map(&targets);
+        let target_map = Self::create_target_map(&targets);
 
         while let Some(input) = target_to_generate.pop() {
             if target_seen.contains(&input) || project.ignore_target(&input) {
                 continue;
             }
-            let Some(target) = targets_map.get(&input) else {
+            let Some(target) = target_map.get(&input) else {
                 continue;
             };
 
@@ -330,7 +330,7 @@ impl<'a> SoongPackage<'a> {
                 target_seen.insert(output);
             }
 
-            if let Err(err) = self.generate_target(target, &targets_map, project) {
+            if let Err(err) = self.generate_target(target, &target_map, project) {
                 return Err(err);
             }
         }

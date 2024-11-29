@@ -1,8 +1,8 @@
 use std::collections::HashSet;
 
+use crate::ninja_target::NinjaTarget;
 use crate::soong_module::SoongModule;
 use crate::soong_package::SoongPackage;
-use crate::ninja_target::NinjaTarget;
 use crate::utils::*;
 
 const LLVM_PREFIX: &str = "third_party/llvm";
@@ -82,7 +82,9 @@ impl<'a> crate::project::Project<'a> for CLSPV<'a> {
             } else if !input.contains(self.src_root) {
                 generated_deps.insert((
                     input.clone(),
-                    ":".to_string() + TARGET_PREFIX + &rework_name(input, self.build_root, ""),
+                    ":".to_string()
+                        + TARGET_PREFIX
+                        + &rework_name(input.replace(self.build_root, "")),
                 ));
             } else {
                 filtered_inputs.insert(input.clone());
