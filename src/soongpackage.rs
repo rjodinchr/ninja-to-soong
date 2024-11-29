@@ -107,13 +107,12 @@ impl<'a> SoongPackage<'a> {
         let target_name = target.get_name(self.target_prefix);
 
         let mut module = crate::soongmodule::SoongModule::new(name);
-        module.add_str("name", target_name.clone());
-        if target_name == "clvk_libOpenCL_so" {
-            module.add_str("stem", "libclvk".to_string());
-        }
-        if name == "cc_library_static" {
+        module.add_str("stem", project.get_target_stem(&target_name));
+        if project.optimize_target_for_size(&target_name) {
             module.add_bool("optimize_for_size", true);
         }
+        module.add_set("header_libs", project.get_target_header_libs(&target_name));
+        module.add_str("name", target_name);
         module.add_bool("use_clang_lld", true);
         module.add_set("srcs", srcs);
         module.add_set("local_include_dirs", includes);
@@ -123,11 +122,12 @@ impl<'a> SoongPackage<'a> {
         module.add_set("static_libs", static_libs);
         module.add_set("shared_libs", shared_libs);
         module.add_set("generated_headers", generated_headers_filtered);
-        module.add_set("header_libs", project.get_object_header_libs());
+
         return module.print();
     }
 
     fn replace_output_in_command(
+        &self,
         command: String,
         output: &String,
         project: &dyn Project,
@@ -138,7 +138,7 @@ impl<'a> SoongPackage<'a> {
         let command = command.replace(output, marker);
         let command = command.replace(&space_and_last_output, &space_and_marker);
         let replace_output =
-            String::from("$(location ") + &project.rework_output_path(output) + ")";
+            String::from("$(location ") + &project.rework_command_output(output) + ")";
         return command.replace(marker, &replace_output);
     }
     fn replace_input_in_command(&self, command: String, input: String) -> String {
@@ -172,7 +172,7 @@ impl<'a> SoongPackage<'a> {
         let mut command = command.replace("/usr/bin/python3 ", "");
         command = command.replace(&(self.build_root.to_string() + "/"), "");
         for output in outputs {
-            command = Self::replace_output_in_command(command, output, project);
+            command = self.replace_output_in_command(command, output, project);
         }
         for input in inputs.clone() {
             command = self.replace_input_in_command(command, input);
@@ -202,7 +202,7 @@ impl<'a> SoongPackage<'a> {
         let out_set = target_outputs
             .into_iter()
             .fold(HashSet::new(), |mut set, output| {
-                set.insert(project.rework_output_path(output));
+                set.insert(project.rework_command_output(output));
                 set
             });
 

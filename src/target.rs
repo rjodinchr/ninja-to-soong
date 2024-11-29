@@ -79,7 +79,11 @@ impl BuildTarget {
         return outputs;
     }
 
-    pub fn get_link_flags(&self, src_root: &str, project: &dyn Project) -> (String, HashSet<String>) {
+    pub fn get_link_flags(
+        &self,
+        src_root: &str,
+        project: &dyn Project,
+    ) -> (String, HashSet<String>) {
         let mut link_flags: HashSet<String> = HashSet::new();
         let mut version_script = String::new();
         if let Some(flags) = self.variables.get("LINK_FLAGS") {

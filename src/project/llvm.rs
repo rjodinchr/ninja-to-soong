@@ -216,4 +216,7 @@ impl<'a> crate::project::Project<'a> for LLVM<'a> {
         }
         return set;
     }
+    fn optimize_target_for_size(&self, _: &String) -> bool {
+        true
+    }
 }

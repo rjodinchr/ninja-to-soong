@@ -49,9 +49,9 @@ impl<'a> crate::project::Project<'a> for CLVK<'a> {
     fn ignore_include(&self, _: &str) -> bool {
         true
     }
-    fn get_object_header_libs(&self) -> HashSet<String> {
+    fn get_target_header_libs(&self, _: &String) -> HashSet<String> {
         [
-            SPIRV_TOOLS_HEADERS.to_string(),
+            SPIRV_TOOLS.to_string(),
             SPIRV_HEADERS.to_string(),
             CLSPV_HEADERS.to_string(),
             "OpenCL-Headers".to_string(),
@@ -68,6 +68,13 @@ impl<'a> crate::project::Project<'a> for CLVK<'a> {
     fn handle_link_flag(&self, flag: &str, link_flags: &mut HashSet<String>) {
         if flag == "-Wl,-Bsymbolic" {
             link_flags.insert(flag.to_string());
+        }
+    }
+    fn get_target_stem(&self, target: &String) -> String {
+        if target == "clvk_libOpenCL_so" {
+            "libclvk".to_string()
+        } else {
+            String::new()
         }
     }
 }

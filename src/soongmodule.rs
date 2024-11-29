@@ -136,7 +136,7 @@ impl SoongModule {
         for entry in sets {
             result += &self.print_set(entry);
         }
-        let bools = vec!["optimize_for_size", "host_supported", "use_clang_lld"];
+        let bools = vec!["optimize_for_size", "use_clang_lld"];
         for entry in bools {
             result += &self.print_bool(entry);
         }

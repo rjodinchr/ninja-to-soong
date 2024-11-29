@@ -77,7 +77,7 @@ impl<'a> crate::project::Project<'a> for SpirvTools<'a> {
             Err(err) => return Err(err),
         }
         if let Err(err) = package.add_module(SoongModule::new_cc_library_headers(
-            SPIRV_TOOLS_HEADERS,
+            SPIRV_TOOLS,
             ["include".to_string()].into(),
         )) {
             return Err(err);
@@ -123,7 +123,7 @@ impl<'a> crate::project::Project<'a> for SpirvTools<'a> {
         }
         return set;
     }
-    fn get_object_header_libs(&self) -> HashSet<String> {
+    fn get_target_header_libs(&self, _: &String) -> HashSet<String> {
         [SPIRV_HEADERS.to_string()].into()
     }
 }

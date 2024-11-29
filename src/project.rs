@@ -21,29 +21,35 @@ pub trait Project<'a> {
     fn get_default_defines(&self) -> HashSet<String> {
         HashSet::new()
     }
-    fn ignore_target(&self, _: &String) -> bool {
+    fn get_headers_to_copy(&self, _headers: &HashSet<String>) -> HashSet<String> {
+        HashSet::new()
+    }
+    fn get_headers_to_generate(&self, _headers: &HashSet<String>) -> HashSet<String> {
+        HashSet::new()
+    }
+    fn get_target_header_libs(&self, _target: &String) -> HashSet<String> {
+        HashSet::new()
+    }
+    fn get_target_stem(&self, _target: &String) -> String {
+        String::new()
+    }
+    fn get_library_name(&self, library: &str) -> String {
+        library.to_string()
+    }
+    fn optimize_target_for_size(&self, _target: &String) -> bool {
         false
     }
-    fn ignore_include(&self, _: &str) -> bool {
+    fn ignore_target(&self, _target: &String) -> bool {
+        false
+    }
+    fn ignore_include(&self, _include: &str) -> bool {
         false
     }
     fn rework_include(&self, include: &str) -> String {
         include.to_string()
     }
-    fn get_headers_to_copy(&self, _: &HashSet<String>) -> HashSet<String> {
-        HashSet::new()
-    }
-    fn get_headers_to_generate(&self, _: &HashSet<String>) -> HashSet<String> {
-        HashSet::new()
-    }
-    fn get_object_header_libs(&self) -> HashSet<String> {
-        HashSet::new()
-    }
-    fn get_library_name(&self, library: &str) -> String {
-        library.to_string()
-    }
-    fn handle_link_flag(&self, _: &str, _: &mut HashSet<String>) {}
-    fn rework_output_path(&self, output: &str) -> String {
+    fn rework_command_output(&self, output: &str) -> String {
         output.to_string()
     }
+    fn handle_link_flag(&self, _flag: &str, _link_flags: &mut HashSet<String>) {}
 }

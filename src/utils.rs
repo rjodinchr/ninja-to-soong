@@ -10,11 +10,11 @@ pub fn add_slash_suffix(str: &str) -> String {
     str.to_string() + "/"
 }
 
-pub const SPIRV_TOOLS_HEADERS: &str = "SPIRV-Tools-Headers";
-pub const SPIRV_HEADERS: &str = "SPIRV-Headers";
-pub const LLVM_HEADERS: &str = "LLVM-Headers";
-pub const CLANG_HEADERS: &str = "CLANG-Headers";
-pub const CLSPV_HEADERS: &str = "CLSPV-Headers";
+pub const SPIRV_TOOLS: &str = "SPIRV-Tools-includes";
+pub const SPIRV_HEADERS: &str = "SPIRV-Headers-includes";
+pub const LLVM_HEADERS: &str = "llvm-includes";
+pub const CLANG_HEADERS: &str = "clang-includes";
+pub const CLSPV_HEADERS: &str = "clspv-includes";
 
 pub fn rework_name(origin: &str, from: &str, to: &str) -> String {
     origin.replace(from, to).replace("/", "_").replace(".", "_")

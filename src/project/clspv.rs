@@ -111,7 +111,7 @@ impl<'a> crate::project::Project<'a> for CLSPV<'a> {
         }
         return set;
     }
-    fn get_object_header_libs(&self) -> HashSet<String> {
+    fn get_target_header_libs(&self, _: &String) -> HashSet<String> {
         [
             SPIRV_HEADERS.to_string(),
             LLVM_HEADERS.to_string(),
@@ -119,7 +119,7 @@ impl<'a> crate::project::Project<'a> for CLSPV<'a> {
         ]
         .into()
     }
-    fn rework_output_path(&self, output: &str) -> String {
+    fn rework_command_output(&self, output: &str) -> String {
         if let Some(split) = output.split_once("include/") {
             split.1
         } else if !output.contains("libclc") {
@@ -128,5 +128,8 @@ impl<'a> crate::project::Project<'a> for CLSPV<'a> {
             output
         }
         .to_string()
+    }
+    fn optimize_target_for_size(&self, _: &String) -> bool {
+        true
     }
 }
