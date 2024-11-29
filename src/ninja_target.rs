@@ -225,12 +225,10 @@ impl NinjaTarget {
             defines_no_assembly.insert("BLAKE3_NO_SSE41".to_string());
             defines_no_assembly.insert("BLAKE3_NO_SSE2".to_string());
         } else if !self.rule.starts_with("CXX_COMPILER") && !self.rule.starts_with("C_COMPILER") {
-            return error!(format!("unsupported input target for library: {self:#?}"));
+            return error!(format!("unsupported input target: {self:#?}"));
         }
         if self.inputs.len() != 1 {
-            return error!(format!(
-                "Too many inputs in CXX_COMPILER input target for library: {self:#?}"
-            ));
+            return error!(format!("Too many inputs in target: {self:#?}"));
         }
         let mut defines = self.get_defines(project);
         for def in defines_no_assembly {
