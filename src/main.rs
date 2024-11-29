@@ -46,6 +46,19 @@ fn main() {
             spirv_headers_directory,
         )
         .generate(targets)
+    } else if project == "spirvheaders" {
+        if args.len() < number_common_arg + 1 {
+            println!("USAGE: {0} spirvtools <ndk_directory> <project_source_directory> <build_ninja_source_directory> <spirv_tools_directory>", args[0]);
+            return;
+        }
+        let spirv_tools_directory = &args[number_common_arg];
+        project::spirvheaders::SpirvHeaders::new(
+            &project_source_directory,
+            &build_source_directory,
+            &ndk_directory,
+            spirv_tools_directory,
+        )
+        .generate(targets)
     } else if project == "llvm" {
         project::llvm::LLVM::new(
             &project_source_directory,

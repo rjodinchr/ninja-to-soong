@@ -7,6 +7,7 @@ pub mod clspv;
 pub mod clvk;
 pub mod llvm;
 pub mod spirvtools;
+pub mod spirvheaders;
 
 pub trait Project<'a> {
     fn generate(self, targets: Vec<BuildTarget>) -> Result<String, String>;

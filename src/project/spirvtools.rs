@@ -26,39 +26,7 @@ impl<'a> SpirvTools<'a> {
             spirv_headers_root,
         }
     }
-    fn generate_spirv_headers(&self, mut files: HashSet<String>) -> Result<String, String> {
-        let mut package = SoongPackage::new(
-            "",
-            "",
-            "",
-            "SPIRV-Headers_",
-            "//visibility:public",
-            "SPDX-license-identifier-MIT",
-            "LICENSE",
-        );
-
-        package.add_module(SoongModule::new_cc_library_headers(
-            SPIRV_HEADERS,
-            ["include".to_string()].into(),
-        ));
-
-        files.insert(self.spirv_headers_root.to_string() + "/include/spirv/unified1/spirv.hpp"); // for clspv
-        let mut sorted = Vec::from_iter(files);
-        sorted.sort();
-        for file in sorted {
-            package.add_module(SoongModule::new_copy_genrule(
-                spirv_headers_name(self.spirv_headers_root, &file),
-                file.replace(&add_slash_suffix(self.spirv_headers_root), ""),
-                file.rsplit_once("/").unwrap().1.to_string(),
-            ));
-        }
-
-        return package.write(self.spirv_headers_root);
-    }
-}
-
-impl<'a> crate::project::Project<'a> for SpirvTools<'a> {
-    fn generate(self, targets: Vec<BuildTarget>) -> Result<String, String> {
+    fn generate_package(&self, targets: Vec<BuildTarget>) -> Result<SoongPackage, String> {
         let mut package = SoongPackage::new(
             self.src_root,
             self.ndk_root,
@@ -75,18 +43,32 @@ impl<'a> crate::project::Project<'a> for SpirvTools<'a> {
                 "libSPIRV-Tools-opt.a",
             ],
             targets,
-            &self,
+            self,
         ) {
             return Err(err);
-        }
-        match self.generate_spirv_headers(package.get_generated_deps()) {
-            Ok(message) => println!("{message}"),
-            Err(err) => return Err(err),
         }
         package.add_module(SoongModule::new_cc_library_headers(
             SPIRV_TOOLS,
             ["include".to_string()].into(),
         ));
+
+        return Ok(package);
+    }
+    pub fn get_generated_deps(self, targets: Vec<BuildTarget>) -> Result<HashSet<String>, String> {
+        let package = match self.generate_package(targets) {
+            Ok(package) => package,
+            Err(err) => return Err(err),
+        };
+        return Ok(package.get_generated_deps());
+    }
+}
+
+impl<'a> crate::project::Project<'a> for SpirvTools<'a> {
+    fn generate(self, targets: Vec<BuildTarget>) -> Result<String, String> {
+        let package = match self.generate_package(targets) {
+            Ok(package) => package,
+            Err(err) => return Err(err),
+        };
         return package.write(self.src_root);
     }
     fn parse_custom_command_inputs(
