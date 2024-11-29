@@ -30,8 +30,8 @@ jobs:
           done
           ndk=android-ndk-r27c
           ndk_zip=${ndk}-linux.zip
-          wget https://dl.google.com/android/repository/${ndk-zip}
-          unzip -q ${ndk-zip} -d ${ndk}
+          wget https://dl.google.com/android/repository/${ndk_zip}
+          unzip -q ${ndk_zip} -d ${ndk}
           cargo run -- ${android_base} $(pwd)/${ndk} all
           for repo in tests/*
           do
