@@ -13,11 +13,16 @@ jobs:
           fetch-depth: 0
       - name: Setup Ninja
         uses: ./.github/actions/setup-ninja
-      - name: Checkout repos
+      - name: Setup environement variables
         shell: bash
         run: |
           set -x
           echo "android=${{ github.workspace }}/android" >> $GITHUB_ENV
+          echo "ndk=android-ndk-r27c" >> $GITHUB_ENV
+      - name: Checkout repositories
+        shell: bash
+        run: |
+          set -x
           mkdir -p ${{ env.android }}/external
           for repo in tests/*
           do
@@ -31,7 +36,6 @@ jobs:
         shell: bash
         run: |
           set -x
-          echo "ndk=android-ndk-r27c" >> $GITHUB_ENV
           ndk_zip=${{ env.ndk }}-linux.zip
           wget https://dl.google.com/android/repository/${ndk_zip}
           unzip -q ${ndk_zip}
