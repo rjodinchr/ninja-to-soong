@@ -6,7 +6,7 @@ macro_rules! error {
 }
 pub use error;
 
-pub const PRINT_BANNER: &str = "[NINJA-TO-SOONG]";
+pub const PRINT_BANNER: &str = "\x1b[01;32m[NINJA-TO-SOONG]\x1b[0m";
 
 pub const SPIRV_TOOLS: &str = "SPIRV-Tools-includes";
 pub const SPIRV_HEADERS: &str = "SPIRV-Headers-includes";
