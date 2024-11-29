@@ -35,12 +35,8 @@ impl<'a> SoongPackage<'a> {
         }
     }
 
-    pub fn add_module(&mut self, module: SoongModule) -> Result<(), String> {
-        self.package += &match module.print() {
-            Ok(module) => module,
-            Err(err) => return Err(err),
-        };
-        return Ok(());
+    pub fn add_module(&mut self, module: SoongModule) {
+        self.package += &module.print();
     }
 
     pub fn write(self, path: &str) -> Result<String, String> {
@@ -123,7 +119,7 @@ impl<'a> SoongPackage<'a> {
         module.add_set("shared_libs", shared_libs);
         module.add_set("generated_headers", generated_headers_filtered);
 
-        return module.print();
+        return Ok(module.print());
     }
 
     fn replace_output_in_command(
@@ -213,7 +209,7 @@ impl<'a> SoongPackage<'a> {
         module.add_set("srcs", srcs_set);
         module.add_set("out", out_set);
         module.add_str("cmd", command.to_string());
-        return module.print();
+        return Ok(module.print());
     }
 
     fn generate_target(

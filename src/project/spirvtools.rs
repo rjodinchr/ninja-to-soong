@@ -29,24 +29,20 @@ impl<'a> SpirvTools<'a> {
     fn generate_spirv_headers(&self, mut files: HashSet<String>) -> Result<String, String> {
         let mut package = SoongPackage::new("", "", "", "");
 
-        if let Err(err) = package.add_module(SoongModule::new_cc_library_headers(
+        package.add_module(SoongModule::new_cc_library_headers(
             SPIRV_HEADERS,
             ["include".to_string()].into(),
-        )) {
-            return Err(err);
-        }
+        ));
 
         files.insert(self.spirv_headers_root.to_string() + "/include/spirv/unified1/spirv.hpp"); // for clspv
         let mut sorted = Vec::from_iter(files);
         sorted.sort();
         for file in sorted {
-            if let Err(err) = package.add_module(SoongModule::new_copy_genrule(
+            package.add_module(SoongModule::new_copy_genrule(
                 spirv_headers_name(self.spirv_headers_root, &file),
                 file.replace(&add_slash_suffix(self.spirv_headers_root), ""),
                 file.rsplit_once("/").unwrap().1.to_string(),
-            )) {
-                return Err(err);
-            }
+            ));
         }
 
         return package.write(self.spirv_headers_root);
@@ -76,12 +72,10 @@ impl<'a> crate::project::Project<'a> for SpirvTools<'a> {
             Ok(message) => println!("{message}"),
             Err(err) => return Err(err),
         }
-        if let Err(err) = package.add_module(SoongModule::new_cc_library_headers(
+        package.add_module(SoongModule::new_cc_library_headers(
             SPIRV_TOOLS,
             ["include".to_string()].into(),
-        )) {
-            return Err(err);
-        }
+        ));
         return package.write(self.src_root);
     }
     fn parse_custom_command_inputs(

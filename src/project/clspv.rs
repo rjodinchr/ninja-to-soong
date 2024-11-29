@@ -41,12 +41,10 @@ impl<'a> crate::project::Project<'a> for CLSPV<'a> {
         if let Err(err) = package.generate(vec!["libclspv_core.a"], targets, &self) {
             return Err(err);
         }
-        if let Err(err) = package.add_module(SoongModule::new_cc_library_headers(
+        package.add_module(SoongModule::new_cc_library_headers(
             CLSPV_HEADERS,
             ["include".to_string()].into(),
-        )) {
-            return Err(err);
-        }
+        ));
         return package.write(self.src_root);
     }
     fn parse_custom_command_inputs(

@@ -1,8 +1,6 @@
 use std::collections::HashMap;
 use std::collections::HashSet;
 
-use crate::utils::error;
-
 #[derive(Debug)]
 pub struct SoongModule {
     name: String,
@@ -107,17 +105,14 @@ impl SoongModule {
         return result;
     }
 
-    pub fn print(mut self) -> Result<String, String> {
-        let mut result = String::new();
-        result += &self.name;
-        result += " {\n";
+    pub fn print(mut self) -> String {
+        let mut module = String::new();
+        module += &self.name;
+        module += " {\n";
 
-        if !self.str_map.contains_key("name") {
-            return error!(format!("no 'name' in soong package: '{self:#?}"));
-        }
         let strs = vec!["name", "stem", "version_script", "cmd"];
-        for entry in strs {
-            result += &self.print_str(entry);
+        for str in strs {
+            module += &self.print_str(str);
         }
         let sets = vec![
             "srcs",
@@ -133,19 +128,15 @@ impl SoongModule {
             "generated_headers",
             "visibility",
         ];
-        for entry in sets {
-            result += &self.print_set(entry);
+        for set in sets {
+            module += &self.print_set(set);
         }
         let bools = vec!["optimize_for_size", "use_clang_lld"];
-        for entry in bools {
-            result += &self.print_bool(entry);
+        for bool in bools {
+            module += &self.print_bool(bool);
         }
 
-        if self.str_map.len() > 0 || self.set_map.len() > 0 {
-            return error!(format!("entries not consumed in: '{self:#?}"));
-        }
-
-        result += "}\n\n";
-        return Ok(result);
+        module += "}\n\n";
+        return module;
     }
 }

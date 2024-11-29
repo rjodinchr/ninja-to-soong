@@ -147,52 +147,42 @@ impl<'a> crate::project::Project<'a> for LLVM<'a> {
             Err(err) => return Err(err),
         }
 
-        if let Err(err) = package.add_module(SoongModule::new_cc_library_headers(
+        package.add_module(SoongModule::new_cc_library_headers(
             LLVM_HEADERS,
             [
                 "llvm/include".to_string(),
                 DST_BUILD_PREFIX.to_string() + "/include",
             ]
             .into(),
-        )) {
-            return Err(err);
-        }
-        if let Err(err) = package.add_module(SoongModule::new_cc_library_headers(
+        ));
+        package.add_module(SoongModule::new_cc_library_headers(
             CLANG_HEADERS,
             [
                 "clang/include".to_string(),
                 DST_BUILD_PREFIX.to_string() + "/tools/clang/include",
             ]
             .into(),
-        )) {
-            return Err(err);
-        }
+        ));
 
         // for clspv
         let opencl_c_base = "clang/lib/Headers/opencl-c-base.h";
-        if let Err(err) = package.add_module(SoongModule::new_copy_genrule(
+        package.add_module(SoongModule::new_copy_genrule(
             clang_headers_name("clang", opencl_c_base),
             opencl_c_base.to_string(),
             opencl_c_base.rsplit_once("/").unwrap().1.to_string(),
-        )) {
-            return Err(err);
-        }
+        ));
         let clspv_bc = DST_BUILD_PREFIX.to_string() + "/tools/libclc/clspv--.bc";
-        if let Err(err) = package.add_module(SoongModule::new_copy_genrule(
+        package.add_module(SoongModule::new_copy_genrule(
             llvm_headers_name(DST_BUILD_PREFIX, &clspv_bc),
             clspv_bc.clone(),
             clspv_bc.rsplit_once("/").unwrap().1.to_string(),
-        )) {
-            return Err(err);
-        }
+        ));
         let clspv64_bc = DST_BUILD_PREFIX.to_string() + "/tools/libclc/clspv64--.bc";
-        if let Err(err) = package.add_module(SoongModule::new_copy_genrule(
+        package.add_module(SoongModule::new_copy_genrule(
             llvm_headers_name(DST_BUILD_PREFIX, &clspv64_bc),
             clspv64_bc.clone(),
             clspv64_bc.rsplit_once("/").unwrap().1.to_string(),
-        )) {
-            return Err(err);
-        }
+        ));
 
         return package.write(self.src_root);
     }
