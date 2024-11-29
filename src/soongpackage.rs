@@ -256,6 +256,17 @@ impl<'a> SoongPackage<'a> {
         }
     }
 
+    fn create_map(targets: &Vec<BuildTarget>) -> HashMap<String, &BuildTarget> {
+        let mut map: HashMap<String, &BuildTarget> = HashMap::new();
+        for target in targets {
+            for output in &target.get_all_outputs() {
+                map.insert(output.clone(), target);
+            }
+        }
+
+        return map;
+    }
+
     pub fn generate(
         &mut self,
         entry_targets: Vec<&str>,
@@ -270,17 +281,8 @@ impl<'a> SoongPackage<'a> {
                     vec.push(element.to_string());
                     vec
                 });
-        fn create_map(targets: &Vec<BuildTarget>) -> HashMap<String, &BuildTarget> {
-            let mut map: HashMap<String, &BuildTarget> = HashMap::new();
-            for target in targets {
-                for output in &target.get_all_outputs() {
-                    map.insert(output.clone(), target);
-                }
-            }
 
-            return map;
-        }
-        let targets_map = create_map(&targets);
+        let targets_map = Self::create_map(&targets);
 
         while let Some(input) = target_to_generate.pop() {
             if target_seen.contains(&input) || project.ignore_target(&input) {
