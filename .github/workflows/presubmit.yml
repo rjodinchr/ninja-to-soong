@@ -17,24 +17,35 @@ jobs:
         shell: bash
         run: |
           set -x
-          android_base=$(mktemp -d)
-          external=${android_base}/external
-          mkdir ${external}
+          echo "android=${{ github.workspace }}/android" >> $GITHUB_ENV
+          mkdir -p ${{ env.android }}/external
           for repo in tests/*
           do
             name=$(basename ${repo})
-            git init ${external}/${name}
-            git -C ${external}/${name} remote add origin $(cat ${repo}/REPO)
-            git -C ${external}/${name} fetch --depth 1 origin $(cat ${repo}/VERSION)
-            git -C ${external}/${name} checkout $(cat ${repo}/VERSION)
+            git init ${{ env.android }}/external/${name}
+            git -C ${{ env.android }}/external/${name} remote add origin $(cat ${repo}/REPO)
+            git -C ${{ env.android }}/external/${name} fetch --depth 1 origin $(cat ${repo}/VERSION)
+            git -C ${{ env.android }}/external/${name} checkout $(cat ${repo}/VERSION)
           done
-          ndk=android-ndk-r27c
-          ndk_zip=${ndk}-linux.zip
+      - name: Download NDK
+        shell: bash
+        run: |
+          set -x
+          echo "ndk=android-ndk-r27c" >> $GITHUB_ENV
+          ndk_zip=${{ env.ndk }}-linux.zip
           wget https://dl.google.com/android/repository/${ndk_zip}
           unzip -q ${ndk_zip}
-          cargo run -- ${android_base} $(pwd)/${ndk} all
+      - name: Run ninja-to-soong
+        shell: bash
+        run: |
+          set -x
+          cargo run -- $(realpath ${{ env.android }}) $(realpath $(pwd)/${{ env.ndk }}) all
+      - name: Check generated files
+        shell: bash
+        run: |
+          set -x
           for repo in tests/*
           do
             name=$(basename ${repo})
-            diff ${repo}/Android.bp ${external}/${name}/Android.bp
+            diff ${repo}/Android.bp ${{ env.android }}/external/${name}/Android.bp
           done
