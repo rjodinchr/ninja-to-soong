@@ -87,7 +87,7 @@ impl BuildTarget {
                 if flag.contains("-Bsymbolic") {
                     link_flags.insert(flag.replace(src_root, ""));
                 } else if let Some(vs) = flag.strip_prefix("-Wl,--version-script=") {
-                    version_script = vs.replace(src_root, "");
+                    version_script = vs.replace(&add_slash_suffix(src_root), "");
                 }
             }
         }
@@ -97,8 +97,7 @@ impl BuildTarget {
     pub fn get_link_libraries(
         &self,
         ndk_root: &str,
-        target_prefix: &str,
-        targets_map: &HashMap<String, &BuildTarget>,
+        project: &dyn Project,
     ) -> Result<(HashSet<String>, HashSet<String>), String> {
         let mut static_libraries: HashSet<String> = HashSet::new();
         let mut shared_libraries: HashSet<String> = HashSet::new();
@@ -116,10 +115,7 @@ impl BuildTarget {
                         .replace(".a", "")
                         .replace(".so", "")
                 } else {
-                    match targets_map.get(lib) {
-                        Some(target_lib) => target_lib.get_name(target_prefix),
-                        None => return error!(format!("Could not find target for '{lib}'")),
-                    }
+                    project.get_library_name(lib)
                 };
                 if lib.ends_with(".a") {
                     static_libraries.insert(lib_name);

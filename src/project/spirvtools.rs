@@ -1,28 +1,35 @@
 use std::collections::HashSet;
 
-use crate::soongfile::SoongFile;
 use crate::soongmodule::SoongModule;
+use crate::soongpackage::SoongPackage;
 use crate::target::BuildTarget;
 use crate::utils::*;
 
 pub struct SpirvTools<'a> {
     src_root: &'a str,
     build_root: &'a str,
+    ndk_root: &'a str,
     spirv_headers_root: &'a str,
 }
 
 impl<'a> SpirvTools<'a> {
-    pub fn new(src_root: &'a str, build_root: &'a str, spirv_headers_root: &'a str) -> Self {
+    pub fn new(
+        src_root: &'a str,
+        build_root: &'a str,
+        ndk_root: &'a str,
+        spirv_headers_root: &'a str,
+    ) -> Self {
         SpirvTools {
             src_root,
             build_root,
+            ndk_root,
             spirv_headers_root,
         }
     }
     fn generate_spirv_headers(&self, mut files: HashSet<String>) -> Result<String, String> {
-        let mut spirv_headers = SoongFile::new("", "", "", "");
+        let mut package = SoongPackage::new("", "", "", "");
 
-        if let Err(err) = spirv_headers.add_module(SoongModule::new_cc_library_headers(
+        if let Err(err) = package.add_module(SoongModule::new_cc_library_headers(
             SPIRV_HEADERS,
             ["include".to_string()].into(),
         )) {
@@ -33,7 +40,7 @@ impl<'a> SpirvTools<'a> {
         let mut sorted = Vec::from_iter(files);
         sorted.sort();
         for file in sorted {
-            if let Err(err) = spirv_headers.add_module(SoongModule::new_copy_genrule(
+            if let Err(err) = package.add_module(SoongModule::new_copy_genrule(
                 spirv_headers_name(self.spirv_headers_root, &file),
                 file.replace(&add_slash_suffix(self.spirv_headers_root), ""),
                 file.rsplit_once("/").unwrap().1.to_string(),
@@ -42,14 +49,19 @@ impl<'a> SpirvTools<'a> {
             }
         }
 
-        return spirv_headers.write(self.spirv_headers_root);
+        return package.write(self.spirv_headers_root);
     }
 }
 
 impl<'a> crate::project::Project<'a> for SpirvTools<'a> {
     fn generate(self, targets: Vec<BuildTarget>) -> Result<String, String> {
-        let mut file = SoongFile::new(self.src_root, "", self.build_root, "spirvtools_");
-        if let Err(err) = file.generate(
+        let mut package = SoongPackage::new(
+            self.src_root,
+            self.ndk_root,
+            self.build_root,
+            "SPIRV-Tools_",
+        );
+        if let Err(err) = package.generate(
             vec![
                 "libSPIRV-Tools.a",
                 "libSPIRV-Tools-link.a",
@@ -60,11 +72,17 @@ impl<'a> crate::project::Project<'a> for SpirvTools<'a> {
         ) {
             return Err(err);
         }
-        match self.generate_spirv_headers(file.get_generated_headers()) {
+        match self.generate_spirv_headers(package.get_generated_headers()) {
             Ok(message) => println!("{message}"),
             Err(err) => return Err(err),
         }
-        return file.write(self.src_root);
+        if let Err(err) = package.add_module(SoongModule::new_cc_library_headers(
+            SPIRV_TOOLS_HEADERS,
+            ["include".to_string()].into(),
+        )) {
+            return Err(err);
+        }
+        return package.write(self.src_root);
     }
     fn parse_custom_command_inputs(
         &self,
@@ -95,17 +113,8 @@ impl<'a> crate::project::Project<'a> for SpirvTools<'a> {
     fn get_default_defines(&self) -> HashSet<String> {
         ["-Wno-implicit-fallthrough".to_string()].into()
     }
-    fn ignore_target(&self, _: &String) -> bool {
-        false
-    }
     fn ignore_include(&self, include: &str) -> bool {
         include.contains(self.build_root) || include.contains(self.spirv_headers_root)
-    }
-    fn rework_include(&self, include: &str) -> String {
-        include.to_string()
-    }
-    fn get_headers_to_copy(&self, _: &HashSet<String>) -> HashSet<String> {
-        return HashSet::new();
     }
     fn get_headers_to_generate(&self, headers: &HashSet<String>) -> HashSet<String> {
         let mut set = HashSet::new();

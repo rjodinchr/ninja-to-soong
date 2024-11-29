@@ -7,7 +7,7 @@ use crate::target::BuildTarget;
 use crate::utils::*;
 
 #[derive(Debug)]
-pub struct SoongFile<'a> {
+pub struct SoongPackage<'a> {
     content: String,
     generated_headers: HashSet<String>,
     include_directories: HashSet<String>,
@@ -17,14 +17,14 @@ pub struct SoongFile<'a> {
     target_prefix: &'a str,
 }
 
-impl<'a> SoongFile<'a> {
+impl<'a> SoongPackage<'a> {
     pub fn new(
         src_root: &'a str,
         ndk_root: &'a str,
         build_root: &'a str,
         target_prefix: &'a str,
     ) -> Self {
-        SoongFile {
+        SoongPackage {
             content: String::new(),
             generated_headers: HashSet::new(),
             include_directories: HashSet::new(),
@@ -85,11 +85,10 @@ impl<'a> SoongFile<'a> {
 
         let (version_script, link_flags) = target.get_link_flags(self.src_root);
 
-        let (static_libs, shared_libs) =
-            match target.get_link_libraries(self.ndk_root, self.target_prefix, targets_map) {
-                Ok(return_values) => return_values,
-                Err(err) => return Err(err),
-            };
+        let (static_libs, shared_libs) = match target.get_link_libraries(self.ndk_root, project) {
+            Ok(return_values) => return_values,
+            Err(err) => return Err(err),
+        };
 
         let generated_headers = match target.get_generated_headers(targets_map) {
             Ok(return_value) => return_value,
@@ -219,7 +218,6 @@ impl<'a> SoongFile<'a> {
         module.add_set("srcs", srcs_set);
         module.add_set("out", out_set);
         module.add_str("cmd", command.to_string());
-        //module.add_set("defaults", defaults);
         return module.print();
     }
 

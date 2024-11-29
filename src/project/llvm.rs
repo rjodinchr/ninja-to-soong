@@ -1,8 +1,8 @@
 use std::collections::HashSet;
 
 use crate::filesystem;
-use crate::soongfile::SoongFile;
 use crate::soongmodule::SoongModule;
+use crate::soongpackage::SoongPackage;
 use crate::target::BuildTarget;
 use crate::utils::*;
 
@@ -11,21 +11,23 @@ const DST_BUILD_PREFIX: &str = "cmake_generated";
 pub struct LLVM<'a> {
     src_root: &'a str,
     build_root: &'a str,
+    ndk_root: &'a str,
 }
 
 impl<'a> LLVM<'a> {
-    pub fn new(src_root: &'a str, build_root: &'a str) -> Self {
+    pub fn new(src_root: &'a str, build_root: &'a str, ndk_root: &'a str) -> Self {
         LLVM {
             src_root,
             build_root,
+            ndk_root,
         }
     }
 }
 
 impl<'a> crate::project::Project<'a> for LLVM<'a> {
     fn generate(self, targets: Vec<BuildTarget>) -> Result<String, String> {
-        let mut file = SoongFile::new(self.src_root, "", self.build_root, "llvm-project_");
-        if let Err(err) = file.generate(
+        let mut package = SoongPackage::new(self.src_root, self.ndk_root, self.build_root, "llvm_");
+        if let Err(err) = package.generate(
             vec![
                 "libLLVMAggressiveInstCombine.a",
                 "libLLVMAnalysis.a",
@@ -98,8 +100,8 @@ impl<'a> crate::project::Project<'a> for LLVM<'a> {
         ) {
             return Err(err);
         }
-        let mut generated_headers = file.get_generated_headers();
-        let include_directories = file.get_include_directories();
+        let mut generated_headers = package.get_generated_headers();
+        let include_directories = package.get_include_directories();
 
         let dirs_to_remove = vec![DST_BUILD_PREFIX];
         for dir_to_remove in dirs_to_remove {
@@ -145,7 +147,7 @@ impl<'a> crate::project::Project<'a> for LLVM<'a> {
             Err(err) => return Err(err),
         }
 
-        if let Err(err) = file.add_module(SoongModule::new_cc_library_headers(
+        if let Err(err) = package.add_module(SoongModule::new_cc_library_headers(
             LLVM_HEADERS,
             [
                 "llvm/include".to_string(),
@@ -156,7 +158,7 @@ impl<'a> crate::project::Project<'a> for LLVM<'a> {
         )) {
             return Err(err);
         }
-        if let Err(err) = file.add_module(SoongModule::new_cc_library_headers(
+        if let Err(err) = package.add_module(SoongModule::new_cc_library_headers(
             CLANG_HEADERS,
             ["clang/include".to_string()].into(),
         )) {
@@ -165,7 +167,7 @@ impl<'a> crate::project::Project<'a> for LLVM<'a> {
 
         // for clspv
         let opencl_c_base = "clang/lib/Headers/opencl-c-base.h";
-        if let Err(err) = file.add_module(SoongModule::new_copy_genrule(
+        if let Err(err) = package.add_module(SoongModule::new_copy_genrule(
             clang_headers_name("clang", opencl_c_base),
             opencl_c_base.to_string(),
             opencl_c_base.rsplit_once("/").unwrap().1.to_string(),
@@ -173,7 +175,7 @@ impl<'a> crate::project::Project<'a> for LLVM<'a> {
             return Err(err);
         }
         let clspv_bc = DST_BUILD_PREFIX.to_string() + "/tools/libclc/clspv--.bc";
-        if let Err(err) = file.add_module(SoongModule::new_copy_genrule(
+        if let Err(err) = package.add_module(SoongModule::new_copy_genrule(
             llvm_headers_name(DST_BUILD_PREFIX, &clspv_bc),
             clspv_bc.clone(),
             clspv_bc.rsplit_once("/").unwrap().1.to_string(),
@@ -181,7 +183,7 @@ impl<'a> crate::project::Project<'a> for LLVM<'a> {
             return Err(err);
         }
         let clspv64_bc = DST_BUILD_PREFIX.to_string() + "/tools/libclc/clspv64--.bc";
-        if let Err(err) = file.add_module(SoongModule::new_copy_genrule(
+        if let Err(err) = package.add_module(SoongModule::new_copy_genrule(
             llvm_headers_name(DST_BUILD_PREFIX, &clspv64_bc),
             clspv64_bc.clone(),
             clspv64_bc.rsplit_once("/").unwrap().1.to_string(),
@@ -189,15 +191,7 @@ impl<'a> crate::project::Project<'a> for LLVM<'a> {
             return Err(err);
         }
 
-        return file.write(self.src_root);
-    }
-    fn parse_custom_command_inputs(
-        &self,
-        _: &Vec<String>,
-    ) -> Result<(HashSet<String>, HashSet<String>, HashSet<(String, String)>), String> {
-        return error!(format!(
-            "parse_custom_command_inputs not supported for llvm project"
-        ));
+        return package.write(self.src_root);
     }
     fn get_default_defines(&self) -> HashSet<String> {
         [
@@ -209,9 +203,6 @@ impl<'a> crate::project::Project<'a> for LLVM<'a> {
     fn ignore_target(&self, input: &String) -> bool {
         !input.starts_with("lib")
     }
-    fn ignore_include(&self, _: &str) -> bool {
-        false
-    }
     fn rework_include(&self, include: &str) -> String {
         include.replace(self.build_root, DST_BUILD_PREFIX)
     }
@@ -221,11 +212,5 @@ impl<'a> crate::project::Project<'a> for LLVM<'a> {
             set.insert(header.clone());
         }
         return set;
-    }
-    fn get_headers_to_generate(&self, _: &HashSet<String>) -> HashSet<String> {
-        return HashSet::new();
-    }
-    fn get_object_header_libs(&self) -> HashSet<String> {
-        return HashSet::new();
     }
 }

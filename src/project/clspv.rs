@@ -1,6 +1,7 @@
 use std::collections::HashSet;
 
-use crate::soongfile::SoongFile;
+use crate::soongmodule::SoongModule;
+use crate::soongpackage::SoongPackage;
 use crate::target::BuildTarget;
 use crate::utils::*;
 
@@ -10,8 +11,8 @@ const TARGET_PREFIX: &str = "clspv_";
 pub struct CLSPV<'a> {
     src_root: &'a str,
     build_root: &'a str,
+    ndk_root: &'a str,
     spirv_headers_root: &'a str,
-    spirv_tools_root: &'a str,
     llvm_project_root: &'a str,
 }
 
@@ -19,15 +20,15 @@ impl<'a> CLSPV<'a> {
     pub fn new(
         src_root: &'a str,
         build_root: &'a str,
+        ndk_root: &'a str,
         spirv_headers_root: &'a str,
-        spirv_tools_root: &'a str,
         llvm_project_root: &'a str,
     ) -> Self {
         CLSPV {
             src_root,
             build_root,
+            ndk_root,
             spirv_headers_root,
-            spirv_tools_root,
             llvm_project_root,
         }
     }
@@ -35,11 +36,18 @@ impl<'a> CLSPV<'a> {
 
 impl<'a> crate::project::Project<'a> for CLSPV<'a> {
     fn generate(self, targets: Vec<BuildTarget>) -> Result<String, String> {
-        let mut file = SoongFile::new(self.src_root, "", self.build_root, TARGET_PREFIX);
-        if let Err(err) = file.generate(vec!["libclspv_core.a"], targets, &self) {
+        let mut package =
+            SoongPackage::new(self.src_root, self.ndk_root, self.build_root, TARGET_PREFIX);
+        if let Err(err) = package.generate(vec!["libclspv_core.a"], targets, &self) {
             return Err(err);
         }
-        return file.write(self.src_root);
+        if let Err(err) = package.add_module(SoongModule::new_cc_library_headers(
+            CLSPV_HEADERS,
+            ["include".to_string()].into(),
+        )) {
+            return Err(err);
+        }
+        return package.write(self.src_root);
     }
     fn parse_custom_command_inputs(
         &self,
@@ -92,14 +100,7 @@ impl<'a> crate::project::Project<'a> for CLSPV<'a> {
     fn ignore_include(&self, include: &str) -> bool {
         include.contains(self.build_root)
             || include.contains(self.spirv_headers_root)
-            || include.contains(self.spirv_tools_root)
             || include.contains(self.llvm_project_root)
-    }
-    fn rework_include(&self, include: &str) -> String {
-        include.to_string()
-    }
-    fn get_headers_to_copy(&self, _: &HashSet<String>) -> HashSet<String> {
-        return HashSet::new();
     }
     fn get_headers_to_generate(&self, headers: &HashSet<String>) -> HashSet<String> {
         let mut set = HashSet::new();
