@@ -36,8 +36,15 @@ impl<'a> CLSPV<'a> {
 
 impl<'a> crate::project::Project<'a> for CLSPV<'a> {
     fn generate(self, targets: Vec<BuildTarget>) -> Result<String, String> {
-        let mut package =
-            SoongPackage::new(self.src_root, self.ndk_root, self.build_root, TARGET_PREFIX);
+        let mut package = SoongPackage::new(
+            self.src_root,
+            self.ndk_root,
+            self.build_root,
+            TARGET_PREFIX,
+            "//external/clvk",
+            "SPDX-license-identifier-Apache-2.0",
+            "LICENSE",
+        );
         if let Err(err) = package.generate(vec!["libclspv_core.a"], targets, &self) {
             return Err(err);
         }

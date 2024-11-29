@@ -23,8 +23,11 @@ impl<'a> SoongPackage<'a> {
         ndk_root: &'a str,
         build_root: &'a str,
         target_prefix: &'a str,
+        default_visibility: &str,
+        license_kinds: &str,
+        license_text: &str,
     ) -> Self {
-        SoongPackage {
+        let mut package = SoongPackage {
             package: String::new(),
             generated_deps: HashSet::new(),
             include_directories: HashSet::new(),
@@ -32,7 +35,27 @@ impl<'a> SoongPackage<'a> {
             ndk_root,
             build_root,
             target_prefix,
-        }
+        };
+
+        let license_name =
+            target_prefix.to_string() + &license_text.replace(".", "_").to_lowercase();
+
+        let mut package_module = SoongModule::new("package");
+        package_module.add_set("default_applicable_licenses", [license_name.clone()].into());
+        package_module.add_set(
+            "default_visibility",
+            [default_visibility.to_string()].into(),
+        );
+        package.add_module(package_module);
+
+        let mut license_module = SoongModule::new("license");
+        license_module.add_str("name", license_name.clone());
+        license_module.add_set("visibility", [":__subpackages__".to_string()].into());
+        license_module.add_set("license_kinds", [license_kinds.to_string()].into());
+        license_module.add_set("license_text", [license_text.to_string()].into());
+        package.add_module(license_module);
+
+        return package;
     }
 
     pub fn add_module(&mut self, module: SoongModule) {

@@ -23,14 +23,12 @@ impl SoongModule {
         let mut module = Self::new("cc_library_headers");
         module.add_str("name", name.to_string());
         module.add_set("export_include_dirs", include_dirs);
-        module.add_set("visibility", ["//visibility:public".to_string()].into());
         module
     }
 
     pub fn new_copy_genrule(name: String, src: String, out: String) -> Self {
         let mut module = Self::new("genrule");
         module.add_str("name", name);
-        module.add_set("visibility", ["//visibility:public".to_string()].into());
         module.add_set("srcs", [src].into());
         module.add_set("out", [out].into());
         module.add_str("cmd", "cp $(in) $(out)".to_string());
@@ -93,15 +91,23 @@ impl SoongModule {
         result += &key;
         result += ": ";
 
-        result += "[\n";
-        let mut sorted = Vec::from_iter(set);
-        sorted.sort();
-        for value in sorted {
-            result += "        \"";
-            result += &value;
-            result += "\",\n";
+        if set.len() == 1 {
+            result += "[ \"";
+            for value in set {
+                result += &value;
+            }
+            result += "\" ],\n";
+        } else {
+            result += "[\n";
+            let mut sorted = Vec::from_iter(set);
+            sorted.sort();
+            for value in sorted {
+                result += "        \"";
+                result += &value;
+                result += "\",\n";
+            }
+            result += "    ],\n";
         }
-        result += "    ],\n";
         return result;
     }
 
@@ -127,6 +133,10 @@ impl SoongModule {
             "header_libs",
             "generated_headers",
             "visibility",
+            "default_visibility",
+            "default_applicable_licenses",
+            "license_kinds",
+            "license_text",
         ];
         for set in sets {
             module += &self.print_set(set);

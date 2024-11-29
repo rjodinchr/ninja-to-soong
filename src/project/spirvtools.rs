@@ -27,7 +27,15 @@ impl<'a> SpirvTools<'a> {
         }
     }
     fn generate_spirv_headers(&self, mut files: HashSet<String>) -> Result<String, String> {
-        let mut package = SoongPackage::new("", "", "", "");
+        let mut package = SoongPackage::new(
+            "",
+            "",
+            "",
+            "SPIRV-Headers_",
+            "//visibility:public",
+            "SPDX-license-identifier-MIT",
+            "LICENSE",
+        );
 
         package.add_module(SoongModule::new_cc_library_headers(
             SPIRV_HEADERS,
@@ -56,6 +64,9 @@ impl<'a> crate::project::Project<'a> for SpirvTools<'a> {
             self.ndk_root,
             self.build_root,
             "SPIRV-Tools_",
+            "//visibility:public",
+            "SPDX-license-identifier-Apache-2.0",
+            "LICENSE",
         );
         if let Err(err) = package.generate(
             vec![

@@ -22,7 +22,15 @@ impl<'a> CLVK<'a> {
 
 impl<'a> crate::project::Project<'a> for CLVK<'a> {
     fn generate(self, targets: Vec<BuildTarget>) -> Result<String, String> {
-        let mut package = SoongPackage::new(self.src_root, self.ndk_root, self.build_root, "clvk_");
+        let mut package = SoongPackage::new(
+            self.src_root,
+            self.ndk_root,
+            self.build_root,
+            "clvk_",
+            "//visibility:public",
+            "SPDX-license-identifier-Apache-2.0",
+            "LICENSE",
+        );
         if let Err(err) = package.generate(vec!["libOpenCL.so"], targets, &self) {
             return Err(err);
         }
@@ -60,7 +68,7 @@ impl<'a> crate::project::Project<'a> for CLVK<'a> {
     }
     fn get_library_name(&self, library: &str) -> String {
         library
-            .replace("external/clspv/third_party/", "")
+            .replace("external/clspv/third_party/llvm", "llvm-project")
             .replace("external/", "")
             .replace("/", "_")
             .replace(".", "_")

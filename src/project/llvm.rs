@@ -26,7 +26,15 @@ impl<'a> LLVM<'a> {
 
 impl<'a> crate::project::Project<'a> for LLVM<'a> {
     fn generate(self, targets: Vec<BuildTarget>) -> Result<String, String> {
-        let mut package = SoongPackage::new(self.src_root, self.ndk_root, self.build_root, "llvm_");
+        let mut package = SoongPackage::new(
+            self.src_root,
+            self.ndk_root,
+            self.build_root,
+            "llvm-project_",
+            "//visibility:public",
+            "SPDX-license-identifier-Apache-2.0",
+            "LICENSE.TXT",
+        );
         if let Err(err) = package.generate(
             vec![
                 "libLLVMAggressiveInstCombine.a",
