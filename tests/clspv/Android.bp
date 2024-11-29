@@ -1,0 +1,187 @@
+package {
+    default_visibility: [ "//external/clvk" ],
+    default_applicable_licenses: [ "clspv_license" ],
+}
+
+license {
+    name: "clspv_license",
+    visibility: [ ":__subpackages__" ],
+    license_kinds: [ "SPDX-license-identifier-Apache-2.0" ],
+    license_text: [ "LICENSE" ],
+}
+
+cc_library_static {
+    name: "clspv_lib_libclspv_core_a",
+    srcs: [
+        "lib/AddFunctionAttributesPass.cpp",
+        "lib/AllocateDescriptorsPass.cpp",
+        "lib/AnnotationToMetadataPass.cpp",
+        "lib/ArgKind.cpp",
+        "lib/AutoPodArgsPass.cpp",
+        "lib/BitcastUtils.cpp",
+        "lib/Builtins.cpp",
+        "lib/CallGraphOrderedFunctions.cpp",
+        "lib/ClusterConstants.cpp",
+        "lib/ClusterPodKernelArgumentsPass.cpp",
+        "lib/Compiler.cpp",
+        "lib/ComputeStructuredOrder.cpp",
+        "lib/ConstantEmitter.cpp",
+        "lib/Constants.cpp",
+        "lib/DeclarePushConstantsPass.cpp",
+        "lib/DefineOpenCLWorkItemBuiltinsPass.cpp",
+        "lib/DescriptorCounter.cpp",
+        "lib/DirectResourceAccessPass.cpp",
+        "lib/FeatureMacro.cpp",
+        "lib/FixupBuiltinsPass.cpp",
+        "lib/FixupStructuredCFGPass.cpp",
+        "lib/FrontendPlugin.cpp",
+        "lib/FunctionInternalizerPass.cpp",
+        "lib/HideConstantLoadsPass.cpp",
+        "lib/InlineEntryPointsPass.cpp",
+        "lib/InlineFuncWithImageMetadataGetterPass.cpp",
+        "lib/InlineFuncWithPointerBitCastArgPass.cpp",
+        "lib/InlineFuncWithPointerToFunctionArgPass.cpp",
+        "lib/InlineFuncWithReadImage3DNonLiteralSampler.cpp",
+        "lib/InlineFuncWithSingleCallSitePass.cpp",
+        "lib/KernelArgNamesToMetadataPass.cpp",
+        "lib/Layout.cpp",
+        "lib/LogicalPointerToIntPass.cpp",
+        "lib/LongVectorLoweringPass.cpp",
+        "lib/LowerAddrSpaceCastPass.cpp",
+        "lib/LowerPrivatePointerPHIPass.cpp",
+        "lib/MultiVersionUBOFunctionsPass.cpp",
+        "lib/NativeMathPass.cpp",
+        "lib/NormalizeGlobalVariable.cpp",
+        "lib/OpenCLInlinerPass.cpp",
+        "lib/Option.cpp",
+        "lib/Passes.cpp",
+        "lib/PhysicalPointerArgsPass.cpp",
+        "lib/PrintfPass.cpp",
+        "lib/PushConstant.cpp",
+        "lib/RemoveUnusedArguments.cpp",
+        "lib/ReorderBasicBlocksPass.cpp",
+        "lib/ReplaceLLVMIntrinsicsPass.cpp",
+        "lib/ReplaceOpenCLBuiltinPass.cpp",
+        "lib/ReplacePointerBitcastPass.cpp",
+        "lib/RewriteInsertsPass.cpp",
+        "lib/RewritePackedStructs.cpp",
+        "lib/SPIRVOp.cpp",
+        "lib/SPIRVProducerPass.cpp",
+        "lib/Sampler.cpp",
+        "lib/SamplerUtils.cpp",
+        "lib/ScalarizePass.cpp",
+        "lib/SetImageMetadataPass.cpp",
+        "lib/ShareModuleScopeVariables.cpp",
+        "lib/SignedCompareFixupPass.cpp",
+        "lib/SimplifyPointerBitcastPass.cpp",
+        "lib/SpecConstant.cpp",
+        "lib/SpecializeImageTypes.cpp",
+        "lib/SplatArgPass.cpp",
+        "lib/SplatSelectCondition.cpp",
+        "lib/StripFreezePass.cpp",
+        "lib/ThreeElementVectorLoweringPass.cpp",
+        "lib/Types.cpp",
+        "lib/UBOTypeTransformPass.cpp",
+        "lib/UndoBoolPass.cpp",
+        "lib/UndoByvalPass.cpp",
+        "lib/UndoGetElementPtrConstantExprPass.cpp",
+        "lib/UndoInstCombinePass.cpp",
+        "lib/UndoSRetPass.cpp",
+        "lib/UndoTranslateSamplerFoldPass.cpp",
+        "lib/UndoTruncateToOddIntegerPass.cpp",
+        "lib/WrapKernelPass.cpp",
+        "lib/ZeroInitializeAllocasPass.cpp",
+    ],
+    cflags: [ "-Wno-unreachable-code-loop-increment" ],
+    local_include_dirs: [ "include" ],
+    header_libs: [
+        "SPIRV-Headers-includes",
+        "clang-includes",
+        "llvm-includes",
+    ],
+    generated_headers: [
+        "clspv_cmake_clspv-builtins_h",
+        "clspv_include_clspv_clspv64_builtin_library_h",
+        "clspv_include_clspv_clspv_builtin_library_h",
+        "clspv_include_clspv_opencl_builtins_header_h",
+        "clspv_include_clspv_spirv_c_strings_hpp",
+        "clspv_include_clspv_spirv_glsl_hpp",
+        "clspv_include_clspv_spirv_reflection_hpp",
+    ],
+    optimize_for_size: true,
+    use_clang_lld: true,
+}
+
+cc_genrule {
+    name: "clspv_include_clspv_spirv_reflection_hpp",
+    cmd: "$(location cmake/spirv_ext_inst.py) --input-file=$(location :SPIRV-Headers-includes_include_spirv_unified1_extinst_nonsemantic_clspvreflection_grammar_json) --output-file=$(location clspv/spirv_reflection.hpp) --namespace=reflection",
+    srcs: [
+        ":SPIRV-Headers-includes_include_spirv_unified1_extinst_nonsemantic_clspvreflection_grammar_json",
+        "cmake/spirv_ext_inst.py",
+    ],
+    out: [ "clspv/spirv_reflection.hpp" ],
+}
+
+cc_genrule {
+    name: "clspv_include_clspv_spirv_glsl_hpp",
+    cmd: "$(location cmake/spirv_ext_inst.py) --input-file=$(location :SPIRV-Headers-includes_include_spirv_unified1_extinst_glsl_std_450_grammar_json) --output-file=$(location clspv/spirv_glsl.hpp) --namespace=glsl",
+    srcs: [
+        ":SPIRV-Headers-includes_include_spirv_unified1_extinst_glsl_std_450_grammar_json",
+        "cmake/spirv_ext_inst.py",
+    ],
+    out: [ "clspv/spirv_glsl.hpp" ],
+}
+
+cc_genrule {
+    name: "clspv_include_clspv_spirv_c_strings_hpp",
+    cmd: "$(location cmake/spirv_c_strings.py) --input-file=$(location :SPIRV-Headers-includes_include_spirv_unified1_spirv_hpp) --output-file=$(location clspv/spirv_c_strings.hpp) --namespace=spv",
+    srcs: [
+        ":SPIRV-Headers-includes_include_spirv_unified1_spirv_hpp",
+        "cmake/spirv_c_strings.py",
+    ],
+    out: [ "clspv/spirv_c_strings.hpp" ],
+}
+
+cc_genrule {
+    name: "clspv_include_clspv_clspv_builtin_library_h",
+    cmd: "$(location cmake/bake_file.py) --input-header-file=$(location :llvm-includes_tools_libclc_clspv--_bc) --output-file=$(location clspv/clspv_builtin_library.h) --header-var=clspv_builtin_library_data --header-size=clspv_builtin_library_size",
+    srcs: [
+        ":llvm-includes_tools_libclc_clspv--_bc",
+        "cmake/bake_file.py",
+    ],
+    out: [ "clspv/clspv_builtin_library.h" ],
+}
+
+cc_genrule {
+    name: "clspv_cmake_clspv-builtins_h",
+    cmd: "$(location cmake/define_clspv_builtins.py) --output-file=$(location clspv-builtins.h)",
+    srcs: [ "cmake/define_clspv_builtins.py" ],
+    out: [ "clspv-builtins.h" ],
+}
+
+cc_genrule {
+    name: "clspv_include_clspv_opencl_builtins_header_h",
+    cmd: "$(location cmake/bake_file.py) --input-header-file=$(location :clspv_cmake_clspv-builtins_h) --input-base-file=$(location :clang-includes_lib_Headers_opencl-c-base_h) --output-file=$(location clspv/opencl_builtins_header.h) --header-var=clspv_builtins_header_data --header-size-var=clspv_builtins_header_size --base-var=opencl_base_builtins_header_data --base-size-var=opencl_base_builtins_header_size",
+    srcs: [
+        ":clang-includes_lib_Headers_opencl-c-base_h",
+        ":clspv_cmake_clspv-builtins_h",
+        "cmake/bake_file.py",
+    ],
+    out: [ "clspv/opencl_builtins_header.h" ],
+}
+
+cc_genrule {
+    name: "clspv_include_clspv_clspv64_builtin_library_h",
+    cmd: "$(location cmake/bake_file.py) --input-header-file=$(location :llvm-includes_tools_libclc_clspv64--_bc) --output-file=$(location clspv/clspv64_builtin_library.h) --header-var=clspv64_builtin_library_data --header-size=clspv64_builtin_library_size",
+    srcs: [
+        ":llvm-includes_tools_libclc_clspv64--_bc",
+        "cmake/bake_file.py",
+    ],
+    out: [ "clspv/clspv64_builtin_library.h" ],
+}
+
+cc_library_headers {
+    name: "clspv-includes",
+    export_include_dirs: [ "include" ],
+}
+
