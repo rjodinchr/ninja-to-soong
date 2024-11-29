@@ -4,8 +4,8 @@ use std::fs::File;
 use std::io::Write;
 
 use crate::project::Project;
-use crate::soongmodule::SoongModule;
-use crate::target::BuildTarget;
+use crate::soong_module::SoongModule;
+use crate::ninja_target::NinjaTarget;
 use crate::utils::*;
 
 #[derive(Debug)]
@@ -90,8 +90,8 @@ impl<'a> SoongPackage<'a> {
     fn generate_object(
         &mut self,
         name: &str,
-        target: &BuildTarget,
-        targets_map: &HashMap<String, &BuildTarget>,
+        target: &NinjaTarget,
+        targets_map: &HashMap<String, &NinjaTarget>,
         project: &dyn Project,
     ) -> Result<String, String> {
         let mut cflags = project.get_default_cflags();
@@ -139,7 +139,7 @@ impl<'a> SoongPackage<'a> {
         }
         let target_name = target.get_name(self.target_prefix);
 
-        let mut module = crate::soongmodule::SoongModule::new(name);
+        let mut module = crate::soong_module::SoongModule::new(name);
         module.add_str("stem", project.get_target_stem(&target_name));
         if project.optimize_target_for_size(&target_name) {
             module.add_bool("optimize_for_size", true);
@@ -219,7 +219,7 @@ impl<'a> SoongPackage<'a> {
 
     fn generate_custom_command(
         &mut self,
-        target: &BuildTarget,
+        target: &NinjaTarget,
         command: String,
         project: &dyn Project,
     ) -> Result<String, String> {
@@ -241,7 +241,7 @@ impl<'a> SoongPackage<'a> {
 
         let command = self.rework_command(command, inputs, target_outputs, generated_deps, project);
 
-        let mut module = crate::soongmodule::SoongModule::new("cc_genrule");
+        let mut module = crate::soong_module::SoongModule::new("cc_genrule");
         module.add_str("name", target.get_name(self.target_prefix));
         module.add_set("srcs", srcs_set);
         module.add_set("out", out_set);
@@ -251,8 +251,8 @@ impl<'a> SoongPackage<'a> {
 
     fn generate_target(
         &mut self,
-        target: &BuildTarget,
-        targets_map: &HashMap<String, &BuildTarget>,
+        target: &NinjaTarget,
+        targets_map: &HashMap<String, &NinjaTarget>,
         project: &dyn Project,
     ) -> Result<(), String> {
         let rule = target.get_rule();
@@ -289,8 +289,8 @@ impl<'a> SoongPackage<'a> {
         }
     }
 
-    fn create_map(targets: &Vec<BuildTarget>) -> HashMap<String, &BuildTarget> {
-        let mut map: HashMap<String, &BuildTarget> = HashMap::new();
+    fn create_map(targets: &Vec<NinjaTarget>) -> HashMap<String, &NinjaTarget> {
+        let mut map: HashMap<String, &NinjaTarget> = HashMap::new();
         for target in targets {
             for output in &target.get_all_outputs() {
                 map.insert(output.clone(), target);
@@ -303,7 +303,7 @@ impl<'a> SoongPackage<'a> {
     pub fn generate(
         &mut self,
         entry_targets: Vec<&str>,
-        targets: Vec<BuildTarget>,
+        targets: Vec<NinjaTarget>,
         project: &dyn Project,
     ) -> Result<(), String> {
         let mut target_seen: HashSet<String> = HashSet::new();

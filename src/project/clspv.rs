@@ -1,8 +1,8 @@
 use std::collections::HashSet;
 
-use crate::soongmodule::SoongModule;
-use crate::soongpackage::SoongPackage;
-use crate::target::BuildTarget;
+use crate::soong_module::SoongModule;
+use crate::soong_package::SoongPackage;
+use crate::ninja_target::NinjaTarget;
 use crate::utils::*;
 
 const LLVM_PREFIX: &str = "third_party/llvm";
@@ -35,7 +35,7 @@ impl<'a> CLSPV<'a> {
 }
 
 impl<'a> crate::project::Project<'a> for CLSPV<'a> {
-    fn generate(self, targets: Vec<BuildTarget>) -> Result<String, String> {
+    fn generate(self, targets: Vec<NinjaTarget>) -> Result<String, String> {
         let mut package = SoongPackage::new(
             self.src_root,
             self.ndk_root,

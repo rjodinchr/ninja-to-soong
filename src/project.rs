@@ -1,16 +1,16 @@
 use std::collections::HashSet;
 
-use crate::target::BuildTarget;
+use crate::ninja_target::NinjaTarget;
 use crate::utils::error;
 
 pub mod clspv;
 pub mod clvk;
 pub mod llvm;
-pub mod spirvheaders;
-pub mod spirvtools;
+pub mod spirv_headers;
+pub mod spirv_tools;
 
 pub trait Project<'a> {
-    fn generate(self, targets: Vec<BuildTarget>) -> Result<String, String>;
+    fn generate(self, targets: Vec<NinjaTarget>) -> Result<String, String>;
     fn parse_custom_command_inputs(
         &self,
         _: &Vec<String>,

@@ -1,7 +1,7 @@
 use std::collections::HashSet;
 
-use crate::soongpackage::SoongPackage;
-use crate::target::BuildTarget;
+use crate::soong_package::SoongPackage;
+use crate::ninja_target::NinjaTarget;
 use crate::utils::*;
 
 pub struct CLVK<'a> {
@@ -21,7 +21,7 @@ impl<'a> CLVK<'a> {
 }
 
 impl<'a> crate::project::Project<'a> for CLVK<'a> {
-    fn generate(self, targets: Vec<BuildTarget>) -> Result<String, String> {
+    fn generate(self, targets: Vec<NinjaTarget>) -> Result<String, String> {
         let mut package = SoongPackage::new(
             self.src_root,
             self.ndk_root,

@@ -1,8 +1,8 @@
 use std::collections::HashSet;
 
-use crate::soongmodule::SoongModule;
-use crate::soongpackage::SoongPackage;
-use crate::target::BuildTarget;
+use crate::soong_module::SoongModule;
+use crate::soong_package::SoongPackage;
+use crate::ninja_target::NinjaTarget;
 use crate::utils::*;
 
 pub struct SpirvTools<'a> {
@@ -26,7 +26,7 @@ impl<'a> SpirvTools<'a> {
             spirv_headers_root,
         }
     }
-    fn generate_package(&self, targets: Vec<BuildTarget>) -> Result<SoongPackage, String> {
+    fn generate_package(&self, targets: Vec<NinjaTarget>) -> Result<SoongPackage, String> {
         let mut package = SoongPackage::new(
             self.src_root,
             self.ndk_root,
@@ -54,7 +54,7 @@ impl<'a> SpirvTools<'a> {
 
         return Ok(package);
     }
-    pub fn get_generated_deps(self, targets: Vec<BuildTarget>) -> Result<HashSet<String>, String> {
+    pub fn get_generated_deps(self, targets: Vec<NinjaTarget>) -> Result<HashSet<String>, String> {
         let package = match self.generate_package(targets) {
             Ok(package) => package,
             Err(err) => return Err(err),
@@ -64,7 +64,7 @@ impl<'a> SpirvTools<'a> {
 }
 
 impl<'a> crate::project::Project<'a> for SpirvTools<'a> {
-    fn generate(self, targets: Vec<BuildTarget>) -> Result<String, String> {
+    fn generate(self, targets: Vec<NinjaTarget>) -> Result<String, String> {
         let package = match self.generate_package(targets) {
             Ok(package) => package,
             Err(err) => return Err(err),

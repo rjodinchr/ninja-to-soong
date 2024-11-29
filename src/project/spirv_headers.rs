@@ -1,7 +1,7 @@
-use crate::project::spirvtools::SpirvTools;
-use crate::soongmodule::SoongModule;
-use crate::soongpackage::SoongPackage;
-use crate::target::BuildTarget;
+use crate::project::spirv_tools::SpirvTools;
+use crate::soong_module::SoongModule;
+use crate::soong_package::SoongPackage;
+use crate::ninja_target::NinjaTarget;
 use crate::utils::*;
 
 pub struct SpirvHeaders<'a> {
@@ -28,7 +28,7 @@ impl<'a> SpirvHeaders<'a> {
 }
 
 impl<'a> crate::project::Project<'a> for SpirvHeaders<'a> {
-    fn generate(self, targets: Vec<BuildTarget>) -> Result<String, String> {
+    fn generate(self, targets: Vec<NinjaTarget>) -> Result<String, String> {
         let spirvtools = SpirvTools::new(
             self.spirv_tools_root,
             self.build_root,

@@ -3,7 +3,7 @@ use std::fs::File;
 use std::io::Read;
 
 use crate::utils::error;
-use crate::target::BuildTarget;
+use crate::ninja_target::NinjaTarget;
 
 fn parse_output_section(section: &str) -> Result<(Vec<String>, Vec<String>), String> {
     let mut split = section.split("|");
@@ -88,7 +88,7 @@ fn parse_input_section(
     ));
 }
 
-fn parse_build_target(line: &str, lines: &mut std::str::Lines<'_>) -> Result<BuildTarget, String> {
+fn parse_build_target(line: &str, lines: &mut std::str::Lines<'_>) -> Result<NinjaTarget, String> {
     let Some(line_stripped) = line.strip_prefix("build") else {
         return error!(format!("No build prefix: '{line}'"));
     };
@@ -126,7 +126,7 @@ fn parse_build_target(line: &str, lines: &mut std::str::Lines<'_>) -> Result<Bui
         target_variables.insert(key, val);
     }
 
-    return Ok(crate::target::BuildTarget::new(
+    return Ok(crate::ninja_target::NinjaTarget::new(
         target_rule,
         target_outputs,
         target_implicit_outputs,
@@ -137,7 +137,7 @@ fn parse_build_target(line: &str, lines: &mut std::str::Lines<'_>) -> Result<Bui
     ));
 }
 
-pub fn parse_build_ninja(path: &str) -> Result<Vec<BuildTarget>, String> {
+pub fn parse_build_ninja(path: &str) -> Result<Vec<NinjaTarget>, String> {
     let ninja_file_path = &(path.to_string() + "/build.ninja");
     let mut file = match File::open(ninja_file_path) {
         Ok(file) => file,
@@ -149,7 +149,7 @@ pub fn parse_build_ninja(path: &str) -> Result<Vec<BuildTarget>, String> {
         return error!(format!("Could not read '{ninja_file_path}': '{err:#?}'"));
     }
 
-    let mut targets: Vec<BuildTarget> = Vec::new();
+    let mut targets: Vec<NinjaTarget> = Vec::new();
     let mut lines = content.lines();
     while let Some(line) = lines.next() {
         if !line.trim().starts_with("build") {

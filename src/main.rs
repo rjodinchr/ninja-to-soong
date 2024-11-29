@@ -2,9 +2,9 @@ extern crate touch;
 
 mod parser;
 mod project;
-mod soongmodule;
-mod soongpackage;
-mod target;
+mod soong_module;
+mod soong_package;
+mod ninja_target;
 mod utils;
 
 use crate::project::Project;
@@ -38,7 +38,7 @@ fn main() {
             return;
         }
         let spirv_headers_directory = &args[number_common_arg];
-        project::spirvtools::SpirvTools::new(
+        project::spirv_tools::SpirvTools::new(
             &project_source_directory,
             &build_source_directory,
             &ndk_directory,
@@ -51,7 +51,7 @@ fn main() {
             return;
         }
         let spirv_tools_directory = &args[number_common_arg];
-        project::spirvheaders::SpirvHeaders::new(
+        project::spirv_headers::SpirvHeaders::new(
             &project_source_directory,
             &build_source_directory,
             &ndk_directory,

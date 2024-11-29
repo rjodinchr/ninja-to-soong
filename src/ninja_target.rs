@@ -5,7 +5,7 @@ use crate::project::Project;
 use crate::utils::*;
 
 #[derive(Debug)]
-pub struct BuildTarget {
+pub struct NinjaTarget {
     rule: String,
     outputs: Vec<String>,
     implicit_outputs: Vec<String>,
@@ -15,7 +15,7 @@ pub struct BuildTarget {
     variables: HashMap<String, String>,
 }
 
-impl BuildTarget {
+impl NinjaTarget {
     pub fn new(
         rule: String,
         outputs: Vec<String>,
@@ -25,7 +25,7 @@ impl BuildTarget {
         order_only_dependencies: Vec<String>,
         variables: HashMap<String, String>,
     ) -> Self {
-        BuildTarget {
+        NinjaTarget {
             rule,
             outputs,
             implicit_outputs,
@@ -178,7 +178,7 @@ impl BuildTarget {
 
     pub fn get_generated_headers(
         &self,
-        targets_map: &HashMap<String, &BuildTarget>,
+        targets_map: &HashMap<String, &NinjaTarget>,
     ) -> Result<HashSet<String>, String> {
         let mut generated_headers: HashSet<String> = HashSet::new();
         let mut target_seen: HashSet<String> = HashSet::new();
