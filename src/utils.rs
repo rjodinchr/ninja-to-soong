@@ -64,6 +64,7 @@ pub const CC_LIB_HEADERS_LLVM: &str = "llvm-includes";
 pub const CC_LIB_HEADERS_CLANG: &str = "clang-includes";
 pub const CC_LIB_HEADERS_CLSPV: &str = "clspv-includes";
 
+pub const ANDROID_NDK: &str = "android-ndk-r27c";
 pub const ANDROID_ISA: &str = "aarch64";
 pub const ANDROID_ABI: &str = "arm64-v8a";
 pub const ANDROID_PLATFORM: &str = "35";
