@@ -1,8 +1,10 @@
 // Copyright 2024 ninja-to-soong authors
 // SPDX-License-Identifier: Apache-2.0
 
+use std::collections::HashMap;
+
 use crate::ninja_target::NinjaTarget;
-use crate::project::spirv_tools::SpirvTools;
+use crate::project::Project;
 use crate::soong_module::SoongModule;
 use crate::soong_package::SoongPackage;
 use crate::utils::*;
@@ -10,40 +12,36 @@ use crate::utils::*;
 pub struct SpirvHeaders<'a> {
     src_root: &'a str,
     ndk_root: &'a str,
-    spirv_tools: &'a SpirvTools<'a>,
 }
 
-const SPIRV_HEADERS_PROJECT_NAME: &str = "spirv-headers";
-const SPIRV_HEADERS_REPO_NAME: &str = "SPIRV-Headers";
+const SPIRV_HEADERS_ID: ProjectId = ProjectId::SpirvHeaders;
+const SPIRV_HEADERS_NAME: &str = SPIRV_HEADERS_ID.str();
 
 impl<'a> SpirvHeaders<'a> {
-    pub fn new(
-        ndk_root: &'a str,
-        spirv_headers_root: &'a str,
-        spirv_tools: &'a SpirvTools,
-    ) -> Self {
+    pub fn new(ndk_root: &'a str, spirv_headers_root: &'a str) -> Self {
         SpirvHeaders {
             src_root: spirv_headers_root,
             ndk_root,
-            spirv_tools,
         }
     }
 }
 
 impl<'a> crate::project::Project<'a> for SpirvHeaders<'a> {
-    fn get_name(&self) -> String {
-        SPIRV_HEADERS_PROJECT_NAME.to_string()
+    fn get_id(&self) -> ProjectId {
+        SPIRV_HEADERS_ID
     }
-    fn generate(&self, targets: Vec<NinjaTarget>) -> Result<(), String> {
-        let mut files = match self.spirv_tools.get_generated_deps(targets) {
-            Ok(files) => files,
-            Err(err) => return Err(err),
-        };
+    fn generate_package(
+        &mut self,
+        _targets: Vec<NinjaTarget>,
+        dep_packages: &HashMap<ProjectId, &dyn Project>,
+    ) -> Result<SoongPackage, String> {
+        let spirv_tools = dep_packages.get(&ProjectId::SpirvTools).unwrap();
+        let mut files = spirv_tools.get_generated_deps();
         let mut package = SoongPackage::new(
             self.src_root,
             self.ndk_root,
             "",
-            SPIRV_HEADERS_REPO_NAME,
+            SPIRV_HEADERS_NAME,
             "//visibility:public",
             "SPDX-license-identifier-MIT",
             "LICENSE",
@@ -65,9 +63,18 @@ impl<'a> crate::project::Project<'a> for SpirvHeaders<'a> {
             ));
         }
 
-        return package.write(SPIRV_HEADERS_REPO_NAME);
+        return Ok(package);
     }
-    fn get_build_directory(&self) -> Result<String, String> {
-        return self.spirv_tools.get_build_directory();
+    fn get_build_directory(
+        &mut self,
+        dep_packages: &HashMap<ProjectId, &dyn Project>,
+    ) -> Result<String, String> {
+        Ok(dep_packages
+            .get(&ProjectId::SpirvTools)
+            .unwrap()
+            .get_generated_build_directory())
+    }
+    fn get_deps(&self) -> Vec<ProjectId> {
+        vec![ProjectId::SpirvTools]
     }
 }

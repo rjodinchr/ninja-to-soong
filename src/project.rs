@@ -1,9 +1,11 @@
 // Copyright 2024 ninja-to-soong authors
 // SPDX-License-Identifier: Apache-2.0
 
+use std::collections::HashMap;
 use std::collections::HashSet;
 
 use crate::ninja_target::NinjaTarget;
+use crate::soong_package::SoongPackage;
 use crate::utils::*;
 
 pub mod clspv;
@@ -13,19 +15,33 @@ pub mod spirv_headers;
 pub mod spirv_tools;
 
 pub trait Project<'a> {
-    // [MANDATORY]
-    fn get_name(&self) -> String;
-    fn get_build_directory(&self) -> Result<String, String>;
-    fn generate(&self, targets: Vec<NinjaTarget>) -> Result<(), String>;
+    // MANDATORY
+    fn get_id(&self) -> ProjectId;
+    fn get_build_directory(
+        &mut self,
+        dep_packages: &HashMap<ProjectId, &dyn Project>,
+    ) -> Result<String, String>;
+    fn generate_package(
+        &mut self,
+        targets: Vec<NinjaTarget>,
+        dep_packages: &HashMap<ProjectId, &dyn Project>,
+    ) -> Result<SoongPackage, String>;
 
-    // [OPTIONAL]
+    // OPTIONAL
+    fn get_deps(&self) -> Vec<ProjectId> {
+        Vec::new()
+    }
+    fn get_generated_build_directory(&self) -> String {
+        String::new()
+    }
+    fn get_generated_deps(&self) -> HashSet<String> {
+        HashSet::new()
+    }
     fn parse_custom_command_inputs(
         &self,
         _: &Vec<String>,
     ) -> Result<(HashSet<String>, HashSet<String>, HashSet<(String, String)>), String> {
-        error!(format!(
-            "parse_custom_command_inputs not implemented by this project"
-        ))
+        internal_error!()
     }
     fn get_default_cflags(&self) -> HashSet<String> {
         HashSet::new()

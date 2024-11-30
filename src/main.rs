@@ -1,6 +1,9 @@
 // Copyright 2024 ninja-to-soong authors
 // SPDX-License-Identifier: Apache-2.0
 
+use std::collections::HashMap;
+use std::collections::VecDeque;
+
 mod ninja_target;
 mod parser;
 mod project;
@@ -14,8 +17,8 @@ use crate::utils::*;
 fn main() -> Result<(), String> {
     let args: Vec<String> = std::env::args().collect();
 
-    let number_common_arg = 4;
-    if args.len() < number_common_arg {
+    let min_args = 4;
+    if args.len() < min_args {
         return Err(format!(
             "USAGE: {0} <android_dir> <ndk_r27c_dir> [<projects>]",
             args[0]
@@ -37,16 +40,20 @@ fn main() -> Result<(), String> {
     let spirv_tools_root = android_dir.clone() + "/external/SPIRV-Tools";
     let spirv_headers_root = android_dir.clone() + "/external/SPIRV-Headers";
 
-    let spirv_tools = project::spirv_tools::SpirvTools::new(
+    let mut projects: Vec<&mut dyn Project> = Vec::new();
+    let mut spirv_tools = project::spirv_tools::SpirvTools::new(
         temp_dir,
         &ndk_dir,
         &spirv_tools_root,
         &spirv_headers_root,
     );
-    let spirv_headers =
-        project::spirv_headers::SpirvHeaders::new(&ndk_dir, &spirv_headers_root, &spirv_tools);
-    let llvm = project::llvm::LLVM::new(temp_dir, &ndk_dir, &llvm_root);
-    let clspv = project::clspv::CLSPV::new(
+    projects.push(&mut spirv_tools);
+    let mut spirv_headers =
+        project::spirv_headers::SpirvHeaders::new(&ndk_dir, &spirv_headers_root);
+    projects.push(&mut spirv_headers);
+    let mut llvm = project::llvm::LLVM::new(temp_dir, &ndk_dir, &llvm_root);
+    projects.push(&mut llvm);
+    let mut clspv = project::clspv::CLSPV::new(
         temp_dir,
         &ndk_dir,
         &clspv_root,
@@ -54,7 +61,8 @@ fn main() -> Result<(), String> {
         &spirv_tools_root,
         &spirv_headers_root,
     );
-    let clvk = project::clvk::CLVK::new(
+    projects.push(&mut clspv);
+    let mut clvk = project::clvk::CLVK::new(
         temp_dir,
         &ndk_dir,
         &clvk_root,
@@ -63,23 +71,82 @@ fn main() -> Result<(), String> {
         &spirv_tools_root,
         &spirv_headers_root,
     );
+    projects.push(&mut clvk);
 
-    let all_projects: Vec<&dyn Project> = vec![&spirv_tools, &spirv_headers, &llvm, &clspv, &clvk];
-
-    let first_project_index = number_common_arg - 1;
-    for project in all_projects {
-        if args[first_project_index] == "all"
-            || args[first_project_index..].contains(&project.get_name().to_string())
-        {
-            println!("\n############## {BANNER} ##############");
-            println!("{BANNER} Generating '{0}'", project.get_name());
-            println!("{BANNER} \tget build directory...");
-            let build_directory = project.get_build_directory()?;
-            println!("{BANNER} \tparsing build.ninja...");
-            let targets = crate::parser::parse_build_ninja(build_directory)?;
-            println!("{BANNER} \tgenerating soong package...");
-            project.generate(targets)?;
-        }
+    let mut projects_map: HashMap<ProjectId, &mut dyn Project> = HashMap::new();
+    for project in projects {
+        projects_map.insert(project.get_id(), project);
     }
+
+    let first_project_arg_index = min_args - 1;
+    let mut projects_to_generate: VecDeque<ProjectId> = VecDeque::new();
+    for arg in &args[first_project_arg_index..] {
+        if arg == "all" {
+            for project in projects_map.keys() {
+                projects_to_generate.push_back(project.clone());
+            }
+            continue;
+        }
+        match ProjectId::from(arg) {
+            Some(id) => projects_to_generate.push_back(id),
+            None => return Err(format!("unknown project '{arg}'")),
+        };
+    }
+    let projects_to_write = projects_to_generate.clone();
+
+    let mut projects_generated: HashMap<ProjectId, &dyn Project> = HashMap::new();
+    while let Some(project_id) = projects_to_generate.pop_front() {
+        if projects_generated.contains_key(&project_id) {
+            continue;
+        }
+
+        let project_str = project_id.str();
+        let generating = projects_to_write.contains(&project_id);
+        println!("\n############## {BANNER} ##############");
+        if generating {
+            println!("{BANNER} Generating '{0}'", project_str);
+        } else {
+            println!("{BANNER} Generating dependency '{0}'", project_str);
+        }
+
+        let project = projects_map.remove(&project_id).unwrap();
+        let deps = project.get_deps();
+        fn missing_deps(
+            deps: &Vec<ProjectId>,
+            projects_generated: &HashMap<ProjectId, &dyn Project>,
+        ) -> bool {
+            for dep in deps {
+                if !projects_generated.contains_key(dep) {
+                    return true;
+                }
+            }
+            return false;
+        }
+        if missing_deps(&deps, &projects_generated) {
+            projects_map.insert(project.get_id(), project);
+            projects_to_generate.push_front(project_id.clone());
+            let mut deps_str: Vec<&str> = Vec::new();
+            for dep in deps {
+                deps_str.push(dep.str());
+                projects_to_generate.push_front(dep);
+            }
+            println!("{BANNER} missing dependencies: {0}", deps_str.join(", "));
+            continue;
+        }
+
+        println!("{BANNER} \tget build directory...");
+        let build_directory = project.get_build_directory(&projects_generated)?;
+        println!("{BANNER} \tparsing build.ninja...");
+        let targets = crate::parser::parse_build_ninja(build_directory)?;
+        println!("{BANNER} \tprocessing...");
+        let package = project.generate_package(targets, &projects_generated)?;
+        if projects_to_write.contains(&project_id) {
+            println!("{BANNER} \tgenerating soong package...");
+            package.write(project_str)?;
+        }
+
+        projects_generated.insert(project_id, project);
+    }
+
     Ok(())
 }

@@ -1,15 +1,18 @@
 // Copyright 2024 ninja-to-soong authors
 // SPDX-License-Identifier: Apache-2.0
 
+use std::collections::HashMap;
 use std::collections::HashSet;
 
 use crate::ninja_target::NinjaTarget;
+use crate::project::Project;
 use crate::soong_module::SoongModule;
 use crate::soong_package::SoongPackage;
 use crate::utils::*;
 
+const CLSPV_PROJECT_ID: ProjectId = ProjectId::CLSPV;
+const CLSPV_PROJECT_NAME: &str = CLSPV_PROJECT_ID.str();
 const LLVM_PREFIX: &str = "third_party/llvm";
-const CLSPV_PROJECT_NAME: &str = "clspv";
 
 pub struct CLSPV<'a> {
     src_root: &'a str,
@@ -41,10 +44,14 @@ impl<'a> CLSPV<'a> {
 }
 
 impl<'a> crate::project::Project<'a> for CLSPV<'a> {
-    fn get_name(&self) -> String {
-        CLSPV_PROJECT_NAME.to_string()
+    fn get_id(&self) -> ProjectId {
+        CLSPV_PROJECT_ID
     }
-    fn generate(&self, targets: Vec<NinjaTarget>) -> Result<(), String> {
+    fn generate_package(
+        &mut self,
+        targets: Vec<NinjaTarget>,
+        _dep_packages: &HashMap<ProjectId, &dyn Project>,
+    ) -> Result<SoongPackage, String> {
         let mut package = SoongPackage::new(
             self.src_root,
             self.ndk_root,
@@ -61,10 +68,13 @@ impl<'a> crate::project::Project<'a> for CLSPV<'a> {
             CC_LIB_HEADERS_CLSPV,
             ["include".to_string()].into(),
         ));
-        return package.write(CLSPV_PROJECT_NAME);
+        return Ok(package);
     }
 
-    fn get_build_directory(&self) -> Result<String, String> {
+    fn get_build_directory(
+        &mut self,
+        _dep_packages: &HashMap<ProjectId, &dyn Project>,
+    ) -> Result<String, String> {
         let spirv_headers_dir = "-DSPIRV_HEADERS_SOURCE_DIR=".to_string() + self.spirv_headers_root;
         let spirv_tools_dir = "-DSPIRV_TOOLS_SOURCE_DIR=".to_string() + self.spirv_tools_root;
         let llvm_dir = "-DCLSPV_LLVM_SOURCE_DIR=".to_string() + self.llvm_project_root + "/llvm";

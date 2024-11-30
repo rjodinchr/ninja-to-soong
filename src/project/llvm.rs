@@ -1,16 +1,18 @@
 // Copyright 2024 ninja-to-soong authors
 // SPDX-License-Identifier: Apache-2.0
 
+use std::collections::HashMap;
 use std::collections::HashSet;
 
 use crate::ninja_target::NinjaTarget;
+use crate::project::Project;
 use crate::soong_module::SoongModule;
 use crate::soong_package::SoongPackage;
 use crate::utils::*;
 
+const LLVM_PROJECT_ID: ProjectId = ProjectId::LLVM;
+const LLVM_PROJECT_NAME: &str = LLVM_PROJECT_ID.str();
 const CMAKE_GENERATED: &str = "cmake_generated";
-const LLVM_PROJECT_NAME: &str = "llvm";
-const LLVM_PROJECT_REPO_NAME: &str = "llvm-project";
 
 pub struct LLVM<'a> {
     src_root: &'a str,
@@ -29,15 +31,19 @@ impl<'a> LLVM<'a> {
 }
 
 impl<'a> crate::project::Project<'a> for LLVM<'a> {
-    fn get_name(&self) -> String {
-        LLVM_PROJECT_NAME.to_string()
+    fn get_id(&self) -> ProjectId {
+        LLVM_PROJECT_ID
     }
-    fn generate(&self, targets: Vec<NinjaTarget>) -> Result<(), String> {
+    fn generate_package(
+        &mut self,
+        targets: Vec<NinjaTarget>,
+        _dep_packages: &HashMap<ProjectId, &dyn Project>,
+    ) -> Result<SoongPackage, String> {
         let mut package = SoongPackage::new(
             self.src_root,
             self.ndk_root,
             &self.build_root,
-            LLVM_PROJECT_REPO_NAME,
+            LLVM_PROJECT_NAME,
             "//visibility:public",
             "SPDX-license-identifier-Apache-2.0",
             "LICENSE.TXT",
@@ -184,10 +190,13 @@ impl<'a> crate::project::Project<'a> for LLVM<'a> {
             clspv64_bc.rsplit_once("/").unwrap().1.to_string(),
         ));
 
-        return package.write(LLVM_PROJECT_REPO_NAME);
+        return Ok(package);
     }
 
-    fn get_build_directory(&self) -> Result<String, String> {
+    fn get_build_directory(
+        &mut self,
+        _dep_packages: &HashMap<ProjectId, &dyn Project>,
+    ) -> Result<String, String> {
         if cmake_configure(
             &(self.src_root.to_string() + "/llvm"),
             &self.build_root,

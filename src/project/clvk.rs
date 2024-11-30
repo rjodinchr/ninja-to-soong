@@ -1,9 +1,11 @@
 // Copyright 2024 ninja-to-soong authors
 // SPDX-License-Identifier: Apache-2.0
 
+use std::collections::HashMap;
 use std::collections::HashSet;
 
 use crate::ninja_target::NinjaTarget;
+use crate::project::Project;
 use crate::soong_package::SoongPackage;
 use crate::utils::*;
 
@@ -17,7 +19,8 @@ pub struct CLVK<'a> {
     spirv_headers_root: &'a str,
 }
 
-const CLVK_PROJECT_NAME: &str = "clvk";
+const CLVK_PROJECT_ID: ProjectId = ProjectId::CLVK;
+const CLVK_PROJECT_NAME: &str = CLVK_PROJECT_ID.str();
 
 impl<'a> CLVK<'a> {
     pub fn new(
@@ -42,10 +45,14 @@ impl<'a> CLVK<'a> {
 }
 
 impl<'a> crate::project::Project<'a> for CLVK<'a> {
-    fn get_name(&self) -> String {
-        CLVK_PROJECT_NAME.to_string()
+    fn get_id(&self) -> ProjectId {
+        CLVK_PROJECT_ID
     }
-    fn generate(&self, targets: Vec<NinjaTarget>) -> Result<(), String> {
+    fn generate_package(
+        &mut self,
+        targets: Vec<NinjaTarget>,
+        _dep_packages: &HashMap<ProjectId, &dyn Project>,
+    ) -> Result<SoongPackage, String> {
         let mut package = SoongPackage::new(
             self.src_root,
             self.ndk_root,
@@ -56,10 +63,13 @@ impl<'a> crate::project::Project<'a> for CLVK<'a> {
             "LICENSE",
         );
         package.generate(vec!["libOpenCL.so"], targets, self)?;
-        return package.write(CLVK_PROJECT_NAME);
+        return Ok(package);
     }
 
-    fn get_build_directory(&self) -> Result<String, String> {
+    fn get_build_directory(
+        &mut self,
+        _dep_packages: &HashMap<ProjectId, &dyn Project>,
+    ) -> Result<String, String> {
         let spirv_headers_dir = "-DSPIRV_HEADERS_SOURCE_DIR=".to_string() + self.spirv_headers_root;
         let spirv_tools_dir = "-DSPIRV_TOOLS_SOURCE_DIR=".to_string() + self.spirv_tools_root;
         let clspv_dir = "-DCLSPV_SOURCE_DIR=".to_string() + self.clspv_root;
