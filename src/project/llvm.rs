@@ -18,6 +18,7 @@ pub struct LLVM<'a> {
     src_root: &'a str,
     build_root: String,
     ndk_root: &'a str,
+    copy_generated_deps: bool,
 }
 
 impl<'a> LLVM<'a> {
@@ -26,6 +27,7 @@ impl<'a> LLVM<'a> {
             src_root: llvm_project_root,
             build_root: temp_dir.to_string() + "/" + LLVM_PROJECT_NAME,
             ndk_root,
+            copy_generated_deps: true,
         }
     }
 }
@@ -145,13 +147,21 @@ impl<'a> crate::project::Project<'a> for LLVM<'a> {
             generated_deps.insert(header.to_string());
         }
 
-        remove_directory(add_slash_suffix(self.src_root) + CMAKE_GENERATED)?;
-        copy_files(
-            generated_deps,
-            &self.build_root,
-            &(add_slash_suffix(self.src_root) + CMAKE_GENERATED),
+        let mut generated_deps_sorted = Vec::from_iter(&generated_deps);
+        generated_deps_sorted.sort();
+        write_file(
+            &(get_tests_folder()? + "/" + LLVM_PROJECT_NAME + "/generated_deps.txt"),
+            &format!("{generated_deps_sorted:#?}"),
         )?;
-        touch_directories(&include_directories, &add_slash_suffix(self.src_root))?;
+        if self.copy_generated_deps {
+            remove_directory(add_slash_suffix(self.src_root) + CMAKE_GENERATED)?;
+            copy_files(
+                generated_deps,
+                &self.build_root,
+                &(add_slash_suffix(self.src_root) + CMAKE_GENERATED),
+            )?;
+            touch_directories(&include_directories, &add_slash_suffix(self.src_root))?;
+        }
 
         package.add_module(SoongModule::new_cc_library_headers(
             CC_LIB_HEADERS_LLVM,
@@ -208,14 +218,16 @@ impl<'a> crate::project::Project<'a> for LLVM<'a> {
                 "-DLLVM_TARGETS_TO_BUILD=",
             ],
         )? {
-            cmake_build(
+            if !cmake_build(
                 &self.build_root,
                 vec![
                     "clang",
                     "tools/libclc/clspv--.bc",
                     "tools/libclc/clspv64--.bc",
                 ],
-            )?;
+            )? {
+                self.copy_generated_deps = false;
+            }
         }
         return Ok(self.build_root.clone());
     }

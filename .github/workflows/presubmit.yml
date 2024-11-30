@@ -41,6 +41,8 @@ jobs:
           unzip -q ${ndk_zip}
       - name: Run ninja-to-soong
         shell: bash
+        env:
+          NINJA_TO_SOONG_SKIP_CMAKE_BUILD: 1
         run: |
           set -x
           cargo run -- $(realpath ${{ env.android }}) $(realpath $(pwd)/${{ env.ndk }}) all

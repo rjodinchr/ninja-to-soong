@@ -79,21 +79,10 @@ impl<'a> SoongPackage<'a> {
     pub fn write(self, project_repo_name: &str) -> Result<(), String> {
         const ANDROID_BP: &str = "/Android.bp";
         write_file(&(self.src_root.to_string() + ANDROID_BP), &self.package)?;
-        let exe_path = match std::env::current_exe() {
-            Ok(path) => path // <ninja-to-soong>/target/debug/ninja-to-soong
-                .parent() // <ninja-to-soong>/target/debug
-                .unwrap()
-                .parent() // <ninja-to-soong>/target
-                .unwrap()
-                .parent() // <ninja-to-soong>
-                .unwrap()
-                .join("tests") // <ninja-to-soong>/tests
-                .join(project_repo_name), // <ninja-to-soong>/tests/<project_repo_name>
-            Err(err) => return error!(format!("Could not get current executable path: {err}")),
-        };
+        let tests_path = get_tests_folder()?;
         copy_file(
             &(self.src_root.to_string() + ANDROID_BP),
-            &(exe_path.to_str().unwrap().to_string() + ANDROID_BP),
+            &(tests_path + "/" + project_repo_name + ANDROID_BP),
         )?;
         Ok(())
     }

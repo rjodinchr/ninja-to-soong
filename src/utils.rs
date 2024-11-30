@@ -123,7 +123,10 @@ pub fn cmake_configure(
     return Ok(true);
 }
 
-pub fn cmake_build(build: &str, targets: Vec<&str>) -> Result<(), String> {
+pub fn cmake_build(build: &str, targets: Vec<&str>) -> Result<bool, String> {
+    if std::env::var("NINJA_TO_SOONG_SKIP_CMAKE_BUILD").is_ok() {
+        return Ok(false);
+    }
     let target_args = targets.into_iter().fold(Vec::new(), |mut vec, target| {
         vec.push("--target");
         vec.push(target);
@@ -135,7 +138,7 @@ pub fn cmake_build(build: &str, targets: Vec<&str>) -> Result<(), String> {
     if let Err(err) = command.status() {
         return error!(format!("cmake build '{0}' failed: {err}", &build));
     }
-    return Ok(());
+    return Ok(true);
 }
 
 pub fn copy_file(from: &str, to: &str) -> Result<(), String> {
@@ -199,4 +202,19 @@ pub fn write_file(file_path: &str, content: &str) -> Result<(), String> {
     }
     println!("{BANNER} \t\t'{file_path}' created successfully!");
     return Ok(());
+}
+
+pub fn get_tests_folder() -> Result<String, String> {
+    let exe_path = match std::env::current_exe() {
+        Ok(path) => path // <ninja-to-soong>/target/debug/ninja-to-soong
+            .parent() // <ninja-to-soong>/target/debug
+            .unwrap()
+            .parent() // <ninja-to-soong>/target
+            .unwrap()
+            .parent() // <ninja-to-soong>
+            .unwrap()
+            .join("tests"), // <ninja-to-soong>/tests
+        Err(err) => return error!(format!("Could not get current executable path: {err}")),
+    };
+    return Ok(exe_path.to_str().unwrap().to_string());
 }
