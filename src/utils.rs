@@ -19,43 +19,6 @@ macro_rules! internal_error {
 }
 pub use {error, internal_error};
 
-#[derive(Eq, PartialEq, Hash, Clone)]
-pub enum ProjectId {
-    CLVK,
-    CLSPV,
-    LLVM,
-    SpirvHeaders,
-    SpirvTools,
-}
-
-const CLVK_NAME: &str = "clvk";
-const CLSPV_NAME: &str = "clspv";
-const LLVM_NAME: &str = "llvm-project";
-const SPIRV_HEADERS_NAME: &str = "SPIRV-Headers";
-const SPIRV_TOOLS_NAME: &str = "SPIRV-Tools";
-
-impl ProjectId {
-    pub fn from(str: &str) -> Option<ProjectId> {
-        match str {
-            CLVK_NAME => Some(ProjectId::CLVK),
-            CLSPV_NAME => Some(ProjectId::CLSPV),
-            LLVM_NAME => Some(ProjectId::LLVM),
-            SPIRV_HEADERS_NAME => Some(ProjectId::SpirvHeaders),
-            SPIRV_TOOLS_NAME => Some(ProjectId::SpirvTools),
-            _ => None,
-        }
-    }
-    pub const fn str(&self) -> &'static str {
-        match self {
-            ProjectId::CLVK => CLVK_NAME,
-            ProjectId::CLSPV => CLSPV_NAME,
-            ProjectId::LLVM => LLVM_NAME,
-            ProjectId::SpirvHeaders => SPIRV_HEADERS_NAME,
-            ProjectId::SpirvTools => SPIRV_TOOLS_NAME,
-        }
-    }
-}
-
 pub const BANNER: &str = "\x1b[01;32m[NINJA-TO-SOONG]\x1b[0m";
 
 pub const CC_LIB_HEADERS_SPIRV_TOOLS: &str = "SPIRV-Tools-includes";

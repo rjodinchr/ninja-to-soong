@@ -11,7 +11,7 @@ mod soong_module;
 mod soong_package;
 mod utils;
 
-use crate::project::Project;
+use crate::project::*;
 use crate::utils::*;
 
 fn generate_projects(

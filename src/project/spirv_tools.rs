@@ -5,10 +5,9 @@ use std::collections::HashMap;
 use std::collections::HashSet;
 
 use crate::ninja_target::NinjaTarget;
-use crate::project::Project;
+use crate::project::*;
 use crate::soong_module::SoongModule;
 use crate::soong_package::SoongPackage;
-use crate::utils::*;
 
 pub struct SpirvTools<'a> {
     src_root: &'a str,

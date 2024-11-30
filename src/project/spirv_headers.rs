@@ -4,10 +4,9 @@
 use std::collections::HashMap;
 
 use crate::ninja_target::NinjaTarget;
-use crate::project::Project;
+use crate::project::*;
 use crate::soong_module::SoongModule;
 use crate::soong_package::SoongPackage;
-use crate::utils::*;
 
 pub struct SpirvHeaders<'a> {
     src_root: &'a str,
