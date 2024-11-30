@@ -45,7 +45,7 @@ impl<'a> SpirvTools<'a> {
             "SPDX-license-identifier-Apache-2.0",
             "LICENSE",
         );
-        if let Err(err) = package.generate(
+        package.generate(
             vec![
                 "libSPIRV-Tools.a",
                 "libSPIRV-Tools-link.a",
@@ -53,9 +53,7 @@ impl<'a> SpirvTools<'a> {
             ],
             targets,
             self,
-        ) {
-            return Err(err);
-        }
+        )?;
         package.add_module(SoongModule::new_cc_library_headers(
             CC_LIB_HEADERS_SPIRV_TOOLS,
             ["include".to_string()].into(),

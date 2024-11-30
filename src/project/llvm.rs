@@ -49,7 +49,7 @@ impl<'a> crate::project::Project<'a> for LLVM<'a> {
             "SPDX-license-identifier-Apache-2.0",
             "LICENSE.TXT",
         );
-        if let Err(err) = package.generate(
+        package.generate(
             vec![
                 "libLLVMAggressiveInstCombine.a",
                 "libLLVMAnalysis.a",
@@ -119,9 +119,7 @@ impl<'a> crate::project::Project<'a> for LLVM<'a> {
             ],
             targets,
             self,
-        ) {
-            return Err(err);
-        }
+        )?;
         let mut generated_deps = package.get_generated_deps();
         let include_directories = package.get_include_directories();
 

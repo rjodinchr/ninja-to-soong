@@ -60,9 +60,7 @@ impl<'a> crate::project::Project<'a> for CLSPV<'a> {
             "SPDX-license-identifier-Apache-2.0",
             "LICENSE",
         );
-        if let Err(err) = package.generate(vec!["libclspv_core.a"], targets, self) {
-            return Err(err);
-        }
+        package.generate(vec!["libclspv_core.a"], targets, self)?;
         package.add_module(SoongModule::new_cc_library_headers(
             CC_LIB_HEADERS_CLSPV,
             ["include".to_string()].into(),

@@ -271,21 +271,21 @@ impl<'a> SoongPackage<'a> {
         return Ok(module.print());
     }
 
-    fn generate_target(
+    fn generate_module(
         &mut self,
         target: &NinjaTarget,
         target_map: &HashMap<String, &NinjaTarget>,
         project: &dyn Project,
-    ) -> Result<(), String> {
+    ) -> Result<Option<String>, String> {
         let rule = target.get_rule();
-        let result = if rule.starts_with("CXX_SHARED_LIBRARY") {
+        Ok(Some(if rule.starts_with("CXX_SHARED_LIBRARY") {
             self.generate_library("cc_library_shared", target, target_map, project)
         } else if rule.starts_with("CXX_STATIC_LIBRARY") {
             self.generate_library("cc_library_static", target, target_map, project)
         } else if rule.starts_with("CUSTOM_COMMAND") {
             let command = match target.get_command()? {
                 Some(command) => command,
-                None => return Ok(()),
+                None => return Ok(None),
             };
             self.generate_custom_command(target, command, project)
         } else if rule.starts_with("CXX_COMPILER")
@@ -293,13 +293,10 @@ impl<'a> SoongPackage<'a> {
             || rule.starts_with("ASM_COMPILER")
             || rule == "phony"
         {
-            return Ok(());
+            return Ok(None);
         } else {
             error!(format!("unsupported rule ({rule}) for target: {target:#?}"))
-        };
-
-        self.package += &result?;
-        return Ok(());
+        }?))
     }
 
     fn create_target_map(targets: &Vec<NinjaTarget>) -> HashMap<String, &NinjaTarget> {
@@ -343,8 +340,8 @@ impl<'a> SoongPackage<'a> {
                 target_seen.insert(output);
             }
 
-            if let Err(err) = self.generate_target(target, &target_map, project) {
-                return Err(err);
+            if let Some(module) = self.generate_module(target, &target_map, project)? {
+                self.package += &module;
             }
         }
         return Ok(());
