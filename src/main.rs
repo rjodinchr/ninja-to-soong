@@ -41,7 +41,7 @@ fn main() -> Result<(), String> {
         &spirv_headers_root,
     );
     let spirv_headers =
-        project::spirv_headers::SpirvHeaders::new(&android_dir, &ndk_dir, &spirv_tools);
+        project::spirv_headers::SpirvHeaders::new(&ndk_dir, &spirv_headers_root, &spirv_tools);
     let llvm = project::llvm::LLVM::new(temp_dir, &ndk_dir, &llvm_root);
     let clspv = project::clspv::CLSPV::new(
         temp_dir,
