@@ -1,3 +1,6 @@
+// Copyright 2024 ninja-to-soong authors
+// SPDX-License-Identifier: Apache-2.0
+
 use crate::ninja_target::NinjaTarget;
 use crate::project::spirv_tools::SpirvTools;
 use crate::soong_module::SoongModule;

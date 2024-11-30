@@ -1,3 +1,6 @@
+// Copyright 2024 ninja-to-soong authors
+// SPDX-License-Identifier: Apache-2.0
+
 mod ninja_target;
 mod parser;
 mod project;

@@ -1,3 +1,6 @@
+// Copyright 2024 ninja-to-soong authors
+// SPDX-License-Identifier: Apache-2.0
+
 use std::collections::HashSet;
 use std::fs::File;
 use std::io::Write;
