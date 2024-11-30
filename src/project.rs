@@ -51,6 +51,8 @@ impl ProjectId {
     }
 }
 
+pub type ProjectDeps = HashMap<String, HashSet<String>>;
+
 pub trait Project<'a> {
     // MANDATORY
     fn get_id(&self) -> ProjectId;
@@ -65,14 +67,14 @@ pub trait Project<'a> {
     ) -> Result<SoongPackage, String>;
 
     // OPTIONAL
-    fn get_deps(&self) -> Vec<ProjectId> {
+    fn get_project_dependencies(&self) -> Vec<ProjectId> {
         Vec::new()
     }
     fn get_generated_build_directory(&self) -> String {
         String::new()
     }
-    fn get_generated_deps(&self) -> HashSet<String> {
-        HashSet::new()
+    fn get_generated_deps(&self, _project: ProjectId) -> ProjectDeps {
+        HashMap::new()
     }
     fn parse_custom_command_inputs(
         &self,

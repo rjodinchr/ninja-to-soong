@@ -35,7 +35,8 @@ impl<'a> crate::project::Project<'a> for SpirvHeaders<'a> {
         dep_packages: &HashMap<ProjectId, &dyn Project>,
     ) -> Result<SoongPackage, String> {
         let spirv_tools = dep_packages.get(&ProjectId::SpirvTools).unwrap();
-        let mut files = spirv_tools.get_generated_deps();
+        let mut deps = spirv_tools.get_generated_deps(ProjectId::SpirvHeaders);
+        let files = deps.get_mut(SPIRV_HEADERS_FILES).unwrap();
         let mut package = SoongPackage::new(
             self.src_root,
             self.ndk_root,
@@ -52,7 +53,7 @@ impl<'a> crate::project::Project<'a> for SpirvHeaders<'a> {
         ));
 
         files.insert(self.src_root.to_string() + "/include/spirv/unified1/spirv.hpp"); // for clspv
-        let mut sorted = Vec::from_iter(files);
+        let mut sorted = Vec::from_iter(files.iter());
         sorted.sort();
         for file in sorted {
             package.add_module(SoongModule::new_copy_genrule(
@@ -73,7 +74,7 @@ impl<'a> crate::project::Project<'a> for SpirvHeaders<'a> {
             .unwrap()
             .get_generated_build_directory())
     }
-    fn get_deps(&self) -> Vec<ProjectId> {
+    fn get_project_dependencies(&self) -> Vec<ProjectId> {
         vec![ProjectId::SpirvTools]
     }
 }

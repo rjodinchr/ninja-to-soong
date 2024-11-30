@@ -49,8 +49,18 @@ impl<'a> crate::project::Project<'a> for CLSPV<'a> {
     fn generate_package(
         &mut self,
         targets: Vec<NinjaTarget>,
-        _dep_packages: &HashMap<ProjectId, &dyn Project>,
+        dep_packages: &HashMap<ProjectId, &dyn Project>,
     ) -> Result<SoongPackage, String> {
+        let clvk = dep_packages.get(&ProjectId::CLVK).unwrap();
+        let deps = clvk.get_generated_deps(ProjectId::CLSPV);
+        let entry_targets: Vec<&str> =
+            deps.get(ENTRY_TARGETS)
+                .unwrap()
+                .into_iter()
+                .fold(Vec::new(), |mut vec, target| {
+                    vec.push(&target);
+                    vec
+                });
         let mut package = SoongPackage::new(
             self.src_root,
             self.ndk_root,
@@ -60,7 +70,7 @@ impl<'a> crate::project::Project<'a> for CLSPV<'a> {
             "SPDX-license-identifier-Apache-2.0",
             "LICENSE",
         );
-        package.generate(vec!["libclspv_core.a"], targets, self)?;
+        package.generate(entry_targets, targets, self)?;
         package.add_module(SoongModule::new_cc_library_headers(
             CC_LIB_HEADERS_CLSPV,
             ["include".to_string()].into(),
@@ -181,5 +191,8 @@ impl<'a> crate::project::Project<'a> for CLSPV<'a> {
     }
     fn optimize_target_for_size(&self, _target: &String) -> bool {
         true
+    }
+    fn get_project_dependencies(&self) -> Vec<ProjectId> {
+        vec![ProjectId::CLVK]
     }
 }

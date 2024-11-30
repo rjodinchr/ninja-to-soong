@@ -38,8 +38,18 @@ impl<'a> crate::project::Project<'a> for LLVM<'a> {
     fn generate_package(
         &mut self,
         targets: Vec<NinjaTarget>,
-        _dep_packages: &HashMap<ProjectId, &dyn Project>,
+        dep_packages: &HashMap<ProjectId, &dyn Project>,
     ) -> Result<SoongPackage, String> {
+        let clvk = dep_packages.get(&ProjectId::CLVK).unwrap();
+        let deps = clvk.get_generated_deps(ProjectId::LLVM);
+        let entry_targets: Vec<&str> =
+            deps.get(ENTRY_TARGETS)
+                .unwrap()
+                .into_iter()
+                .fold(Vec::new(), |mut vec, target| {
+                    vec.push(&target);
+                    vec
+                });
         let mut package = SoongPackage::new(
             self.src_root,
             self.ndk_root,
@@ -49,77 +59,7 @@ impl<'a> crate::project::Project<'a> for LLVM<'a> {
             "SPDX-license-identifier-Apache-2.0",
             "LICENSE.TXT",
         );
-        package.generate(
-            vec![
-                "libLLVMAggressiveInstCombine.a",
-                "libLLVMAnalysis.a",
-                "libLLVMAsmParser.a",
-                "libLLVMBinaryFormat.a",
-                "libLLVMBitReader.a",
-                "libLLVMBitWriter.a",
-                "libLLVMBitstreamReader.a",
-                "libLLVMCFGuard.a",
-                "libLLVMCGData.a",
-                "libLLVMCodeGenTypes.a",
-                "libLLVMCodeGen.a",
-                "libLLVMCore.a",
-                "libLLVMCoroutines.a",
-                "libLLVMCoverage.a",
-                "libLLVMDebugInfoBTF.a",
-                "libLLVMDebugInfoCodeView.a",
-                "libLLVMDebugInfoDWARF.a",
-                "libLLVMDebugInfoMSF.a",
-                "libLLVMDebugInfoPDB.a",
-                "libLLVMDemangle.a",
-                "libLLVMExtensions.a",
-                "libLLVMFrontendDriver.a",
-                "libLLVMFrontendHLSL.a",
-                "libLLVMFrontendOffloading.a",
-                "libLLVMFrontendOpenMP.a",
-                "libLLVMHipStdPar.a",
-                "libLLVMIRPrinter.a",
-                "libLLVMIRReader.a",
-                "libLLVMInstCombine.a",
-                "libLLVMInstrumentation.a",
-                "libLLVMLTO.a",
-                "libLLVMLinker.a",
-                "libLLVMMCParser.a",
-                "libLLVMMC.a",
-                "libLLVMObjCARCOpts.a",
-                "libLLVMObject.a",
-                "libLLVMOption.a",
-                "libLLVMPasses.a",
-                "libLLVMProfileData.a",
-                "libLLVMRemarks.a",
-                "libLLVMSandboxIR.a",
-                "libLLVMScalarOpts.a",
-                "libLLVMSupport.a",
-                "libLLVMSymbolize.a",
-                "libLLVMTargetParser.a",
-                "libLLVMTarget.a",
-                "libLLVMTextAPI.a",
-                "libLLVMTransformUtils.a",
-                "libLLVMVectorize.a",
-                "libLLVMWindowsDriver.a",
-                "libLLVMipo.a",
-                "libclangAPINotes.a",
-                "libclangASTMatchers.a",
-                "libclangAST.a",
-                "libclangAnalysis.a",
-                "libclangBasic.a",
-                "libclangCodeGen.a",
-                "libclangDriver.a",
-                "libclangEdit.a",
-                "libclangFrontend.a",
-                "libclangLex.a",
-                "libclangParse.a",
-                "libclangSema.a",
-                "libclangSerialization.a",
-                "libclangSupport.a",
-            ],
-            targets,
-            self,
-        )?;
+        package.generate(entry_targets, targets, self)?;
         let mut generated_deps = package.get_generated_deps();
         let include_directories = package.get_include_directories();
 
@@ -254,5 +194,8 @@ impl<'a> crate::project::Project<'a> for LLVM<'a> {
     }
     fn optimize_target_for_size(&self, _target: &String) -> bool {
         true
+    }
+    fn get_project_dependencies(&self) -> Vec<ProjectId> {
+        vec![ProjectId::CLVK]
     }
 }

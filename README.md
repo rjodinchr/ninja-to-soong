@@ -25,7 +25,7 @@
 # Using `ninja-to-soong`
 
 ```
-<ninja-to-soong> $ cargo run -- <android_tree_root> <android_ndk_path> all
+<ninja-to-soong> $ cargo run -- <android_tree_root> <android_ndk_path> [<projects>]
 ```
 
 # Tests

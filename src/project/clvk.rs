@@ -16,6 +16,7 @@ pub struct CLVK<'a> {
     llvm_project_root: &'a str,
     spirv_tools_root: &'a str,
     spirv_headers_root: &'a str,
+    generated_libraries: HashSet<String>,
 }
 
 const CLVK_PROJECT_ID: ProjectId = ProjectId::CLVK;
@@ -39,6 +40,7 @@ impl<'a> CLVK<'a> {
             llvm_project_root,
             spirv_tools_root,
             spirv_headers_root,
+            generated_libraries: HashSet::new(),
         }
     }
 }
@@ -62,6 +64,8 @@ impl<'a> crate::project::Project<'a> for CLVK<'a> {
             "LICENSE",
         );
         package.generate(vec!["libOpenCL.so"], targets, self)?;
+
+        self.generated_libraries = package.get_generated_libraries();
         return Ok(package);
     }
 
@@ -151,5 +155,21 @@ impl<'a> crate::project::Project<'a> for CLVK<'a> {
         } else {
             String::new()
         }
+    }
+    fn get_generated_deps(&self, project: ProjectId) -> ProjectDeps {
+        let mut deps: ProjectDeps = HashMap::new();
+        let mut libs: HashSet<String> = HashSet::new();
+        for library in &self.generated_libraries {
+            let prefix = if project == ProjectId::LLVM {
+                "external/clspv/third_party/llvm/".to_string()
+            } else {
+                "external/".to_string() + project.str() + "/"
+            };
+            if let Some(lib) = library.strip_prefix(&prefix) {
+                libs.insert(lib.to_string());
+            }
+        }
+        deps.insert(ENTRY_TARGETS.to_string(), libs);
+        return deps;
     }
 }

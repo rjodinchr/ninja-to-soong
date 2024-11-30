@@ -14,6 +14,8 @@ mod utils;
 use crate::project::*;
 use crate::utils::*;
 
+const ALL_TARGETS: &str = "all";
+
 fn generate_projects(
     all_projects: Vec<&mut dyn Project>,
     projects_string_to_generate: &[String],
@@ -25,7 +27,7 @@ fn generate_projects(
 
     let mut projects_queue: VecDeque<ProjectId> = VecDeque::new();
     for arg in projects_string_to_generate {
-        if arg == "all" {
+        if arg == ALL_TARGETS {
             for project in projects_map.keys() {
                 projects_queue.push_back(project.clone());
             }
@@ -54,7 +56,7 @@ fn generate_projects(
         }
 
         let project = projects_map.remove(&project_id).unwrap();
-        let deps = project.get_deps();
+        let deps = project.get_project_dependencies();
         fn missing_deps(
             deps: &Vec<ProjectId>,
             projects_generated: &HashMap<ProjectId, &dyn Project>,
@@ -95,8 +97,11 @@ fn generate_projects(
     Ok(())
 }
 
-fn parse_args(args: &Vec<String>) -> Result<(&String, &String, &[String]), String> {
-    let min_args = 4;
+fn parse_args<'a>(
+    args: &'a Vec<String>,
+    all_targets: &'a Vec<String>,
+) -> Result<(&'a String, &'a String, &'a [String]), String> {
+    let min_args = 3;
     if args.len() < min_args {
         return error!(format!(
             "USAGE: {0} <android_dir> <{ANDROID_NDK}_dir> [<projects>]",
@@ -114,7 +119,11 @@ fn parse_args(args: &Vec<String>) -> Result<(&String, &String, &[String]), Strin
         println!("\x1b[0m");
     }
 
-    return Ok((android_dir, ndk_dir, &args[min_args - 1..]));
+    if args.len() == min_args {
+        return Ok((android_dir, ndk_dir, &all_targets[0..]));
+    } else {
+        return Ok((android_dir, ndk_dir, &args[min_args..]));
+    }
 }
 
 fn android_path(android_dir: &String, project: ProjectId) -> String {
@@ -122,8 +131,9 @@ fn android_path(android_dir: &String, project: ProjectId) -> String {
 }
 
 fn main() -> Result<(), String> {
+    let all_targets = vec![ALL_TARGETS.to_string()];
     let args = std::env::args().collect();
-    let (android_dir, ndk_root, projects_to_generate) = parse_args(&args)?;
+    let (android_dir, ndk_root, projects_to_generate) = parse_args(&args, &all_targets)?;
 
     let temp_path = std::env::temp_dir().join("ninja-to-soong");
     let temp_dir = temp_path.to_str().unwrap();

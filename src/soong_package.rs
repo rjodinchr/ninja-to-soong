@@ -14,6 +14,7 @@ pub struct SoongPackage<'a> {
     package: String,
     generated_deps: HashSet<String>,
     include_directories: HashSet<String>,
+    generated_libraries: HashSet<String>,
     src_root: &'a str,
     ndk_root: &'a str,
     build_root: &'a str,
@@ -34,6 +35,7 @@ impl<'a> SoongPackage<'a> {
             package: String::new(),
             generated_deps: HashSet::new(),
             include_directories: HashSet::new(),
+            generated_libraries: HashSet::new(),
             src_root,
             ndk_root,
             build_root,
@@ -93,6 +95,9 @@ impl<'a> SoongPackage<'a> {
     pub fn get_include_directories(&self) -> HashSet<String> {
         self.include_directories.to_owned()
     }
+    pub fn get_generated_libraries(&self) -> HashSet<String> {
+        self.generated_libraries.to_owned()
+    }
 
     fn generate_library(
         &mut self,
@@ -126,7 +131,9 @@ impl<'a> SoongPackage<'a> {
         }
 
         let (version_script, link_flags) = target.get_link_flags(self.src_root, project);
-        let (static_libs, shared_libs) = target.get_link_libraries(self.ndk_root, project)?;
+        let (static_libs, shared_libs, generated_libraries) =
+            target.get_link_libraries(self.ndk_root, project)?;
+        self.generated_libraries.extend(generated_libraries);
         let generated_headers = target.get_generated_headers(target_map)?;
         self.generated_deps
             .extend(project.get_headers_to_copy(&generated_headers).into_iter());
@@ -312,10 +319,11 @@ impl<'a> SoongPackage<'a> {
 
     pub fn generate(
         &mut self,
-        entry_targets: Vec<&str>,
+        mut entry_targets: Vec<&str>,
         targets: Vec<NinjaTarget>,
         project: &dyn Project,
     ) -> Result<(), String> {
+        entry_targets.sort();
         let mut target_seen: HashSet<String> = HashSet::new();
         let mut target_to_generate =
             entry_targets

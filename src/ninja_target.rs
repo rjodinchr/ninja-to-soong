@@ -103,11 +103,12 @@ impl NinjaTarget {
         &self,
         ndk_root: &str,
         project: &dyn Project,
-    ) -> Result<(HashSet<String>, HashSet<String>), String> {
+    ) -> Result<(HashSet<String>, HashSet<String>, HashSet<String>), String> {
         let mut static_libraries: HashSet<String> = HashSet::new();
         let mut shared_libraries: HashSet<String> = HashSet::new();
+        let mut generated_libraries: HashSet<String> = HashSet::new();
         let Some(libs) = self.variables.get("LINK_LIBRARIES") else {
-            return Ok((static_libraries, shared_libraries));
+            return Ok((static_libraries, shared_libraries, generated_libraries));
         };
         for lib in libs.split(" ") {
             if lib.starts_with("-") || lib == "" {
@@ -120,6 +121,7 @@ impl NinjaTarget {
                         .replace(".a", "")
                         .replace(".so", "")
                 } else {
+                    generated_libraries.insert(lib.to_string());
                     project.get_library_name(lib)
                 };
                 if lib.ends_with(".a") {
@@ -133,7 +135,7 @@ impl NinjaTarget {
                 }
             }
         }
-        return Ok((static_libraries, shared_libraries));
+        return Ok((static_libraries, shared_libraries, generated_libraries));
     }
 
     pub fn get_defines(&self, project: &dyn Project) -> HashSet<String> {
