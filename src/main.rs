@@ -14,73 +14,17 @@ mod utils;
 use crate::project::Project;
 use crate::utils::*;
 
-fn main() -> Result<(), String> {
-    let args: Vec<String> = std::env::args().collect();
-
-    let min_args = 4;
-    if args.len() < min_args {
-        return Err(format!(
-            "USAGE: {0} <android_dir> <ndk_r27c_dir> [<projects>]",
-            args[0]
-        ));
-    }
-    let android_dir = &args[1];
-    let ndk_dir = &args[2];
-
-    if ndk_dir.rsplit_once("/").unwrap().1 != "android-ndk-r27c" {
-        println!("WARN: ninja-to-soong expect to use 'android-ndk-r27c', which does not seem to be the ndk provided");
-    }
-
-    let temp_path = std::env::temp_dir().join("ninja-to-soong");
-    let temp_dir = temp_path.to_str().unwrap();
-
-    let clvk_root = android_dir.clone() + "/external/clvk";
-    let clspv_root = android_dir.clone() + "/external/clspv";
-    let llvm_root = android_dir.clone() + "/external/llvm-project";
-    let spirv_tools_root = android_dir.clone() + "/external/SPIRV-Tools";
-    let spirv_headers_root = android_dir.clone() + "/external/SPIRV-Headers";
-
-    let mut projects: Vec<&mut dyn Project> = Vec::new();
-    let mut spirv_tools = project::spirv_tools::SpirvTools::new(
-        temp_dir,
-        &ndk_dir,
-        &spirv_tools_root,
-        &spirv_headers_root,
-    );
-    projects.push(&mut spirv_tools);
-    let mut spirv_headers =
-        project::spirv_headers::SpirvHeaders::new(&ndk_dir, &spirv_headers_root);
-    projects.push(&mut spirv_headers);
-    let mut llvm = project::llvm::LLVM::new(temp_dir, &ndk_dir, &llvm_root);
-    projects.push(&mut llvm);
-    let mut clspv = project::clspv::CLSPV::new(
-        temp_dir,
-        &ndk_dir,
-        &clspv_root,
-        &llvm_root,
-        &spirv_tools_root,
-        &spirv_headers_root,
-    );
-    projects.push(&mut clspv);
-    let mut clvk = project::clvk::CLVK::new(
-        temp_dir,
-        &ndk_dir,
-        &clvk_root,
-        &clspv_root,
-        &llvm_root,
-        &spirv_tools_root,
-        &spirv_headers_root,
-    );
-    projects.push(&mut clvk);
-
+fn generate_projects(
+    all_projects: Vec<&mut dyn Project>,
+    projects: &[String],
+) -> Result<(), String> {
     let mut projects_map: HashMap<ProjectId, &mut dyn Project> = HashMap::new();
-    for project in projects {
+    for project in all_projects {
         projects_map.insert(project.get_id(), project);
     }
 
-    let first_project_arg_index = min_args - 1;
     let mut projects_to_generate: VecDeque<ProjectId> = VecDeque::new();
-    for arg in &args[first_project_arg_index..] {
+    for arg in projects {
         if arg == "all" {
             for project in projects_map.keys() {
                 projects_to_generate.push_back(project.clone());
@@ -149,4 +93,77 @@ fn main() -> Result<(), String> {
     }
 
     Ok(())
+}
+
+fn parse_args(args: &Vec<String>) -> Result<(&String, &String, &[String]), String> {
+    let min_args = 4;
+    if args.len() < min_args {
+        return Err(format!(
+            "USAGE: {0} <android_dir> <ndk_r27c_dir> [<projects>]",
+            args[0]
+        ));
+    }
+    let android_dir = &args[1];
+    let ndk_dir = &args[2];
+
+    if ndk_dir.rsplit_once("/").unwrap().1 != "android-ndk-r27c" {
+        println!("WARN: ninja-to-soong expect to use 'android-ndk-r27c', which does not seem to be the ndk provided");
+    }
+
+    return Ok((android_dir, ndk_dir, &args[min_args - 1..]));
+}
+
+fn android_path(android_dir: &String, project: ProjectId) -> String {
+    return android_dir.clone() + "/external/" + project.str();
+}
+
+fn main() -> Result<(), String> {
+    let args = std::env::args().collect();
+    let (android_dir, ndk_root, projects) = parse_args(&args)?;
+
+    let temp_path = std::env::temp_dir().join("ninja-to-soong");
+    let temp_dir = temp_path.to_str().unwrap();
+
+    let clvk_root = android_path(android_dir, ProjectId::CLVK);
+    let clspv_root = android_path(android_dir, ProjectId::CLSPV);
+    let llvm_project_root = android_path(android_dir, ProjectId::LLVM);
+    let spirv_tools_root = android_path(android_dir, ProjectId::SpirvTools);
+    let spirv_headers_root = android_path(android_dir, ProjectId::SpirvHeaders);
+
+    
+    let mut spirv_tools = project::spirv_tools::SpirvTools::new(
+        temp_dir,
+        &ndk_root,
+        &spirv_tools_root,
+        &spirv_headers_root,
+    );
+    let mut spirv_headers =
+        project::spirv_headers::SpirvHeaders::new(&ndk_root, &spirv_headers_root);
+    let mut llvm = project::llvm::LLVM::new(temp_dir, &ndk_root, &llvm_project_root);
+    let mut clspv = project::clspv::CLSPV::new(
+        temp_dir,
+        &ndk_root,
+        &clspv_root,
+        &llvm_project_root,
+        &spirv_tools_root,
+        &spirv_headers_root,
+    );
+    let mut clvk = project::clvk::CLVK::new(
+        temp_dir,
+        &ndk_root,
+        &clvk_root,
+        &clspv_root,
+        &llvm_project_root,
+        &spirv_tools_root,
+        &spirv_headers_root,
+    );
+
+    let mut all_projects: Vec<&mut dyn Project> = Vec::new();
+    all_projects.push(&mut spirv_tools);
+    all_projects.push(&mut spirv_headers);
+    all_projects.push(&mut llvm);
+    all_projects.push(&mut clspv);
+    all_projects.push(&mut clvk);
+
+    generate_projects(all_projects, projects)
 }

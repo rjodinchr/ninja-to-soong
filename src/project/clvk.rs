@@ -14,7 +14,7 @@ pub struct CLVK<'a> {
     build_root: String,
     ndk_root: &'a str,
     clspv_root: &'a str,
-    llvm_root: &'a str,
+    llvm_project_root: &'a str,
     spirv_tools_root: &'a str,
     spirv_headers_root: &'a str,
 }
@@ -28,7 +28,7 @@ impl<'a> CLVK<'a> {
         ndk_root: &'a str,
         clvk_root: &'a str,
         clspv_root: &'a str,
-        llvm_root: &'a str,
+        llvm_project_root: &'a str,
         spirv_tools_root: &'a str,
         spirv_headers_root: &'a str,
     ) -> Self {
@@ -37,7 +37,7 @@ impl<'a> CLVK<'a> {
             build_root: temp_dir.to_string() + "/" + CLVK_PROJECT_NAME,
             ndk_root,
             clspv_root,
-            llvm_root,
+            llvm_project_root,
             spirv_tools_root,
             spirv_headers_root,
         }
@@ -73,7 +73,7 @@ impl<'a> crate::project::Project<'a> for CLVK<'a> {
         let spirv_headers_dir = "-DSPIRV_HEADERS_SOURCE_DIR=".to_string() + self.spirv_headers_root;
         let spirv_tools_dir = "-DSPIRV_TOOLS_SOURCE_DIR=".to_string() + self.spirv_tools_root;
         let clspv_dir = "-DCLSPV_SOURCE_DIR=".to_string() + self.clspv_root;
-        let llvm_project_dir = self.llvm_root;
+        let llvm_project_dir = self.llvm_project_root;
         let llvm_dir = "-DCLSPV_LLVM_SOURCE_DIR=".to_string() + &llvm_project_dir + "/llvm";
         let clang_dir = "-DCLSPV_CLANG_SOURCE_DIR=".to_string() + &llvm_project_dir + "/clang";
         let libclc_dir = "-DCLSPV_LIBCLC_SOURCE_DIR=".to_string() + &llvm_project_dir + "/libclc";
