@@ -6,7 +6,6 @@ use crate::soong_package::SoongPackage;
 use crate::utils::*;
 
 const LLVM_PREFIX: &str = "third_party/llvm";
-const TARGET_PREFIX: &str = "clspv_";
 const CLSPV_PROJECT_NAME: &str = "clspv";
 
 pub struct CLSPV<'a> {
@@ -42,12 +41,12 @@ impl<'a> crate::project::Project<'a> for CLSPV<'a> {
     fn get_name(&self) -> String {
         CLSPV_PROJECT_NAME.to_string()
     }
-    fn generate(&self, targets: Vec<NinjaTarget>) -> Result<String, String> {
+    fn generate(&self, targets: Vec<NinjaTarget>) -> Result<(), String> {
         let mut package = SoongPackage::new(
             self.src_root,
             self.ndk_root,
             &self.build_root,
-            TARGET_PREFIX,
+            CLSPV_PROJECT_NAME,
             "//external/clvk",
             "SPDX-license-identifier-Apache-2.0",
             "LICENSE",
@@ -56,10 +55,10 @@ impl<'a> crate::project::Project<'a> for CLSPV<'a> {
             return Err(err);
         }
         package.add_module(SoongModule::new_cc_library_headers(
-            CLSPV_HEADERS,
+            CC_LIB_HEADERS_CLSPV,
             ["include".to_string()].into(),
         ));
-        return package.write();
+        return package.write(CLSPV_PROJECT_NAME);
     }
 
     fn get_build_directory(&self) -> Result<String, String> {
@@ -113,7 +112,8 @@ impl<'a> crate::project::Project<'a> for CLSPV<'a> {
                 generated_deps.insert((
                     input.clone(),
                     ":".to_string()
-                        + TARGET_PREFIX
+                        + CLSPV_PROJECT_NAME
+                        + "_"
                         + &rework_name(input.replace(&self.build_root, "")),
                 ));
             } else {
@@ -153,9 +153,9 @@ impl<'a> crate::project::Project<'a> for CLSPV<'a> {
     }
     fn get_target_header_libs(&self, _target: &String) -> HashSet<String> {
         [
-            SPIRV_HEADERS.to_string(),
-            LLVM_HEADERS.to_string(),
-            CLANG_HEADERS.to_string(),
+            CC_LIB_HEADERS_SPIRV_HEADERS.to_string(),
+            CC_LIB_HEADERS_LLVM.to_string(),
+            CC_LIB_HEADERS_CLANG.to_string(),
         ]
         .into()
     }

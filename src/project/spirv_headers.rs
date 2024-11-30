@@ -11,6 +11,7 @@ pub struct SpirvHeaders<'a> {
 }
 
 const SPIRV_HEADERS_PROJECT_NAME: &str = "spirv-headers";
+const SPIRV_HEADERS_REPO_NAME: &str = "SPIRV-Headers";
 
 impl<'a> SpirvHeaders<'a> {
     pub fn new(
@@ -30,7 +31,7 @@ impl<'a> crate::project::Project<'a> for SpirvHeaders<'a> {
     fn get_name(&self) -> String {
         SPIRV_HEADERS_PROJECT_NAME.to_string()
     }
-    fn generate(&self, targets: Vec<NinjaTarget>) -> Result<String, String> {
+    fn generate(&self, targets: Vec<NinjaTarget>) -> Result<(), String> {
         let mut files = match self.spirv_tools.get_generated_deps(targets) {
             Ok(files) => files,
             Err(err) => return Err(err),
@@ -39,14 +40,14 @@ impl<'a> crate::project::Project<'a> for SpirvHeaders<'a> {
             self.src_root,
             self.ndk_root,
             "",
-            "SPIRV-Headers_",
+            SPIRV_HEADERS_REPO_NAME,
             "//visibility:public",
             "SPDX-license-identifier-MIT",
             "LICENSE",
         );
 
         package.add_module(SoongModule::new_cc_library_headers(
-            SPIRV_HEADERS,
+            CC_LIB_HEADERS_SPIRV_HEADERS,
             ["include".to_string()].into(),
         ));
 
@@ -61,7 +62,7 @@ impl<'a> crate::project::Project<'a> for SpirvHeaders<'a> {
             ));
         }
 
-        return package.write();
+        return package.write(SPIRV_HEADERS_REPO_NAME);
     }
     fn get_build_directory(&self) -> Result<String, String> {
         return self.spirv_tools.get_build_directory();

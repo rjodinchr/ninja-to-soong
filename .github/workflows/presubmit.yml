@@ -48,8 +48,4 @@ jobs:
         shell: bash
         run: |
           set -x
-          for repo in tests/*
-          do
-            name=$(basename ${repo})
-            diff ${repo}/Android.bp ${{ env.android }}/external/${name}/Android.bp
-          done
+          git diff-index --quiet HEAD

@@ -68,14 +68,14 @@ fn main() -> Result<(), String> {
         if args[first_project_index] == "all"
             || args[first_project_index..].contains(&project.get_name().to_string())
         {
-            println!("\n############## {PRINT_BANNER} ##############");
-            println!("{PRINT_BANNER} Generating '{0}'", project.get_name());
-            println!("{PRINT_BANNER} \tget build directory...");
+            println!("\n############## {BANNER} ##############");
+            println!("{BANNER} Generating '{0}'", project.get_name());
+            println!("{BANNER} \tget build directory...");
             let build_directory = project.get_build_directory()?;
-            println!("{PRINT_BANNER} \tparsing build.ninja...");
+            println!("{BANNER} \tparsing build.ninja...");
             let targets = crate::parser::parse_build_ninja(build_directory)?;
-            println!("{PRINT_BANNER} \tgenerating soong package...");
-            println!("{PRINT_BANNER} \t\t{0}", project.generate(targets)?);
+            println!("{BANNER} \tgenerating soong package...");
+            project.generate(targets)?;
         }
     }
     Ok(())

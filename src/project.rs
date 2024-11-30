@@ -13,7 +13,7 @@ pub trait Project<'a> {
     // [MANDATORY]
     fn get_name(&self) -> String;
     fn get_build_directory(&self) -> Result<String, String>;
-    fn generate(&self, targets: Vec<NinjaTarget>) -> Result<String, String>;
+    fn generate(&self, targets: Vec<NinjaTarget>) -> Result<(), String>;
 
     // [OPTIONAL]
     fn parse_custom_command_inputs(

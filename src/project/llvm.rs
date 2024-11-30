@@ -7,48 +7,7 @@ use crate::utils::*;
 
 const CMAKE_GENERATED: &str = "cmake_generated";
 const LLVM_PROJECT_NAME: &str = "llvm";
-
-fn copy_files(files: HashSet<String>, src_root: &str, dst_root: &str) -> Result<String, String> {
-    for file in files {
-        let from = src_root.to_string() + &file;
-        let to = dst_root.to_string() + &file;
-        let to_dir = to.rsplit_once("/").unwrap().0;
-        if let Err(err) = std::fs::create_dir_all(to_dir) {
-            return error!(format!("create_dir_all({to_dir}) failed: {err}"));
-        }
-        if let Err(err) = std::fs::copy(&from, &to) {
-            return error!(format!("copy({from}, {to}) failed: {err}"));
-        }
-    }
-    return Ok(format!(
-        "Files created successfully in '{dst_root}' from '{src_root}'!"
-    ));
-}
-
-fn touch_directories(directories: &HashSet<String>, dst_root: &str) -> Result<String, String> {
-    for include_dir in directories {
-        let dir = dst_root.to_string() + include_dir;
-        if touch::exists(&dir) {
-            continue;
-        }
-        if let Err(err) = std::fs::create_dir_all(&dir) {
-            return error!(format!("create_dir_all({dir}) failed: {err}"));
-        }
-        if let Err(err) = touch::file::create(&(dir.clone() + "/touch"), false) {
-            return error!(format!("touch in '{dir}' failed: {err}"));
-        }
-    }
-    return Ok(format!("Touch include directories successfully!"));
-}
-
-fn remove_directory(directory: String) -> Result<String, String> {
-    if touch::exists(&directory) {
-        if let Err(err) = std::fs::remove_dir_all(&directory) {
-            return error!(format!("remove_dir_all failed: {err}"));
-        }
-    }
-    return Ok(format!("'{directory}' removed successfully!"));
-}
+const LLVM_PROJECT_REPO_NAME: &str = "llvm-project";
 
 pub struct LLVM<'a> {
     src_root: &'a str,
@@ -70,12 +29,12 @@ impl<'a> crate::project::Project<'a> for LLVM<'a> {
     fn get_name(&self) -> String {
         LLVM_PROJECT_NAME.to_string()
     }
-    fn generate(&self, targets: Vec<NinjaTarget>) -> Result<String, String> {
+    fn generate(&self, targets: Vec<NinjaTarget>) -> Result<(), String> {
         let mut package = SoongPackage::new(
             self.src_root,
             self.ndk_root,
             &self.build_root,
-            "llvm-project_",
+            LLVM_PROJECT_REPO_NAME,
             "//visibility:public",
             "SPDX-license-identifier-Apache-2.0",
             "LICENSE.TXT",
@@ -177,25 +136,16 @@ impl<'a> crate::project::Project<'a> for LLVM<'a> {
             generated_deps.insert(header.to_string());
         }
 
-        println!(
-            "{PRINT_BANNER} \t\t{0}",
-            remove_directory(add_slash_suffix(self.src_root) + CMAKE_GENERATED)?
-        );
-        println!(
-            "{PRINT_BANNER} \t\t{0}",
-            copy_files(
-                generated_deps,
-                &add_slash_suffix(&self.build_root),
-                &(add_slash_suffix(self.src_root) + &add_slash_suffix(CMAKE_GENERATED))
-            )?
-        );
-        println!(
-            "{PRINT_BANNER} \t\t{0}",
-            touch_directories(&include_directories, &add_slash_suffix(self.src_root))?
-        );
+        remove_directory(add_slash_suffix(self.src_root) + CMAKE_GENERATED)?;
+        copy_files(
+            generated_deps,
+            &self.build_root,
+            &(add_slash_suffix(self.src_root) + CMAKE_GENERATED),
+        )?;
+        touch_directories(&include_directories, &add_slash_suffix(self.src_root))?;
 
         package.add_module(SoongModule::new_cc_library_headers(
-            LLVM_HEADERS,
+            CC_LIB_HEADERS_LLVM,
             [
                 "llvm/include".to_string(),
                 CMAKE_GENERATED.to_string() + "/include",
@@ -203,7 +153,7 @@ impl<'a> crate::project::Project<'a> for LLVM<'a> {
             .into(),
         ));
         package.add_module(SoongModule::new_cc_library_headers(
-            CLANG_HEADERS,
+            CC_LIB_HEADERS_CLANG,
             [
                 "clang/include".to_string(),
                 CMAKE_GENERATED.to_string() + "/tools/clang/include",
@@ -231,7 +181,7 @@ impl<'a> crate::project::Project<'a> for LLVM<'a> {
             clspv64_bc.rsplit_once("/").unwrap().1.to_string(),
         ));
 
-        return package.write();
+        return package.write(LLVM_PROJECT_REPO_NAME);
     }
 
     fn get_build_directory(&self) -> Result<String, String> {

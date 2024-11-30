@@ -1,7 +1,5 @@
 use std::collections::HashMap;
 use std::collections::HashSet;
-use std::fs::File;
-use std::io::Write;
 
 use crate::ninja_target::NinjaTarget;
 use crate::project::Project;
@@ -40,7 +38,7 @@ impl<'a> SoongPackage<'a> {
         };
 
         let license_name =
-            target_prefix.to_string() + &license_text.replace(".", "_").to_lowercase();
+            target_prefix.to_string() + "_" + &license_text.replace(".", "_").to_lowercase();
 
         let mut package_module = SoongModule::new("package");
         package_module.add_set("default_applicable_licenses", [license_name.clone()].into());
@@ -64,20 +62,26 @@ impl<'a> SoongPackage<'a> {
         self.package += &module.print();
     }
 
-    pub fn write(self) -> Result<String, String> {
-        let dir_path = self.src_root;
-        let file_path = dir_path.to_string() + "/Android.bp";
-        match File::create(&file_path) {
-            Ok(mut file) => {
-                if let Err(err) = file.write_fmt(format_args!("{0}", self.package)) {
-                    return error!(format!("Could not write into '{dir_path}': '{err:#?}"));
-                }
-            }
-            Err(err) => {
-                return error!(format!("Could not create '{file_path}': '{err}'"));
-            }
-        }
-        return Ok(format!("'{file_path}' created successfully!"));
+    pub fn write(self, project_repo_name: &str) -> Result<(), String> {
+        const ANDROID_BP: &str = "/Android.bp";
+        write_file(&(self.src_root.to_string() + ANDROID_BP), &self.package)?;
+        let exe_path = match std::env::current_exe() {
+            Ok(path) => path // <ninja-to-soong>/target/debug/ninja-to-soong
+                .parent() // <ninja-to-soong>/target/debug
+                .unwrap()
+                .parent() // <ninja-to-soong>/target
+                .unwrap()
+                .parent() // <ninja-to-soong>
+                .unwrap()
+                .join("tests") // <ninja-to-soong>/tests
+                .join(project_repo_name), // <ninja-to-soong>/tests/<project_repo_name>
+            Err(err) => return error!(format!("Could not get current executable path: {err}")),
+        };
+        copy_file(
+            &(self.src_root.to_string() + ANDROID_BP),
+            &(exe_path.to_str().unwrap().to_string() + ANDROID_BP),
+        )?;
+        Ok(())
     }
 
     pub fn get_generated_deps(&self) -> HashSet<String> {

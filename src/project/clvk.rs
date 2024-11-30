@@ -42,18 +42,18 @@ impl<'a> crate::project::Project<'a> for CLVK<'a> {
     fn get_name(&self) -> String {
         CLVK_PROJECT_NAME.to_string()
     }
-    fn generate(&self, targets: Vec<NinjaTarget>) -> Result<String, String> {
+    fn generate(&self, targets: Vec<NinjaTarget>) -> Result<(), String> {
         let mut package = SoongPackage::new(
             self.src_root,
             self.ndk_root,
             &self.build_root,
-            "clvk_",
+            CLVK_PROJECT_NAME,
             "//visibility:public",
             "SPDX-license-identifier-Apache-2.0",
             "LICENSE",
         );
         package.generate(vec!["libOpenCL.so"], targets, self)?;
-        return package.write();
+        return package.write(CLVK_PROJECT_NAME);
     }
 
     fn get_build_directory(&self) -> Result<String, String> {
@@ -114,9 +114,9 @@ impl<'a> crate::project::Project<'a> for CLVK<'a> {
     }
     fn get_target_header_libs(&self, _target: &String) -> HashSet<String> {
         [
-            SPIRV_TOOLS.to_string(),
-            SPIRV_HEADERS.to_string(),
-            CLSPV_HEADERS.to_string(),
+            CC_LIB_HEADERS_SPIRV_TOOLS.to_string(),
+            CC_LIB_HEADERS_SPIRV_HEADERS.to_string(),
+            CC_LIB_HEADERS_CLSPV.to_string(),
             "OpenCL-Headers".to_string(),
         ]
         .into()

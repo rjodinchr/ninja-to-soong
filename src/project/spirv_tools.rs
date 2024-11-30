@@ -13,6 +13,7 @@ pub struct SpirvTools<'a> {
 }
 
 const SPIRV_TOOLS_PROJECT_NAME: &str = "spirv-tools";
+const SPIRV_TOOLS_REPO_NAME: &str = "SPIRV-Tools";
 
 impl<'a> SpirvTools<'a> {
     pub fn new(
@@ -33,7 +34,7 @@ impl<'a> SpirvTools<'a> {
             self.src_root,
             self.ndk_root,
             &self.build_root,
-            "SPIRV-Tools_",
+            SPIRV_TOOLS_REPO_NAME,
             "//visibility:public",
             "SPDX-license-identifier-Apache-2.0",
             "LICENSE",
@@ -50,7 +51,7 @@ impl<'a> SpirvTools<'a> {
             return Err(err);
         }
         package.add_module(SoongModule::new_cc_library_headers(
-            SPIRV_TOOLS,
+            CC_LIB_HEADERS_SPIRV_TOOLS,
             ["include".to_string()].into(),
         ));
 
@@ -69,12 +70,12 @@ impl<'a> crate::project::Project<'a> for SpirvTools<'a> {
     fn get_name(&self) -> String {
         SPIRV_TOOLS_PROJECT_NAME.to_string()
     }
-    fn generate(&self, targets: Vec<NinjaTarget>) -> Result<String, String> {
+    fn generate(&self, targets: Vec<NinjaTarget>) -> Result<(), String> {
         let package = match self.generate_package(targets) {
             Ok(package) => package,
             Err(err) => return Err(err),
         };
-        return package.write();
+        return package.write(SPIRV_TOOLS_REPO_NAME);
     }
     fn get_build_directory(&self) -> Result<String, String> {
         cmake_configure(
@@ -128,6 +129,6 @@ impl<'a> crate::project::Project<'a> for SpirvTools<'a> {
         return set;
     }
     fn get_target_header_libs(&self, _target: &String) -> HashSet<String> {
-        [SPIRV_HEADERS.to_string()].into()
+        [CC_LIB_HEADERS_SPIRV_HEADERS.to_string()].into()
     }
 }

@@ -45,7 +45,7 @@ impl NinjaTarget {
     }
 
     pub fn get_name(&self, prefix: &str) -> String {
-        return rework_name(prefix.to_string() + &self.outputs[0]);
+        return rework_name(prefix.to_string() + "_" + &self.outputs[0]);
     }
 
     pub fn get_outputs(&self) -> &Vec<String> {
