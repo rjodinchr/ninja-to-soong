@@ -220,7 +220,7 @@ impl NinjaTarget {
             ));
         }
         let command = split.nth(1).unwrap();
-        return Ok(if command.contains("/usr/bin/cmake") {
+        return Ok(if command.contains("bin/cmake ") {
             None
         } else {
             Some(command.to_string())
