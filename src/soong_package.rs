@@ -195,6 +195,30 @@ impl<'a> SoongPackage<'a> {
             .replace(&tool, &replace_tool);
     }
 
+    fn remove_python_in_command(command: String) -> String {
+        let mut command = command;
+        while let Some(index) = command.find("bin/python") {
+            let begin = std::str::from_utf8(&command.as_bytes()[0..index])
+                .unwrap()
+                .rfind(" ")
+                .unwrap_or_default();
+            command = match std::str::from_utf8(&command.as_bytes()[index..])
+                .unwrap()
+                .find(" ")
+            {
+                Some(end) => command.replace(
+                    std::str::from_utf8(&command.as_bytes()[begin..index + end + 1]).unwrap(),
+                    "",
+                ),
+                None => command.replace(
+                    std::str::from_utf8(&command.as_bytes()[begin..]).unwrap(),
+                    "",
+                ),
+            };
+        }
+        command
+    }
+
     fn rework_command(
         &self,
         command: String,
@@ -203,7 +227,7 @@ impl<'a> SoongPackage<'a> {
         generated_deps: HashSet<(String, String)>,
         project: &dyn Project,
     ) -> String {
-        let mut command = command.replace("/usr/bin/python3 ", "");
+        let mut command = Self::remove_python_in_command(command);
         command = command.replace(&(self.build_root.to_string() + "/"), "");
         for output in outputs {
             command = self.replace_output_in_command(command, output, project);
