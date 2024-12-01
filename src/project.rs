@@ -109,9 +109,6 @@ pub trait Project<'a> {
     fn get_default_cflags(&self) -> HashSet<String> {
         HashSet::new()
     }
-    fn get_generated_build_dir(&self) -> String {
-        String::new()
-    }
     fn get_gen_deps(&self, _project: ProjectId) -> GenDepsMap {
         HashMap::new()
     }
