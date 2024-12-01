@@ -24,7 +24,7 @@ impl<'a> LLVM<'a> {
     pub fn new(temp_dir: &'a str, ndk_root: &'a str, llvm_project_root: &'a str) -> Self {
         LLVM {
             src_root: llvm_project_root,
-            build_root: temp_dir.to_string() + "/" + LLVM_PROJECT_NAME,
+            build_root: add_slash_suffix(temp_dir) + LLVM_PROJECT_NAME,
             ndk_root,
             copy_generated_deps: true,
         }
@@ -40,12 +40,6 @@ impl<'a> crate::project::Project<'a> for LLVM<'a> {
         targets: Vec<NinjaTarget>,
         dep_packages: &ProjectMap,
     ) -> Result<SoongPackage, String> {
-        let entry_targets = Vec::from_iter(get_dependency(
-            self,
-            ProjectId::CLVK,
-            Dependency::EntryTargets,
-            dep_packages,
-        ));
         let mut package = SoongPackage::new(
             self.src_root,
             self.ndk_root,
@@ -55,10 +49,26 @@ impl<'a> crate::project::Project<'a> for LLVM<'a> {
             "SPDX-license-identifier-Apache-2.0",
             "LICENSE.TXT",
         );
-        package.generate(entry_targets, targets, self)?;
-        let mut generated_deps = package.get_generated_deps();
-        let include_directories = package.get_include_directories();
+        package.generate(
+            get_dependency(
+                self,
+                ProjectId::CLVK,
+                Dependency::TargetToGenerate,
+                dep_packages,
+            ),
+            targets,
+            self,
+        )?;
 
+        let clpsv_deps = get_dependency(
+            self,
+            ProjectId::CLSPV,
+            Dependency::LLVMGenerated,
+            dep_packages,
+        );
+        let include_directories = package.get_include_directories();
+        let mut generated_deps = package.get_generated_deps();
+        generated_deps.extend(clpsv_deps.clone());
         let missing_generated_deps = vec![
             "include/llvm/Config/llvm-config.h",
             "include/llvm/Config/abi-breaking.h",
@@ -73,8 +83,6 @@ impl<'a> crate::project::Project<'a> for LLVM<'a> {
             "tools/clang/lib/Basic/VCSVersion.inc",
             "tools/clang/include/clang/Basic/Version.inc",
             "tools/clang/include/clang/Config/config.h",
-            "tools/libclc/clspv--.bc",
-            "tools/libclc/clspv64--.bc",
         ];
         for header in missing_generated_deps {
             generated_deps.insert(header.to_string());
@@ -83,7 +91,7 @@ impl<'a> crate::project::Project<'a> for LLVM<'a> {
         let mut generated_deps_sorted = Vec::from_iter(&generated_deps);
         generated_deps_sorted.sort();
         write_file(
-            &(get_tests_folder()? + "/" + LLVM_PROJECT_NAME + "/generated_deps.txt"),
+            &(add_slash_suffix(&get_tests_folder()?) + LLVM_PROJECT_NAME + "/generated_deps.txt"),
             &format!("{generated_deps_sorted:#?}"),
         )?;
         if self.copy_generated_deps {
@@ -113,25 +121,26 @@ impl<'a> crate::project::Project<'a> for LLVM<'a> {
             .into(),
         ));
 
-        // for clspv
-        let opencl_c_base = "clang/lib/Headers/opencl-c-base.h";
-        package.add_module(SoongModule::new_copy_genrule(
-            clang_headers_name("clang", opencl_c_base),
-            opencl_c_base.to_string(),
-            opencl_c_base.rsplit_once("/").unwrap().1.to_string(),
-        ));
-        let clspv_bc = CMAKE_GENERATED.to_string() + "/tools/libclc/clspv--.bc";
-        package.add_module(SoongModule::new_copy_genrule(
-            llvm_headers_name(CMAKE_GENERATED, &clspv_bc),
-            clspv_bc.clone(),
-            clspv_bc.rsplit_once("/").unwrap().1.to_string(),
-        ));
-        let clspv64_bc = CMAKE_GENERATED.to_string() + "/tools/libclc/clspv64--.bc";
-        package.add_module(SoongModule::new_copy_genrule(
-            llvm_headers_name(CMAKE_GENERATED, &clspv64_bc),
-            clspv64_bc.clone(),
-            clspv64_bc.rsplit_once("/").unwrap().1.to_string(),
-        ));
+        for header in get_dependency(
+            self,
+            ProjectId::CLSPV,
+            Dependency::CLANGHeaders,
+            dep_packages,
+        ) {
+            package.add_module(SoongModule::new_copy_genrule(
+                clang_headers_name("clang", &header),
+                header.clone(),
+                header.rsplit_once("/").unwrap().1.to_string(),
+            ));
+        }
+        for file in clpsv_deps {
+            let file_path = add_slash_suffix(CMAKE_GENERATED) + &file;
+            package.add_module(SoongModule::new_copy_genrule(
+                llvm_headers_name(CMAKE_GENERATED, &file_path),
+                file_path.clone(),
+                file_path.rsplit_once("/").unwrap().1.to_string(),
+            ));
+        }
 
         return Ok(package);
     }
@@ -192,6 +201,6 @@ impl<'a> crate::project::Project<'a> for LLVM<'a> {
         true
     }
     fn get_project_dependencies(&self) -> Vec<ProjectId> {
-        vec![ProjectId::CLVK]
+        vec![ProjectId::CLVK, ProjectId::CLSPV]
     }
 }

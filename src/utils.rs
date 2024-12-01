@@ -24,7 +24,9 @@ pub const BANNER: &str = "\x1b[01;32m[NINJA-TO-SOONG]\x1b[0m";
 #[derive(Eq, PartialEq, Hash)]
 pub enum Dependency {
     SpirvHeadersFiles,
-    EntryTargets,
+    TargetToGenerate,
+    CLANGHeaders,
+    LLVMGenerated,
 }
 
 pub const CC_LIB_HEADERS_SPIRV_TOOLS: &str = "SPIRV-Tools-includes";
@@ -128,7 +130,7 @@ pub fn copy_files(files: HashSet<String>, src_root: &str, dst_root: &str) -> Res
         }
         copy_file(&from, &to)?;
     }
-    println!("{BANNER} \t\tFiles copied successfully from '{src_root}' to '{src_root}'!");
+    println!("{BANNER} \t  Files copied successfully from '{src_root}' to '{src_root}'!");
     return Ok(());
 }
 
@@ -145,7 +147,7 @@ pub fn touch_directories(directories: &HashSet<String>, dst_root: &str) -> Resul
             return error!(format!("touch in '{dir}' failed: {err}"));
         }
     }
-    println!("{BANNER} \t\tInclude directories created successfully!");
+    println!("{BANNER} \t  Include directories created successfully!");
     return Ok(());
 }
 
@@ -155,7 +157,7 @@ pub fn remove_directory(directory: String) -> Result<(), String> {
             return error!(format!("remove_dir_all failed: {err}"));
         }
     }
-    println!("{BANNER} \t\t'{directory}' removed successfully!");
+    println!("{BANNER} \t  '{directory}' removed successfully!");
     return Ok(());
 }
 
@@ -170,7 +172,7 @@ pub fn write_file(file_path: &str, content: &str) -> Result<(), String> {
             return error!(format!("Could not create '{file_path}': '{err}'"));
         }
     }
-    println!("{BANNER} \t\t'{file_path}' created successfully!");
+    println!("{BANNER} \t  '{file_path}' created successfully!");
     return Ok(());
 }
 

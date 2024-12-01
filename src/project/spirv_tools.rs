@@ -29,7 +29,7 @@ impl<'a> SpirvTools<'a> {
     ) -> Self {
         SpirvTools {
             src_root: spirv_tools_root,
-            build_root: temp_dir.to_string() + "/" + SPIRV_TOOLS_NAME,
+            build_root: add_slash_suffix(temp_dir) + SPIRV_TOOLS_NAME,
             ndk_root,
             spirv_headers_root,
             generated_deps: HashSet::new(),
@@ -46,12 +46,6 @@ impl<'a> crate::project::Project<'a> for SpirvTools<'a> {
         targets: Vec<NinjaTarget>,
         dep_packages: &ProjectMap,
     ) -> Result<SoongPackage, String> {
-        let entry_targets = Vec::from_iter(get_dependency(
-            self,
-            ProjectId::CLVK,
-            Dependency::EntryTargets,
-            dep_packages,
-        ));
         let mut package = SoongPackage::new(
             self.src_root,
             self.ndk_root,
@@ -61,7 +55,16 @@ impl<'a> crate::project::Project<'a> for SpirvTools<'a> {
             "SPDX-license-identifier-Apache-2.0",
             "LICENSE",
         );
-        package.generate(entry_targets, targets, self)?;
+        package.generate(
+            get_dependency(
+                self,
+                ProjectId::CLVK,
+                Dependency::TargetToGenerate,
+                dep_packages,
+            ),
+            targets,
+            self,
+        )?;
         package.add_module(SoongModule::new_cc_library_headers(
             CC_LIB_HEADERS_SPIRV_TOOLS,
             ["include".to_string()].into(),

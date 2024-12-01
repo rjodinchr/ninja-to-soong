@@ -59,14 +59,18 @@ fn get_dependency(
     from: ProjectId,
     dependency: Dependency,
     dep_packages: &ProjectMap,
-) -> HashSet<String> {
-    dep_packages
-        .get(&from)
-        .unwrap()
-        .get_generated_deps(project.get_id())
-        .get(&dependency)
-        .unwrap()
-        .clone()
+) -> Vec<String> {
+    let mut vec = Vec::from_iter(
+        dep_packages
+            .get(&from)
+            .unwrap()
+            .get_generated_deps(project.get_id())
+            .get(&dependency)
+            .unwrap()
+            .clone(),
+    );
+    vec.sort();
+    return vec;
 }
 
 pub trait Project<'a> {

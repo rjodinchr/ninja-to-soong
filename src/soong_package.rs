@@ -84,7 +84,7 @@ impl<'a> SoongPackage<'a> {
         let tests_path = get_tests_folder()?;
         copy_file(
             &(self.src_root.to_string() + ANDROID_BP),
-            &(tests_path + "/" + project_repo_name + ANDROID_BP),
+            &(add_slash_suffix(&tests_path) + project_repo_name + ANDROID_BP),
         )?;
         Ok(())
     }
@@ -136,7 +136,7 @@ impl<'a> SoongPackage<'a> {
         self.generated_libraries.extend(generated_libraries);
         let generated_headers = target.get_generated_headers(target_map)?;
         self.generated_deps
-            .extend(project.get_headers_to_copy(&generated_headers).into_iter());
+            .extend(project.get_headers_to_copy(&generated_headers));
         let generated_headers_filtered_raw = project.get_headers_to_generate(&generated_headers);
         let mut generated_headers_filtered = HashSet::new();
         for header in generated_headers_filtered_raw {
@@ -235,7 +235,7 @@ impl<'a> SoongPackage<'a> {
         project: &dyn Project,
     ) -> String {
         let mut command = Self::remove_python_in_command(command);
-        command = command.replace(&(self.build_root.to_string() + "/"), "");
+        command = command.replace(&add_slash_suffix(self.build_root), "");
         for output in outputs {
             command = self.replace_output_in_command(command, output, project);
         }
@@ -320,7 +320,6 @@ impl<'a> SoongPackage<'a> {
             }
         }
 
-        target_to_generate.sort();
         while let Some(input) = target_to_generate.pop() {
             if target_seen.contains(&input) || project.ignore_target(&input) {
                 continue;

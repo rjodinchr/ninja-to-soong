@@ -20,6 +20,7 @@ pub struct CLSPV<'a> {
     spirv_headers_root: &'a str,
     spirv_tools_root: &'a str,
     llvm_project_root: &'a str,
+    generated_deps: HashSet<String>,
 }
 
 impl<'a> CLSPV<'a> {
@@ -33,11 +34,12 @@ impl<'a> CLSPV<'a> {
     ) -> Self {
         CLSPV {
             src_root: clspv_root,
-            build_root: temp_dir.to_string() + "/" + CLSPV_PROJECT_NAME,
+            build_root: add_slash_suffix(temp_dir) + CLSPV_PROJECT_NAME,
             ndk_root,
             llvm_project_root,
             spirv_tools_root,
             spirv_headers_root,
+            generated_deps: HashSet::new(),
         }
     }
 }
@@ -51,12 +53,6 @@ impl<'a> crate::project::Project<'a> for CLSPV<'a> {
         targets: Vec<NinjaTarget>,
         dep_packages: &ProjectMap,
     ) -> Result<SoongPackage, String> {
-        let entry_targets = Vec::from_iter(get_dependency(
-            self,
-            ProjectId::CLVK,
-            Dependency::EntryTargets,
-            dep_packages,
-        ));
         let mut package = SoongPackage::new(
             self.src_root,
             self.ndk_root,
@@ -66,11 +62,23 @@ impl<'a> crate::project::Project<'a> for CLSPV<'a> {
             "SPDX-license-identifier-Apache-2.0",
             "LICENSE",
         );
-        package.generate(entry_targets, targets, self)?;
+        package.generate(
+            get_dependency(
+                self,
+                ProjectId::CLVK,
+                Dependency::TargetToGenerate,
+                dep_packages,
+            ),
+            targets,
+            self,
+        )?;
         package.add_module(SoongModule::new_cc_library_headers(
             CC_LIB_HEADERS_CLSPV,
             ["include".to_string()].into(),
         ));
+
+        self.generated_deps = package.get_generated_deps();
+
         return Ok(package);
     }
 
@@ -190,5 +198,35 @@ impl<'a> crate::project::Project<'a> for CLSPV<'a> {
     }
     fn get_project_dependencies(&self) -> Vec<ProjectId> {
         vec![ProjectId::CLVK]
+    }
+    fn get_generated_deps(&self, project: ProjectId) -> ProjectDeps {
+        let mut deps: ProjectDeps = HashMap::new();
+        match project {
+            ProjectId::SpirvHeaders => {
+                let mut files: HashSet<String> = HashSet::new();
+                for dep in &self.generated_deps {
+                    if dep.starts_with(self.spirv_headers_root) {
+                        files.insert(dep.clone());
+                    }
+                }
+                deps.insert(Dependency::SpirvHeadersFiles, files);
+            }
+            ProjectId::LLVM => {
+                let mut llvm_srcs: HashSet<String> = HashSet::new();
+                let mut llvm_generated: HashSet<String> = HashSet::new();
+                for dep in &self.generated_deps {
+                    if let Some(strip) = dep.strip_prefix(&add_slash_suffix(self.llvm_project_root))
+                    {
+                        llvm_srcs.insert(strip.to_string());
+                    } else if let Some(strip) = dep.strip_prefix(&add_slash_suffix(LLVM_PREFIX)) {
+                        llvm_generated.insert(strip.to_string());
+                    }
+                }
+                deps.insert(Dependency::CLANGHeaders, llvm_srcs);
+                deps.insert(Dependency::LLVMGenerated, llvm_generated);
+            }
+            _ => (),
+        };
+        deps
     }
 }

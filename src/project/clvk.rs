@@ -34,7 +34,7 @@ impl<'a> CLVK<'a> {
     ) -> Self {
         CLVK {
             src_root: clvk_root,
-            build_root: temp_dir.to_string() + "/" + CLVK_PROJECT_NAME,
+            build_root: add_slash_suffix(temp_dir) + CLVK_PROJECT_NAME,
             ndk_root,
             clspv_root,
             llvm_project_root,
@@ -163,13 +163,13 @@ impl<'a> crate::project::Project<'a> for CLVK<'a> {
             let prefix = if project == ProjectId::LLVM {
                 "external/clspv/third_party/llvm/".to_string()
             } else {
-                "external/".to_string() + project.str() + "/"
+                "external/".to_string() + &add_slash_suffix(project.str())
             };
             if let Some(lib) = library.strip_prefix(&prefix) {
                 libs.insert(lib.to_string());
             }
         }
-        deps.insert(Dependency::EntryTargets, libs);
+        deps.insert(Dependency::TargetToGenerate, libs);
         return deps;
     }
 }
