@@ -55,13 +55,13 @@ impl ProjectId {
 }
 
 #[derive(Eq, PartialEq, Hash)]
-pub enum Deps {
+pub enum GenDeps {
     SpirvHeadersFiles,
     TargetsToGenerate,
     ClangHeaders,
     LibclcBinaries,
 }
-impl Deps {
+impl GenDeps {
     fn get(
         self,
         project: &dyn Project,
@@ -72,7 +72,7 @@ impl Deps {
             projects_map
                 .get(&from)
                 .unwrap()
-                .get_generated_deps(project.get_id())
+                .get_gen_deps(project.get_id())
                 .get(&self)
                 .unwrap()
                 .clone(),
@@ -82,7 +82,7 @@ impl Deps {
     }
 }
 
-pub type DepsMap = HashMap<Deps, HashSet<String>>;
+pub type GenDepsMap = HashMap<GenDeps, HashSet<String>>;
 pub type ProjectsMap<'a> = HashMap<ProjectId, &'a dyn Project<'a>>;
 pub type CmdInputAndDeps = (HashSet<String>, HashSet<(String, String)>);
 
@@ -112,7 +112,7 @@ pub trait Project<'a> {
     fn get_generated_build_dir(&self) -> String {
         String::new()
     }
-    fn get_generated_deps(&self, _project: ProjectId) -> DepsMap {
+    fn get_gen_deps(&self, _project: ProjectId) -> GenDepsMap {
         HashMap::new()
     }
     fn get_headers_to_copy(&self, _headers: &HashSet<String>) -> HashSet<String> {

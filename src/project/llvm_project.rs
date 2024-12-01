@@ -14,7 +14,7 @@ pub struct LlvmProject<'a> {
     src_dir: &'a str,
     build_dir: String,
     ndk_dir: &'a str,
-    copy_generated_deps: bool,
+    copy_gen_deps: bool,
 }
 
 impl<'a> LlvmProject<'a> {
@@ -23,7 +23,7 @@ impl<'a> LlvmProject<'a> {
             src_dir: llvm_project_dir,
             build_dir: add_slash_suffix(temp_dir) + ProjectId::LlvmProject.str(),
             ndk_dir,
-            copy_generated_deps: true,
+            copy_gen_deps: true,
         }
     }
 }
@@ -44,16 +44,16 @@ impl<'a> crate::project::Project<'a> for LlvmProject<'a> {
             "LICENSE.TXT",
         );
         package.generate(
-            Deps::TargetsToGenerate.get(self, ProjectId::Clvk, projects_map),
+            GenDeps::TargetsToGenerate.get(self, ProjectId::Clvk, projects_map),
             targets,
             self,
         )?;
 
-        let libclc_deps = Deps::LibclcBinaries.get(self, ProjectId::Clspv, projects_map);
+        let libclc_deps = GenDeps::LibclcBinaries.get(self, ProjectId::Clspv, projects_map);
         let include_dirs = package.get_include_dirs();
-        let mut generated_deps = package.get_generated_deps();
-        generated_deps.extend(libclc_deps.clone());
-        let missing_generated_deps = vec![
+        let mut gen_deps = package.get_gen_deps();
+        gen_deps.extend(libclc_deps.clone());
+        let missing_gen_deps = vec![
             "include/llvm/Config/llvm-config.h",
             "include/llvm/Config/abi-breaking.h",
             "include/llvm/Config/config.h",
@@ -68,22 +68,22 @@ impl<'a> crate::project::Project<'a> for LlvmProject<'a> {
             "tools/clang/include/clang/Basic/Version.inc",
             "tools/clang/include/clang/Config/config.h",
         ];
-        for header in missing_generated_deps {
-            generated_deps.insert(header.to_string());
+        for header in missing_gen_deps {
+            gen_deps.insert(header.to_string());
         }
 
-        let mut generated_deps_sorted = Vec::from_iter(&generated_deps);
-        generated_deps_sorted.sort();
+        let mut gen_deps_sorted = Vec::from_iter(&gen_deps);
+        gen_deps_sorted.sort();
         write_file(
             &(add_slash_suffix(&get_tests_folder()?)
                 + ProjectId::LlvmProject.str()
                 + "/generated_deps.txt"),
-            &format!("{generated_deps_sorted:#?}"),
+            &format!("{gen_deps_sorted:#?}"),
         )?;
-        if self.copy_generated_deps {
+        if self.copy_gen_deps {
             remove_dir(add_slash_suffix(self.src_dir) + CMAKE_GENERATED)?;
             copy_files(
-                generated_deps,
+                gen_deps,
                 &self.build_dir,
                 &(add_slash_suffix(self.src_dir) + CMAKE_GENERATED),
             )?;
@@ -107,7 +107,7 @@ impl<'a> crate::project::Project<'a> for LlvmProject<'a> {
             .into(),
         ));
 
-        for clang_header in Deps::ClangHeaders.get(self, ProjectId::Clspv, projects_map) {
+        for clang_header in GenDeps::ClangHeaders.get(self, ProjectId::Clspv, projects_map) {
             package.add_module(SoongModule::new_copy_genrule(
                 clang_headers_name("clang", &clang_header),
                 clang_header.clone(),
@@ -143,10 +143,10 @@ impl<'a> crate::project::Project<'a> for LlvmProject<'a> {
             ],
         )? {
             let mut targets = Vec::new();
-            targets.extend(Deps::TargetsToGenerate.get(self, ProjectId::Clvk, projects_map));
-            targets.extend(Deps::LibclcBinaries.get(self, ProjectId::Clspv, projects_map));
+            targets.extend(GenDeps::TargetsToGenerate.get(self, ProjectId::Clvk, projects_map));
+            targets.extend(GenDeps::LibclcBinaries.get(self, ProjectId::Clspv, projects_map));
             if !cmake_build(&self.build_dir, &targets)? {
-                self.copy_generated_deps = false;
+                self.copy_gen_deps = false;
             }
         }
         Ok(Some(self.build_dir.clone()))
