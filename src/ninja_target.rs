@@ -7,6 +7,8 @@ use std::collections::HashSet;
 use crate::project::Project;
 use crate::utils::*;
 
+pub type NinjaTargetMap<'a> = HashMap<String, &'a NinjaTarget>;
+
 #[derive(Debug)]
 pub struct NinjaTarget {
     rule: String,
@@ -181,7 +183,7 @@ impl NinjaTarget {
 
     pub fn get_generated_headers(
         &self,
-        target_map: &HashMap<String, &NinjaTarget>,
+        target_map: &NinjaTargetMap,
     ) -> Result<HashSet<String>, String> {
         let mut generated_headers: HashSet<String> = HashSet::new();
         let mut target_seen: HashSet<String> = HashSet::new();

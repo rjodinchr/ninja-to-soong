@@ -16,8 +16,8 @@ use crate::utils::*;
 
 const ALL_TARGETS: &str = "all";
 
-fn generate_projects(
-    all_projects: Vec<&mut dyn Project>,
+fn generate_projects<'a>(
+    all_projects: Vec<&'a mut dyn Project<'a>>,
     projects_string_to_generate: &[String],
 ) -> Result<(), String> {
     let mut projects_map: HashMap<ProjectId, &mut dyn Project> = HashMap::new();
@@ -40,7 +40,7 @@ fn generate_projects(
     }
     let projects_to_generate = projects_queue.clone();
 
-    let mut projects_generated: HashMap<ProjectId, &dyn Project> = HashMap::new();
+    let mut projects_generated: ProjectMap = HashMap::new();
     while let Some(project_id) = projects_queue.pop_front() {
         if projects_generated.contains_key(&project_id) {
             continue;
@@ -57,10 +57,7 @@ fn generate_projects(
 
         let project = projects_map.remove(&project_id).unwrap();
         let deps = project.get_project_dependencies();
-        fn missing_deps(
-            deps: &Vec<ProjectId>,
-            projects_generated: &HashMap<ProjectId, &dyn Project>,
-        ) -> bool {
+        fn missing_deps(deps: &Vec<ProjectId>, projects_generated: &ProjectMap) -> bool {
             for dep in deps {
                 if !projects_generated.contains_key(dep) {
                     return true;

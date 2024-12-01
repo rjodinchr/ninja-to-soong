@@ -4,7 +4,7 @@
 use std::collections::HashMap;
 use std::collections::HashSet;
 
-use crate::ninja_target::NinjaTarget;
+use crate::ninja_target::*;
 use crate::project::Project;
 use crate::soong_module::SoongModule;
 use crate::utils::*;
@@ -103,7 +103,7 @@ impl<'a> SoongPackage<'a> {
         &mut self,
         name: &str,
         target: &NinjaTarget,
-        target_map: &HashMap<String, &NinjaTarget>,
+        target_map: &NinjaTargetMap,
         project: &dyn Project,
     ) -> Result<String, String> {
         let mut cflags = project.get_default_cflags();
@@ -281,7 +281,7 @@ impl<'a> SoongPackage<'a> {
     fn generate_module(
         &mut self,
         target: &NinjaTarget,
-        target_map: &HashMap<String, &NinjaTarget>,
+        target_map: &NinjaTargetMap,
         project: &dyn Project,
     ) -> Result<Option<String>, String> {
         let rule = target.get_rule();
@@ -306,17 +306,6 @@ impl<'a> SoongPackage<'a> {
         }?))
     }
 
-    fn create_target_map(targets: &Vec<NinjaTarget>) -> HashMap<String, &NinjaTarget> {
-        let mut map: HashMap<String, &NinjaTarget> = HashMap::new();
-        for target in targets {
-            for output in &target.get_all_outputs() {
-                map.insert(output.clone(), target);
-            }
-        }
-
-        return map;
-    }
-
     pub fn generate(
         &mut self,
         mut target_to_generate: Vec<String>,
@@ -324,7 +313,12 @@ impl<'a> SoongPackage<'a> {
         project: &dyn Project,
     ) -> Result<(), String> {
         let mut target_seen: HashSet<String> = HashSet::new();
-        let target_map = Self::create_target_map(&targets);
+        let mut target_map: NinjaTargetMap = HashMap::new();
+        for target in &targets {
+            for output in &target.get_all_outputs() {
+                target_map.insert(output.clone(), target);
+            }
+        }
 
         target_to_generate.sort();
         while let Some(input) = target_to_generate.pop() {

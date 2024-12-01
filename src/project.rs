@@ -51,11 +51,14 @@ impl ProjectId {
     }
 }
 
+pub type ProjectDeps = HashMap<Dependency, HashSet<String>>;
+pub type ProjectMap<'a> = HashMap<ProjectId, &'a dyn Project<'a>>;
+
 fn get_dependency(
     project: &dyn Project,
     from: ProjectId,
     dependency: Dependency,
-    dep_packages: &HashMap<ProjectId, &dyn Project>,
+    dep_packages: &ProjectMap,
 ) -> HashSet<String> {
     dep_packages
         .get(&from)
@@ -66,19 +69,14 @@ fn get_dependency(
         .clone()
 }
 
-pub type ProjectDeps = HashMap<Dependency, HashSet<String>>;
-
 pub trait Project<'a> {
     // MANDATORY
     fn get_id(&self) -> ProjectId;
-    fn get_build_directory(
-        &mut self,
-        dep_packages: &HashMap<ProjectId, &dyn Project>,
-    ) -> Result<String, String>;
+    fn get_build_directory(&mut self, dep_packages: &ProjectMap) -> Result<String, String>;
     fn generate_package(
         &mut self,
         targets: Vec<NinjaTarget>,
-        dep_packages: &HashMap<ProjectId, &dyn Project>,
+        dep_packages: &ProjectMap,
     ) -> Result<SoongPackage, String>;
 
     // OPTIONAL

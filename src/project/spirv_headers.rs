@@ -32,7 +32,7 @@ impl<'a> crate::project::Project<'a> for SpirvHeaders<'a> {
     fn generate_package(
         &mut self,
         _targets: Vec<NinjaTarget>,
-        dep_packages: &HashMap<ProjectId, &dyn Project>,
+        dep_packages: &ProjectMap,
     ) -> Result<SoongPackage, String> {
         let mut files = get_dependency(
             self,
