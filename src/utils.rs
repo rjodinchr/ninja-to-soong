@@ -5,6 +5,58 @@ use std::collections::HashSet;
 use std::fs::File;
 use std::io::Write;
 
+pub const TAB: &str = "   ";
+pub const COLOR_RED: &str = "\x1b[00;31m";
+pub const COLOR_GREEN: &str = "\x1b[0;32m";
+pub const COLOR_GREEN_BOLD: &str = "\x1b[01;32m";
+pub const COLOR_YELLOW: &str = "\x1b[01;33m";
+pub const COLOR_NONE: &str = "\x1b[0m";
+
+#[macro_export]
+macro_rules! print_internal {
+    ($print_prefix:expr, $message_prefix:expr, $message:expr, $print_suffix:expr) => {
+        println!(
+            "{0}[NINJA-TO-SOONG]{1} {2}{3}",
+            $print_prefix, $message_prefix, $message, $print_suffix
+        );
+    };
+}
+#[macro_export]
+macro_rules! print_info {
+    ($message:expr) => {
+        print_internal!(
+            format!("\n{COLOR_GREEN}"),
+            COLOR_GREEN_BOLD,
+            $message,
+            COLOR_NONE
+        );
+    };
+}
+#[macro_export]
+macro_rules! print_debug {
+    ($message:expr) => {
+        print_internal!(COLOR_GREEN, format!("{COLOR_NONE}{TAB}"), $message, "");
+    };
+}
+#[macro_export]
+macro_rules! print_verbose {
+    ($message:expr) => {
+        print_internal!(COLOR_GREEN, format!("{COLOR_NONE}{TAB}{TAB}"), $message, "");
+    };
+}
+#[macro_export]
+macro_rules! print_warn {
+    ($message:expr) => {
+        print_internal!(COLOR_YELLOW, "", $message, COLOR_NONE);
+    };
+}
+#[macro_export]
+macro_rules! print_error {
+    ($message:expr) => {
+        print_internal!(COLOR_RED, "", $message, COLOR_NONE);
+    };
+}
+
 #[macro_export]
 macro_rules! error {
     ($message:expr) => {
@@ -12,8 +64,6 @@ macro_rules! error {
     };
 }
 pub use error;
-
-pub const BANNER: &str = "\x1b[01;32m[NINJA-TO-SOONG]\x1b[0m";
 
 #[derive(Eq, PartialEq, Hash)]
 pub enum Dependency {
@@ -107,9 +157,12 @@ pub fn cmake_build(build: &str, targets: Vec<&str>) -> Result<bool, String> {
     Ok(true)
 }
 
-pub fn copy_file(from: &str, to: &str) -> Result<(), String> {
+pub fn copy_file(from: &str, to: &str, print: bool) -> Result<(), String> {
     if let Err(err) = std::fs::copy(from, to) {
         return error!(format!("copy({from}, {to}) failed: {err}"));
+    }
+    if print {
+        print_verbose!(format!("'{from}' copied to '{to}'"));
     }
     Ok(())
 }
@@ -122,9 +175,9 @@ pub fn copy_files(files: HashSet<String>, src_root: &str, dst_root: &str) -> Res
         if let Err(err) = std::fs::create_dir_all(to_dir) {
             return error!(format!("create_dir_all({to_dir}) failed: {err}"));
         }
-        copy_file(&from, &to)?;
+        copy_file(&from, &to, false)?;
     }
-    println!("{BANNER} \t  Files copied successfully from '{src_root}' to '{dst_root}'!");
+    print_verbose!(format!("Files copied from '{src_root}' to '{dst_root}'"));
     Ok(())
 }
 
@@ -141,7 +194,7 @@ pub fn touch_directories(directories: &HashSet<String>, dst_root: &str) -> Resul
             return error!(format!("touch in '{dir}' failed: {err}"));
         }
     }
-    println!("{BANNER} \t  Include directories created successfully!");
+    print_verbose!(format!("Directories touched in '{dst_root}'"));
     Ok(())
 }
 
@@ -151,7 +204,7 @@ pub fn remove_directory(directory: String) -> Result<(), String> {
             return error!(format!("remove_dir_all failed: {err}"));
         }
     }
-    println!("{BANNER} \t  '{directory}' removed successfully!");
+    print_verbose!(format!("'{directory}' removed"));
     Ok(())
 }
 
@@ -166,7 +219,7 @@ pub fn write_file(file_path: &str, content: &str) -> Result<(), String> {
             return error!(format!("Could not create '{file_path}': '{err}'"));
         }
     }
-    println!("{BANNER} \t  '{file_path}' created successfully!");
+    print_verbose!(format!("'{file_path}' created"));
     Ok(())
 }
 

@@ -53,7 +53,7 @@ impl<'a> crate::project::Project<'a> for CLVK<'a> {
     fn generate_package(
         &mut self,
         targets: Vec<NinjaTarget>,
-        _dep_packages: &HashMap<ProjectId, &dyn Project>,
+        _project_map: &ProjectMap,
     ) -> Result<SoongPackage, String> {
         let mut package = SoongPackage::new(
             self.src_root,
@@ -70,10 +70,7 @@ impl<'a> crate::project::Project<'a> for CLVK<'a> {
         Ok(package)
     }
 
-    fn get_build_directory(
-        &mut self,
-        _dep_packages: &HashMap<ProjectId, &dyn Project>,
-    ) -> Result<String, String> {
+    fn get_build_directory(&mut self, _project_map: &ProjectMap) -> Result<Option<String>, String> {
         let spirv_headers_dir = "-DSPIRV_HEADERS_SOURCE_DIR=".to_string() + self.spirv_headers_root;
         let spirv_tools_dir = "-DSPIRV_TOOLS_SOURCE_DIR=".to_string() + self.spirv_tools_root;
         let clspv_dir = "-DCLSPV_SOURCE_DIR=".to_string() + self.clspv_root;
@@ -106,7 +103,7 @@ impl<'a> crate::project::Project<'a> for CLVK<'a> {
                 &vulkan_library,
             ],
         )?;
-        Ok(self.build_root.clone())
+        Ok(Some(self.build_root.clone()))
     }
 
     fn ignore_target(&self, target: &String) -> bool {

@@ -45,7 +45,7 @@ impl<'a> crate::project::Project<'a> for SpirvTools<'a> {
     fn generate_package(
         &mut self,
         targets: Vec<NinjaTarget>,
-        dep_packages: &ProjectMap,
+        project_map: &ProjectMap,
     ) -> Result<SoongPackage, String> {
         let mut package = SoongPackage::new(
             self.src_root,
@@ -61,7 +61,7 @@ impl<'a> crate::project::Project<'a> for SpirvTools<'a> {
                 self,
                 ProjectId::CLVK,
                 Dependency::TargetToGenerate,
-                dep_packages,
+                project_map,
             ),
             targets,
             self,
@@ -76,17 +76,14 @@ impl<'a> crate::project::Project<'a> for SpirvTools<'a> {
         Ok(package)
     }
 
-    fn get_build_directory(
-        &mut self,
-        _dep_packages: &HashMap<ProjectId, &dyn Project>,
-    ) -> Result<String, String> {
+    fn get_build_directory(&mut self, _project_map: &ProjectMap) -> Result<Option<String>, String> {
         cmake_configure(
             self.src_root,
             &self.build_root,
             self.ndk_root,
             vec![&("-DSPIRV-Headers_SOURCE_DIR=".to_string() + self.spirv_headers_root)],
         )?;
-        Ok(self.get_generated_build_directory())
+        Ok(Some(self.get_generated_build_directory()))
     }
 
     fn get_generated_build_directory(&self) -> String {

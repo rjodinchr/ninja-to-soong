@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use std::collections::HashMap;
+use std::collections::HashSet;
 use std::collections::VecDeque;
 
 mod ninja_target;
@@ -14,77 +15,83 @@ mod utils;
 use crate::project::*;
 use crate::utils::*;
 
-const ALL_TARGETS: &str = "all";
+fn get_project_id_to_write<'a>(
+    project_id_to_generate: HashSet<ProjectId>,
+    all_projects: &Vec<&'a mut dyn Project<'a>>,
+) -> VecDeque<ProjectId> {
+    let mut project_id_queue: VecDeque<ProjectId> = VecDeque::new();
+    if project_id_to_generate.contains(&ProjectId::All) {
+        for project in all_projects {
+            project_id_queue.push_back(project.get_id());
+        }
+    } else {
+        for project in project_id_to_generate {
+            project_id_queue.push_back(project);
+        }
+    }
+    project_id_queue
+}
+
+fn missing_deps(deps: &Vec<ProjectId>, projects_generated: &ProjectMap) -> bool {
+    for dep in deps {
+        if !projects_generated.contains_key(dep) {
+            return true;
+        }
+    }
+    false
+}
 
 fn generate_projects<'a>(
     all_projects: Vec<&'a mut dyn Project<'a>>,
-    projects_string_to_generate: &[String],
+    project_id_to_generate: HashSet<ProjectId>,
 ) -> Result<(), String> {
-    let mut projects_map: HashMap<ProjectId, &mut dyn Project> = HashMap::new();
+    let project_id_to_write = get_project_id_to_write(project_id_to_generate, &all_projects);
+    let mut project_id_to_generate = project_id_to_write.clone();
+    let mut project_not_generated: HashMap<ProjectId, &mut dyn Project> = HashMap::new();
     for project in all_projects {
-        projects_map.insert(project.get_id(), project);
+        project_not_generated.insert(project.get_id(), project);
     }
-
-    let mut projects_queue: VecDeque<ProjectId> = VecDeque::new();
-    for arg in projects_string_to_generate {
-        if arg == ALL_TARGETS {
-            for project in projects_map.keys() {
-                projects_queue.push_back(project.clone());
-            }
-            continue;
-        }
-        match ProjectId::from(arg) {
-            Some(id) => projects_queue.push_back(id),
-            None => return error!(format!("unknown project '{arg}'")),
-        };
-    }
-    let projects_to_generate = projects_queue.clone();
 
     let mut projects_generated: ProjectMap = HashMap::new();
-    while let Some(project_id) = projects_queue.pop_front() {
+    while let Some(project_id) = project_id_to_generate.pop_front() {
         if projects_generated.contains_key(&project_id) {
             continue;
         }
 
         let project_str = project_id.str();
-        let project_to_generate = projects_to_generate.contains(&project_id);
-        println!("\n############## {BANNER} ##############");
+        let project_to_generate = project_id_to_write.contains(&project_id);
         if project_to_generate {
-            println!("{BANNER} Generating '{0}'", project_str);
+            print_info!(format!("Generating '{0}'", project_str));
         } else {
-            println!("{BANNER} Generating dependency '{0}'", project_str);
+            print_info!(format!("Generating dependency '{0}'", project_str));
         }
 
-        let project = projects_map.remove(&project_id).unwrap();
+        let project = project_not_generated.remove(&project_id).unwrap();
         let deps = project.get_project_dependencies();
-        fn missing_deps(deps: &Vec<ProjectId>, projects_generated: &ProjectMap) -> bool {
-            for dep in deps {
-                if !projects_generated.contains_key(dep) {
-                    return true;
-                }
-            }
-            false
-        }
         if missing_deps(&deps, &projects_generated) {
-            projects_map.insert(project.get_id(), project);
-            projects_queue.push_front(project_id.clone());
+            project_not_generated.insert(project.get_id(), project);
+            project_id_to_generate.push_front(project_id.clone());
             let mut deps_str: Vec<&str> = Vec::new();
             for dep in deps {
                 deps_str.push(dep.str());
-                projects_queue.push_front(dep);
+                project_id_to_generate.push_front(dep);
             }
-            println!("{BANNER} missing dependencies: {0}", deps_str.join(", "));
+            print_debug!(format!("Missing dependencies: {0}", deps_str.join(", ")));
             continue;
         }
 
-        println!("{BANNER} \tget build directory...");
-        let build_directory = project.get_build_directory(&projects_generated)?;
-        println!("{BANNER} \tparsing build.ninja...");
-        let targets = crate::parser::parse_build_ninja(build_directory)?;
-        println!("{BANNER} \tprocessing...");
+        print_debug!("Get build directory...");
+        let targets =
+            if let Some(build_directory) = project.get_build_directory(&projects_generated)? {
+                print_debug!(format!("Parsing '{build_directory}/build.ninja'..."));
+                crate::parser::parse_build_ninja(build_directory)?
+            } else {
+                Vec::new()
+            };
+        print_debug!("Generating soong package...");
         let package = project.generate_package(targets, &projects_generated)?;
         if project_to_generate {
-            println!("{BANNER} \tgenerating soong package...");
+            print_debug!("Writing soong package...");
             package.write(project_str)?;
         }
 
@@ -96,8 +103,7 @@ fn generate_projects<'a>(
 
 fn parse_args<'a>(
     args: &'a Vec<String>,
-    all_targets: &'a Vec<String>,
-) -> Result<(&'a String, &'a String, &'a [String]), String> {
+) -> Result<(&'a String, &'a String, HashSet<ProjectId>), String> {
     let min_args = 3;
     if args.len() < min_args {
         return error!(format!(
@@ -108,29 +114,30 @@ fn parse_args<'a>(
     let android_dir = &args[1];
     let ndk_dir = &args[2];
 
-    if ndk_dir.rsplit_once("/").unwrap().1 != ANDROID_NDK {
-        println!("\x1b[00;31m");
-        println!("########");
-        println!("WARNING: ninja-to-soong expect to use '{ANDROID_NDK}', which does not seem to be the ndk provided");
-        println!("########");
-        println!("\x1b[0m");
+    let ndk_name = ndk_dir.rsplit_once("/").unwrap().1;
+    if ndk_name != ANDROID_NDK {
+        print_warn!(format!("Expected '{ANDROID_NDK}' got '{ndk_name}'"));
     }
 
-    if args.len() == min_args {
-        return Ok((android_dir, ndk_dir, &all_targets[0..]));
-    } else {
-        return Ok((android_dir, ndk_dir, &args[min_args..]));
+    let mut project_id_to_generate: HashSet<ProjectId> = HashSet::new();
+    for arg in &args[min_args..] {
+        match ProjectId::from(arg) {
+            Some(project_id) => project_id_to_generate.insert(project_id),
+            None => return error!(format!("Unknown project '{arg}'")),
+        };
     }
+    if project_id_to_generate.len() == 0 {
+        project_id_to_generate.insert(ProjectId::All);
+    }
+    Ok((android_dir, ndk_dir, project_id_to_generate))
 }
 
 fn android_path(android_dir: &String, project: ProjectId) -> String {
     android_dir.clone() + "/external/" + project.str()
 }
 
-fn main() -> Result<(), String> {
-    let all_targets = vec![ALL_TARGETS.to_string()];
-    let args = std::env::args().collect();
-    let (android_dir, ndk_root, projects_to_generate) = parse_args(&args, &all_targets)?;
+fn ninja_to_soong(args: &Vec<String>) -> Result<(), String> {
+    let (android_dir, ndk_root, project_id_to_generate) = parse_args(args)?;
 
     let temp_path = std::env::temp_dir().join("ninja-to-soong");
     let temp_dir = temp_path.to_str().unwrap();
@@ -175,5 +182,15 @@ fn main() -> Result<(), String> {
     all_projects.push(&mut clspv);
     all_projects.push(&mut clvk);
 
-    generate_projects(all_projects, projects_to_generate)
+    generate_projects(all_projects, project_id_to_generate)
+}
+
+fn main() -> Result<(), String> {
+    let args = std::env::args().collect();
+    if let Err(err) = ninja_to_soong(&args) {
+        print_error!(err);
+        Err(format!(" '{0}' failed", args[0]))
+    } else {
+        Ok(())
+    }
 }

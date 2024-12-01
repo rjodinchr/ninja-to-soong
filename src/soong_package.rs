@@ -84,6 +84,7 @@ impl<'a> SoongPackage<'a> {
         copy_file(
             &(self.src_root.to_string() + ANDROID_BP),
             &(add_slash_suffix(&tests_path) + project_repo_name + ANDROID_BP),
+            true,
         )?;
         Ok(())
     }

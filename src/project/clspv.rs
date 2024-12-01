@@ -52,7 +52,7 @@ impl<'a> crate::project::Project<'a> for CLSPV<'a> {
     fn generate_package(
         &mut self,
         targets: Vec<NinjaTarget>,
-        dep_packages: &ProjectMap,
+        project_map: &ProjectMap,
     ) -> Result<SoongPackage, String> {
         let mut package = SoongPackage::new(
             self.src_root,
@@ -68,7 +68,7 @@ impl<'a> crate::project::Project<'a> for CLSPV<'a> {
                 self,
                 ProjectId::CLVK,
                 Dependency::TargetToGenerate,
-                dep_packages,
+                project_map,
             ),
             targets,
             self,
@@ -83,10 +83,7 @@ impl<'a> crate::project::Project<'a> for CLSPV<'a> {
         Ok(package)
     }
 
-    fn get_build_directory(
-        &mut self,
-        _dep_packages: &HashMap<ProjectId, &dyn Project>,
-    ) -> Result<String, String> {
+    fn get_build_directory(&mut self, _project_map: &ProjectMap) -> Result<Option<String>, String> {
         let spirv_headers_dir = "-DSPIRV_HEADERS_SOURCE_DIR=".to_string() + self.spirv_headers_root;
         let spirv_tools_dir = "-DSPIRV_TOOLS_SOURCE_DIR=".to_string() + self.spirv_tools_root;
         let llvm_dir = "-DCLSPV_LLVM_SOURCE_DIR=".to_string() + self.llvm_project_root + "/llvm";
@@ -105,7 +102,7 @@ impl<'a> crate::project::Project<'a> for CLSPV<'a> {
                 &libclc_dir,
             ],
         )?;
-        Ok(self.build_root.clone())
+        Ok(Some(self.build_root.clone()))
     }
 
     fn get_command_inputs_and_deps(

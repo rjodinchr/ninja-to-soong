@@ -21,8 +21,10 @@ pub enum ProjectId {
     LLVM,
     SpirvHeaders,
     SpirvTools,
+    All,
 }
 
+const ALL_NAME: &str = "all";
 const CLVK_NAME: &str = "clvk";
 const CLSPV_NAME: &str = "clspv";
 const LLVM_NAME: &str = "llvm-project";
@@ -32,6 +34,7 @@ const SPIRV_TOOLS_NAME: &str = "SPIRV-Tools";
 impl ProjectId {
     pub fn from(str: &str) -> Option<ProjectId> {
         match str {
+            ALL_NAME => Some(ProjectId::All),
             CLVK_NAME => Some(ProjectId::CLVK),
             CLSPV_NAME => Some(ProjectId::CLSPV),
             LLVM_NAME => Some(ProjectId::LLVM),
@@ -42,6 +45,7 @@ impl ProjectId {
     }
     pub const fn str(&self) -> &'static str {
         match self {
+            ProjectId::All => ALL_NAME,
             ProjectId::CLVK => CLVK_NAME,
             ProjectId::CLSPV => CLSPV_NAME,
             ProjectId::LLVM => LLVM_NAME,
@@ -59,10 +63,10 @@ fn get_dependency(
     project: &dyn Project,
     from: ProjectId,
     dependency: Dependency,
-    dep_packages: &ProjectMap,
+    project_map: &ProjectMap,
 ) -> Vec<String> {
     let mut vec = Vec::from_iter(
-        dep_packages
+        project_map
             .get(&from)
             .unwrap()
             .get_generated_deps(project.get_id())
@@ -77,14 +81,17 @@ fn get_dependency(
 pub trait Project<'a> {
     // MANDATORY
     fn get_id(&self) -> ProjectId;
-    fn get_build_directory(&mut self, dep_packages: &ProjectMap) -> Result<String, String>;
+
     fn generate_package(
         &mut self,
         targets: Vec<NinjaTarget>,
-        dep_packages: &ProjectMap,
+        project_map: &ProjectMap,
     ) -> Result<SoongPackage, String>;
 
     // OPTIONAL
+    fn get_build_directory(&mut self, _project_map: &ProjectMap) -> Result<Option<String>, String> {
+        Ok(None)
+    }
     fn get_command_inputs_and_deps(
         &self,
         target_inputs: &Vec<String>,

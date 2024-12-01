@@ -1,7 +1,6 @@
 // Copyright 2024 ninja-to-soong authors
 // SPDX-License-Identifier: Apache-2.0
 
-use std::collections::HashMap;
 use std::collections::HashSet;
 
 use crate::ninja_target::NinjaTarget;
@@ -39,7 +38,7 @@ impl<'a> crate::project::Project<'a> for LLVM<'a> {
     fn generate_package(
         &mut self,
         targets: Vec<NinjaTarget>,
-        dep_packages: &ProjectMap,
+        project_map: &ProjectMap,
     ) -> Result<SoongPackage, String> {
         let mut package = SoongPackage::new(
             self.src_root,
@@ -55,7 +54,7 @@ impl<'a> crate::project::Project<'a> for LLVM<'a> {
                 self,
                 ProjectId::CLVK,
                 Dependency::TargetToGenerate,
-                dep_packages,
+                project_map,
             ),
             targets,
             self,
@@ -65,7 +64,7 @@ impl<'a> crate::project::Project<'a> for LLVM<'a> {
             self,
             ProjectId::CLSPV,
             Dependency::LLVMGenerated,
-            dep_packages,
+            project_map,
         );
         let include_directories = package.get_include_directories();
         let mut generated_deps = package.get_generated_deps();
@@ -126,7 +125,7 @@ impl<'a> crate::project::Project<'a> for LLVM<'a> {
             self,
             ProjectId::CLSPV,
             Dependency::CLANGHeaders,
-            dep_packages,
+            project_map,
         ) {
             package.add_module(SoongModule::new_copy_genrule(
                 clang_headers_name("clang", &header),
@@ -146,10 +145,7 @@ impl<'a> crate::project::Project<'a> for LLVM<'a> {
         Ok(package)
     }
 
-    fn get_build_directory(
-        &mut self,
-        _dep_packages: &HashMap<ProjectId, &dyn Project>,
-    ) -> Result<String, String> {
+    fn get_build_directory(&mut self, _project_map: &ProjectMap) -> Result<Option<String>, String> {
         if cmake_configure(
             &(self.src_root.to_string() + "/llvm"),
             &self.build_root,
@@ -172,7 +168,7 @@ impl<'a> crate::project::Project<'a> for LLVM<'a> {
                 self.copy_generated_deps = false;
             }
         }
-        Ok(self.build_root.clone())
+        Ok(Some(self.build_root.clone()))
     }
 
     fn get_default_cflags(&self) -> HashSet<String> {

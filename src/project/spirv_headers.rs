@@ -1,8 +1,6 @@
 // Copyright 2024 ninja-to-soong authors
 // SPDX-License-Identifier: Apache-2.0
 
-use std::collections::HashMap;
-
 use crate::ninja_target::NinjaTarget;
 use crate::project::*;
 use crate::soong_module::SoongModule;
@@ -33,7 +31,7 @@ impl<'a> crate::project::Project<'a> for SpirvHeaders<'a> {
     fn generate_package(
         &mut self,
         _targets: Vec<NinjaTarget>,
-        dep_packages: &ProjectMap,
+        project_map: &ProjectMap,
     ) -> Result<SoongPackage, String> {
         let mut package = SoongPackage::new(
             self.src_root,
@@ -55,13 +53,13 @@ impl<'a> crate::project::Project<'a> for SpirvHeaders<'a> {
             self,
             ProjectId::SpirvTools,
             Dependency::SpirvHeadersFiles,
-            dep_packages,
+            project_map,
         ));
         files.extend(get_dependency(
             self,
             ProjectId::CLSPV,
             Dependency::SpirvHeadersFiles,
-            dep_packages,
+            project_map,
         ));
         let files_set: HashSet<String> = HashSet::from_iter(files);
         files = Vec::from_iter(files_set);
@@ -77,16 +75,6 @@ impl<'a> crate::project::Project<'a> for SpirvHeaders<'a> {
         Ok(package)
     }
 
-    fn get_build_directory(
-        &mut self,
-        dep_packages: &HashMap<ProjectId, &dyn Project>,
-    ) -> Result<String, String> {
-        Ok(dep_packages
-            .get(&ProjectId::SpirvTools)
-            .unwrap()
-            .get_generated_build_directory())
-    }
-    
     fn get_project_dependencies(&self) -> Vec<ProjectId> {
         vec![ProjectId::SpirvTools, ProjectId::CLSPV]
     }
