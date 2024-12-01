@@ -72,7 +72,8 @@ impl<'a> crate::project::Project<'a> for Clvk<'a> {
         let clspv_dir = "-DCLSPV_SOURCE_DIR=".to_string() + self.clspv_dir;
         let llvm_dir = "-DCLSPV_LLVM_SOURCE_DIR=".to_string() + self.llvm_project_dir + "/llvm";
         let clang_dir = "-DCLSPV_CLANG_SOURCE_DIR=".to_string() + self.llvm_project_dir + "/clang";
-        let libclc_dir = "-DCLSPV_LIBCLC_SOURCE_DIR=".to_string() + self.llvm_project_dir + "/libclc";
+        let libclc_dir =
+            "-DCLSPV_LIBCLC_SOURCE_DIR=".to_string() + self.llvm_project_dir + "/libclc";
         let vulkan_library = "-DVulkan_LIBRARY=".to_string()
             + self.ndk_dir
             + "/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/lib/"
