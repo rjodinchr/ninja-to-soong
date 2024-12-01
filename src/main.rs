@@ -136,10 +136,10 @@ fn android_path(android_dir: &String, project: ProjectId) -> String {
     android_dir.clone() + "/external/" + project.str()
 }
 
-fn ninja_to_soong(args: &Vec<String>) -> Result<(), String> {
+fn execute(executable: &str, args: &Vec<String>) -> Result<(), String> {
     let (android_dir, ndk_root, project_id_to_generate) = parse_args(args)?;
 
-    let temp_path = std::env::temp_dir().join("ninja-to-soong");
+    let temp_path = std::env::temp_dir().join(executable);
     let temp_dir = temp_path.to_str().unwrap();
 
     let clvk_root = android_path(android_dir, ProjectId::CLVK);
@@ -186,10 +186,11 @@ fn ninja_to_soong(args: &Vec<String>) -> Result<(), String> {
 }
 
 fn main() -> Result<(), String> {
-    let args = std::env::args().collect();
-    if let Err(err) = ninja_to_soong(&args) {
+    let args: Vec<String> = std::env::args().collect();
+    let executable = args[0].rsplit_once("/").unwrap().1;
+    if let Err(err) = execute(executable, &args) {
         print_error!(err);
-        Err(format!(" '{0}' failed", args[0]))
+        Err(format!("{0} failed", args[0]))
     } else {
         Ok(())
     }
