@@ -63,7 +63,7 @@ impl<'a> crate::project::Project<'a> for CLVK<'a> {
             "SPDX-license-identifier-Apache-2.0",
             "LICENSE",
         );
-        package.generate(vec!["libOpenCL.so"], targets, self)?;
+        package.generate(vec!["libOpenCL.so".to_string()], targets, self)?;
 
         self.generated_libraries = package.get_generated_libraries();
         return Ok(package);

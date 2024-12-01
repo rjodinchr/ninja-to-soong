@@ -319,22 +319,14 @@ impl<'a> SoongPackage<'a> {
 
     pub fn generate(
         &mut self,
-        mut entry_targets: Vec<&str>,
+        mut target_to_generate: Vec<String>,
         targets: Vec<NinjaTarget>,
         project: &dyn Project,
     ) -> Result<(), String> {
-        entry_targets.sort();
         let mut target_seen: HashSet<String> = HashSet::new();
-        let mut target_to_generate =
-            entry_targets
-                .into_iter()
-                .fold(Vec::new(), |mut vec, element| {
-                    vec.push(element.to_string());
-                    vec
-                });
-
         let target_map = Self::create_target_map(&targets);
 
+        target_to_generate.sort();
         while let Some(input) = target_to_generate.pop() {
             if target_seen.contains(&input) || project.ignore_target(&input) {
                 continue;

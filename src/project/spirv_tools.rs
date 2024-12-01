@@ -48,14 +48,7 @@ impl<'a> crate::project::Project<'a> for SpirvTools<'a> {
     ) -> Result<SoongPackage, String> {
         let clvk = dep_packages.get(&ProjectId::CLVK).unwrap();
         let deps = clvk.get_generated_deps(ProjectId::SpirvTools);
-        let entry_targets: Vec<&str> =
-            deps.get(ENTRY_TARGETS)
-                .unwrap()
-                .into_iter()
-                .fold(Vec::new(), |mut vec, target| {
-                    vec.push(&target);
-                    vec
-                });
+        let entry_targets = Vec::from_iter(deps.get(ENTRY_TARGETS).unwrap().clone());
         let mut package = SoongPackage::new(
             self.src_root,
             self.ndk_root,
