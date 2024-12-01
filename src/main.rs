@@ -139,9 +139,9 @@ fn execute(executable: &str, args: &Vec<String>) -> Result<(), String> {
     let temp_path = std::env::temp_dir().join(executable);
     let temp_dir = temp_path.to_str().unwrap();
 
-    let clvk_dir = android_path(android_dir, ProjectId::CLVK);
-    let clspv_dir = android_path(android_dir, ProjectId::CLSPV);
-    let llvm_project_dir = android_path(android_dir, ProjectId::LLVM);
+    let clvk_dir = android_path(android_dir, ProjectId::Clvk);
+    let clspv_dir = android_path(android_dir, ProjectId::Clspv);
+    let llvm_project_dir = android_path(android_dir, ProjectId::LlvmProject);
     let spirv_tools_dir = android_path(android_dir, ProjectId::SpirvTools);
     let spirv_headers_dir = android_path(android_dir, ProjectId::SpirvHeaders);
 
@@ -152,8 +152,9 @@ fn execute(executable: &str, args: &Vec<String>) -> Result<(), String> {
         &spirv_headers_dir,
     );
     let mut spirv_headers = project::spirv_headers::SpirvHeaders::new(&ndk_dir, &spirv_headers_dir);
-    let mut llvm_project = project::llvm_project::LLVM::new(temp_dir, &ndk_dir, &llvm_project_dir);
-    let mut clspv = project::clspv::CLSPV::new(
+    let mut llvm_project =
+        project::llvm_project::LlvmProject::new(temp_dir, &ndk_dir, &llvm_project_dir);
+    let mut clspv = project::clspv::Clspv::new(
         temp_dir,
         &ndk_dir,
         &clspv_dir,
@@ -161,7 +162,7 @@ fn execute(executable: &str, args: &Vec<String>) -> Result<(), String> {
         &spirv_tools_dir,
         &spirv_headers_dir,
     );
-    let mut clvk = project::clvk::CLVK::new(
+    let mut clvk = project::clvk::Clvk::new(
         temp_dir,
         &ndk_dir,
         &clvk_dir,

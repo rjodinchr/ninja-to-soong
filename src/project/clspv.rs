@@ -8,7 +8,7 @@ use crate::project::*;
 use crate::soong_module::SoongModule;
 use crate::soong_package::SoongPackage;
 
-pub struct CLSPV<'a> {
+pub struct Clspv<'a> {
     src_dir: &'a str,
     build_dir: String,
     ndk_dir: &'a str,
@@ -18,7 +18,7 @@ pub struct CLSPV<'a> {
     generated_deps: HashSet<String>,
 }
 
-impl<'a> CLSPV<'a> {
+impl<'a> Clspv<'a> {
     pub fn new(
         temp_dir: &'a str,
         ndk_dir: &'a str,
@@ -27,9 +27,9 @@ impl<'a> CLSPV<'a> {
         spirv_tools_dir: &'a str,
         spirv_headers_dir: &'a str,
     ) -> Self {
-        CLSPV {
+        Clspv {
             src_dir: clspv_dir,
-            build_dir: add_slash_suffix(temp_dir) + ProjectId::CLSPV.str(),
+            build_dir: add_slash_suffix(temp_dir) + ProjectId::Clspv.str(),
             ndk_dir,
             llvm_project_dir,
             spirv_tools_dir,
@@ -39,7 +39,7 @@ impl<'a> CLSPV<'a> {
     }
 }
 
-impl<'a> crate::project::Project<'a> for CLSPV<'a> {
+impl<'a> crate::project::Project<'a> for Clspv<'a> {
     fn generate_package(
         &mut self,
         targets: Vec<NinjaTarget>,
@@ -49,13 +49,13 @@ impl<'a> crate::project::Project<'a> for CLSPV<'a> {
             self.src_dir,
             self.ndk_dir,
             &self.build_dir,
-            ProjectId::CLSPV.str(),
+            ProjectId::Clspv.str(),
             "//external/clvk",
             "SPDX-license-identifier-Apache-2.0",
             "LICENSE",
         );
         package.generate(
-            Deps::TargetsToGenerate.get(self, ProjectId::CLVK, projects_map),
+            Deps::TargetsToGenerate.get(self, ProjectId::Clvk, projects_map),
             targets,
             self,
         )?;
@@ -70,7 +70,7 @@ impl<'a> crate::project::Project<'a> for CLSPV<'a> {
     }
 
     fn get_id(&self) -> ProjectId {
-        ProjectId::CLSPV
+        ProjectId::Clspv
     }
 
     fn get_build_dir(&mut self, _projects_map: &ProjectsMap) -> Result<Option<String>, String> {
@@ -124,7 +124,7 @@ impl<'a> crate::project::Project<'a> for CLSPV<'a> {
                 deps.insert((
                     input.clone(),
                     ":".to_string()
-                        + ProjectId::CLSPV.str()
+                        + ProjectId::Clspv.str()
                         + "_"
                         + &rework_name(input.replace(&self.build_dir, "")),
                 ));
@@ -162,7 +162,7 @@ impl<'a> crate::project::Project<'a> for CLSPV<'a> {
                 }
                 deps.insert(Deps::SpirvHeadersFiles, files);
             }
-            ProjectId::LLVM => {
+            ProjectId::LlvmProject => {
                 let mut clang_headers: HashSet<String> = HashSet::new();
                 let mut libclc_binaries: HashSet<String> = HashSet::new();
                 for dep in &self.generated_deps {
@@ -194,7 +194,7 @@ impl<'a> crate::project::Project<'a> for CLSPV<'a> {
     }
 
     fn get_project_deps(&self) -> Vec<ProjectId> {
-        vec![ProjectId::CLVK]
+        vec![ProjectId::Clvk]
     }
 
     fn get_target_header_libs(&self, _target: &String) -> HashSet<String> {
