@@ -59,8 +59,8 @@ fn generate_projects<'a>(
         }
 
         let project_str = project_id.str();
-        let project_to_generate = project_id_to_write.contains(&project_id);
-        if project_to_generate {
+        let is_dependency = !project_id_to_write.contains(&project_id);
+        if !is_dependency {
             print_info!(format!("Generating '{0}'", project_str));
         } else {
             print_info!(format!("Generating dependency '{0}'", project_str));
@@ -90,7 +90,7 @@ fn generate_projects<'a>(
             };
         print_debug!("Generating soong package...");
         let package = project.generate_package(targets, &projects_generated)?;
-        if project_to_generate {
+        if !is_dependency {
             print_debug!("Writing soong package...");
             package.write(project_str)?;
         }
