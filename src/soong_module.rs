@@ -38,80 +38,80 @@ impl SoongModule {
         module
     }
 
-    pub fn add_str(&mut self, key: &str, value: String) {
-        self.str_map.insert(key.to_string(), value);
+    pub fn add_str(&mut self, key: &str, str: String) {
+        self.str_map.insert(key.to_string(), str);
     }
 
-    pub fn add_set(&mut self, key: &str, value: HashSet<String>) {
-        self.set_map.insert(key.to_string(), value);
+    pub fn add_set(&mut self, key: &str, set: HashSet<String>) {
+        self.set_map.insert(key.to_string(), set);
     }
 
-    pub fn add_bool(&mut self, key: &str, value: bool) {
-        self.bool_map.insert(key.to_string(), value);
+    pub fn add_bool(&mut self, key: &str, bool: bool) {
+        self.bool_map.insert(key.to_string(), bool);
     }
 
-    fn print_bool(&mut self, entry: &str) -> String {
-        let mut result = String::new();
-        let Some((key, value)) = self.bool_map.remove_entry(entry) else {
-            return result;
+    fn print_bool(&mut self, key: &str) -> String {
+        let mut bool = String::new();
+        let Some((key, value)) = self.bool_map.remove_entry(key) else {
+            return bool;
         };
-        result += "    ";
-        result += &key;
-        result += ": ";
-        result += if value { "true" } else { "false" };
-        result += ",\n";
+        bool += "    ";
+        bool += &key;
+        bool += ": ";
+        bool += if value { "true" } else { "false" };
+        bool += ",\n";
 
-        return result;
+        bool
     }
 
-    fn print_str(&mut self, entry: &str) -> String {
-        let mut result = String::new();
-        let Some((key, value)) = self.str_map.remove_entry(entry) else {
-            return result;
+    fn print_str(&mut self, key: &str) -> String {
+        let mut str = String::new();
+        let Some((key, value)) = self.str_map.remove_entry(key) else {
+            return str;
         };
         if value == "" {
-            return result;
+            return str;
         }
-        result += "    ";
-        result += &key;
-        result += ": \"";
-        result += &value;
-        result += "\",\n";
+        str += "    ";
+        str += &key;
+        str += ": \"";
+        str += &value;
+        str += "\",\n";
 
-        return result;
+        str
     }
 
-    fn print_set(&mut self, entry: &str) -> String {
-        let mut result = String::new();
-        let Some((key, mut set)) = self.set_map.remove_entry(entry) else {
-            return result;
+    fn print_set(&mut self, key: &str) -> String {
+        let mut set = String::new();
+        let Some((key, mut hash_set)) = self.set_map.remove_entry(key) else {
+            return set;
         };
-        set.remove("");
-        if set.len() == 0 {
-            return result;
+        hash_set.remove("");
+        if hash_set.len() == 0 {
+            return set;
         }
-        result += "    ";
-        result += &key;
-        result += ": ";
+        set += "    ";
+        set += &key;
+        set += ": ";
 
-        if set.len() == 1 {
-            result += "[ \"";
-            for value in set {
-                result += &value;
+        if hash_set.len() == 1 {
+            set += "[ \"";
+            for value in hash_set {
+                set += &value;
             }
-            result += "\" ],\n";
+            set += "\" ],\n";
         } else {
-            result += "[\n";
-            let mut sorted = Vec::from_iter(set);
+            set += "[\n";
+            let mut sorted = Vec::from_iter(hash_set);
             sorted.sort();
             for value in sorted {
-                result += "        \"";
-                result += &value;
-                result += "\",\n";
+                set += "        \"";
+                set += &value;
+                set += "\",\n";
             }
-            result += "    ],\n";
+            set += "    ],\n";
         }
-        return result;
+        set
     }
 
     pub fn print(mut self) -> String {
@@ -150,6 +150,6 @@ impl SoongModule {
         }
 
         module += "}\n\n";
-        return module;
+        module
     }
 }

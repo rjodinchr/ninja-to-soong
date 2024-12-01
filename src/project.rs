@@ -70,7 +70,7 @@ fn get_dependency(
             .clone(),
     );
     vec.sort();
-    return vec;
+    vec
 }
 
 pub trait Project<'a> {

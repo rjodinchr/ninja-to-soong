@@ -50,11 +50,11 @@ impl NinjaTarget {
     }
 
     pub fn get_name(&self, prefix: &str) -> String {
-        return rework_name(prefix.to_string() + "_" + &self.outputs[0]);
+        rework_name(prefix.to_string() + "_" + &self.outputs[0])
     }
 
     pub fn get_outputs(&self) -> &Vec<String> {
-        return &self.outputs;
+        &self.outputs
     }
 
     pub fn get_all_inputs(&self) -> Vec<String> {
@@ -68,7 +68,7 @@ impl NinjaTarget {
         for input in &self.order_only_dependencies {
             inputs.push(input.clone());
         }
-        return inputs;
+        inputs
     }
 
     pub fn get_all_outputs(&self) -> Vec<String> {
@@ -79,7 +79,7 @@ impl NinjaTarget {
         for output in &self.implicit_outputs {
             outputs.push(output.clone());
         }
-        return outputs;
+        outputs
     }
 
     pub fn get_link_flags(
@@ -98,7 +98,7 @@ impl NinjaTarget {
                 }
             }
         }
-        return (version_script, link_flags);
+        (version_script, link_flags)
     }
 
     pub fn get_link_libraries(
@@ -137,7 +137,7 @@ impl NinjaTarget {
                 }
             }
         }
-        return Ok((static_libraries, shared_libraries, generated_libraries));
+        Ok((static_libraries, shared_libraries, generated_libraries))
     }
 
     pub fn get_defines(&self, project: &dyn Project) -> HashSet<String> {
@@ -153,7 +153,7 @@ impl NinjaTarget {
             }
         };
         defines.remove("");
-        return defines;
+        defines
     }
 
     pub fn get_includes(&self, src_root: &str, project: &dyn Project) -> HashSet<String> {
@@ -178,7 +178,7 @@ impl NinjaTarget {
                 includes.insert(inc);
             }
         }
-        return includes;
+        includes
     }
 
     pub fn get_generated_headers(
@@ -211,8 +211,7 @@ impl NinjaTarget {
                 }
             }
         }
-
-        return Ok(generated_headers);
+        Ok(generated_headers)
     }
 
     pub fn get_command(&self) -> Result<Option<String>, String> {
@@ -227,10 +226,10 @@ impl NinjaTarget {
             ));
         }
         let command = split.nth(1).unwrap();
-        return Ok(if command.contains("bin/cmake ") {
+        Ok(if command.contains("bin/cmake ") {
             None
         } else {
             Some(command.to_string())
-        });
+        })
     }
 }

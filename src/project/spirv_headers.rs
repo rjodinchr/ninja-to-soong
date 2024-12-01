@@ -29,6 +29,7 @@ impl<'a> crate::project::Project<'a> for SpirvHeaders<'a> {
     fn get_id(&self) -> ProjectId {
         SPIRV_HEADERS_ID
     }
+
     fn generate_package(
         &mut self,
         _targets: Vec<NinjaTarget>,
@@ -73,8 +74,9 @@ impl<'a> crate::project::Project<'a> for SpirvHeaders<'a> {
             ));
         }
 
-        return Ok(package);
+        Ok(package)
     }
+
     fn get_build_directory(
         &mut self,
         dep_packages: &HashMap<ProjectId, &dyn Project>,
@@ -84,6 +86,7 @@ impl<'a> crate::project::Project<'a> for SpirvHeaders<'a> {
             .unwrap()
             .get_generated_build_directory())
     }
+    
     fn get_project_dependencies(&self) -> Vec<ProjectId> {
         vec![ProjectId::SpirvTools, ProjectId::CLSPV]
     }

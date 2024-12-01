@@ -35,6 +35,7 @@ impl<'a> crate::project::Project<'a> for LLVM<'a> {
     fn get_id(&self) -> ProjectId {
         LLVM_PROJECT_ID
     }
+
     fn generate_package(
         &mut self,
         targets: Vec<NinjaTarget>,
@@ -142,7 +143,7 @@ impl<'a> crate::project::Project<'a> for LLVM<'a> {
             ));
         }
 
-        return Ok(package);
+        Ok(package)
     }
 
     fn get_build_directory(
@@ -171,7 +172,7 @@ impl<'a> crate::project::Project<'a> for LLVM<'a> {
                 self.copy_generated_deps = false;
             }
         }
-        return Ok(self.build_root.clone());
+        Ok(self.build_root.clone())
     }
 
     fn get_default_cflags(&self) -> HashSet<String> {
@@ -181,25 +182,31 @@ impl<'a> crate::project::Project<'a> for LLVM<'a> {
         ]
         .into()
     }
+
     fn ignore_target(&self, input: &String) -> bool {
         !input.starts_with("lib")
     }
+
     fn ignore_define(&self, _define: &str) -> bool {
         true
     }
+
     fn rework_include(&self, include: &str) -> String {
         include.replace(&self.build_root, CMAKE_GENERATED)
     }
+
     fn get_headers_to_copy(&self, headers: &HashSet<String>) -> HashSet<String> {
         let mut set = HashSet::new();
         for header in headers {
             set.insert(header.clone());
         }
-        return set;
+        set
     }
+
     fn optimize_target_for_size(&self, _target: &String) -> bool {
         true
     }
+
     fn get_project_dependencies(&self) -> Vec<ProjectId> {
         vec![ProjectId::CLVK, ProjectId::CLSPV]
     }

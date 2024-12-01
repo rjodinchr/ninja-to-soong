@@ -52,7 +52,6 @@ impl<'a> SoongPackage<'a> {
 //
 
 ";
-
         let license_name =
             target_prefix.to_string() + "_" + &license_text.replace(".", "_").to_lowercase();
 
@@ -71,7 +70,7 @@ impl<'a> SoongPackage<'a> {
         license_module.add_set("license_text", [license_text.to_string()].into());
         package.add_module(license_module);
 
-        return package;
+        package
     }
 
     pub fn add_module(&mut self, module: SoongModule) {
@@ -92,9 +91,11 @@ impl<'a> SoongPackage<'a> {
     pub fn get_generated_deps(&self) -> HashSet<String> {
         self.generated_deps.to_owned()
     }
+
     pub fn get_include_directories(&self) -> HashSet<String> {
         self.include_directories.to_owned()
     }
+
     pub fn get_generated_libraries(&self) -> HashSet<String> {
         self.generated_libraries.to_owned()
     }
@@ -148,23 +149,22 @@ impl<'a> SoongPackage<'a> {
         let target_name = target.get_name(self.target_prefix);
 
         let mut module = crate::soong_module::SoongModule::new(name);
-        module.add_str("stem", project.get_target_stem(&target_name));
         if project.optimize_target_for_size(&target_name) {
             module.add_bool("optimize_for_size", true);
         }
-        module.add_set("header_libs", project.get_target_header_libs(&target_name));
-        module.add_str("name", target_name);
         module.add_bool("use_clang_lld", true);
         module.add_set("srcs", srcs);
         module.add_set("local_include_dirs", includes);
         module.add_set("cflags", cflags);
         module.add_set("ldflags", link_flags);
-        module.add_str("version_script", version_script);
         module.add_set("static_libs", static_libs);
         module.add_set("shared_libs", shared_libs);
+        module.add_set("header_libs", project.get_target_header_libs(&target_name));
         module.add_set("generated_headers", generated_headers_filtered);
-
-        return Ok(module.print());
+        module.add_str("version_script", version_script);
+        module.add_str("stem", project.get_target_stem(&target_name));
+        module.add_str("name", target_name);
+        Ok(module.print())
     }
 
     fn replace_output_in_command(
@@ -180,14 +180,16 @@ impl<'a> SoongPackage<'a> {
         let command = command.replace(&space_and_last_output, &space_and_marker);
         let replace_output =
             String::from("$(location ") + &project.rework_command_output(output) + ")";
-        return command.replace(marker, &replace_output);
+        command.replace(marker, &replace_output)
     }
+
     fn replace_input_in_command(&self, command: String, input: String) -> String {
         let replace_input = String::from("$(location ")
             + &input.replace(&add_slash_suffix(self.src_root), "")
             + ")";
-        return command.replace(&input, &replace_input);
+        command.replace(&input, &replace_input)
     }
+
     fn replace_dep_in_command(
         &self,
         command: String,
@@ -197,9 +199,9 @@ impl<'a> SoongPackage<'a> {
     ) -> String {
         let replace_tool = "$(location ".to_string() + &tool_target_name + ")";
         let tool_with_prefix = String::from(prefix) + &tool;
-        return command
+        command
             .replace(&tool_with_prefix, &replace_tool)
-            .replace(&tool, &replace_tool);
+            .replace(&tool, &replace_tool)
     }
 
     fn remove_python_in_command(command: String) -> String {
@@ -246,7 +248,7 @@ impl<'a> SoongPackage<'a> {
             command =
                 self.replace_dep_in_command(command, tool, tool_target_name, self.target_prefix);
         }
-        return command;
+        command
     }
 
     fn generate_custom_command(
@@ -275,7 +277,7 @@ impl<'a> SoongPackage<'a> {
         module.add_set("srcs", srcs_set);
         module.add_set("out", out_set);
         module.add_str("cmd", command.to_string());
-        return Ok(module.print());
+        Ok(module.print())
     }
 
     fn generate_module(
@@ -337,6 +339,6 @@ impl<'a> SoongPackage<'a> {
                 self.package += &module;
             }
         }
-        return Ok(());
+        Ok(())
     }
 }

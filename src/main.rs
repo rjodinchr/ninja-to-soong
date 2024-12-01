@@ -63,7 +63,7 @@ fn generate_projects<'a>(
                     return true;
                 }
             }
-            return false;
+            false
         }
         if missing_deps(&deps, &projects_generated) {
             projects_map.insert(project.get_id(), project);
@@ -124,7 +124,7 @@ fn parse_args<'a>(
 }
 
 fn android_path(android_dir: &String, project: ProjectId) -> String {
-    return android_dir.clone() + "/external/" + project.str();
+    android_dir.clone() + "/external/" + project.str()
 }
 
 fn main() -> Result<(), String> {

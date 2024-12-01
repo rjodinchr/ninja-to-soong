@@ -49,6 +49,7 @@ impl<'a> crate::project::Project<'a> for CLVK<'a> {
     fn get_id(&self) -> ProjectId {
         CLVK_PROJECT_ID
     }
+
     fn generate_package(
         &mut self,
         targets: Vec<NinjaTarget>,
@@ -66,7 +67,7 @@ impl<'a> crate::project::Project<'a> for CLVK<'a> {
         package.generate(vec!["libOpenCL.so".to_string()], targets, self)?;
 
         self.generated_libraries = package.get_generated_libraries();
-        return Ok(package);
+        Ok(package)
     }
 
     fn get_build_directory(
@@ -105,8 +106,9 @@ impl<'a> crate::project::Project<'a> for CLVK<'a> {
                 &vulkan_library,
             ],
         )?;
-        return Ok(self.build_root.clone());
+        Ok(self.build_root.clone())
     }
+
     fn parse_custom_command_inputs(
         &self,
         inputs: &Vec<String>,
@@ -120,14 +122,17 @@ impl<'a> crate::project::Project<'a> for CLVK<'a> {
         for input in &filtered_inputs {
             srcs.insert(input.replace(&add_slash_suffix(self.src_root), ""));
         }
-        return Ok((srcs, filtered_inputs, HashSet::new()));
+        Ok((srcs, filtered_inputs, HashSet::new()))
     }
+
     fn ignore_target(&self, target: &String) -> bool {
         target.starts_with("external/")
     }
+
     fn ignore_include(&self, _include: &str) -> bool {
         true
     }
+
     fn get_target_header_libs(&self, _target: &String) -> HashSet<String> {
         [
             CC_LIB_HEADERS_SPIRV_TOOLS.to_string(),
@@ -137,6 +142,7 @@ impl<'a> crate::project::Project<'a> for CLVK<'a> {
         ]
         .into()
     }
+
     fn get_library_name(&self, library: &str) -> String {
         library
             .replace("external/clspv/third_party/llvm", "llvm-project")
@@ -144,11 +150,13 @@ impl<'a> crate::project::Project<'a> for CLVK<'a> {
             .replace("/", "_")
             .replace(".", "_")
     }
+
     fn handle_link_flag(&self, flag: &str, link_flags: &mut HashSet<String>) {
         if flag == "-Wl,-Bsymbolic" {
             link_flags.insert(flag.to_string());
         }
     }
+
     fn get_target_stem(&self, target: &String) -> String {
         if target == "clvk_libOpenCL_so" {
             "libclvk".to_string()
@@ -156,6 +164,7 @@ impl<'a> crate::project::Project<'a> for CLVK<'a> {
             String::new()
         }
     }
+
     fn get_generated_deps(&self, project: ProjectId) -> ProjectDeps {
         let mut deps: ProjectDeps = HashMap::new();
         let mut libs: HashSet<String> = HashSet::new();
@@ -170,6 +179,6 @@ impl<'a> crate::project::Project<'a> for CLVK<'a> {
             }
         }
         deps.insert(Dependency::TargetToGenerate, libs);
-        return deps;
+        deps
     }
 }

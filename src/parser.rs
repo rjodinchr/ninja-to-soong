@@ -23,7 +23,7 @@ fn parse_output_section(section: &str) -> Result<(Vec<String>, Vec<String>), Str
             target_implicit_outputs.push(String::from(implicit_output.trim()));
         }
     }
-    return Ok((target_outputs, target_implicit_outputs));
+    Ok((target_outputs, target_implicit_outputs))
 }
 
 fn parse_input_and_rule_section(section: &str) -> Result<(String, Vec<String>), String> {
@@ -36,7 +36,7 @@ fn parse_input_and_rule_section(section: &str) -> Result<(String, Vec<String>), 
     for input in split {
         target_inputs.push(String::from(input.trim()));
     }
-    return Ok((target_rule, target_inputs));
+    Ok((target_rule, target_inputs))
 }
 
 fn parse_input_and_dep_section(
@@ -56,7 +56,7 @@ fn parse_input_and_dep_section(
             target_implicit_dependencies.push(String::from(implicit_dep.trim()));
         }
     }
-    return Ok((target_rule, target_inputs, target_implicit_dependencies));
+    Ok((target_rule, target_inputs, target_implicit_dependencies))
 }
 
 fn parse_input_section(
@@ -77,12 +77,12 @@ fn parse_input_section(
             target_order_only_dependencies.push(String::from(dep.trim()));
         }
     }
-    return Ok((
+    Ok((
         target_rule,
         target_inputs,
         target_implicit_dependencies,
         target_order_only_dependencies,
-    ));
+    ))
 }
 
 fn parse_build_target(line: &str, lines: &mut std::str::Lines<'_>) -> Result<NinjaTarget, String> {
@@ -116,7 +116,7 @@ fn parse_build_target(line: &str, lines: &mut std::str::Lines<'_>) -> Result<Nin
         target_variables.insert(key, val);
     }
 
-    return Ok(crate::ninja_target::NinjaTarget::new(
+    Ok(NinjaTarget::new(
         target_rule,
         target_outputs,
         target_implicit_outputs,
@@ -124,7 +124,7 @@ fn parse_build_target(line: &str, lines: &mut std::str::Lines<'_>) -> Result<Nin
         target_implicit_dependencies,
         target_order_only_dependencies,
         target_variables,
-    ));
+    ))
 }
 
 pub fn parse_build_ninja(path: String) -> Result<Vec<NinjaTarget>, String> {
@@ -145,11 +145,8 @@ pub fn parse_build_ninja(path: String) -> Result<Vec<NinjaTarget>, String> {
         if !line.trim().starts_with("build") {
             continue;
         }
-        match parse_build_target(line, &mut lines) {
-            Ok(target) => targets.push(target),
-            Err(err) => return error!(format!("Could not parse build target: '{err}'")),
-        }
+        targets.push(parse_build_target(line, &mut lines)?);
     }
 
-    return Ok(targets);
+    Ok(targets)
 }

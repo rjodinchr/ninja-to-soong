@@ -92,7 +92,7 @@ pub fn cmake_configure(
     if let Err(err) = command.status() {
         return error!(format!("cmake from '{source}' to '{build}' failed: {err}"));
     }
-    return Ok(true);
+    Ok(true)
 }
 
 pub fn cmake_build(build: &str, targets: Vec<&str>) -> Result<bool, String> {
@@ -110,14 +110,14 @@ pub fn cmake_build(build: &str, targets: Vec<&str>) -> Result<bool, String> {
     if let Err(err) = command.status() {
         return error!(format!("cmake build '{0}' failed: {err}", &build));
     }
-    return Ok(true);
+    Ok(true)
 }
 
 pub fn copy_file(from: &str, to: &str) -> Result<(), String> {
     if let Err(err) = std::fs::copy(from, to) {
         return error!(format!("copy({from}, {to}) failed: {err}"));
     }
-    return Ok(());
+    Ok(())
 }
 
 pub fn copy_files(files: HashSet<String>, src_root: &str, dst_root: &str) -> Result<(), String> {
@@ -131,7 +131,7 @@ pub fn copy_files(files: HashSet<String>, src_root: &str, dst_root: &str) -> Res
         copy_file(&from, &to)?;
     }
     println!("{BANNER} \t  Files copied successfully from '{src_root}' to '{src_root}'!");
-    return Ok(());
+    Ok(())
 }
 
 pub fn touch_directories(directories: &HashSet<String>, dst_root: &str) -> Result<(), String> {
@@ -148,7 +148,7 @@ pub fn touch_directories(directories: &HashSet<String>, dst_root: &str) -> Resul
         }
     }
     println!("{BANNER} \t  Include directories created successfully!");
-    return Ok(());
+    Ok(())
 }
 
 pub fn remove_directory(directory: String) -> Result<(), String> {
@@ -158,7 +158,7 @@ pub fn remove_directory(directory: String) -> Result<(), String> {
         }
     }
     println!("{BANNER} \t  '{directory}' removed successfully!");
-    return Ok(());
+    Ok(())
 }
 
 pub fn write_file(file_path: &str, content: &str) -> Result<(), String> {
@@ -173,7 +173,7 @@ pub fn write_file(file_path: &str, content: &str) -> Result<(), String> {
         }
     }
     println!("{BANNER} \t  '{file_path}' created successfully!");
-    return Ok(());
+    Ok(())
 }
 
 pub fn get_tests_folder() -> Result<String, String> {
@@ -188,5 +188,5 @@ pub fn get_tests_folder() -> Result<String, String> {
             .join("tests"), // <ninja-to-soong>/tests
         Err(err) => return error!(format!("Could not get current executable path: {err}")),
     };
-    return Ok(exe_path.to_str().unwrap().to_string());
+    Ok(exe_path.to_str().unwrap().to_string())
 }

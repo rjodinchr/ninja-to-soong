@@ -48,6 +48,7 @@ impl<'a> crate::project::Project<'a> for CLSPV<'a> {
     fn get_id(&self) -> ProjectId {
         CLSPV_PROJECT_ID
     }
+
     fn generate_package(
         &mut self,
         targets: Vec<NinjaTarget>,
@@ -79,7 +80,7 @@ impl<'a> crate::project::Project<'a> for CLSPV<'a> {
 
         self.generated_deps = package.get_generated_deps();
 
-        return Ok(package);
+        Ok(package)
     }
 
     fn get_build_directory(
@@ -104,7 +105,7 @@ impl<'a> crate::project::Project<'a> for CLSPV<'a> {
                 &libclc_dir,
             ],
         )?;
-        return Ok(self.build_root.clone());
+        Ok(self.build_root.clone())
     }
 
     fn parse_custom_command_inputs(
@@ -150,22 +151,27 @@ impl<'a> crate::project::Project<'a> for CLSPV<'a> {
         for (_, dep) in &generated_deps {
             srcs.insert(dep.clone());
         }
-        return Ok((srcs, filtered_inputs, generated_deps));
+        Ok((srcs, filtered_inputs, generated_deps))
     }
+
     fn get_default_cflags(&self) -> HashSet<String> {
-        return ["-Wno-unreachable-code-loop-increment".to_string()].into();
+        ["-Wno-unreachable-code-loop-increment".to_string()].into()
     }
+
     fn ignore_define(&self, _define: &str) -> bool {
         true
     }
+
     fn ignore_target(&self, target: &String) -> bool {
         target.starts_with("third_party/")
     }
+
     fn ignore_include(&self, include: &str) -> bool {
         include.contains(&self.build_root)
             || include.contains(self.spirv_headers_root)
             || include.contains(self.llvm_project_root)
     }
+
     fn get_headers_to_generate(&self, headers: &HashSet<String>) -> HashSet<String> {
         let mut set = HashSet::new();
         for header in headers {
@@ -173,8 +179,9 @@ impl<'a> crate::project::Project<'a> for CLSPV<'a> {
                 set.insert(header.clone());
             }
         }
-        return set;
+        set
     }
+
     fn get_target_header_libs(&self, _target: &String) -> HashSet<String> {
         [
             CC_LIB_HEADERS_SPIRV_HEADERS.to_string(),
@@ -183,6 +190,7 @@ impl<'a> crate::project::Project<'a> for CLSPV<'a> {
         ]
         .into()
     }
+
     fn rework_command_output(&self, output: &str) -> String {
         if let Some(split) = output.split_once("include/") {
             split.1
@@ -193,12 +201,15 @@ impl<'a> crate::project::Project<'a> for CLSPV<'a> {
         }
         .to_string()
     }
+
     fn optimize_target_for_size(&self, _target: &String) -> bool {
         true
     }
+
     fn get_project_dependencies(&self) -> Vec<ProjectId> {
         vec![ProjectId::CLVK]
     }
+
     fn get_generated_deps(&self, project: ProjectId) -> ProjectDeps {
         let mut deps: ProjectDeps = HashMap::new();
         match project {

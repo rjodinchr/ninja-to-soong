@@ -41,6 +41,7 @@ impl<'a> crate::project::Project<'a> for SpirvTools<'a> {
     fn get_id(&self) -> ProjectId {
         SPIRV_TOOLS_ID
     }
+
     fn generate_package(
         &mut self,
         targets: Vec<NinjaTarget>,
@@ -72,8 +73,9 @@ impl<'a> crate::project::Project<'a> for SpirvTools<'a> {
 
         self.generated_deps = package.get_generated_deps();
 
-        return Ok(package);
+        Ok(package)
     }
+
     fn get_build_directory(
         &mut self,
         _dep_packages: &HashMap<ProjectId, &dyn Project>,
@@ -84,15 +86,17 @@ impl<'a> crate::project::Project<'a> for SpirvTools<'a> {
             self.ndk_root,
             vec![&("-DSPIRV-Headers_SOURCE_DIR=".to_string() + self.spirv_headers_root)],
         )?;
-        return Ok(self.get_generated_build_directory());
+        Ok(self.get_generated_build_directory())
     }
+
     fn get_generated_build_directory(&self) -> String {
         self.build_root.clone()
     }
+
     fn get_generated_deps(&self, _project: ProjectId) -> ProjectDeps {
         let mut deps: ProjectDeps = HashMap::new();
         deps.insert(Dependency::SpirvHeadersFiles, self.generated_deps.clone());
-        return deps;
+        deps
     }
 
     fn parse_custom_command_inputs(
@@ -119,27 +123,33 @@ impl<'a> crate::project::Project<'a> for SpirvTools<'a> {
         for (_, dep) in &generated_deps {
             srcs.insert(dep.clone());
         }
-        return Ok((srcs, filtered_inputs, generated_deps));
+        Ok((srcs, filtered_inputs, generated_deps))
     }
+
     fn get_default_cflags(&self) -> HashSet<String> {
         ["-Wno-implicit-fallthrough".to_string()].into()
     }
+
     fn ignore_include(&self, include: &str) -> bool {
         include.contains(&self.build_root) || include.contains(self.spirv_headers_root)
     }
+
     fn ignore_define(&self, _define: &str) -> bool {
         true
     }
+
     fn get_headers_to_generate(&self, headers: &HashSet<String>) -> HashSet<String> {
         let mut set = HashSet::new();
         for header in headers {
             set.insert(header.clone());
         }
-        return set;
+        set
     }
+
     fn get_target_header_libs(&self, _target: &String) -> HashSet<String> {
         [CC_LIB_HEADERS_SPIRV_HEADERS.to_string()].into()
     }
+
     fn get_project_dependencies(&self) -> Vec<ProjectId> {
         vec![ProjectId::CLVK]
     }
