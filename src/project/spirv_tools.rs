@@ -74,7 +74,7 @@ impl<'a> crate::project::Project<'a> for SpirvTools<'a> {
             self.ndk_dir,
             vec![&("-DSPIRV-Headers_SOURCE_DIR=".to_string() + self.spirv_headers_dir)],
         )?;
-        Ok(Some(self.get_generated_build_dir()))
+        Ok(Some(self.build_dir.clone()))
     }
 
     fn get_cmd_inputs_and_deps(
@@ -99,10 +99,6 @@ impl<'a> crate::project::Project<'a> for SpirvTools<'a> {
 
     fn get_default_cflags(&self) -> HashSet<String> {
         ["-Wno-implicit-fallthrough".to_string()].into()
-    }
-
-    fn get_generated_build_dir(&self) -> String {
-        self.build_dir.clone()
     }
 
     fn get_gen_deps(&self, _project: ProjectId) -> GenDepsMap {
