@@ -7,57 +7,50 @@ use crate::soong_module::SoongModule;
 use crate::soong_package::SoongPackage;
 
 pub struct SpirvHeaders<'a> {
-    src_root: &'a str,
-    ndk_root: &'a str,
+    src_dir: &'a str,
+    ndk_dir: &'a str,
 }
 
-const SPIRV_HEADERS_ID: ProjectId = ProjectId::SpirvHeaders;
-const SPIRV_HEADERS_NAME: &str = SPIRV_HEADERS_ID.str();
-
 impl<'a> SpirvHeaders<'a> {
-    pub fn new(ndk_root: &'a str, spirv_headers_root: &'a str) -> Self {
+    pub fn new(ndk_dir: &'a str, spirv_headers_dir: &'a str) -> Self {
         SpirvHeaders {
-            src_root: spirv_headers_root,
-            ndk_root,
+            src_dir: spirv_headers_dir,
+            ndk_dir,
         }
     }
 }
 
 impl<'a> crate::project::Project<'a> for SpirvHeaders<'a> {
-    fn get_id(&self) -> ProjectId {
-        SPIRV_HEADERS_ID
-    }
-
     fn generate_package(
         &mut self,
         _targets: Vec<NinjaTarget>,
-        project_map: &ProjectMap,
+        projects_map: &ProjectsMap,
     ) -> Result<SoongPackage, String> {
         let mut package = SoongPackage::new(
-            self.src_root,
-            self.ndk_root,
+            self.src_dir,
+            self.ndk_dir,
             "",
-            SPIRV_HEADERS_NAME,
+            ProjectId::SpirvHeaders.str(),
             "//visibility:public",
             "SPDX-license-identifier-MIT",
             "LICENSE",
         );
 
         package.add_module(SoongModule::new_cc_library_headers(
-            CC_LIB_HEADERS_SPIRV_HEADERS,
+            CC_LIBRARY_HEADERS_SPIRV_HEADERS,
             ["include".to_string()].into(),
         ));
 
         let mut files: Vec<String> = Vec::new();
-        files.extend(Dependency::SpirvHeadersFiles.get(self, ProjectId::SpirvTools, project_map));
-        files.extend(Dependency::SpirvHeadersFiles.get(self, ProjectId::CLSPV, project_map));
+        files.extend(Deps::SpirvHeadersFiles.get(self, ProjectId::SpirvTools, projects_map));
+        files.extend(Deps::SpirvHeadersFiles.get(self, ProjectId::CLSPV, projects_map));
         let files_set: HashSet<String> = HashSet::from_iter(files);
         files = Vec::from_iter(files_set);
         files.sort();
         for file in files {
             package.add_module(SoongModule::new_copy_genrule(
-                spirv_headers_name(self.src_root, &file),
-                file.replace(&add_slash_suffix(self.src_root), ""),
+                spirv_headers_name(self.src_dir, &file),
+                file.replace(&add_slash_suffix(self.src_dir), ""),
                 file.rsplit_once("/").unwrap().1.to_string(),
             ));
         }
@@ -65,7 +58,11 @@ impl<'a> crate::project::Project<'a> for SpirvHeaders<'a> {
         Ok(package)
     }
 
-    fn get_project_dependencies(&self) -> Vec<ProjectId> {
+    fn get_id(&self) -> ProjectId {
+        ProjectId::SpirvHeaders
+    }
+    
+    fn get_project_deps(&self) -> Vec<ProjectId> {
         vec![ProjectId::SpirvTools, ProjectId::CLSPV]
     }
 }

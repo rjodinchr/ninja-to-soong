@@ -1,75 +1,66 @@
 // Copyright 2024 ninja-to-soong authors
 // SPDX-License-Identifier: Apache-2.0
 
-use std::collections::HashMap;
-use std::collections::HashSet;
+use std::collections::{HashMap, HashSet};
 
 use crate::ninja_target::NinjaTarget;
 use crate::project::*;
 use crate::soong_module::SoongModule;
 use crate::soong_package::SoongPackage;
 
-const CLSPV_PROJECT_ID: ProjectId = ProjectId::CLSPV;
-const CLSPV_PROJECT_NAME: &str = CLSPV_PROJECT_ID.str();
-const LLVM_PREFIX: &str = "third_party/llvm";
-
 pub struct CLSPV<'a> {
-    src_root: &'a str,
-    build_root: String,
-    ndk_root: &'a str,
-    spirv_headers_root: &'a str,
-    spirv_tools_root: &'a str,
-    llvm_project_root: &'a str,
+    src_dir: &'a str,
+    build_dir: String,
+    ndk_dir: &'a str,
+    spirv_headers_dir: &'a str,
+    spirv_tools_dir: &'a str,
+    llvm_project_dir: &'a str,
     generated_deps: HashSet<String>,
 }
 
 impl<'a> CLSPV<'a> {
     pub fn new(
         temp_dir: &'a str,
-        ndk_root: &'a str,
-        clspv_root: &'a str,
-        llvm_project_root: &'a str,
-        spirv_tools_root: &'a str,
-        spirv_headers_root: &'a str,
+        ndk_dir: &'a str,
+        clspv_dir: &'a str,
+        llvm_project_dir: &'a str,
+        spirv_tools_dir: &'a str,
+        spirv_headers_dir: &'a str,
     ) -> Self {
         CLSPV {
-            src_root: clspv_root,
-            build_root: add_slash_suffix(temp_dir) + CLSPV_PROJECT_NAME,
-            ndk_root,
-            llvm_project_root,
-            spirv_tools_root,
-            spirv_headers_root,
+            src_dir: clspv_dir,
+            build_dir: add_slash_suffix(temp_dir) + ProjectId::CLSPV.str(),
+            ndk_dir,
+            llvm_project_dir,
+            spirv_tools_dir,
+            spirv_headers_dir,
             generated_deps: HashSet::new(),
         }
     }
 }
 
 impl<'a> crate::project::Project<'a> for CLSPV<'a> {
-    fn get_id(&self) -> ProjectId {
-        CLSPV_PROJECT_ID
-    }
-
     fn generate_package(
         &mut self,
         targets: Vec<NinjaTarget>,
-        project_map: &ProjectMap,
+        projects_map: &ProjectsMap,
     ) -> Result<SoongPackage, String> {
         let mut package = SoongPackage::new(
-            self.src_root,
-            self.ndk_root,
-            &self.build_root,
-            CLSPV_PROJECT_NAME,
+            self.src_dir,
+            self.ndk_dir,
+            &self.build_dir,
+            ProjectId::CLSPV.str(),
             "//external/clvk",
             "SPDX-license-identifier-Apache-2.0",
             "LICENSE",
         );
         package.generate(
-            Dependency::TargetToGenerate.get(self, ProjectId::CLVK, project_map),
+            Deps::TargetsToGenerate.get(self, ProjectId::CLVK, projects_map),
             targets,
             self,
         )?;
         package.add_module(SoongModule::new_cc_library_headers(
-            CC_LIB_HEADERS_CLSPV,
+            CC_LIBRARY_HEADERS_CLSPV,
             ["include".to_string()].into(),
         ));
 
@@ -78,59 +69,64 @@ impl<'a> crate::project::Project<'a> for CLSPV<'a> {
         Ok(package)
     }
 
-    fn get_build_directory(&mut self, _project_map: &ProjectMap) -> Result<Option<String>, String> {
-        let spirv_headers_dir = "-DSPIRV_HEADERS_SOURCE_DIR=".to_string() + self.spirv_headers_root;
-        let spirv_tools_dir = "-DSPIRV_TOOLS_SOURCE_DIR=".to_string() + self.spirv_tools_root;
-        let llvm_dir = "-DCLSPV_LLVM_SOURCE_DIR=".to_string() + self.llvm_project_root + "/llvm";
-        let clang_dir = "-DCLSPV_CLANG_SOURCE_DIR=".to_string() + self.llvm_project_root + "/clang";
+    fn get_id(&self) -> ProjectId {
+        ProjectId::CLSPV
+    }
+
+    fn get_build_dir(&mut self, _projects_map: &ProjectsMap) -> Result<Option<String>, String> {
+        let spirv_headers_dir = "-DSPIRV_HEADERS_SOURCE_DIR=".to_string() + self.spirv_headers_dir;
+        let spirv_tools_dir = "-DSPIRV_TOOLS_SOURCE_DIR=".to_string() + self.spirv_tools_dir;
+        let llvm_project_dir =
+            "-DCLSPV_LLVM_SOURCE_DIR=".to_string() + self.llvm_project_dir + "/llvm";
+        let clang_dir = "-DCLSPV_CLANG_SOURCE_DIR=".to_string() + self.llvm_project_dir + "/clang";
         let libclc_dir =
-            "-DCLSPV_LIBCLC_SOURCE_DIR=".to_string() + self.llvm_project_root + "/libclc";
+            "-DCLSPV_LIBCLC_SOURCE_DIR=".to_string() + self.llvm_project_dir + "/libclc";
         cmake_configure(
-            self.src_root,
-            &self.build_root,
-            self.ndk_root,
+            self.src_dir,
+            &self.build_dir,
+            self.ndk_dir,
             vec![
                 &spirv_headers_dir,
                 &spirv_tools_dir,
-                &llvm_dir,
+                &llvm_project_dir,
                 &clang_dir,
                 &libclc_dir,
             ],
         )?;
-        Ok(Some(self.build_root.clone()))
+        Ok(Some(self.build_dir.clone()))
     }
 
-    fn get_command_inputs_and_deps(
+    fn get_cmd_inputs_and_deps(
         &self,
         target_inputs: &Vec<String>,
-    ) -> Result<CommandInputsAndDeps, String> {
+    ) -> Result<CmdInputAndDeps, String> {
         let mut inputs: HashSet<String> = HashSet::new();
         let mut deps: HashSet<(String, String)> = HashSet::new();
-        let clang_root = &(self.llvm_project_root.to_string() + "/clang");
+        let clang_dir = &(self.llvm_project_dir.to_string() + "/clang");
 
         for input in target_inputs {
-            if input.contains(self.spirv_headers_root) {
+            if input.contains(self.spirv_headers_dir) {
                 deps.insert((
                     input.clone(),
-                    ":".to_string() + &spirv_headers_name(self.spirv_headers_root, input),
+                    ":".to_string() + &spirv_headers_name(self.spirv_headers_dir, input),
                 ));
-            } else if input.contains(clang_root) {
+            } else if input.contains(clang_dir) {
                 deps.insert((
                     input.clone(),
-                    ":".to_string() + &clang_headers_name(clang_root, input),
+                    ":".to_string() + &clang_headers_name(clang_dir, input),
                 ));
-            } else if input.contains(LLVM_PREFIX) {
+            } else if input.contains("third_party/llvm") {
                 deps.insert((
                     input.clone(),
-                    ":".to_string() + &llvm_headers_name(LLVM_PREFIX, input),
+                    ":".to_string() + &llvm_project_headers_name("third_party/llvm", input),
                 ));
-            } else if !input.contains(self.src_root) {
+            } else if !input.contains(self.src_dir) {
                 deps.insert((
                     input.clone(),
                     ":".to_string()
-                        + CLSPV_PROJECT_NAME
+                        + ProjectId::CLSPV.str()
                         + "_"
-                        + &rework_name(input.replace(&self.build_root, "")),
+                        + &rework_name(input.replace(&self.build_dir, "")),
                 ));
             } else {
                 inputs.insert(input.clone());
@@ -139,44 +135,7 @@ impl<'a> crate::project::Project<'a> for CLSPV<'a> {
         Ok((inputs, deps))
     }
 
-    fn get_default_cflags(&self) -> HashSet<String> {
-        ["-Wno-unreachable-code-loop-increment".to_string()].into()
-    }
-
-    fn ignore_define(&self, _define: &str) -> bool {
-        true
-    }
-
-    fn ignore_target(&self, target: &String) -> bool {
-        target.starts_with("third_party/")
-    }
-
-    fn ignore_include(&self, include: &str) -> bool {
-        include.contains(&self.build_root)
-            || include.contains(self.spirv_headers_root)
-            || include.contains(self.llvm_project_root)
-    }
-
-    fn get_headers_to_generate(&self, headers: &HashSet<String>) -> HashSet<String> {
-        let mut set = HashSet::new();
-        for header in headers {
-            if !header.contains(LLVM_PREFIX) {
-                set.insert(header.clone());
-            }
-        }
-        set
-    }
-
-    fn get_target_header_libs(&self, _target: &String) -> HashSet<String> {
-        [
-            CC_LIB_HEADERS_SPIRV_HEADERS.to_string(),
-            CC_LIB_HEADERS_LLVM.to_string(),
-            CC_LIB_HEADERS_CLANG.to_string(),
-        ]
-        .into()
-    }
-
-    fn get_command_output(&self, output: &str) -> String {
+    fn get_cmd_output(&self, output: &str) -> String {
         if let Some(split) = output.split_once("include/") {
             split.1
         } else if !output.contains("libclc") {
@@ -187,42 +146,81 @@ impl<'a> crate::project::Project<'a> for CLSPV<'a> {
         .to_string()
     }
 
-    fn optimize_target_for_size(&self, _target: &String) -> bool {
-        true
+    fn get_default_cflags(&self) -> HashSet<String> {
+        ["-Wno-unreachable-code-loop-increment".to_string()].into()
     }
 
-    fn get_project_dependencies(&self) -> Vec<ProjectId> {
-        vec![ProjectId::CLVK]
-    }
-
-    fn get_generated_deps(&self, project: ProjectId) -> ProjectDeps {
-        let mut deps: ProjectDeps = HashMap::new();
+    fn get_generated_deps(&self, project: ProjectId) -> DepsMap {
+        let mut deps: DepsMap = HashMap::new();
         match project {
             ProjectId::SpirvHeaders => {
                 let mut files: HashSet<String> = HashSet::new();
                 for dep in &self.generated_deps {
-                    if dep.starts_with(self.spirv_headers_root) {
+                    if dep.starts_with(self.spirv_headers_dir) {
                         files.insert(dep.clone());
                     }
                 }
-                deps.insert(Dependency::SpirvHeadersFiles, files);
+                deps.insert(Deps::SpirvHeadersFiles, files);
             }
             ProjectId::LLVM => {
                 let mut clang_headers: HashSet<String> = HashSet::new();
                 let mut libclc_binaries: HashSet<String> = HashSet::new();
                 for dep in &self.generated_deps {
-                    if let Some(strip) = dep.strip_prefix(&add_slash_suffix(self.llvm_project_root))
+                    if let Some(strip) = dep.strip_prefix(&add_slash_suffix(self.llvm_project_dir))
                     {
                         clang_headers.insert(strip.to_string());
-                    } else if let Some(strip) = dep.strip_prefix(&add_slash_suffix(LLVM_PREFIX)) {
+                    } else if let Some(strip) =
+                        dep.strip_prefix(&add_slash_suffix("third_party/llvm"))
+                    {
                         libclc_binaries.insert(strip.to_string());
                     }
                 }
-                deps.insert(Dependency::ClangHeaders, clang_headers);
-                deps.insert(Dependency::LibclcBinaries, libclc_binaries);
+                deps.insert(Deps::ClangHeaders, clang_headers);
+                deps.insert(Deps::LibclcBinaries, libclc_binaries);
             }
             _ => (),
         };
         deps
+    }
+
+    fn get_headers_to_generate(&self, headers: &HashSet<String>) -> HashSet<String> {
+        let mut set = HashSet::new();
+        for header in headers {
+            if !header.contains("third_party/llvm") {
+                set.insert(header.clone());
+            }
+        }
+        set
+    }
+
+    fn get_project_deps(&self) -> Vec<ProjectId> {
+        vec![ProjectId::CLVK]
+    }
+
+    fn get_target_header_libs(&self, _target: &String) -> HashSet<String> {
+        [
+            CC_LIBRARY_HEADERS_SPIRV_HEADERS.to_string(),
+            CC_LIBRARY_HEADERS_LLVM.to_string(),
+            CC_LIBRARY_HEADERS_CLANG.to_string(),
+        ]
+        .into()
+    }
+
+    fn ignore_define(&self, _define: &str) -> bool {
+        true
+    }
+
+    fn ignore_include(&self, include: &str) -> bool {
+        include.contains(&self.build_dir)
+            || include.contains(self.spirv_headers_dir)
+            || include.contains(self.llvm_project_dir)
+    }
+
+    fn ignore_target(&self, target: &String) -> bool {
+        target.starts_with("third_party/")
+    }
+
+    fn optimize_target_for_size(&self, _target: &String) -> bool {
+        true
     }
 }

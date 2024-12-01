@@ -2,11 +2,9 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use std::collections::HashMap;
-use std::fs::File;
-use std::io::Read;
 
 use crate::ninja_target::NinjaTarget;
-use crate::utils::error;
+use crate::utils::*;
 
 fn parse_output_section(section: &str) -> Result<(Vec<String>, Vec<String>), String> {
     let mut split = section.split("|");
@@ -39,13 +37,13 @@ fn parse_input_and_rule_section(section: &str) -> Result<(String, Vec<String>), 
     Ok((target_rule, target_inputs))
 }
 
-fn parse_input_and_dep_section(
+fn parse_input_and_deps_section(
     section: &str,
 ) -> Result<(String, Vec<String>, Vec<String>), String> {
     let mut split = section.split("|");
     let split_count = split.clone().count();
     if split_count != 1 && split_count != 2 {
-        return error!(format!("parse_input_and_dep_section failed: '{section}'"));
+        return error!(format!("parse_input_and_deps_section failed: '{section}'"));
     }
 
     let (target_rule, target_inputs) = parse_input_and_rule_section(split.nth(0).unwrap())?;
@@ -69,7 +67,7 @@ fn parse_input_section(
     }
 
     let (target_rule, target_inputs, target_implicit_dependencies) =
-        parse_input_and_dep_section(split.nth(0).unwrap())?;
+        parse_input_and_deps_section(split.nth(0).unwrap())?;
 
     let mut target_order_only_dependencies: Vec<String> = Vec::new();
     if let Some(order_only_dependencies) = split.next() {
@@ -87,16 +85,13 @@ fn parse_input_section(
 
 fn parse_build_target(line: &str, lines: &mut std::str::Lines<'_>) -> Result<NinjaTarget, String> {
     let Some(line_stripped) = line.strip_prefix("build") else {
-        return error!(format!("No build prefix: '{line}'"));
+        return error!(format!("parse_build_target failed: '{line}'"));
     };
 
     let mut split = line_stripped.split(":");
     let split_count = split.clone().count();
     if split_count != 2 {
-        return error!(format!(
-            "Error while parsing column (expected 2 splits, got {0}): '{split:#?}'",
-            split_count,
-        ));
+        return error!(format!("parse_build_target failed: '{line}'"));
     }
 
     let (target_outputs, target_implicit_outputs) = parse_output_section(split.nth(0).unwrap())?;
@@ -109,7 +104,7 @@ fn parse_build_target(line: &str, lines: &mut std::str::Lines<'_>) -> Result<Nin
             break;
         }
         let Some(split) = next_line.split_once("=") else {
-            return error!(format!("Error while parsing variable: '{next_line}'"));
+            return error!(format!("parse_build_target failed: '{next_line}'"));
         };
         let key = String::from(split.0.trim());
         let val = String::from(split.1.trim());
@@ -128,19 +123,9 @@ fn parse_build_target(line: &str, lines: &mut std::str::Lines<'_>) -> Result<Nin
 }
 
 pub fn parse_build_ninja(path: String) -> Result<Vec<NinjaTarget>, String> {
-    let ninja_file_path = path + "/build.ninja";
-    let mut file = match File::open(&ninja_file_path) {
-        Ok(file) => file,
-        Err(err) => return error!(format!("Could not open '{ninja_file_path}': '{0}'", err)),
-    };
-
-    let mut content = String::new();
-    if let Err(err) = file.read_to_string(&mut content) {
-        return error!(format!("Could not read '{ninja_file_path}': '{err:#?}'"));
-    }
-
     let mut targets: Vec<NinjaTarget> = Vec::new();
-    let mut lines = content.lines();
+    let file = read_file(&(path + "/build.ninja"))?;
+    let mut lines = file.lines();
     while let Some(line) = lines.next() {
         if !line.trim().starts_with("build") {
             continue;

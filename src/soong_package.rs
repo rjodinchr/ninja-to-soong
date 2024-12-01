@@ -1,8 +1,7 @@
 // Copyright 2024 ninja-to-soong authors
 // SPDX-License-Identifier: Apache-2.0
 
-use std::collections::HashMap;
-use std::collections::HashSet;
+use std::collections::{HashMap, HashSet};
 
 use crate::ninja_target::*;
 use crate::project::Project;
@@ -13,19 +12,19 @@ use crate::utils::*;
 pub struct SoongPackage<'a> {
     package: String,
     generated_deps: HashSet<String>,
-    include_directories: HashSet<String>,
+    include_dirs: HashSet<String>,
     generated_libraries: HashSet<String>,
-    src_root: &'a str,
-    ndk_root: &'a str,
-    build_root: &'a str,
+    src_dir: &'a str,
+    ndk_dir: &'a str,
+    build_dir: &'a str,
     target_prefix: &'a str,
 }
 
 impl<'a> SoongPackage<'a> {
     pub fn new(
-        src_root: &'a str,
-        ndk_root: &'a str,
-        build_root: &'a str,
+        src_dir: &'a str,
+        ndk_dir: &'a str,
+        build_dir: &'a str,
         target_prefix: &'a str,
         default_visibility: &str,
         license_kinds: &str,
@@ -34,11 +33,11 @@ impl<'a> SoongPackage<'a> {
         let mut package = SoongPackage {
             package: String::new(),
             generated_deps: HashSet::new(),
-            include_directories: HashSet::new(),
+            include_dirs: HashSet::new(),
             generated_libraries: HashSet::new(),
-            src_root,
-            ndk_root,
-            build_root,
+            src_dir,
+            ndk_dir,
+            build_dir,
             target_prefix,
         };
         package.package += "//
@@ -79,10 +78,10 @@ impl<'a> SoongPackage<'a> {
 
     pub fn write(self, project_repo_name: &str) -> Result<(), String> {
         const ANDROID_BP: &str = "/Android.bp";
-        write_file(&(self.src_root.to_string() + ANDROID_BP), &self.package)?;
+        write_file(&(self.src_dir.to_string() + ANDROID_BP), &self.package)?;
         let tests_path = get_tests_folder()?;
         copy_file(
-            &(self.src_root.to_string() + ANDROID_BP),
+            &(self.src_dir.to_string() + ANDROID_BP),
             &(add_slash_suffix(&tests_path) + project_repo_name + ANDROID_BP),
             true,
         )?;
@@ -93,8 +92,8 @@ impl<'a> SoongPackage<'a> {
         self.generated_deps.to_owned()
     }
 
-    pub fn get_include_directories(&self) -> HashSet<String> {
-        self.include_directories.to_owned()
+    pub fn get_include_dirs(&self) -> HashSet<String> {
+        self.include_dirs.to_owned()
     }
 
     pub fn get_generated_libraries(&self) -> HashSet<String> {
@@ -105,14 +104,14 @@ impl<'a> SoongPackage<'a> {
         &mut self,
         name: &str,
         target: &NinjaTarget,
-        target_map: &NinjaTargetMap,
+        targets_map: &NinjaTargetsMap,
         project: &dyn Project,
     ) -> Result<String, String> {
         let mut cflags = project.get_default_cflags();
         let mut includes: HashSet<String> = HashSet::new();
         let mut srcs: HashSet<String> = HashSet::new();
         for input in target.get_inputs() {
-            let Some(target) = target_map.get(input) else {
+            let Some(target) = targets_map.get(input) else {
                 return error!(format!("unsupported input for library: {input}"));
             };
 
@@ -120,11 +119,11 @@ impl<'a> SoongPackage<'a> {
             if target_srcs.len() != 1 {
                 return error!(format!("Too many inputs in target: {self:#?}"));
             }
-            srcs.insert(target_srcs[0].replace(&add_slash_suffix(self.src_root), ""));
+            srcs.insert(target_srcs[0].replace(&add_slash_suffix(self.src_dir), ""));
 
-            for inc in target.get_includes(self.src_root, project) {
+            for inc in target.get_includes(self.src_dir, project) {
                 includes.insert(inc.clone());
-                self.include_directories.insert(inc);
+                self.include_dirs.insert(inc);
             }
 
             for define in target.get_defines(project) {
@@ -132,17 +131,17 @@ impl<'a> SoongPackage<'a> {
             }
         }
 
-        let (version_script, link_flags) = target.get_link_flags(self.src_root, project);
+        let (version_script, link_flags) = target.get_link_flags(self.src_dir, project);
         let (static_libs, shared_libs, generated_libraries) =
-            target.get_link_libraries(self.ndk_root, project)?;
+            target.get_link_libraries(self.ndk_dir, project)?;
         self.generated_libraries.extend(generated_libraries);
-        let generated_headers = target.get_generated_headers(target_map)?;
+        let generated_headers = target.get_generated_headers(targets_map)?;
         self.generated_deps
             .extend(project.get_headers_to_copy(&generated_headers));
         let generated_headers_filtered_raw = project.get_headers_to_generate(&generated_headers);
         let mut generated_headers_filtered = HashSet::new();
         for header in generated_headers_filtered_raw {
-            generated_headers_filtered.insert(match target_map.get(&header) {
+            generated_headers_filtered.insert(match targets_map.get(&header) {
                 Some(target_header) => target_header.get_name(self.target_prefix),
                 None => return error!(format!("Could not find target for '{header}'")),
             });
@@ -163,105 +162,98 @@ impl<'a> SoongPackage<'a> {
         module.add_set("header_libs", project.get_target_header_libs(&target_name));
         module.add_set("generated_headers", generated_headers_filtered);
         module.add_str("version_script", version_script);
-        module.add_str("stem", project.get_target_stem(&target_name));
+        module.add_str("stem", project.get_target_alias(&target_name));
         module.add_str("name", target_name);
         Ok(module.print())
     }
 
-    fn replace_output_in_command(
+    fn replace_output_in_cmd(
         &self,
-        command: String,
+        mut cmd: String,
         output: &String,
         project: &dyn Project,
     ) -> String {
         let marker = "<output>";
         let space_and_marker = String::from(" ") + marker;
         let space_and_last_output = String::from(" ") + output.split("/").last().unwrap();
-        let command = command.replace(output, marker);
-        let command = command.replace(&space_and_last_output, &space_and_marker);
-        let replace_output =
-            String::from("$(location ") + &project.get_command_output(output) + ")";
-        command.replace(marker, &replace_output)
+        cmd = cmd.replace(output, marker);
+        cmd = cmd.replace(&space_and_last_output, &space_and_marker);
+        let replace_output = String::from("$(location ") + &project.get_cmd_output(output) + ")";
+        cmd.replace(marker, &replace_output)
     }
 
-    fn replace_input_in_command(&self, command: String, input: String) -> String {
+    fn replace_input_in_cmd(&self, cmd: String, input: String) -> String {
         let replace_input = String::from("$(location ")
-            + &input.replace(&add_slash_suffix(self.src_root), "")
+            + &input.replace(&add_slash_suffix(self.src_dir), "")
             + ")";
-        command.replace(&input, &replace_input)
+        cmd.replace(&input, &replace_input)
     }
 
-    fn replace_dep_in_command(
+    fn replace_dep_in_cmd(
         &self,
-        command: String,
+        cmd: String,
         dep: String,
         dep_target_name: String,
         prefix: &str,
     ) -> String {
         let replace_dep = "$(location ".to_string() + &dep_target_name + ")";
         let dep_with_prefix = String::from(prefix) + &dep;
-        command
-            .replace(&dep_with_prefix, &replace_dep)
+        cmd.replace(&dep_with_prefix, &replace_dep)
             .replace(&dep, &replace_dep)
     }
 
-    fn remove_python_in_command(command: String) -> String {
-        let mut command = command;
-        while let Some(index) = command.find("bin/python") {
-            let begin = std::str::from_utf8(&command.as_bytes()[0..index])
+    fn remove_python_in_cmd(mut cmd: String) -> String {
+        while let Some(index) = cmd.find("bin/python") {
+            let begin = std::str::from_utf8(&cmd.as_bytes()[0..index])
                 .unwrap()
                 .rfind(" ")
                 .unwrap_or_default();
-            command = match std::str::from_utf8(&command.as_bytes()[index..])
+            cmd = match std::str::from_utf8(&cmd.as_bytes()[index..])
                 .unwrap()
                 .find(" ")
             {
-                Some(end) => command.replace(
-                    std::str::from_utf8(&command.as_bytes()[begin..index + end + 1]).unwrap(),
+                Some(end) => cmd.replace(
+                    std::str::from_utf8(&cmd.as_bytes()[begin..index + end + 1]).unwrap(),
                     "",
                 ),
-                None => command.replace(
-                    std::str::from_utf8(&command.as_bytes()[begin..]).unwrap(),
-                    "",
-                ),
+                None => cmd.replace(std::str::from_utf8(&cmd.as_bytes()[begin..]).unwrap(), ""),
             };
         }
-        command
+        cmd
     }
 
-    fn rework_command(
+    fn rework_cmd(
         &self,
-        command: String,
+        mut cmd: String,
         inputs: HashSet<String>,
         outputs: &Vec<String>,
         deps: HashSet<(String, String)>,
         project: &dyn Project,
     ) -> String {
-        let mut command = Self::remove_python_in_command(command);
-        command = command.replace(&add_slash_suffix(self.build_root), "");
+        cmd = Self::remove_python_in_cmd(cmd);
+        cmd = cmd.replace(&add_slash_suffix(self.build_dir), "");
         for output in outputs {
-            command = self.replace_output_in_command(command, output, project);
+            cmd = self.replace_output_in_cmd(cmd, output, project);
         }
         for input in inputs.clone() {
-            command = self.replace_input_in_command(command, input);
+            cmd = self.replace_input_in_cmd(cmd, input);
         }
         for (dep, dep_target_name) in deps {
-            command =
-                self.replace_dep_in_command(command, dep, dep_target_name, self.target_prefix);
+            cmd = self.replace_dep_in_cmd(cmd, dep, dep_target_name, self.target_prefix);
         }
-        command
+        cmd
     }
 
     fn generate_custom_command(
         &mut self,
         target: &NinjaTarget,
-        command: String,
+        mut cmd: String,
         project: &dyn Project,
     ) -> Result<String, String> {
-        let (inputs, deps) = project.get_command_inputs_and_deps(target.get_inputs())?;
+        let (inputs, deps) = project.get_cmd_inputs_and_deps(target.get_inputs())?;
         let mut srcs_set: HashSet<String> = HashSet::new();
         for input in &inputs {
-            srcs_set.insert(input.replace(&add_slash_suffix(self.src_root), ""));
+            srcs_set.insert(input.replace(&add_slash_suffix(self.src_dir), ""));
         }
         for (dep, dep_target_name) in &deps {
             srcs_set.insert(dep_target_name.clone());
@@ -271,37 +263,36 @@ impl<'a> SoongPackage<'a> {
         let out_set = target_outputs
             .into_iter()
             .fold(HashSet::new(), |mut set, output| {
-                set.insert(project.get_command_output(output));
+                set.insert(project.get_cmd_output(output));
                 set
             });
 
-        let command = self.rework_command(command, inputs, target_outputs, deps, project);
+        cmd = self.rework_cmd(cmd, inputs, target_outputs, deps, project);
 
         let mut module = crate::soong_module::SoongModule::new("cc_genrule");
         module.add_str("name", target.get_name(self.target_prefix));
         module.add_set("srcs", srcs_set);
         module.add_set("out", out_set);
-        module.add_str("cmd", command.to_string());
+        module.add_str("cmd", cmd.to_string());
         Ok(module.print())
     }
 
     fn generate_module(
         &mut self,
         target: &NinjaTarget,
-        target_map: &NinjaTargetMap,
+        targets_map: &NinjaTargetsMap,
         project: &dyn Project,
     ) -> Result<Option<String>, String> {
         let rule = target.get_rule();
         Ok(Some(if rule.starts_with("CXX_SHARED_LIBRARY") {
-            self.generate_library("cc_library_shared", target, target_map, project)
+            self.generate_library("cc_library_shared", target, targets_map, project)
         } else if rule.starts_with("CXX_STATIC_LIBRARY") {
-            self.generate_library("cc_library_static", target, target_map, project)
+            self.generate_library("cc_library_static", target, targets_map, project)
         } else if rule.starts_with("CUSTOM_COMMAND") {
-            let command = match target.get_command()? {
-                Some(command) => command,
+            match target.get_cmd()? {
+                Some(cmd) => self.generate_custom_command(target, cmd, project),
                 None => return Ok(None),
-            };
-            self.generate_custom_command(target, command, project)
+            }
         } else if rule.starts_with("CXX_COMPILER")
             || rule.starts_with("C_COMPILER")
             || rule.starts_with("ASM_COMPILER")
@@ -315,32 +306,32 @@ impl<'a> SoongPackage<'a> {
 
     pub fn generate(
         &mut self,
-        mut target_to_generate: Vec<String>,
+        mut targets_to_generate: Vec<String>,
         targets: Vec<NinjaTarget>,
         project: &dyn Project,
     ) -> Result<(), String> {
-        let mut target_seen: HashSet<String> = HashSet::new();
-        let mut target_map: NinjaTargetMap = HashMap::new();
+        let mut targets_seen: HashSet<String> = HashSet::new();
+        let mut targets_map: NinjaTargetsMap = HashMap::new();
         for target in &targets {
             for output in &target.get_all_outputs() {
-                target_map.insert(output.clone(), target);
+                targets_map.insert(output.clone(), target);
             }
         }
 
-        while let Some(input) = target_to_generate.pop() {
-            if target_seen.contains(&input) || project.ignore_target(&input) {
+        while let Some(input) = targets_to_generate.pop() {
+            if targets_seen.contains(&input) || project.ignore_target(&input) {
                 continue;
             }
-            let Some(target) = target_map.get(&input) else {
+            let Some(target) = targets_map.get(&input) else {
                 continue;
             };
 
-            target_to_generate.append(&mut target.get_all_inputs());
+            targets_to_generate.append(&mut target.get_all_inputs());
             for output in target.get_all_outputs() {
-                target_seen.insert(output);
+                targets_seen.insert(output);
             }
 
-            if let Some(module) = self.generate_module(target, &target_map, project)? {
+            if let Some(module) = self.generate_module(target, &targets_map, project)? {
                 self.package += &module;
             }
         }

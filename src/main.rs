@@ -1,9 +1,7 @@
 // Copyright 2024 ninja-to-soong authors
 // SPDX-License-Identifier: Apache-2.0
 
-use std::collections::HashMap;
-use std::collections::HashSet;
-use std::collections::VecDeque;
+use std::collections::{HashMap, HashSet, VecDeque};
 
 mod ninja_target;
 mod parser;
@@ -15,24 +13,24 @@ mod utils;
 use crate::project::*;
 use crate::utils::*;
 
-fn get_project_id_to_write<'a>(
-    project_id_to_generate: HashSet<ProjectId>,
+fn get_project_ids_to_write<'a>(
+    project_ids_to_generate: HashSet<ProjectId>,
     all_projects: &Vec<&'a mut dyn Project<'a>>,
 ) -> VecDeque<ProjectId> {
-    let mut project_id_queue: VecDeque<ProjectId> = VecDeque::new();
-    if project_id_to_generate.contains(&ProjectId::All) {
+    let mut project_ids_queue: VecDeque<ProjectId> = VecDeque::new();
+    if project_ids_to_generate.contains(&ProjectId::All) {
         for project in all_projects {
-            project_id_queue.push_back(project.get_id());
+            project_ids_queue.push_back(project.get_id());
         }
     } else {
-        for project in project_id_to_generate {
-            project_id_queue.push_back(project);
+        for project in project_ids_to_generate {
+            project_ids_queue.push_back(project);
         }
     }
-    project_id_queue
+    project_ids_queue
 }
 
-fn missing_deps(deps: &Vec<ProjectId>, projects_generated: &ProjectMap) -> bool {
+fn missing_deps(deps: &Vec<ProjectId>, projects_generated: &ProjectsMap) -> bool {
     for dep in deps {
         if !projects_generated.contains_key(dep) {
             return true;
@@ -43,56 +41,55 @@ fn missing_deps(deps: &Vec<ProjectId>, projects_generated: &ProjectMap) -> bool 
 
 fn generate_projects<'a>(
     all_projects: Vec<&'a mut dyn Project<'a>>,
-    project_id_to_generate: HashSet<ProjectId>,
+    project_ids_to_generate: HashSet<ProjectId>,
 ) -> Result<(), String> {
-    let project_id_to_write = get_project_id_to_write(project_id_to_generate, &all_projects);
-    let mut project_id_to_generate = project_id_to_write.clone();
-    let mut project_not_generated: HashMap<ProjectId, &mut dyn Project> = HashMap::new();
+    let project_ids_to_write = get_project_ids_to_write(project_ids_to_generate, &all_projects);
+    let mut project_ids_to_generate = project_ids_to_write.clone();
+    let mut projects_not_generated: HashMap<ProjectId, &mut dyn Project> = HashMap::new();
     for project in all_projects {
-        project_not_generated.insert(project.get_id(), project);
+        projects_not_generated.insert(project.get_id(), project);
     }
 
-    let mut projects_generated: ProjectMap = HashMap::new();
-    while let Some(project_id) = project_id_to_generate.pop_front() {
+    let mut projects_generated: ProjectsMap = HashMap::new();
+    while let Some(project_id) = project_ids_to_generate.pop_front() {
         if projects_generated.contains_key(&project_id) {
             continue;
         }
 
-        let project_str = project_id.str();
-        let is_dependency = !project_id_to_write.contains(&project_id);
+        let project_name = project_id.str();
+        let is_dependency = !project_ids_to_write.contains(&project_id);
         if !is_dependency {
-            print_info!(format!("Generating '{0}'", project_str));
+            print_info!(format!("Generating '{0}'", project_name));
         } else {
-            print_info!(format!("Generating dependency '{0}'", project_str));
+            print_info!(format!("Generating dependency '{0}'", project_name));
         }
 
-        let project = project_not_generated.remove(&project_id).unwrap();
-        let deps = project.get_project_dependencies();
-        if missing_deps(&deps, &projects_generated) {
-            project_not_generated.insert(project.get_id(), project);
-            project_id_to_generate.push_front(project_id.clone());
-            let mut deps_str: Vec<&str> = Vec::new();
-            for dep in deps {
-                deps_str.push(dep.str());
-                project_id_to_generate.push_front(dep);
+        let project = projects_not_generated.remove(&project_id).unwrap();
+        let project_deps = project.get_project_deps();
+        if missing_deps(&project_deps, &projects_generated) {
+            projects_not_generated.insert(project.get_id(), project);
+            project_ids_to_generate.push_front(project_id.clone());
+            let mut deps: Vec<&str> = Vec::new();
+            for dep in project_deps {
+                deps.push(dep.str());
+                project_ids_to_generate.push_front(dep);
             }
-            print_debug!(format!("Missing dependencies: {0}", deps_str.join(", ")));
+            print_debug!(format!("Missing dependencies: {0}", deps.join(", ")));
             continue;
         }
 
-        print_debug!("Get build directory...");
-        let targets =
-            if let Some(build_directory) = project.get_build_directory(&projects_generated)? {
-                print_debug!(format!("Parsing '{build_directory}/build.ninja'..."));
-                crate::parser::parse_build_ninja(build_directory)?
-            } else {
-                Vec::new()
-            };
+        print_debug!("Get build dir...");
+        let targets = if let Some(build_dir) = project.get_build_dir(&projects_generated)? {
+            print_debug!(format!("Parsing '{build_dir}/build.ninja'..."));
+            crate::parser::parse_build_ninja(build_dir)?
+        } else {
+            Vec::new()
+        };
         print_debug!("Generating soong package...");
         let package = project.generate_package(targets, &projects_generated)?;
         if !is_dependency {
             print_debug!("Writing soong package...");
-            package.write(project_str)?;
+            package.write(project_name)?;
         }
 
         projects_generated.insert(project_id, project);
@@ -104,8 +101,8 @@ fn generate_projects<'a>(
 fn parse_args<'a>(
     args: &'a Vec<String>,
 ) -> Result<(&'a String, &'a String, HashSet<ProjectId>), String> {
-    let min_args = 3;
-    if args.len() < min_args {
+    let required_args = 3;
+    if args.len() < required_args {
         return error!(format!(
             "USAGE: {0} <android_dir> <{ANDROID_NDK}_dir> [<projects>]",
             args[0]
@@ -119,17 +116,17 @@ fn parse_args<'a>(
         print_warn!(format!("Expected '{ANDROID_NDK}' got '{ndk_name}'"));
     }
 
-    let mut project_id_to_generate: HashSet<ProjectId> = HashSet::new();
-    for arg in &args[min_args..] {
+    let mut project_ids_to_generate: HashSet<ProjectId> = HashSet::new();
+    for arg in &args[required_args..] {
         match ProjectId::from(arg) {
-            Some(project_id) => project_id_to_generate.insert(project_id),
+            Some(project_id) => project_ids_to_generate.insert(project_id),
             None => return error!(format!("Unknown project '{arg}'")),
         };
     }
-    if project_id_to_generate.len() == 0 {
-        project_id_to_generate.insert(ProjectId::All);
+    if project_ids_to_generate.len() == 0 {
+        project_ids_to_generate.insert(ProjectId::All);
     }
-    Ok((android_dir, ndk_dir, project_id_to_generate))
+    Ok((android_dir, ndk_dir, project_ids_to_generate))
 }
 
 fn android_path(android_dir: &String, project: ProjectId) -> String {
@@ -137,48 +134,47 @@ fn android_path(android_dir: &String, project: ProjectId) -> String {
 }
 
 fn execute(executable: &str, args: &Vec<String>) -> Result<(), String> {
-    let (android_dir, ndk_root, project_id_to_generate) = parse_args(args)?;
+    let (android_dir, ndk_dir, project_id_to_generate) = parse_args(args)?;
 
     let temp_path = std::env::temp_dir().join(executable);
     let temp_dir = temp_path.to_str().unwrap();
 
-    let clvk_root = android_path(android_dir, ProjectId::CLVK);
-    let clspv_root = android_path(android_dir, ProjectId::CLSPV);
-    let llvm_project_root = android_path(android_dir, ProjectId::LLVM);
-    let spirv_tools_root = android_path(android_dir, ProjectId::SpirvTools);
-    let spirv_headers_root = android_path(android_dir, ProjectId::SpirvHeaders);
+    let clvk_dir = android_path(android_dir, ProjectId::CLVK);
+    let clspv_dir = android_path(android_dir, ProjectId::CLSPV);
+    let llvm_project_dir = android_path(android_dir, ProjectId::LLVM);
+    let spirv_tools_dir = android_path(android_dir, ProjectId::SpirvTools);
+    let spirv_headers_dir = android_path(android_dir, ProjectId::SpirvHeaders);
 
     let mut spirv_tools = project::spirv_tools::SpirvTools::new(
         temp_dir,
-        &ndk_root,
-        &spirv_tools_root,
-        &spirv_headers_root,
+        &ndk_dir,
+        &spirv_tools_dir,
+        &spirv_headers_dir,
     );
-    let mut spirv_headers =
-        project::spirv_headers::SpirvHeaders::new(&ndk_root, &spirv_headers_root);
-    let mut llvm = project::llvm::LLVM::new(temp_dir, &ndk_root, &llvm_project_root);
+    let mut spirv_headers = project::spirv_headers::SpirvHeaders::new(&ndk_dir, &spirv_headers_dir);
+    let mut llvm_project = project::llvm_project::LLVM::new(temp_dir, &ndk_dir, &llvm_project_dir);
     let mut clspv = project::clspv::CLSPV::new(
         temp_dir,
-        &ndk_root,
-        &clspv_root,
-        &llvm_project_root,
-        &spirv_tools_root,
-        &spirv_headers_root,
+        &ndk_dir,
+        &clspv_dir,
+        &llvm_project_dir,
+        &spirv_tools_dir,
+        &spirv_headers_dir,
     );
     let mut clvk = project::clvk::CLVK::new(
         temp_dir,
-        &ndk_root,
-        &clvk_root,
-        &clspv_root,
-        &llvm_project_root,
-        &spirv_tools_root,
-        &spirv_headers_root,
+        &ndk_dir,
+        &clvk_dir,
+        &clspv_dir,
+        &llvm_project_dir,
+        &spirv_tools_dir,
+        &spirv_headers_dir,
     );
 
     let mut all_projects: Vec<&mut dyn Project> = Vec::new();
     all_projects.push(&mut spirv_tools);
     all_projects.push(&mut spirv_headers);
-    all_projects.push(&mut llvm);
+    all_projects.push(&mut llvm_project);
     all_projects.push(&mut clspv);
     all_projects.push(&mut clvk);
 

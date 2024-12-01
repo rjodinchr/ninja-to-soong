@@ -1,8 +1,7 @@
 // Copyright 2024 ninja-to-soong authors
 // SPDX-License-Identifier: Apache-2.0
 
-use std::collections::HashMap;
-use std::collections::HashSet;
+use std::collections::{HashMap, HashSet};
 
 use crate::ninja_target::NinjaTarget;
 use crate::soong_package::SoongPackage;
@@ -10,7 +9,7 @@ use crate::utils::*;
 
 pub mod clspv;
 pub mod clvk;
-pub mod llvm;
+pub mod llvm_project;
 pub mod spirv_headers;
 pub mod spirv_tools;
 
@@ -56,16 +55,21 @@ impl ProjectId {
 }
 
 #[derive(Eq, PartialEq, Hash)]
-pub enum Dependency {
+pub enum Deps {
     SpirvHeadersFiles,
-    TargetToGenerate,
+    TargetsToGenerate,
     ClangHeaders,
     LibclcBinaries,
 }
-impl Dependency {
-    fn get(self, project: &dyn Project, from: ProjectId, project_map: &ProjectMap) -> Vec<String> {
+impl Deps {
+    fn get(
+        self,
+        project: &dyn Project,
+        from: ProjectId,
+        projects_map: &ProjectsMap,
+    ) -> Vec<String> {
         let mut vec = Vec::from_iter(
-            project_map
+            projects_map
                 .get(&from)
                 .unwrap()
                 .get_generated_deps(project.get_id())
@@ -78,47 +82,38 @@ impl Dependency {
     }
 }
 
-pub type ProjectDeps = HashMap<Dependency, HashSet<String>>;
-pub type ProjectMap<'a> = HashMap<ProjectId, &'a dyn Project<'a>>;
-pub type CommandInputsAndDeps = (HashSet<String>, HashSet<(String, String)>);
+pub type DepsMap = HashMap<Deps, HashSet<String>>;
+pub type ProjectsMap<'a> = HashMap<ProjectId, &'a dyn Project<'a>>;
+pub type CmdInputAndDeps = (HashSet<String>, HashSet<(String, String)>);
 
 pub trait Project<'a> {
-    // MANDATORY
-    fn get_id(&self) -> ProjectId;
-
     fn generate_package(
         &mut self,
         targets: Vec<NinjaTarget>,
-        project_map: &ProjectMap,
+        projects_map: &ProjectsMap,
     ) -> Result<SoongPackage, String>;
+    fn get_id(&self) -> ProjectId;
 
-    // OPTIONAL
-    fn get_build_directory(&mut self, _project_map: &ProjectMap) -> Result<Option<String>, String> {
+    fn get_build_dir(&mut self, _projects_map: &ProjectsMap) -> Result<Option<String>, String> {
         Ok(None)
     }
-    fn get_command_inputs_and_deps(
+    fn get_cmd_inputs_and_deps(
         &self,
         target_inputs: &Vec<String>,
-    ) -> Result<CommandInputsAndDeps, String> {
+    ) -> Result<CmdInputAndDeps, String> {
         Ok((HashSet::from_iter(target_inputs.clone()), HashSet::new()))
     }
-    fn get_command_output(&self, output: &str) -> String {
+    fn get_cmd_output(&self, output: &str) -> String {
         output.to_string()
-    }
-    fn get_include(&self, include: &str) -> String {
-        include.to_string()
-    }
-    fn get_project_dependencies(&self) -> Vec<ProjectId> {
-        Vec::new()
-    }
-    fn get_generated_build_directory(&self) -> String {
-        String::new()
-    }
-    fn get_generated_deps(&self, _project: ProjectId) -> ProjectDeps {
-        HashMap::new()
     }
     fn get_default_cflags(&self) -> HashSet<String> {
         HashSet::new()
+    }
+    fn get_generated_build_dir(&self) -> String {
+        String::new()
+    }
+    fn get_generated_deps(&self, _project: ProjectId) -> DepsMap {
+        HashMap::new()
     }
     fn get_headers_to_copy(&self, _headers: &HashSet<String>) -> HashSet<String> {
         HashSet::new()
@@ -126,26 +121,32 @@ pub trait Project<'a> {
     fn get_headers_to_generate(&self, _headers: &HashSet<String>) -> HashSet<String> {
         HashSet::new()
     }
-    fn get_target_header_libs(&self, _target: &String) -> HashSet<String> {
-        HashSet::new()
-    }
-    fn get_target_stem(&self, _target: &String) -> String {
-        String::new()
+    fn get_include(&self, include: &str) -> String {
+        include.to_string()
     }
     fn get_library_name(&self, library: &str) -> String {
         library.to_string()
     }
-    fn optimize_target_for_size(&self, _target: &String) -> bool {
-        false
+    fn get_project_deps(&self) -> Vec<ProjectId> {
+        Vec::new()
     }
-    fn ignore_target(&self, _target: &String) -> bool {
+    fn get_target_header_libs(&self, _target: &String) -> HashSet<String> {
+        HashSet::new()
+    }
+    fn get_target_alias(&self, _target: &String) -> String {
+        String::new()
+    }
+    fn ignore_define(&self, _define: &str) -> bool {
         false
     }
     fn ignore_include(&self, _include: &str) -> bool {
         false
     }
-    fn ignore_define(&self, _define: &str) -> bool {
+    fn ignore_target(&self, _target: &String) -> bool {
         false
     }
-    fn handle_link_flag(&self, _flag: &str, _link_flags: &mut HashSet<String>) {}
+    fn optimize_target_for_size(&self, _target: &String) -> bool {
+        false
+    }
+    fn update_link_flags(&self, _flag: &str, _link_flags: &mut HashSet<String>) {}
 }

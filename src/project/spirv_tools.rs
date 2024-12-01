@@ -1,8 +1,7 @@
 // Copyright 2024 ninja-to-soong authors
 // SPDX-License-Identifier: Apache-2.0
 
-use std::collections::HashMap;
-use std::collections::HashSet;
+use std::collections::{HashMap, HashSet};
 
 use crate::ninja_target::NinjaTarget;
 use crate::project::*;
@@ -10,59 +9,52 @@ use crate::soong_module::SoongModule;
 use crate::soong_package::SoongPackage;
 
 pub struct SpirvTools<'a> {
-    src_root: &'a str,
-    build_root: String,
-    ndk_root: &'a str,
-    spirv_headers_root: &'a str,
+    src_dir: &'a str,
+    build_dir: String,
+    ndk_dir: &'a str,
+    spirv_headers_dir: &'a str,
     generated_deps: HashSet<String>,
 }
-
-const SPIRV_TOOLS_ID: ProjectId = ProjectId::SpirvTools;
-const SPIRV_TOOLS_NAME: &str = SPIRV_TOOLS_ID.str();
 
 impl<'a> SpirvTools<'a> {
     pub fn new(
         temp_dir: &'a str,
-        ndk_root: &'a str,
-        spirv_tools_root: &'a str,
-        spirv_headers_root: &'a str,
+        ndk_dir: &'a str,
+        spirv_tools_dir: &'a str,
+        spirv_headers_dir: &'a str,
     ) -> Self {
         SpirvTools {
-            src_root: spirv_tools_root,
-            build_root: add_slash_suffix(temp_dir) + SPIRV_TOOLS_NAME,
-            ndk_root,
-            spirv_headers_root,
+            src_dir: spirv_tools_dir,
+            build_dir: add_slash_suffix(temp_dir) + ProjectId::SpirvTools.str(),
+            ndk_dir,
+            spirv_headers_dir,
             generated_deps: HashSet::new(),
         }
     }
 }
 
 impl<'a> crate::project::Project<'a> for SpirvTools<'a> {
-    fn get_id(&self) -> ProjectId {
-        SPIRV_TOOLS_ID
-    }
-
     fn generate_package(
         &mut self,
         targets: Vec<NinjaTarget>,
-        project_map: &ProjectMap,
+        projects_map: &ProjectsMap,
     ) -> Result<SoongPackage, String> {
         let mut package = SoongPackage::new(
-            self.src_root,
-            self.ndk_root,
-            &self.build_root,
-            SPIRV_TOOLS_NAME,
+            self.src_dir,
+            self.ndk_dir,
+            &self.build_dir,
+            ProjectId::SpirvTools.str(),
             "//visibility:public",
             "SPDX-license-identifier-Apache-2.0",
             "LICENSE",
         );
         package.generate(
-            Dependency::TargetToGenerate.get(self, ProjectId::CLVK, project_map),
+            Deps::TargetsToGenerate.get(self, ProjectId::CLVK, projects_map),
             targets,
             self,
         )?;
         package.add_module(SoongModule::new_cc_library_headers(
-            CC_LIB_HEADERS_SPIRV_TOOLS,
+            CC_LIBRARY_HEADERS_SPIRV_TOOLS,
             ["include".to_string()].into(),
         ));
 
@@ -71,38 +63,32 @@ impl<'a> crate::project::Project<'a> for SpirvTools<'a> {
         Ok(package)
     }
 
-    fn get_build_directory(&mut self, _project_map: &ProjectMap) -> Result<Option<String>, String> {
+    fn get_id(&self) -> ProjectId {
+        ProjectId::SpirvTools
+    }
+
+    fn get_build_dir(&mut self, _projects_map: &ProjectsMap) -> Result<Option<String>, String> {
         cmake_configure(
-            self.src_root,
-            &self.build_root,
-            self.ndk_root,
-            vec![&("-DSPIRV-Headers_SOURCE_DIR=".to_string() + self.spirv_headers_root)],
+            self.src_dir,
+            &self.build_dir,
+            self.ndk_dir,
+            vec![&("-DSPIRV-Headers_SOURCE_DIR=".to_string() + self.spirv_headers_dir)],
         )?;
-        Ok(Some(self.get_generated_build_directory()))
+        Ok(Some(self.get_generated_build_dir()))
     }
 
-    fn get_generated_build_directory(&self) -> String {
-        self.build_root.clone()
-    }
-
-    fn get_generated_deps(&self, _project: ProjectId) -> ProjectDeps {
-        let mut deps: ProjectDeps = HashMap::new();
-        deps.insert(Dependency::SpirvHeadersFiles, self.generated_deps.clone());
-        deps
-    }
-
-    fn get_command_inputs_and_deps(
+    fn get_cmd_inputs_and_deps(
         &self,
         target_inputs: &Vec<String>,
-    ) -> Result<CommandInputsAndDeps, String> {
+    ) -> Result<CmdInputAndDeps, String> {
         let mut inputs: HashSet<String> = HashSet::new();
         let mut deps: HashSet<(String, String)> = HashSet::new();
 
         for input in target_inputs {
-            if input.contains(self.spirv_headers_root) {
+            if input.contains(self.spirv_headers_dir) {
                 deps.insert((
                     input.clone(),
-                    ":".to_string() + &spirv_headers_name(self.spirv_headers_root, input),
+                    ":".to_string() + &spirv_headers_name(self.spirv_headers_dir, input),
                 ));
             } else {
                 inputs.insert(input.clone());
@@ -115,12 +101,14 @@ impl<'a> crate::project::Project<'a> for SpirvTools<'a> {
         ["-Wno-implicit-fallthrough".to_string()].into()
     }
 
-    fn ignore_include(&self, include: &str) -> bool {
-        include.contains(&self.build_root) || include.contains(self.spirv_headers_root)
+    fn get_generated_build_dir(&self) -> String {
+        self.build_dir.clone()
     }
 
-    fn ignore_define(&self, _define: &str) -> bool {
-        true
+    fn get_generated_deps(&self, _project: ProjectId) -> DepsMap {
+        let mut deps: DepsMap = HashMap::new();
+        deps.insert(Deps::SpirvHeadersFiles, self.generated_deps.clone());
+        deps
     }
 
     fn get_headers_to_generate(&self, headers: &HashSet<String>) -> HashSet<String> {
@@ -131,11 +119,19 @@ impl<'a> crate::project::Project<'a> for SpirvTools<'a> {
         set
     }
 
-    fn get_target_header_libs(&self, _target: &String) -> HashSet<String> {
-        [CC_LIB_HEADERS_SPIRV_HEADERS.to_string()].into()
+    fn get_project_deps(&self) -> Vec<ProjectId> {
+        vec![ProjectId::CLVK]
     }
 
-    fn get_project_dependencies(&self) -> Vec<ProjectId> {
-        vec![ProjectId::CLVK]
+    fn get_target_header_libs(&self, _target: &String) -> HashSet<String> {
+        [CC_LIBRARY_HEADERS_SPIRV_HEADERS.to_string()].into()
+    }
+
+    fn ignore_include(&self, include: &str) -> bool {
+        include.contains(&self.build_dir) || include.contains(self.spirv_headers_dir)
+    }
+
+    fn ignore_define(&self, _define: &str) -> bool {
+        true
     }
 }

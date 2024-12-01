@@ -1,13 +1,12 @@
 // Copyright 2024 ninja-to-soong authors
 // SPDX-License-Identifier: Apache-2.0
 
-use std::collections::HashMap;
-use std::collections::HashSet;
+use std::collections::{HashMap, HashSet};
 
 use crate::project::Project;
 use crate::utils::*;
 
-pub type NinjaTargetMap<'a> = HashMap<String, &'a NinjaTarget>;
+pub type NinjaTargetsMap<'a> = HashMap<String, &'a NinjaTarget>;
 
 #[derive(Debug)]
 pub struct NinjaTarget {
@@ -15,8 +14,8 @@ pub struct NinjaTarget {
     outputs: Vec<String>,
     implicit_outputs: Vec<String>,
     inputs: Vec<String>,
-    implicit_dependencies: Vec<String>,
-    order_only_dependencies: Vec<String>,
+    implicit_deps: Vec<String>,
+    order_only_deps: Vec<String>,
     variables: HashMap<String, String>,
 }
 
@@ -35,8 +34,8 @@ impl NinjaTarget {
             outputs,
             implicit_outputs,
             inputs,
-            implicit_dependencies,
-            order_only_dependencies,
+            implicit_deps: implicit_dependencies,
+            order_only_deps: order_only_dependencies,
             variables,
         }
     }
@@ -62,10 +61,10 @@ impl NinjaTarget {
         for input in &self.inputs {
             inputs.push(input.clone());
         }
-        for input in &self.implicit_dependencies {
+        for input in &self.implicit_deps {
             inputs.push(input.clone());
         }
-        for input in &self.order_only_dependencies {
+        for input in &self.order_only_deps {
             inputs.push(input.clone());
         }
         inputs
@@ -84,7 +83,7 @@ impl NinjaTarget {
 
     pub fn get_link_flags(
         &self,
-        src_root: &str,
+        src_dir: &str,
         project: &dyn Project,
     ) -> (String, HashSet<String>) {
         let mut link_flags: HashSet<String> = HashSet::new();
@@ -92,9 +91,9 @@ impl NinjaTarget {
         if let Some(flags) = self.variables.get("LINK_FLAGS") {
             for flag in flags.split(" ") {
                 if let Some(vs) = flag.strip_prefix("-Wl,--version-script=") {
-                    version_script = vs.replace(&add_slash_suffix(src_root), "");
+                    version_script = vs.replace(&add_slash_suffix(src_dir), "");
                 } else {
-                    project.handle_link_flag(flag, &mut link_flags);
+                    project.update_link_flags(flag, &mut link_flags);
                 }
             }
         }
@@ -103,7 +102,7 @@ impl NinjaTarget {
 
     pub fn get_link_libraries(
         &self,
-        ndk_root: &str,
+        ndk_dir: &str,
         project: &dyn Project,
     ) -> Result<(HashSet<String>, HashSet<String>, HashSet<String>), String> {
         let mut static_libraries: HashSet<String> = HashSet::new();
@@ -116,7 +115,7 @@ impl NinjaTarget {
             if lib.starts_with("-") || lib == "" {
                 continue;
             } else {
-                let lib_name = if lib.starts_with(ndk_root) {
+                let lib_name = if lib.starts_with(ndk_dir) {
                     lib.split("/")
                         .last()
                         .unwrap()
@@ -156,7 +155,7 @@ impl NinjaTarget {
         defines
     }
 
-    pub fn get_includes(&self, src_root: &str, project: &dyn Project) -> HashSet<String> {
+    pub fn get_includes(&self, src_dir: &str, project: &dyn Project) -> HashSet<String> {
         let mut includes: HashSet<String> = HashSet::new();
         let Some(incs) = self.variables.get("INCLUDES") else {
             return includes;
@@ -167,8 +166,8 @@ impl NinjaTarget {
             }
             let inc = project
                 .get_include(inc)
-                .replace(&add_slash_suffix(src_root), "")
-                .replace(src_root, "");
+                .replace(&add_slash_suffix(src_dir), "")
+                .replace(src_dir, "");
 
             if let Some(stripped_inc) = inc.strip_prefix("-I") {
                 includes.insert(stripped_inc.to_string());
@@ -183,7 +182,7 @@ impl NinjaTarget {
 
     pub fn get_generated_headers(
         &self,
-        target_map: &NinjaTargetMap,
+        targets_map: &NinjaTargetsMap,
     ) -> Result<HashSet<String>, String> {
         let mut generated_headers: HashSet<String> = HashSet::new();
         let mut target_seen: HashSet<String> = HashSet::new();
@@ -193,7 +192,7 @@ impl NinjaTarget {
             if target_seen.contains(&target_name) {
                 continue;
             }
-            let Some(target) = target_map.get(&target_name) else {
+            let Some(target) = targets_map.get(&target_name) else {
                 continue;
             };
 
@@ -203,18 +202,16 @@ impl NinjaTarget {
             }
 
             if target.rule == "CUSTOM_COMMAND" {
-                match target.get_command()? {
-                    Some(_) => {
-                        generated_headers.insert(target_name);
-                    }
-                    None => continue,
+                if target.get_cmd()?.is_none() {
+                    continue;
                 }
+                generated_headers.insert(target_name);
             }
         }
         Ok(generated_headers)
     }
 
-    pub fn get_command(&self) -> Result<Option<String>, String> {
+    pub fn get_cmd(&self) -> Result<Option<String>, String> {
         let Some(command) = self.variables.get("COMMAND") else {
             return error!(format!("No command in: {self:#?}"));
         };

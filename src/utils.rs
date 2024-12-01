@@ -3,13 +3,13 @@
 
 use std::collections::HashSet;
 use std::fs::File;
-use std::io::Write;
+use std::io::{Read, Write};
 
 pub const TAB: &str = "   ";
 pub const COLOR_RED: &str = "\x1b[00;31m";
-pub const COLOR_GREEN: &str = "\x1b[0;32m";
+pub const COLOR_GREEN: &str = "\x1b[00;32m";
 pub const COLOR_GREEN_BOLD: &str = "\x1b[01;32m";
-pub const COLOR_YELLOW: &str = "\x1b[01;33m";
+pub const COLOR_YELLOW_BOLD: &str = "\x1b[01;33m";
 pub const COLOR_NONE: &str = "\x1b[0m";
 
 #[macro_export]
@@ -47,7 +47,7 @@ macro_rules! print_verbose {
 #[macro_export]
 macro_rules! print_warn {
     ($message:expr) => {
-        print_internal!(COLOR_YELLOW, "", $message, COLOR_NONE);
+        print_internal!(COLOR_YELLOW_BOLD, "", $message, COLOR_NONE);
     };
 }
 #[macro_export]
@@ -65,15 +65,15 @@ macro_rules! error {
 }
 pub use error;
 
-pub const CC_LIB_HEADERS_SPIRV_TOOLS: &str = "SPIRV-Tools-includes";
-pub const CC_LIB_HEADERS_SPIRV_HEADERS: &str = "SPIRV-Headers-includes";
-pub const CC_LIB_HEADERS_LLVM: &str = "llvm-includes";
-pub const CC_LIB_HEADERS_CLANG: &str = "clang-includes";
-pub const CC_LIB_HEADERS_CLSPV: &str = "clspv-includes";
+pub const CC_LIBRARY_HEADERS_SPIRV_TOOLS: &str = "SPIRV-Tools-includes";
+pub const CC_LIBRARY_HEADERS_SPIRV_HEADERS: &str = "SPIRV-Headers-includes";
+pub const CC_LIBRARY_HEADERS_LLVM: &str = "llvm-includes";
+pub const CC_LIBRARY_HEADERS_CLANG: &str = "clang-includes";
+pub const CC_LIBRARY_HEADERS_CLSPV: &str = "clspv-includes";
 
 pub const ANDROID_NDK: &str = "android-ndk-r27c";
-pub const ANDROID_ISA: &str = "aarch64";
-pub const ANDROID_ABI: &str = "arm64-v8a";
+pub const ANDROID_ISA: &str = "aarch64"; // "x86_64"
+pub const ANDROID_ABI: &str = "arm64-v8a"; // "x86_64"
 pub const ANDROID_PLATFORM: &str = "35";
 
 pub const LLVM_DISABLE_ZLIB: &str = "-DLLVM_ENABLE_ZLIB=OFF";
@@ -86,22 +86,22 @@ pub fn rework_name(origin: String) -> String {
     origin.replace("/", "_").replace(".", "_")
 }
 
-pub fn spirv_headers_name(spirv_headers_root: &str, str: &str) -> String {
-    rework_name(str.replace(spirv_headers_root, CC_LIB_HEADERS_SPIRV_HEADERS))
+pub fn spirv_headers_name(spirv_headers_dir: &str, str: &str) -> String {
+    rework_name(str.replace(spirv_headers_dir, CC_LIBRARY_HEADERS_SPIRV_HEADERS))
 }
 
-pub fn clang_headers_name(clang_headers_root: &str, str: &str) -> String {
-    rework_name(str.replace(clang_headers_root, CC_LIB_HEADERS_CLANG))
+pub fn clang_headers_name(clang_headers_dir: &str, str: &str) -> String {
+    rework_name(str.replace(clang_headers_dir, CC_LIBRARY_HEADERS_CLANG))
 }
 
-pub fn llvm_headers_name(llvm_headers_root: &str, str: &str) -> String {
-    rework_name(str.replace(llvm_headers_root, CC_LIB_HEADERS_LLVM))
+pub fn llvm_project_headers_name(llvm_project_headers_dir: &str, str: &str) -> String {
+    rework_name(str.replace(llvm_project_headers_dir, CC_LIBRARY_HEADERS_LLVM))
 }
 
 pub fn cmake_configure(
-    source: &str,
-    build: &str,
-    ndk_root: &str,
+    src_dir: &str,
+    build_dir: &str,
+    ndk_dir: &str,
     args: Vec<&str>,
 ) -> Result<bool, String> {
     if std::env::var("NINJA_TO_SOONG_SKIP_CMAKE_CONFIGURE").is_ok() {
@@ -111,14 +111,14 @@ pub fn cmake_configure(
     command
         .args([
             "-B",
-            build,
+            build_dir,
             "-S",
-            source,
+            src_dir,
             "-G",
             "Ninja",
             "-DCMAKE_BUILD_TYPE=Release",
             &("-DCMAKE_TOOLCHAIN_FILE=".to_string()
-                + ndk_root
+                + ndk_dir
                 + "/build/cmake/android.toolchain.cmake"),
             &("-DANDROID_ABI=".to_string() + ANDROID_ABI),
             &("-DANDROID_PLATFORM=".to_string() + ANDROID_PLATFORM),
@@ -126,25 +126,27 @@ pub fn cmake_configure(
         .args(args);
     println!("{command:#?}");
     if let Err(err) = command.status() {
-        return error!(format!("cmake from '{source}' to '{build}' failed: {err}"));
+        return error!(format!(
+            "cmake from '{src_dir}' to '{build_dir}' failed: {err}"
+        ));
     }
     Ok(true)
 }
 
-pub fn cmake_build(build: &str, targets: &Vec<String>) -> Result<bool, String> {
+pub fn cmake_build(build_dir: &str, targets: &Vec<String>) -> Result<bool, String> {
     if std::env::var("NINJA_TO_SOONG_SKIP_CMAKE_BUILD").is_ok() {
         return Ok(false);
     }
-    let target_args = targets.into_iter().fold(Vec::new(), |mut vec, target| {
+    let targets_args = targets.into_iter().fold(Vec::new(), |mut vec, target| {
         vec.push("--target");
         vec.push(&target);
         vec
     });
     let mut command = std::process::Command::new("cmake");
-    command.args(["--build", &build]).args(target_args);
+    command.args(["--build", &build_dir]).args(targets_args);
     println!("{command:#?}");
     if let Err(err) = command.status() {
-        return error!(format!("cmake build '{0}' failed: {err}", &build));
+        return error!(format!("cmake build '{0}' failed: {err}", &build_dir));
     }
     Ok(true)
 }
@@ -159,23 +161,23 @@ pub fn copy_file(from: &str, to: &str, print: bool) -> Result<(), String> {
     Ok(())
 }
 
-pub fn copy_files(files: HashSet<String>, src_root: &str, dst_root: &str) -> Result<(), String> {
+pub fn copy_files(files: HashSet<String>, src_dir: &str, dst_dir: &str) -> Result<(), String> {
     for file in files {
-        let from = add_slash_suffix(src_root) + &file;
-        let to = add_slash_suffix(dst_root) + &file;
+        let from = add_slash_suffix(src_dir) + &file;
+        let to = add_slash_suffix(dst_dir) + &file;
         let to_dir = to.rsplit_once("/").unwrap().0;
         if let Err(err) = std::fs::create_dir_all(to_dir) {
             return error!(format!("create_dir_all({to_dir}) failed: {err}"));
         }
         copy_file(&from, &to, false)?;
     }
-    print_verbose!(format!("Files copied from '{src_root}' to '{dst_root}'"));
+    print_verbose!(format!("Files copied from '{src_dir}' to '{dst_dir}'"));
     Ok(())
 }
 
-pub fn touch_directories(directories: &HashSet<String>, dst_root: &str) -> Result<(), String> {
-    for include_dir in directories {
-        let dir = dst_root.to_string() + include_dir;
+pub fn touch_dirs(dirs: &HashSet<String>, dst_dir: &str) -> Result<(), String> {
+    for include_dir in dirs {
+        let dir = dst_dir.to_string() + include_dir;
         if File::open(&dir).is_ok() {
             continue;
         }
@@ -186,18 +188,18 @@ pub fn touch_directories(directories: &HashSet<String>, dst_root: &str) -> Resul
             return error!(format!("Could not create '{dir}/touch': {err}"));
         }
     }
-    print_verbose!(format!("Directories touched in '{dst_root}'"));
+    print_verbose!(format!("Directories touched in '{dst_dir}'"));
     Ok(())
 }
 
-pub fn remove_directory(directory: String) -> Result<(), String> {
-    if File::open(&directory).is_err() {
+pub fn remove_dir(dir: String) -> Result<(), String> {
+    if File::open(&dir).is_err() {
         return Ok(());
     }
-    if let Err(err) = std::fs::remove_dir_all(&directory) {
+    if let Err(err) = std::fs::remove_dir_all(&dir) {
         return error!(format!("remove_dir_all failed: {err}"));
     }
-    print_verbose!(format!("'{directory}' removed"));
+    print_verbose!(format!("'{dir}' removed"));
     Ok(())
 }
 
@@ -216,17 +218,32 @@ pub fn write_file(file_path: &str, content: &str) -> Result<(), String> {
     Ok(())
 }
 
+pub fn read_file(file_path: &str) -> Result<String, String> {
+    match File::open(&file_path) {
+        Ok(mut file) => {
+            let mut content = String::new();
+            if let Err(err) = file.read_to_string(&mut content) {
+                return error!(format!("Could not read '{file_path}': '{err}'"));
+            }
+            Ok(content.to_owned())
+        }
+        Err(err) => return error!(format!("Could not open '{file_path}': '{err}'")),
+    }
+}
+
 pub fn get_tests_folder() -> Result<String, String> {
-    let exe_path = match std::env::current_exe() {
-        Ok(path) => path // <ninja-to-soong>/target/debug/ninja-to-soong
-            .parent() // <ninja-to-soong>/target/debug
-            .unwrap()
-            .parent() // <ninja-to-soong>/target
-            .unwrap()
-            .parent() // <ninja-to-soong>
-            .unwrap()
-            .join("tests"), // <ninja-to-soong>/tests
+    match std::env::current_exe() {
+        Ok(exe_path) => {
+            let tests_path = exe_path // <ninja-to-soong>/target/debug/ninja-to-soong
+                .parent() // <ninja-to-soong>/target/debug
+                .unwrap()
+                .parent() // <ninja-to-soong>/target
+                .unwrap()
+                .parent() // <ninja-to-soong>
+                .unwrap()
+                .join("tests"); // <ninja-to-soong>/tests
+            Ok(tests_path.to_str().unwrap().to_string())
+        }
         Err(err) => return error!(format!("Could not get current executable path: {err}")),
-    };
-    Ok(exe_path.to_str().unwrap().to_string())
+    }
 }
