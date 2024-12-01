@@ -37,7 +37,7 @@ jobs:
         run: |
           set -x
           ndk_zip=${{ env.ndk }}-linux.zip
-          wget https://dl.google.com/android/repository/${ndk_zip}
+          wget -q https://dl.google.com/android/repository/${ndk_zip}
           unzip -q ${ndk_zip}
       - name: Run ninja-to-soong
         shell: bash
@@ -45,9 +45,15 @@ jobs:
           NINJA_TO_SOONG_SKIP_CMAKE_BUILD: 1
         run: |
           set -x
-          cargo run -- $(realpath ${{ env.android }}) $(realpath $(pwd)/${{ env.ndk }}) all
+          cargo run -- $(realpath ${{ env.android }}) $(realpath ${{ env.ndk }}) all
       - name: Check generated files
         shell: bash
         run: |
           set -x
+          git diff --exit-code
+      - name: Check format
+        shell: bash
+        run: |
+          set -x
+          find -name *.rs -exec rustfmt {} \+
           git diff --exit-code
