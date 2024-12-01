@@ -76,7 +76,7 @@ impl<'a> crate::project::Project<'a> for Clvk<'a> {
         let libclc_dir = "-DCLSPV_LIBCLC_SOURCE_DIR=".to_string() + &llvm_project_dir + "/libclc";
         let vulkan_library = "-DVulkan_LIBRARY=".to_string()
             + self.ndk_dir
-            + "/toolchains/llvm/prebuilt/linux-x86_64/sysdir/usr/lib/"
+            + "/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/lib/"
             + ANDROID_ISA
             + "-linux-android/"
             + ANDROID_PLATFORM
