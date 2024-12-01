@@ -34,9 +34,12 @@ impl<'a> crate::project::Project<'a> for SpirvHeaders<'a> {
         _targets: Vec<NinjaTarget>,
         dep_packages: &HashMap<ProjectId, &dyn Project>,
     ) -> Result<SoongPackage, String> {
-        let spirv_tools = dep_packages.get(&ProjectId::SpirvTools).unwrap();
-        let mut deps = spirv_tools.get_generated_deps(ProjectId::SpirvHeaders);
-        let files = deps.get_mut(SPIRV_HEADERS_FILES).unwrap();
+        let mut files = get_dependency(
+            self,
+            ProjectId::SpirvTools,
+            Dependency::SpirvHeadersFiles,
+            dep_packages,
+        );
         let mut package = SoongPackage::new(
             self.src_root,
             self.ndk_root,

@@ -46,9 +46,12 @@ impl<'a> crate::project::Project<'a> for SpirvTools<'a> {
         targets: Vec<NinjaTarget>,
         dep_packages: &HashMap<ProjectId, &dyn Project>,
     ) -> Result<SoongPackage, String> {
-        let clvk = dep_packages.get(&ProjectId::CLVK).unwrap();
-        let deps = clvk.get_generated_deps(ProjectId::SpirvTools);
-        let entry_targets = Vec::from_iter(deps.get(ENTRY_TARGETS).unwrap().clone());
+        let entry_targets = Vec::from_iter(get_dependency(
+            self,
+            ProjectId::CLVK,
+            Dependency::EntryTargets,
+            dep_packages,
+        ));
         let mut package = SoongPackage::new(
             self.src_root,
             self.ndk_root,
@@ -85,7 +88,7 @@ impl<'a> crate::project::Project<'a> for SpirvTools<'a> {
     }
     fn get_generated_deps(&self, _project: ProjectId) -> ProjectDeps {
         let mut deps: ProjectDeps = HashMap::new();
-        deps.insert(SPIRV_HEADERS_FILES.to_string(), self.generated_deps.clone());
+        deps.insert(Dependency::SpirvHeadersFiles, self.generated_deps.clone());
         return deps;
     }
 

@@ -169,7 +169,7 @@ impl<'a> crate::project::Project<'a> for CLVK<'a> {
                 libs.insert(lib.to_string());
             }
         }
-        deps.insert(ENTRY_TARGETS.to_string(), libs);
+        deps.insert(Dependency::EntryTargets, libs);
         return deps;
     }
 }

@@ -40,9 +40,12 @@ impl<'a> crate::project::Project<'a> for LLVM<'a> {
         targets: Vec<NinjaTarget>,
         dep_packages: &HashMap<ProjectId, &dyn Project>,
     ) -> Result<SoongPackage, String> {
-        let clvk = dep_packages.get(&ProjectId::CLVK).unwrap();
-        let deps = clvk.get_generated_deps(ProjectId::LLVM);
-        let entry_targets = Vec::from_iter(deps.get(ENTRY_TARGETS).unwrap().clone());
+        let entry_targets = Vec::from_iter(get_dependency(
+            self,
+            ProjectId::CLVK,
+            Dependency::EntryTargets,
+            dep_packages,
+        ));
         let mut package = SoongPackage::new(
             self.src_root,
             self.ndk_root,

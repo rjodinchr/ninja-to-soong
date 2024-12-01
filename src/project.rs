@@ -51,7 +51,22 @@ impl ProjectId {
     }
 }
 
-pub type ProjectDeps = HashMap<String, HashSet<String>>;
+fn get_dependency(
+    project: &dyn Project,
+    from: ProjectId,
+    dependency: Dependency,
+    dep_packages: &HashMap<ProjectId, &dyn Project>,
+) -> HashSet<String> {
+    dep_packages
+        .get(&from)
+        .unwrap()
+        .get_generated_deps(project.get_id())
+        .get(&dependency)
+        .unwrap()
+        .clone()
+}
+
+pub type ProjectDeps = HashMap<Dependency, HashSet<String>>;
 
 pub trait Project<'a> {
     // MANDATORY

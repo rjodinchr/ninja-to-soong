@@ -21,8 +21,11 @@ pub use {error, internal_error};
 
 pub const BANNER: &str = "\x1b[01;32m[NINJA-TO-SOONG]\x1b[0m";
 
-pub const SPIRV_HEADERS_FILES: &str = "spirv-headers-file";
-pub const ENTRY_TARGETS: &str = "entry-targets";
+#[derive(Eq, PartialEq, Hash)]
+pub enum Dependency {
+    SpirvHeadersFiles,
+    EntryTargets,
+}
 
 pub const CC_LIB_HEADERS_SPIRV_TOOLS: &str = "SPIRV-Tools-includes";
 pub const CC_LIB_HEADERS_SPIRV_HEADERS: &str = "SPIRV-Headers-includes";
