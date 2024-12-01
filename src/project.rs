@@ -55,28 +55,32 @@ impl ProjectId {
     }
 }
 
+#[derive(Eq, PartialEq, Hash)]
+pub enum Dependency {
+    SpirvHeadersFiles,
+    TargetToGenerate,
+    ClangHeaders,
+    LibclcBinaries,
+}
+impl Dependency {
+    fn get(self, project: &dyn Project, from: ProjectId, project_map: &ProjectMap) -> Vec<String> {
+        let mut vec = Vec::from_iter(
+            project_map
+                .get(&from)
+                .unwrap()
+                .get_generated_deps(project.get_id())
+                .get(&self)
+                .unwrap()
+                .clone(),
+        );
+        vec.sort();
+        vec
+    }
+}
+
 pub type ProjectDeps = HashMap<Dependency, HashSet<String>>;
 pub type ProjectMap<'a> = HashMap<ProjectId, &'a dyn Project<'a>>;
 pub type CommandInputsAndDeps = (HashSet<String>, HashSet<(String, String)>);
-
-fn get_dependency(
-    project: &dyn Project,
-    from: ProjectId,
-    dependency: Dependency,
-    project_map: &ProjectMap,
-) -> Vec<String> {
-    let mut vec = Vec::from_iter(
-        project_map
-            .get(&from)
-            .unwrap()
-            .get_generated_deps(project.get_id())
-            .get(&dependency)
-            .unwrap()
-            .clone(),
-    );
-    vec.sort();
-    vec
-}
 
 pub trait Project<'a> {
     // MANDATORY

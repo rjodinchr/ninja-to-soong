@@ -57,12 +57,7 @@ impl<'a> crate::project::Project<'a> for SpirvTools<'a> {
             "LICENSE",
         );
         package.generate(
-            get_dependency(
-                self,
-                ProjectId::CLVK,
-                Dependency::TargetToGenerate,
-                project_map,
-            ),
+            Dependency::TargetToGenerate.get(self, ProjectId::CLVK, project_map),
             targets,
             self,
         )?;

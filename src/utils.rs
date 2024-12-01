@@ -65,14 +65,6 @@ macro_rules! error {
 }
 pub use error;
 
-#[derive(Eq, PartialEq, Hash)]
-pub enum Dependency {
-    SpirvHeadersFiles,
-    TargetToGenerate,
-    ClangHeaders,
-    LibclcBinaries,
-}
-
 pub const CC_LIB_HEADERS_SPIRV_TOOLS: &str = "SPIRV-Tools-includes";
 pub const CC_LIB_HEADERS_SPIRV_HEADERS: &str = "SPIRV-Headers-includes";
 pub const CC_LIB_HEADERS_LLVM: &str = "llvm-includes";

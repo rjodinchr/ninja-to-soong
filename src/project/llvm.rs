@@ -50,22 +50,12 @@ impl<'a> crate::project::Project<'a> for LLVM<'a> {
             "LICENSE.TXT",
         );
         package.generate(
-            get_dependency(
-                self,
-                ProjectId::CLVK,
-                Dependency::TargetToGenerate,
-                project_map,
-            ),
+            Dependency::TargetToGenerate.get(self, ProjectId::CLVK, project_map),
             targets,
             self,
         )?;
 
-        let libclc_deps = get_dependency(
-            self,
-            ProjectId::CLSPV,
-            Dependency::LibclcBinaries,
-            project_map,
-        );
+        let libclc_deps = Dependency::LibclcBinaries.get(self, ProjectId::CLSPV, project_map);
         let include_directories = package.get_include_directories();
         let mut generated_deps = package.get_generated_deps();
         generated_deps.extend(libclc_deps.clone());
@@ -121,12 +111,7 @@ impl<'a> crate::project::Project<'a> for LLVM<'a> {
             .into(),
         ));
 
-        for clang_header in get_dependency(
-            self,
-            ProjectId::CLSPV,
-            Dependency::ClangHeaders,
-            project_map,
-        ) {
+        for clang_header in Dependency::ClangHeaders.get(self, ProjectId::CLSPV, project_map) {
             package.add_module(SoongModule::new_copy_genrule(
                 clang_headers_name("clang", &clang_header),
                 clang_header.clone(),
@@ -157,18 +142,9 @@ impl<'a> crate::project::Project<'a> for LLVM<'a> {
                 "-DLLVM_TARGETS_TO_BUILD=",
             ],
         )? {
-            let mut targets = get_dependency(
-                self,
-                ProjectId::CLVK,
-                Dependency::TargetToGenerate,
-                project_map,
-            );
-            targets.extend(get_dependency(
-                self,
-                ProjectId::CLSPV,
-                Dependency::LibclcBinaries,
-                project_map,
-            ));
+            let mut targets = Vec::new();
+            targets.extend(Dependency::TargetToGenerate.get(self, ProjectId::CLVK, project_map));
+            targets.extend(Dependency::LibclcBinaries.get(self, ProjectId::CLSPV, project_map));
             if !cmake_build(&self.build_root, &targets)? {
                 self.copy_generated_deps = false;
             }
