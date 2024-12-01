@@ -99,31 +99,24 @@ impl<'a> crate::project::Project<'a> for SpirvTools<'a> {
         deps
     }
 
-    fn parse_custom_command_inputs(
+    fn get_command_inputs_and_deps(
         &self,
-        inputs: &Vec<String>,
-    ) -> Result<(HashSet<String>, HashSet<String>, HashSet<(String, String)>), String> {
-        let mut srcs: HashSet<String> = HashSet::new();
-        let mut filtered_inputs: HashSet<String> = HashSet::new();
-        let mut generated_deps: HashSet<(String, String)> = HashSet::new();
+        target_inputs: &Vec<String>,
+    ) -> Result<CommandInputsAndDeps, String> {
+        let mut inputs: HashSet<String> = HashSet::new();
+        let mut deps: HashSet<(String, String)> = HashSet::new();
 
-        for input in inputs {
+        for input in target_inputs {
             if input.contains(self.spirv_headers_root) {
-                generated_deps.insert((
+                deps.insert((
                     input.clone(),
                     ":".to_string() + &spirv_headers_name(self.spirv_headers_root, input),
                 ));
             } else {
-                filtered_inputs.insert(input.clone());
+                inputs.insert(input.clone());
             }
         }
-        for input in &filtered_inputs {
-            srcs.insert(input.replace(&add_slash_suffix(self.src_root), ""));
-        }
-        for (_, dep) in &generated_deps {
-            srcs.insert(dep.clone());
-        }
-        Ok((srcs, filtered_inputs, generated_deps))
+        Ok((inputs, deps))
     }
 
     fn get_default_cflags(&self) -> HashSet<String> {

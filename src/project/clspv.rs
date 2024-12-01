@@ -108,33 +108,32 @@ impl<'a> crate::project::Project<'a> for CLSPV<'a> {
         Ok(self.build_root.clone())
     }
 
-    fn parse_custom_command_inputs(
+    fn get_command_inputs_and_deps(
         &self,
-        inputs: &Vec<String>,
-    ) -> Result<(HashSet<String>, HashSet<String>, HashSet<(String, String)>), String> {
-        let mut srcs: HashSet<String> = HashSet::new();
-        let mut filtered_inputs: HashSet<String> = HashSet::new();
-        let mut generated_deps: HashSet<(String, String)> = HashSet::new();
+        target_inputs: &Vec<String>,
+    ) -> Result<CommandInputsAndDeps, String> {
+        let mut inputs: HashSet<String> = HashSet::new();
+        let mut deps: HashSet<(String, String)> = HashSet::new();
         let clang_root = &(self.llvm_project_root.to_string() + "/clang");
 
-        for input in inputs {
+        for input in target_inputs {
             if input.contains(self.spirv_headers_root) {
-                generated_deps.insert((
+                deps.insert((
                     input.clone(),
                     ":".to_string() + &spirv_headers_name(self.spirv_headers_root, input),
                 ));
             } else if input.contains(clang_root) {
-                generated_deps.insert((
+                deps.insert((
                     input.clone(),
                     ":".to_string() + &clang_headers_name(clang_root, input),
                 ));
             } else if input.contains(LLVM_PREFIX) {
-                generated_deps.insert((
+                deps.insert((
                     input.clone(),
                     ":".to_string() + &llvm_headers_name(LLVM_PREFIX, input),
                 ));
             } else if !input.contains(self.src_root) {
-                generated_deps.insert((
+                deps.insert((
                     input.clone(),
                     ":".to_string()
                         + CLSPV_PROJECT_NAME
@@ -142,16 +141,10 @@ impl<'a> crate::project::Project<'a> for CLSPV<'a> {
                         + &rework_name(input.replace(&self.build_root, "")),
                 ));
             } else {
-                filtered_inputs.insert(input.clone());
+                inputs.insert(input.clone());
             }
         }
-        for input in &filtered_inputs {
-            srcs.insert(input.replace(&add_slash_suffix(self.src_root), ""));
-        }
-        for (_, dep) in &generated_deps {
-            srcs.insert(dep.clone());
-        }
-        Ok((srcs, filtered_inputs, generated_deps))
+        Ok((inputs, deps))
     }
 
     fn get_default_cflags(&self) -> HashSet<String> {
@@ -191,7 +184,7 @@ impl<'a> crate::project::Project<'a> for CLSPV<'a> {
         .into()
     }
 
-    fn rework_command_output(&self, output: &str) -> String {
+    fn get_command_output(&self, output: &str) -> String {
         if let Some(split) = output.split_once("include/") {
             split.1
         } else if !output.contains("libclc") {

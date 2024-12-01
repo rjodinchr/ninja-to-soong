@@ -53,6 +53,7 @@ impl ProjectId {
 
 pub type ProjectDeps = HashMap<Dependency, HashSet<String>>;
 pub type ProjectMap<'a> = HashMap<ProjectId, &'a dyn Project<'a>>;
+pub type CommandInputsAndDeps = (HashSet<String>, HashSet<(String, String)>);
 
 fn get_dependency(
     project: &dyn Project,
@@ -84,6 +85,18 @@ pub trait Project<'a> {
     ) -> Result<SoongPackage, String>;
 
     // OPTIONAL
+    fn get_command_inputs_and_deps(
+        &self,
+        target_inputs: &Vec<String>,
+    ) -> Result<CommandInputsAndDeps, String> {
+        Ok((HashSet::from_iter(target_inputs.clone()), HashSet::new()))
+    }
+    fn get_command_output(&self, output: &str) -> String {
+        output.to_string()
+    }
+    fn get_include(&self, include: &str) -> String {
+        include.to_string()
+    }
     fn get_project_dependencies(&self) -> Vec<ProjectId> {
         Vec::new()
     }
@@ -92,12 +105,6 @@ pub trait Project<'a> {
     }
     fn get_generated_deps(&self, _project: ProjectId) -> ProjectDeps {
         HashMap::new()
-    }
-    fn parse_custom_command_inputs(
-        &self,
-        _: &Vec<String>,
-    ) -> Result<(HashSet<String>, HashSet<String>, HashSet<(String, String)>), String> {
-        internal_error!()
     }
     fn get_default_cflags(&self) -> HashSet<String> {
         HashSet::new()
@@ -128,12 +135,6 @@ pub trait Project<'a> {
     }
     fn ignore_define(&self, _define: &str) -> bool {
         false
-    }
-    fn rework_include(&self, include: &str) -> String {
-        include.to_string()
-    }
-    fn rework_command_output(&self, output: &str) -> String {
-        output.to_string()
     }
     fn handle_link_flag(&self, _flag: &str, _link_flags: &mut HashSet<String>) {}
 }

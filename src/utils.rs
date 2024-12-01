@@ -11,13 +11,7 @@ macro_rules! error {
         Err(format!("{0}:{1}: {2}", file!(), line!(), $message))
     };
 }
-#[macro_export]
-macro_rules! internal_error {
-    () => {
-        Err(format!("{0}:{1}: internal error", file!(), line!()))
-    };
-}
-pub use {error, internal_error};
+pub use error;
 
 pub const BANNER: &str = "\x1b[01;32m[NINJA-TO-SOONG]\x1b[0m";
 

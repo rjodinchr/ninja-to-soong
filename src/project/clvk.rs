@@ -109,22 +109,6 @@ impl<'a> crate::project::Project<'a> for CLVK<'a> {
         Ok(self.build_root.clone())
     }
 
-    fn parse_custom_command_inputs(
-        &self,
-        inputs: &Vec<String>,
-    ) -> Result<(HashSet<String>, HashSet<String>, HashSet<(String, String)>), String> {
-        let mut srcs: HashSet<String> = HashSet::new();
-        let mut filtered_inputs: HashSet<String> = HashSet::new();
-
-        for input in inputs {
-            filtered_inputs.insert(input.clone());
-        }
-        for input in &filtered_inputs {
-            srcs.insert(input.replace(&add_slash_suffix(self.src_root), ""));
-        }
-        Ok((srcs, filtered_inputs, HashSet::new()))
-    }
-
     fn ignore_target(&self, target: &String) -> bool {
         target.starts_with("external/")
     }

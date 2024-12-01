@@ -191,7 +191,7 @@ impl<'a> crate::project::Project<'a> for LLVM<'a> {
         true
     }
 
-    fn rework_include(&self, include: &str) -> String {
+    fn get_include(&self, include: &str) -> String {
         include.replace(&self.build_root, CMAKE_GENERATED)
     }
 

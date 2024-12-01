@@ -166,7 +166,7 @@ impl NinjaTarget {
                 continue;
             }
             let inc = project
-                .rework_include(inc)
+                .get_include(inc)
                 .replace(&add_slash_suffix(src_root), "")
                 .replace(src_root, "");
 

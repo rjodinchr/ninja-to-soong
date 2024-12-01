@@ -179,7 +179,7 @@ impl<'a> SoongPackage<'a> {
         let command = command.replace(output, marker);
         let command = command.replace(&space_and_last_output, &space_and_marker);
         let replace_output =
-            String::from("$(location ") + &project.rework_command_output(output) + ")";
+            String::from("$(location ") + &project.get_command_output(output) + ")";
         command.replace(marker, &replace_output)
     }
 
@@ -193,15 +193,15 @@ impl<'a> SoongPackage<'a> {
     fn replace_dep_in_command(
         &self,
         command: String,
-        tool: String,
-        tool_target_name: String,
+        dep: String,
+        dep_target_name: String,
         prefix: &str,
     ) -> String {
-        let replace_tool = "$(location ".to_string() + &tool_target_name + ")";
-        let tool_with_prefix = String::from(prefix) + &tool;
+        let replace_dep = "$(location ".to_string() + &dep_target_name + ")";
+        let dep_with_prefix = String::from(prefix) + &dep;
         command
-            .replace(&tool_with_prefix, &replace_tool)
-            .replace(&tool, &replace_tool)
+            .replace(&dep_with_prefix, &replace_dep)
+            .replace(&dep, &replace_dep)
     }
 
     fn remove_python_in_command(command: String) -> String {
@@ -233,7 +233,7 @@ impl<'a> SoongPackage<'a> {
         command: String,
         inputs: HashSet<String>,
         outputs: &Vec<String>,
-        generated_deps: HashSet<(String, String)>,
+        deps: HashSet<(String, String)>,
         project: &dyn Project,
     ) -> String {
         let mut command = Self::remove_python_in_command(command);
@@ -244,9 +244,9 @@ impl<'a> SoongPackage<'a> {
         for input in inputs.clone() {
             command = self.replace_input_in_command(command, input);
         }
-        for (tool, tool_target_name) in generated_deps {
+        for (dep, dep_target_name) in deps {
             command =
-                self.replace_dep_in_command(command, tool, tool_target_name, self.target_prefix);
+                self.replace_dep_in_command(command, dep, dep_target_name, self.target_prefix);
         }
         command
     }
@@ -257,20 +257,24 @@ impl<'a> SoongPackage<'a> {
         command: String,
         project: &dyn Project,
     ) -> Result<String, String> {
-        let (srcs_set, inputs, generated_deps) =
-            project.parse_custom_command_inputs(target.get_inputs())?;
-        for (dep, _) in &generated_deps {
+        let (inputs, deps) = project.get_command_inputs_and_deps(target.get_inputs())?;
+        let mut srcs_set: HashSet<String> = HashSet::new();
+        for input in &inputs {
+            srcs_set.insert(input.replace(&add_slash_suffix(self.src_root), ""));
+        }
+        for (dep, dep_target_name) in &deps {
+            srcs_set.insert(dep_target_name.clone());
             self.generated_deps.insert(dep.clone());
         }
         let target_outputs = target.get_outputs();
         let out_set = target_outputs
             .into_iter()
             .fold(HashSet::new(), |mut set, output| {
-                set.insert(project.rework_command_output(output));
+                set.insert(project.get_command_output(output));
                 set
             });
 
-        let command = self.rework_command(command, inputs, target_outputs, generated_deps, project);
+        let command = self.rework_command(command, inputs, target_outputs, deps, project);
 
         let mut module = crate::soong_module::SoongModule::new("cc_genrule");
         module.add_str("name", target.get_name(self.target_prefix));
