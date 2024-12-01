@@ -176,14 +176,14 @@ pub fn copy_files(files: HashSet<String>, src_root: &str, dst_root: &str) -> Res
 pub fn touch_directories(directories: &HashSet<String>, dst_root: &str) -> Result<(), String> {
     for include_dir in directories {
         let dir = dst_root.to_string() + include_dir;
-        if touch::exists(&dir) {
+        if File::open(&dir).is_ok() {
             continue;
         }
         if let Err(err) = std::fs::create_dir_all(&dir) {
             return error!(format!("create_dir_all({dir}) failed: {err}"));
         }
-        if let Err(err) = touch::file::create(&(dir.clone() + "/touch"), false) {
-            return error!(format!("touch in '{dir}' failed: {err}"));
+        if let Err(err) = File::create(&(dir.clone() + "/touch")) {
+            return error!(format!("Could not create '{dir}/touch': {err}"));
         }
     }
     print_verbose!(format!("Directories touched in '{dst_root}'"));
@@ -191,10 +191,11 @@ pub fn touch_directories(directories: &HashSet<String>, dst_root: &str) -> Resul
 }
 
 pub fn remove_directory(directory: String) -> Result<(), String> {
-    if touch::exists(&directory) {
-        if let Err(err) = std::fs::remove_dir_all(&directory) {
-            return error!(format!("remove_dir_all failed: {err}"));
-        }
+    if File::open(&directory).is_err() {
+        return Ok(());
+    }
+    if let Err(err) = std::fs::remove_dir_all(&directory) {
+        return error!(format!("remove_dir_all failed: {err}"));
     }
     print_verbose!(format!("'{directory}' removed"));
     Ok(())
