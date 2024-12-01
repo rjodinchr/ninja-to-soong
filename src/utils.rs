@@ -69,8 +69,8 @@ pub use error;
 pub enum Dependency {
     SpirvHeadersFiles,
     TargetToGenerate,
-    CLANGHeaders,
-    LLVMGenerated,
+    ClangHeaders,
+    LibclcBinaries,
 }
 
 pub const CC_LIB_HEADERS_SPIRV_TOOLS: &str = "SPIRV-Tools-includes";
@@ -139,13 +139,13 @@ pub fn cmake_configure(
     Ok(true)
 }
 
-pub fn cmake_build(build: &str, targets: Vec<&str>) -> Result<bool, String> {
+pub fn cmake_build(build: &str, targets: &Vec<String>) -> Result<bool, String> {
     if std::env::var("NINJA_TO_SOONG_SKIP_CMAKE_BUILD").is_ok() {
         return Ok(false);
     }
     let target_args = targets.into_iter().fold(Vec::new(), |mut vec, target| {
         vec.push("--target");
-        vec.push(target);
+        vec.push(&target);
         vec
     });
     let mut command = std::process::Command::new("cmake");

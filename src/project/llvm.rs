@@ -60,15 +60,15 @@ impl<'a> crate::project::Project<'a> for LLVM<'a> {
             self,
         )?;
 
-        let clpsv_deps = get_dependency(
+        let libclc_deps = get_dependency(
             self,
             ProjectId::CLSPV,
-            Dependency::LLVMGenerated,
+            Dependency::LibclcBinaries,
             project_map,
         );
         let include_directories = package.get_include_directories();
         let mut generated_deps = package.get_generated_deps();
-        generated_deps.extend(clpsv_deps.clone());
+        generated_deps.extend(libclc_deps.clone());
         let missing_generated_deps = vec![
             "include/llvm/Config/llvm-config.h",
             "include/llvm/Config/abi-breaking.h",
@@ -121,19 +121,19 @@ impl<'a> crate::project::Project<'a> for LLVM<'a> {
             .into(),
         ));
 
-        for header in get_dependency(
+        for clang_header in get_dependency(
             self,
             ProjectId::CLSPV,
-            Dependency::CLANGHeaders,
+            Dependency::ClangHeaders,
             project_map,
         ) {
             package.add_module(SoongModule::new_copy_genrule(
-                clang_headers_name("clang", &header),
-                header.clone(),
-                header.rsplit_once("/").unwrap().1.to_string(),
+                clang_headers_name("clang", &clang_header),
+                clang_header.clone(),
+                clang_header.rsplit_once("/").unwrap().1.to_string(),
             ));
         }
-        for file in clpsv_deps {
+        for file in libclc_deps {
             let file_path = add_slash_suffix(CMAKE_GENERATED) + &file;
             package.add_module(SoongModule::new_copy_genrule(
                 llvm_headers_name(CMAKE_GENERATED, &file_path),
@@ -145,7 +145,7 @@ impl<'a> crate::project::Project<'a> for LLVM<'a> {
         Ok(package)
     }
 
-    fn get_build_directory(&mut self, _project_map: &ProjectMap) -> Result<Option<String>, String> {
+    fn get_build_directory(&mut self, project_map: &ProjectMap) -> Result<Option<String>, String> {
         if cmake_configure(
             &(self.src_root.to_string() + "/llvm"),
             &self.build_root,
@@ -157,14 +157,19 @@ impl<'a> crate::project::Project<'a> for LLVM<'a> {
                 "-DLLVM_TARGETS_TO_BUILD=",
             ],
         )? {
-            if !cmake_build(
-                &self.build_root,
-                vec![
-                    "clang",
-                    "tools/libclc/clspv--.bc",
-                    "tools/libclc/clspv64--.bc",
-                ],
-            )? {
+            let mut targets = get_dependency(
+                self,
+                ProjectId::CLVK,
+                Dependency::TargetToGenerate,
+                project_map,
+            );
+            targets.extend(get_dependency(
+                self,
+                ProjectId::CLSPV,
+                Dependency::LibclcBinaries,
+                project_map,
+            ));
+            if !cmake_build(&self.build_root, &targets)? {
                 self.copy_generated_deps = false;
             }
         }

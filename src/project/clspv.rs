@@ -213,18 +213,18 @@ impl<'a> crate::project::Project<'a> for CLSPV<'a> {
                 deps.insert(Dependency::SpirvHeadersFiles, files);
             }
             ProjectId::LLVM => {
-                let mut llvm_srcs: HashSet<String> = HashSet::new();
-                let mut llvm_generated: HashSet<String> = HashSet::new();
+                let mut clang_headers: HashSet<String> = HashSet::new();
+                let mut libclc_binaries: HashSet<String> = HashSet::new();
                 for dep in &self.generated_deps {
                     if let Some(strip) = dep.strip_prefix(&add_slash_suffix(self.llvm_project_root))
                     {
-                        llvm_srcs.insert(strip.to_string());
+                        clang_headers.insert(strip.to_string());
                     } else if let Some(strip) = dep.strip_prefix(&add_slash_suffix(LLVM_PREFIX)) {
-                        llvm_generated.insert(strip.to_string());
+                        libclc_binaries.insert(strip.to_string());
                     }
                 }
-                deps.insert(Dependency::CLANGHeaders, llvm_srcs);
-                deps.insert(Dependency::LLVMGenerated, llvm_generated);
+                deps.insert(Dependency::ClangHeaders, clang_headers);
+                deps.insert(Dependency::LibclcBinaries, libclc_binaries);
             }
             _ => (),
         };
