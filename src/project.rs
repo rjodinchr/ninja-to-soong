@@ -15,9 +15,9 @@ pub mod spirv_tools;
 
 #[derive(Eq, PartialEq, Hash, Clone)]
 pub enum ProjectId {
-    CLVK,
-    CLSPV,
-    LLVM,
+    Clvk,
+    Clspv,
+    LlvmProject,
     SpirvHeaders,
     SpirvTools,
     All,
@@ -34,9 +34,9 @@ impl ProjectId {
     pub fn from(str: &str) -> Option<ProjectId> {
         match str {
             ALL_NAME => Some(ProjectId::All),
-            CLVK_NAME => Some(ProjectId::CLVK),
-            CLSPV_NAME => Some(ProjectId::CLSPV),
-            LLVM_NAME => Some(ProjectId::LLVM),
+            CLVK_NAME => Some(ProjectId::Clvk),
+            CLSPV_NAME => Some(ProjectId::Clspv),
+            LLVM_NAME => Some(ProjectId::LlvmProject),
             SPIRV_HEADERS_NAME => Some(ProjectId::SpirvHeaders),
             SPIRV_TOOLS_NAME => Some(ProjectId::SpirvTools),
             _ => None,
@@ -45,9 +45,9 @@ impl ProjectId {
     pub const fn str(&self) -> &'static str {
         match self {
             ProjectId::All => ALL_NAME,
-            ProjectId::CLVK => CLVK_NAME,
-            ProjectId::CLSPV => CLSPV_NAME,
-            ProjectId::LLVM => LLVM_NAME,
+            ProjectId::Clvk => CLVK_NAME,
+            ProjectId::Clspv => CLSPV_NAME,
+            ProjectId::LlvmProject => LLVM_NAME,
             ProjectId::SpirvHeaders => SPIRV_HEADERS_NAME,
             ProjectId::SpirvTools => SPIRV_TOOLS_NAME,
         }

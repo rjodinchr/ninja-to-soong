@@ -49,7 +49,7 @@ impl<'a> crate::project::Project<'a> for SpirvTools<'a> {
             "LICENSE",
         );
         package.generate(
-            Deps::TargetsToGenerate.get(self, ProjectId::CLVK, projects_map),
+            Deps::TargetsToGenerate.get(self, ProjectId::Clvk, projects_map),
             targets,
             self,
         )?;
@@ -120,7 +120,7 @@ impl<'a> crate::project::Project<'a> for SpirvTools<'a> {
     }
 
     fn get_project_deps(&self) -> Vec<ProjectId> {
-        vec![ProjectId::CLVK]
+        vec![ProjectId::Clvk]
     }
 
     fn get_target_header_libs(&self, _target: &String) -> HashSet<String> {

@@ -183,9 +183,8 @@ impl<'a> SoongPackage<'a> {
     }
 
     fn replace_input_in_cmd(&self, cmd: String, input: String) -> String {
-        let replace_input = String::from("$(location ")
-            + &input.replace(&add_slash_suffix(self.src_dir), "")
-            + ")";
+        let replace_input =
+            String::from("$(location ") + &input.replace(&add_slash_suffix(self.src_dir), "") + ")";
         cmd.replace(&input, &replace_input)
     }
 

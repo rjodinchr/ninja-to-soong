@@ -10,25 +10,25 @@ use crate::soong_package::SoongPackage;
 
 const CMAKE_GENERATED: &str = "cmake_generated";
 
-pub struct LLVM<'a> {
+pub struct LlvmProject<'a> {
     src_dir: &'a str,
     build_dir: String,
     ndk_dir: &'a str,
     copy_generated_deps: bool,
 }
 
-impl<'a> LLVM<'a> {
+impl<'a> LlvmProject<'a> {
     pub fn new(temp_dir: &'a str, ndk_dir: &'a str, llvm_project_dir: &'a str) -> Self {
-        LLVM {
+        LlvmProject {
             src_dir: llvm_project_dir,
-            build_dir: add_slash_suffix(temp_dir) + ProjectId::LLVM.str(),
+            build_dir: add_slash_suffix(temp_dir) + ProjectId::LlvmProject.str(),
             ndk_dir,
             copy_generated_deps: true,
         }
     }
 }
 
-impl<'a> crate::project::Project<'a> for LLVM<'a> {
+impl<'a> crate::project::Project<'a> for LlvmProject<'a> {
     fn generate_package(
         &mut self,
         targets: Vec<NinjaTarget>,
@@ -38,18 +38,18 @@ impl<'a> crate::project::Project<'a> for LLVM<'a> {
             self.src_dir,
             self.ndk_dir,
             &self.build_dir,
-            ProjectId::LLVM.str(),
+            ProjectId::LlvmProject.str(),
             "//visibility:public",
             "SPDX-license-identifier-Apache-2.0",
             "LICENSE.TXT",
         );
         package.generate(
-            Deps::TargetsToGenerate.get(self, ProjectId::CLVK, projects_map),
+            Deps::TargetsToGenerate.get(self, ProjectId::Clvk, projects_map),
             targets,
             self,
         )?;
 
-        let libclc_deps = Deps::LibclcBinaries.get(self, ProjectId::CLSPV, projects_map);
+        let libclc_deps = Deps::LibclcBinaries.get(self, ProjectId::Clspv, projects_map);
         let include_dirs = package.get_include_dirs();
         let mut generated_deps = package.get_generated_deps();
         generated_deps.extend(libclc_deps.clone());
@@ -76,7 +76,7 @@ impl<'a> crate::project::Project<'a> for LLVM<'a> {
         generated_deps_sorted.sort();
         write_file(
             &(add_slash_suffix(&get_tests_folder()?)
-                + ProjectId::LLVM.str()
+                + ProjectId::LlvmProject.str()
                 + "/generated_deps.txt"),
             &format!("{generated_deps_sorted:#?}"),
         )?;
@@ -107,7 +107,7 @@ impl<'a> crate::project::Project<'a> for LLVM<'a> {
             .into(),
         ));
 
-        for clang_header in Deps::ClangHeaders.get(self, ProjectId::CLSPV, projects_map) {
+        for clang_header in Deps::ClangHeaders.get(self, ProjectId::Clspv, projects_map) {
             package.add_module(SoongModule::new_copy_genrule(
                 clang_headers_name("clang", &clang_header),
                 clang_header.clone(),
@@ -127,7 +127,7 @@ impl<'a> crate::project::Project<'a> for LLVM<'a> {
     }
 
     fn get_id(&self) -> ProjectId {
-        ProjectId::LLVM
+        ProjectId::LlvmProject
     }
 
     fn get_build_dir(&mut self, projects_map: &ProjectsMap) -> Result<Option<String>, String> {
@@ -143,8 +143,8 @@ impl<'a> crate::project::Project<'a> for LLVM<'a> {
             ],
         )? {
             let mut targets = Vec::new();
-            targets.extend(Deps::TargetsToGenerate.get(self, ProjectId::CLVK, projects_map));
-            targets.extend(Deps::LibclcBinaries.get(self, ProjectId::CLSPV, projects_map));
+            targets.extend(Deps::TargetsToGenerate.get(self, ProjectId::Clvk, projects_map));
+            targets.extend(Deps::LibclcBinaries.get(self, ProjectId::Clspv, projects_map));
             if !cmake_build(&self.build_dir, &targets)? {
                 self.copy_generated_deps = false;
             }
@@ -173,7 +173,7 @@ impl<'a> crate::project::Project<'a> for LLVM<'a> {
     }
 
     fn get_project_deps(&self) -> Vec<ProjectId> {
-        vec![ProjectId::CLVK, ProjectId::CLSPV]
+        vec![ProjectId::Clvk, ProjectId::Clspv]
     }
 
     fn ignore_define(&self, _define: &str) -> bool {

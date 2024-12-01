@@ -43,7 +43,7 @@ impl<'a> crate::project::Project<'a> for SpirvHeaders<'a> {
 
         let mut files: Vec<String> = Vec::new();
         files.extend(Deps::SpirvHeadersFiles.get(self, ProjectId::SpirvTools, projects_map));
-        files.extend(Deps::SpirvHeadersFiles.get(self, ProjectId::CLSPV, projects_map));
+        files.extend(Deps::SpirvHeadersFiles.get(self, ProjectId::Clspv, projects_map));
         let files_set: HashSet<String> = HashSet::from_iter(files);
         files = Vec::from_iter(files_set);
         files.sort();
@@ -61,8 +61,8 @@ impl<'a> crate::project::Project<'a> for SpirvHeaders<'a> {
     fn get_id(&self) -> ProjectId {
         ProjectId::SpirvHeaders
     }
-    
+
     fn get_project_deps(&self) -> Vec<ProjectId> {
-        vec![ProjectId::SpirvTools, ProjectId::CLSPV]
+        vec![ProjectId::SpirvTools, ProjectId::Clspv]
     }
 }
