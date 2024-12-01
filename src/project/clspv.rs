@@ -15,7 +15,7 @@ pub struct Clspv<'a> {
     spirv_headers_dir: &'a str,
     spirv_tools_dir: &'a str,
     llvm_project_dir: &'a str,
-    generated_deps: HashSet<String>,
+    gen_deps: HashSet<String>,
 }
 
 impl<'a> Clspv<'a> {
@@ -34,7 +34,7 @@ impl<'a> Clspv<'a> {
             llvm_project_dir,
             spirv_tools_dir,
             spirv_headers_dir,
-            generated_deps: HashSet::new(),
+            gen_deps: HashSet::new(),
         }
     }
 }
@@ -55,7 +55,7 @@ impl<'a> crate::project::Project<'a> for Clspv<'a> {
             "LICENSE",
         );
         package.generate(
-            Deps::TargetsToGenerate.get(self, ProjectId::Clvk, projects_map),
+            GenDeps::TargetsToGenerate.get(self, ProjectId::Clvk, projects_map),
             targets,
             self,
         )?;
@@ -64,7 +64,7 @@ impl<'a> crate::project::Project<'a> for Clspv<'a> {
             ["include".to_string()].into(),
         ));
 
-        self.generated_deps = package.get_generated_deps();
+        self.gen_deps = package.get_gen_deps();
 
         Ok(package)
     }
@@ -150,22 +150,22 @@ impl<'a> crate::project::Project<'a> for Clspv<'a> {
         ["-Wno-unreachable-code-loop-increment".to_string()].into()
     }
 
-    fn get_generated_deps(&self, project: ProjectId) -> DepsMap {
-        let mut deps: DepsMap = HashMap::new();
+    fn get_gen_deps(&self, project: ProjectId) -> GenDepsMap {
+        let mut deps: GenDepsMap = HashMap::new();
         match project {
             ProjectId::SpirvHeaders => {
                 let mut files: HashSet<String> = HashSet::new();
-                for dep in &self.generated_deps {
+                for dep in &self.gen_deps {
                     if dep.starts_with(self.spirv_headers_dir) {
                         files.insert(dep.clone());
                     }
                 }
-                deps.insert(Deps::SpirvHeadersFiles, files);
+                deps.insert(GenDeps::SpirvHeadersFiles, files);
             }
             ProjectId::LlvmProject => {
                 let mut clang_headers: HashSet<String> = HashSet::new();
                 let mut libclc_binaries: HashSet<String> = HashSet::new();
-                for dep in &self.generated_deps {
+                for dep in &self.gen_deps {
                     if let Some(strip) = dep.strip_prefix(&add_slash_suffix(self.llvm_project_dir))
                     {
                         clang_headers.insert(strip.to_string());
@@ -175,8 +175,8 @@ impl<'a> crate::project::Project<'a> for Clspv<'a> {
                         libclc_binaries.insert(strip.to_string());
                     }
                 }
-                deps.insert(Deps::ClangHeaders, clang_headers);
-                deps.insert(Deps::LibclcBinaries, libclc_binaries);
+                deps.insert(GenDeps::ClangHeaders, clang_headers);
+                deps.insert(GenDeps::LibclcBinaries, libclc_binaries);
             }
             _ => (),
         };

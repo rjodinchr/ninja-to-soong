@@ -13,7 +13,7 @@ pub struct SpirvTools<'a> {
     build_dir: String,
     ndk_dir: &'a str,
     spirv_headers_dir: &'a str,
-    generated_deps: HashSet<String>,
+    gen_deps: HashSet<String>,
 }
 
 impl<'a> SpirvTools<'a> {
@@ -28,7 +28,7 @@ impl<'a> SpirvTools<'a> {
             build_dir: add_slash_suffix(temp_dir) + ProjectId::SpirvTools.str(),
             ndk_dir,
             spirv_headers_dir,
-            generated_deps: HashSet::new(),
+            gen_deps: HashSet::new(),
         }
     }
 }
@@ -49,7 +49,7 @@ impl<'a> crate::project::Project<'a> for SpirvTools<'a> {
             "LICENSE",
         );
         package.generate(
-            Deps::TargetsToGenerate.get(self, ProjectId::Clvk, projects_map),
+            GenDeps::TargetsToGenerate.get(self, ProjectId::Clvk, projects_map),
             targets,
             self,
         )?;
@@ -58,7 +58,7 @@ impl<'a> crate::project::Project<'a> for SpirvTools<'a> {
             ["include".to_string()].into(),
         ));
 
-        self.generated_deps = package.get_generated_deps();
+        self.gen_deps = package.get_gen_deps();
 
         Ok(package)
     }
@@ -105,9 +105,9 @@ impl<'a> crate::project::Project<'a> for SpirvTools<'a> {
         self.build_dir.clone()
     }
 
-    fn get_generated_deps(&self, _project: ProjectId) -> DepsMap {
-        let mut deps: DepsMap = HashMap::new();
-        deps.insert(Deps::SpirvHeadersFiles, self.generated_deps.clone());
+    fn get_gen_deps(&self, _project: ProjectId) -> GenDepsMap {
+        let mut deps: GenDepsMap = HashMap::new();
+        deps.insert(GenDeps::SpirvHeadersFiles, self.gen_deps.clone());
         deps
     }
 

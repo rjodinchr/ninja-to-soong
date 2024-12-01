@@ -42,8 +42,8 @@ impl<'a> crate::project::Project<'a> for SpirvHeaders<'a> {
         ));
 
         let mut files: Vec<String> = Vec::new();
-        files.extend(Deps::SpirvHeadersFiles.get(self, ProjectId::SpirvTools, projects_map));
-        files.extend(Deps::SpirvHeadersFiles.get(self, ProjectId::Clspv, projects_map));
+        files.extend(GenDeps::SpirvHeadersFiles.get(self, ProjectId::SpirvTools, projects_map));
+        files.extend(GenDeps::SpirvHeadersFiles.get(self, ProjectId::Clspv, projects_map));
         let files_set: HashSet<String> = HashSet::from_iter(files);
         files = Vec::from_iter(files_set);
         files.sort();

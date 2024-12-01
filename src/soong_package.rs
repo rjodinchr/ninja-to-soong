@@ -11,7 +11,7 @@ use crate::utils::*;
 #[derive(Debug)]
 pub struct SoongPackage<'a> {
     package: String,
-    generated_deps: HashSet<String>,
+    gen_deps: HashSet<String>,
     include_dirs: HashSet<String>,
     generated_libraries: HashSet<String>,
     src_dir: &'a str,
@@ -32,7 +32,7 @@ impl<'a> SoongPackage<'a> {
     ) -> Self {
         let mut package = SoongPackage {
             package: String::new(),
-            generated_deps: HashSet::new(),
+            gen_deps: HashSet::new(),
             include_dirs: HashSet::new(),
             generated_libraries: HashSet::new(),
             src_dir,
@@ -88,8 +88,8 @@ impl<'a> SoongPackage<'a> {
         Ok(())
     }
 
-    pub fn get_generated_deps(&self) -> HashSet<String> {
-        self.generated_deps.to_owned()
+    pub fn get_gen_deps(&self) -> HashSet<String> {
+        self.gen_deps.to_owned()
     }
 
     pub fn get_include_dirs(&self) -> HashSet<String> {
@@ -136,7 +136,7 @@ impl<'a> SoongPackage<'a> {
             target.get_link_libraries(self.ndk_dir, project)?;
         self.generated_libraries.extend(generated_libraries);
         let generated_headers = target.get_generated_headers(targets_map)?;
-        self.generated_deps
+        self.gen_deps
             .extend(project.get_headers_to_copy(&generated_headers));
         let generated_headers_filtered_raw = project.get_headers_to_generate(&generated_headers);
         let mut generated_headers_filtered = HashSet::new();
@@ -256,7 +256,7 @@ impl<'a> SoongPackage<'a> {
         }
         for (dep, dep_target_name) in &deps {
             srcs_set.insert(dep_target_name.clone());
-            self.generated_deps.insert(dep.clone());
+            self.gen_deps.insert(dep.clone());
         }
         let target_outputs = target.get_outputs();
         let out_set = target_outputs

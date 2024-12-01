@@ -102,8 +102,8 @@ impl<'a> crate::project::Project<'a> for Clvk<'a> {
         Ok(Some(self.build_dir.clone()))
     }
 
-    fn get_generated_deps(&self, project: ProjectId) -> DepsMap {
-        let mut deps: DepsMap = HashMap::new();
+    fn get_gen_deps(&self, project: ProjectId) -> GenDepsMap {
+        let mut deps: GenDepsMap = HashMap::new();
         let mut libs: HashSet<String> = HashSet::new();
         for library in &self.generated_libraries {
             let prefix = if project == ProjectId::LlvmProject {
@@ -115,7 +115,7 @@ impl<'a> crate::project::Project<'a> for Clvk<'a> {
                 libs.insert(lib.to_string());
             }
         }
-        deps.insert(Deps::TargetsToGenerate, libs);
+        deps.insert(GenDeps::TargetsToGenerate, libs);
         deps
     }
 
