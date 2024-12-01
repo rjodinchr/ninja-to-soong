@@ -124,7 +124,7 @@ pub fn copy_files(files: HashSet<String>, src_root: &str, dst_root: &str) -> Res
         }
         copy_file(&from, &to)?;
     }
-    println!("{BANNER} \t  Files copied successfully from '{src_root}' to '{src_root}'!");
+    println!("{BANNER} \t  Files copied successfully from '{src_root}' to '{dst_root}'!");
     Ok(())
 }
 
