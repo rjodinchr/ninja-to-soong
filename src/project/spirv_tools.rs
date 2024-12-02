@@ -107,19 +107,11 @@ impl<'a> crate::project::Project<'a> for SpirvTools<'a> {
         deps
     }
 
-    fn get_headers_to_generate(&self, headers: &HashSet<String>) -> HashSet<String> {
-        let mut set = HashSet::new();
-        for header in headers {
-            set.insert(header.clone());
-        }
-        set
-    }
-
     fn get_project_deps(&self) -> Vec<ProjectId> {
         vec![ProjectId::Clvk]
     }
 
-    fn get_target_header_libs(&self, _target: &String) -> HashSet<String> {
+    fn get_target_header_libs(&self, _target: &str) -> HashSet<String> {
         [CC_LIBRARY_HEADERS_SPIRV_HEADERS.to_string()].into()
     }
 

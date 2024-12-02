@@ -135,17 +135,10 @@ impl<'a> SoongPackage<'a> {
         let (static_libs, shared_libs, generated_libraries) =
             target.get_link_libraries(self.ndk_dir, project)?;
         self.generated_libraries.extend(generated_libraries);
-        let generated_headers = target.get_generated_headers(targets_map)?;
-        self.gen_deps
-            .extend(project.get_headers_to_copy(&generated_headers));
-        let generated_headers_filtered_raw = project.get_headers_to_generate(&generated_headers);
-        let mut generated_headers_filtered = HashSet::new();
-        for header in generated_headers_filtered_raw {
-            generated_headers_filtered.insert(match targets_map.get(&header) {
-                Some(target_header) => target_header.get_name(self.target_prefix),
-                None => return error!(format!("Could not find target for '{header}'")),
-            });
-        }
+        let (gen_headers, gen_deps) =
+            target.get_gen_headers_and_gen_deps(self.target_prefix, targets_map, project)?;
+        self.gen_deps.extend(gen_deps);
+
         let target_name = target.get_name(self.target_prefix);
 
         let mut module = crate::soong_module::SoongModule::new(name);
@@ -160,7 +153,7 @@ impl<'a> SoongPackage<'a> {
         module.add_set("static_libs", static_libs);
         module.add_set("shared_libs", shared_libs);
         module.add_set("header_libs", project.get_target_header_libs(&target_name));
-        module.add_set("generated_headers", generated_headers_filtered);
+        module.add_set("generated_headers", gen_headers);
         module.add_str("version_script", version_script);
         module.add_str("stem", project.get_target_alias(&target_name));
         module.add_str("name", target_name);
@@ -170,7 +163,7 @@ impl<'a> SoongPackage<'a> {
     fn replace_output_in_cmd(
         &self,
         mut cmd: String,
-        output: &String,
+        output: &str,
         project: &dyn Project,
     ) -> String {
         let marker = "<output>";

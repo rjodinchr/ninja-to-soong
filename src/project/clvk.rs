@@ -127,7 +127,7 @@ impl<'a> crate::project::Project<'a> for Clvk<'a> {
             .replace(".", "_")
     }
 
-    fn get_target_header_libs(&self, _target: &String) -> HashSet<String> {
+    fn get_target_header_libs(&self, _target: &str) -> HashSet<String> {
         [
             CC_LIBRARY_HEADERS_SPIRV_TOOLS.to_string(),
             CC_LIBRARY_HEADERS_SPIRV_HEADERS.to_string(),
@@ -137,7 +137,7 @@ impl<'a> crate::project::Project<'a> for Clvk<'a> {
         .into()
     }
 
-    fn get_target_alias(&self, target: &String) -> String {
+    fn get_target_alias(&self, target: &str) -> String {
         if target == "clvk_libOpenCL_so" {
             "libclvk".to_string()
         } else {
@@ -149,7 +149,11 @@ impl<'a> crate::project::Project<'a> for Clvk<'a> {
         true
     }
 
-    fn ignore_target(&self, target: &String) -> bool {
+    fn ignore_gen_header(&self, _header: &str) -> bool {
+        true
+    }
+
+    fn ignore_target(&self, target: &str) -> bool {
         target.starts_with("external/")
     }
 
