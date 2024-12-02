@@ -106,12 +106,10 @@ impl<'a> crate::project::Project<'a> for Clvk<'a> {
         let mut deps: GenDepsMap = HashMap::new();
         let mut libs: HashSet<String> = HashSet::new();
         for library in &self.generated_libraries {
-            let prefix = if project == ProjectId::LlvmProject {
-                "external/clspv/third_party/llvm/".to_string()
-            } else {
-                "external/".to_string() + &add_slash_suffix(project.str())
-            };
-            if let Some(lib) = library.strip_prefix(&prefix) {
+            if let Some(lib) = self
+                .get_library_name(library)
+                .strip_prefix(&add_slash_suffix(project.str()))
+            {
                 libs.insert(lib.to_string());
             }
         }
@@ -121,10 +119,11 @@ impl<'a> crate::project::Project<'a> for Clvk<'a> {
 
     fn get_library_name(&self, library: &str) -> String {
         library
-            .replace("external/clspv/third_party/llvm", "llvm-project")
+            .replace(
+                "external/clspv/third_party/llvm",
+                ProjectId::LlvmProject.str(),
+            )
             .replace("external/", "")
-            .replace("/", "_")
-            .replace(".", "_")
     }
 
     fn get_target_header_libs(&self, _target: &str) -> HashSet<String> {
