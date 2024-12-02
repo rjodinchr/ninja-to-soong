@@ -126,9 +126,7 @@ pub fn cmake_configure(
         .args(args);
     println!("{command:#?}");
     if let Err(err) = command.status() {
-        return error!(format!(
-            "cmake from '{src_dir}' to '{build_dir}' failed: {err}"
-        ));
+        return error!(format!("cmake_configure({src_dir}) failed: {err}"));
     }
     Ok(true)
 }
@@ -146,7 +144,7 @@ pub fn cmake_build(build_dir: &str, targets: &Vec<String>) -> Result<bool, Strin
     command.args(["--build", &build_dir]).args(targets_args);
     println!("{command:#?}");
     if let Err(err) = command.status() {
-        return error!(format!("cmake build '{0}' failed: {err}", &build_dir));
+        return error!(format!("cmake_build({build_dir}) failed: {err}"));
     }
     Ok(true)
 }
