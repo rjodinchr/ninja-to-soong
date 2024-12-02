@@ -8,14 +8,12 @@ use crate::soong_package::SoongPackage;
 
 pub struct SpirvHeaders<'a> {
     src_dir: &'a str,
-    ndk_dir: &'a str,
 }
 
 impl<'a> SpirvHeaders<'a> {
-    pub fn new(ndk_dir: &'a str, spirv_headers_dir: &'a str) -> Self {
+    pub fn new(spirv_headers_dir: &'a str) -> Self {
         SpirvHeaders {
             src_dir: spirv_headers_dir,
-            ndk_dir,
         }
     }
 }
@@ -28,7 +26,7 @@ impl<'a> crate::project::Project<'a> for SpirvHeaders<'a> {
     ) -> Result<SoongPackage, String> {
         let mut package = SoongPackage::new(
             self.src_dir,
-            self.ndk_dir,
+            "",
             "",
             ProjectId::SpirvHeaders.str(),
             "//visibility:public",
@@ -41,11 +39,10 @@ impl<'a> crate::project::Project<'a> for SpirvHeaders<'a> {
             ["include".to_string()].into(),
         ));
 
-        let mut files: Vec<String> = Vec::new();
-        files.extend(GenDeps::SpirvHeadersFiles.get(self, ProjectId::SpirvTools, projects_map));
-        files.extend(GenDeps::SpirvHeadersFiles.get(self, ProjectId::Clspv, projects_map));
-        let files_set: HashSet<String> = HashSet::from_iter(files);
-        files = Vec::from_iter(files_set);
+        let mut set: HashSet<String> = HashSet::new();
+        set.extend(GenDeps::SpirvHeadersFiles.get(self, ProjectId::SpirvTools, projects_map));
+        set.extend(GenDeps::SpirvHeadersFiles.get(self, ProjectId::Clspv, projects_map));
+        let mut files = Vec::from_iter(set);
         files.sort();
         for file in files {
             package.add_module(SoongModule::new_copy_genrule(
