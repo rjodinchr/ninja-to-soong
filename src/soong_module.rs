@@ -55,55 +55,18 @@ impl SoongModule {
         Self::INDENT.to_string() + key + ": " + value + ",\n"
     }
 
-    fn print_bool(&mut self, key: &str) -> String {
-        let Some((key, bool)) = self.bool_map.remove_entry(key) else {
-            return String::new();
-        };
-        Self::print_key_value(&key, if bool { "true" } else { "false" })
-    }
-
-    fn print_str(&mut self, key: &str) -> String {
-        let Some((key, str)) = self.str_map.remove_entry(key) else {
-            return String::new();
-        };
-        Self::print_key_value(&key, &("\"".to_string() + &str + "\""))
-    }
-
-    fn print_set(&mut self, key: &str) -> String {
-        let Some((key, set)) = self.set_map.remove_entry(key) else {
-            return String::new();
-        };
-        if set.len() == 0 {
-            return String::new();
-        }
-
-        Self::print_key_value(
-            &key,
-            &(if set.len() == 1 {
-                "[\"".to_string() + &(set.into_iter().last().unwrap()) + "\"]"
-            } else {
-                let mut sorted = Vec::from_iter(set);
-                sorted.sort();
-                "[\n".to_string()
-                    + &sorted.iter().fold(String::new(), |values, value| {
-                        values + Self::INDENT + Self::INDENT + "\"" + &value + "\",\n"
-                    })
-                    + "    ]"
-            }),
-        )
-    }
-
     pub fn print(mut self) -> String {
         let mut module = String::new();
         module += "\n";
         module += &self.name;
         module += " {\n";
 
-        let strs = vec!["name", "stem", "version_script", "cmd"];
-        for str in strs {
-            module += &self.print_str(str);
+        for key in ["name", "stem", "version_script", "cmd"] {
+            if let Some(value) = self.str_map.remove(key) {
+                module += &Self::print_key_value(&key, &("\"".to_string() + &value + "\""))
+            }
         }
-        let sets = vec![
+        for key in [
             "srcs",
             "out",
             "tools",
@@ -120,13 +83,33 @@ impl SoongModule {
             "default_applicable_licenses",
             "license_kinds",
             "license_text",
-        ];
-        for set in sets {
-            module += &self.print_set(set);
+        ] {
+            let Some(set) = self.set_map.remove(key) else {
+                continue;
+            };
+            if set.len() == 0 {
+                continue;
+            }
+
+            module += &Self::print_key_value(
+                &key,
+                &(if set.len() == 1 {
+                    "[\"".to_string() + &(set.into_iter().last().unwrap()) + "\"]"
+                } else {
+                    let mut sorted = Vec::from_iter(set);
+                    sorted.sort();
+                    "[\n".to_string()
+                        + &sorted.iter().fold(String::new(), |values, value| {
+                            values + Self::INDENT + Self::INDENT + "\"" + &value + "\",\n"
+                        })
+                        + "    ]"
+                }),
+            );
         }
-        let bools = vec!["optimize_for_size", "use_clang_lld"];
-        for bool in bools {
-            module += &self.print_bool(bool);
+        for key in ["optimize_for_size", "use_clang_lld"] {
+            if let Some(value) = self.bool_map.remove(key) {
+                module += &Self::print_key_value(&key, if value { "true" } else { "false" });
+            }
         }
 
         module += "}\n";
