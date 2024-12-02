@@ -123,7 +123,7 @@ impl NinjaTarget {
                         .replace(".so", "")
                 } else {
                     generated_libraries.insert(lib.to_string());
-                    project.get_library_name(lib)
+                    rework_name(project.get_library_name(lib))
                 };
                 if lib.ends_with(".a") {
                     static_libraries.insert(lib_name);
