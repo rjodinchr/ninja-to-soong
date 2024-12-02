@@ -30,15 +30,6 @@ fn get_project_ids_to_write<'a>(
     project_ids_queue
 }
 
-fn missing_deps(deps: &Vec<ProjectId>, projects_generated: &ProjectsMap) -> bool {
-    for dep in deps {
-        if !projects_generated.contains_key(dep) {
-            return true;
-        }
-    }
-    false
-}
-
 fn generate_projects<'a>(
     all_projects: Vec<&'a mut dyn Project<'a>>,
     project_ids_to_generate: HashSet<ProjectId>,
@@ -65,12 +56,17 @@ fn generate_projects<'a>(
         }
 
         let project = projects_not_generated.remove(&project_id).unwrap();
-        let project_deps = project.get_project_deps();
-        if missing_deps(&project_deps, &projects_generated) {
-            projects_not_generated.insert(project.get_id(), project);
-            project_ids_to_generate.push_front(project_id.clone());
+        let mut missing_deps: Vec<ProjectId> = Vec::new();
+        for dep in project.get_project_deps() {
+            if !projects_generated.contains_key(&dep) {
+                missing_deps.push(dep);
+            }
+        }
+        if missing_deps.len() > 0 {
+            projects_not_generated.insert(project_id.clone(), project);
+            project_ids_to_generate.push_front(project_id);
             let mut deps: Vec<&str> = Vec::new();
-            for dep in project_deps {
+            for dep in missing_deps {
                 deps.push(dep.str());
                 project_ids_to_generate.push_front(dep);
             }
