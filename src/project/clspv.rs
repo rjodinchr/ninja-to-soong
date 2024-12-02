@@ -146,10 +146,6 @@ impl<'a> crate::project::Project<'a> for Clspv<'a> {
         .to_string()
     }
 
-    fn get_default_cflags(&self) -> HashSet<String> {
-        ["-Wno-unreachable-code-loop-increment".to_string()].into()
-    }
-
     fn get_gen_deps(&self, project: ProjectId) -> GenDepsMap {
         let mut deps: GenDepsMap = HashMap::new();
         match project {
