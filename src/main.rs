@@ -1,7 +1,7 @@
 // Copyright 2024 ninja-to-soong authors
 // SPDX-License-Identifier: Apache-2.0
 
-use std::collections::{HashMap, HashSet, VecDeque};
+use std::collections::{HashMap, VecDeque};
 
 mod ninja_target;
 mod parser;
@@ -13,48 +13,52 @@ mod utils;
 use crate::project::*;
 use crate::utils::*;
 
-fn get_project_ids_to_write<'a>(
-    project_ids_to_generate: HashSet<ProjectId>,
-    all_projects: &Vec<&'a mut dyn Project<'a>>,
-) -> VecDeque<ProjectId> {
-    let mut project_ids_queue: VecDeque<ProjectId> = VecDeque::new();
-    if project_ids_to_generate.contains(&ProjectId::All) {
-        for project in all_projects {
-            project_ids_queue.push_back(project.get_id());
-        }
+fn generate_project(
+    project: &mut dyn Project,
+    is_dependency: bool,
+    projects_generated: &ProjectsMap,
+) -> Result<(), String> {
+    let project_name = project.get_id().str();
+    if !is_dependency {
+        print_info!(format!("Generating '{0}'", project_name));
     } else {
-        for project in project_ids_to_generate {
-            project_ids_queue.push_back(project);
-        }
+        print_info!(format!("Generating dependency '{0}'", project_name));
     }
-    project_ids_queue
+    print_debug!("Get build dir...");
+    let targets = if let Some(build_dir) = project.get_build_dir(projects_generated)? {
+        print_debug!(format!("Parsing '{build_dir}/build.ninja'..."));
+        parser::parse_build_ninja(build_dir)?
+    } else {
+        Vec::new()
+    };
+    print_debug!("Generating soong package...");
+    let package = project.generate_package(targets, projects_generated)?;
+    if !is_dependency {
+        print_debug!("Writing soong file...");
+        package.write(project_name)?;
+    }
+    Ok(())
 }
 
 fn generate_projects<'a>(
     all_projects: Vec<&'a mut dyn Project<'a>>,
-    project_ids_to_generate: HashSet<ProjectId>,
+    mut project_ids_to_write: VecDeque<ProjectId>,
 ) -> Result<(), String> {
-    let project_ids_to_write = get_project_ids_to_write(project_ids_to_generate, &all_projects);
-    let mut project_ids_to_generate = project_ids_to_write.clone();
+    let write_all = project_ids_to_write.len() == 0;
     let mut projects_not_generated: HashMap<ProjectId, &mut dyn Project> = HashMap::new();
     for project in all_projects {
+        if write_all {
+            project_ids_to_write.push_back(project.get_id());
+        }
         projects_not_generated.insert(project.get_id(), project);
     }
+    let mut project_ids_to_generate = project_ids_to_write.clone();
 
     let mut projects_generated: ProjectsMap = HashMap::new();
     while let Some(project_id) = project_ids_to_generate.pop_front() {
         if projects_generated.contains_key(&project_id) {
             continue;
         }
-
-        let project_name = project_id.str();
-        let is_dependency = !project_ids_to_write.contains(&project_id);
-        if !is_dependency {
-            print_info!(format!("Generating '{0}'", project_name));
-        } else {
-            print_info!(format!("Generating dependency '{0}'", project_name));
-        }
-
         let project = projects_not_generated.remove(&project_id).unwrap();
         let mut missing_deps: Vec<ProjectId> = Vec::new();
         for dep in project.get_project_deps() {
@@ -63,43 +67,34 @@ fn generate_projects<'a>(
             }
         }
         if missing_deps.len() > 0 {
-            projects_not_generated.insert(project_id.clone(), project);
-            project_ids_to_generate.push_front(project_id);
             let mut deps: Vec<&str> = Vec::new();
+            project_ids_to_generate.push_front(project_id.clone());
+            projects_not_generated.insert(project_id, project);
             for dep in missing_deps {
                 deps.push(dep.str());
                 project_ids_to_generate.push_front(dep);
             }
-            print_debug!(format!("Missing dependencies: {0}", deps.join(", ")));
             continue;
         }
-
-        print_debug!("Get build dir...");
-        let targets = if let Some(build_dir) = project.get_build_dir(&projects_generated)? {
-            print_debug!(format!("Parsing '{build_dir}/build.ninja'..."));
-            crate::parser::parse_build_ninja(build_dir)?
-        } else {
-            Vec::new()
-        };
-        print_debug!("Generating soong package...");
-        let package = project.generate_package(targets, &projects_generated)?;
-        if !is_dependency {
-            print_debug!("Writing soong package...");
-            package.write(project_name)?;
-        }
-
+        generate_project(
+            project,
+            !project_ids_to_write.contains(&project_id),
+            &projects_generated,
+        )?;
         projects_generated.insert(project_id, project);
     }
 
     Ok(())
 }
 
-fn parse_args<'a>(args: &'a Vec<String>) -> Result<(&'a str, &'a str, HashSet<ProjectId>), String> {
+fn parse_args<'a>(
+    executable: &str,
+    args: &'a Vec<String>,
+) -> Result<(&'a str, &'a str, VecDeque<ProjectId>), String> {
     let required_args = 3;
     if args.len() < required_args {
         return error!(format!(
-            "USAGE: {0} <android_dir> <{ANDROID_NDK}_dir> [<projects>]",
-            args[0]
+            "USAGE: {executable} <android_dir> <{ANDROID_NDK}_dir> [<projects>]"
         ));
     }
     let android_dir = &args[1];
@@ -110,21 +105,20 @@ fn parse_args<'a>(args: &'a Vec<String>) -> Result<(&'a str, &'a str, HashSet<Pr
         print_warn!(format!("Expected '{ANDROID_NDK}' got '{ndk_name}'"));
     }
 
-    let mut project_ids_to_generate: HashSet<ProjectId> = HashSet::new();
+    let mut project_ids_to_generate: VecDeque<ProjectId> = VecDeque::new();
     for arg in &args[required_args..] {
         match ProjectId::from(arg) {
-            Some(project_id) => project_ids_to_generate.insert(project_id),
+            Some(project_id) => project_ids_to_generate.push_back(project_id),
             None => return error!(format!("Unknown project '{arg}'")),
         };
-    }
-    if project_ids_to_generate.len() == 0 {
-        project_ids_to_generate.insert(ProjectId::All);
     }
     Ok((android_dir, ndk_dir, project_ids_to_generate))
 }
 
-fn execute(executable: &str, args: &Vec<String>) -> Result<(), String> {
-    let (android_dir, ndk_dir, project_id_to_generate) = parse_args(args)?;
+fn main() -> Result<(), String> {
+    let args: Vec<String> = std::env::args().collect();
+    let executable = args[0].rsplit_once("/").unwrap().1;
+    let (android_dir, ndk_dir, project_id_to_generate) = parse_args(executable, &args)?;
 
     let temp_path = std::env::temp_dir().join(executable);
     let temp_dir = temp_path.to_str().unwrap();
@@ -141,10 +135,9 @@ fn execute(executable: &str, args: &Vec<String>) -> Result<(), String> {
         &spirv_tools_dir,
         &spirv_headers_dir,
     );
-    let mut spirv_headers = project::spirv_headers::SpirvHeaders::new(&spirv_headers_dir);
-    let mut llvm_project =
-        project::llvm_project::LlvmProject::new(temp_dir, ndk_dir, &llvm_project_dir);
-    let mut clspv = project::clspv::Clspv::new(
+    let mut spirv_headers = spirv_headers::SpirvHeaders::new(&spirv_headers_dir);
+    let mut llvm_project = llvm_project::LlvmProject::new(temp_dir, ndk_dir, &llvm_project_dir);
+    let mut clspv = clspv::Clspv::new(
         temp_dir,
         ndk_dir,
         &clspv_dir,
@@ -152,7 +145,7 @@ fn execute(executable: &str, args: &Vec<String>) -> Result<(), String> {
         &spirv_tools_dir,
         &spirv_headers_dir,
     );
-    let mut clvk = project::clvk::Clvk::new(
+    let mut clvk = clvk::Clvk::new(
         temp_dir,
         ndk_dir,
         &clvk_dir,
@@ -163,21 +156,15 @@ fn execute(executable: &str, args: &Vec<String>) -> Result<(), String> {
     );
 
     let mut all_projects: Vec<&mut dyn Project> = Vec::new();
+    all_projects.push(&mut clvk);
+    all_projects.push(&mut clspv);
+    all_projects.push(&mut llvm_project);
     all_projects.push(&mut spirv_tools);
     all_projects.push(&mut spirv_headers);
-    all_projects.push(&mut llvm_project);
-    all_projects.push(&mut clspv);
-    all_projects.push(&mut clvk);
 
-    generate_projects(all_projects, project_id_to_generate)
-}
-
-fn main() -> Result<(), String> {
-    let args: Vec<String> = std::env::args().collect();
-    let executable = args[0].rsplit_once("/").unwrap().1;
-    if let Err(err) = execute(executable, &args) {
+    if let Err(err) = generate_projects(all_projects, project_id_to_generate) {
         print_error!(err);
-        Err(format!("{0} failed", args[0]))
+        Err(format!("{executable} failed"))
     } else {
         Ok(())
     }
