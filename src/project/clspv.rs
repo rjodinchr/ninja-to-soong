@@ -200,7 +200,7 @@ impl<'a> crate::project::Project<'a> for Clspv<'a> {
         .into()
     }
 
-    fn ignore_define(&self, _define: &str) -> bool {
+    fn ignore_defines(&self) -> bool {
         true
     }
 

@@ -139,19 +139,14 @@ impl NinjaTarget {
         Ok((static_libraries, shared_libraries, generated_libraries))
     }
 
-    pub fn get_defines(&self, project: &dyn Project) -> HashSet<String> {
+    pub fn get_defines(&self) -> HashSet<String> {
         let mut defines: HashSet<String> = HashSet::new();
 
         if let Some(defs) = self.variables.get("DEFINES") {
-            for def in defs.split("-D") {
-                let trim_def = def.trim();
-                if project.ignore_define(trim_def) {
-                    continue;
-                }
-                defines.insert(trim_def.to_string());
+            for define in defs.split(" ") {
+                defines.insert(define.to_string());
             }
         };
-        defines.remove("");
         defines
     }
 

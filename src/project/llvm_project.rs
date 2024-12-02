@@ -168,7 +168,7 @@ impl<'a> crate::project::Project<'a> for LlvmProject<'a> {
         vec![ProjectId::Clvk, ProjectId::Clspv]
     }
 
-    fn ignore_define(&self, _define: &str) -> bool {
+    fn ignore_defines(&self) -> bool {
         true
     }
 

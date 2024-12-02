@@ -121,13 +121,11 @@ impl<'a> SoongPackage<'a> {
             }
             srcs.insert(target_srcs[0].replace(&add_slash_suffix(self.src_dir), ""));
 
-            for inc in target.get_includes(self.src_dir, project) {
-                includes.insert(inc.clone());
-                self.include_dirs.insert(inc);
-            }
-
-            for define in target.get_defines(project) {
-                cflags.insert(String::from("-D") + &define);
+            let target_includes = target.get_includes(self.src_dir, project);
+            self.include_dirs.extend(target_includes.clone());
+            includes.extend(target_includes);
+            if !project.ignore_defines() {
+                cflags.extend(target.get_defines());
             }
         }
 
