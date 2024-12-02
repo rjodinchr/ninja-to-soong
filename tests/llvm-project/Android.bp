@@ -9,20 +9,20 @@
 //
 
 package {
-    default_visibility: [ "//visibility:public" ],
-    default_applicable_licenses: [ "llvm-project_license_txt" ],
+    default_visibility: ["//visibility:public"],
+    default_applicable_licenses: ["llvm-project_license_txt"],
 }
 
 license {
     name: "llvm-project_license_txt",
-    visibility: [ ":__subpackages__" ],
-    license_kinds: [ "SPDX-license-identifier-Apache-2.0" ],
-    license_text: [ "LICENSE.TXT" ],
+    visibility: [":__subpackages__"],
+    license_kinds: ["SPDX-license-identifier-Apache-2.0"],
+    license_text: ["LICENSE.TXT"],
 }
 
 cc_library_static {
     name: "llvm-project_lib_libclangSupport_a",
-    srcs: [ "clang/lib/Support/RISCVVIntrinsicUtils.cpp" ],
+    srcs: ["clang/lib/Support/RISCVVIntrinsicUtils.cpp"],
     cflags: [
         "-Wno-error",
         "-Wno-unreachable-code-loop-increment",
@@ -764,7 +764,7 @@ cc_library_static {
 
 cc_library_static {
     name: "llvm-project_lib_libLLVMBitstreamReader_a",
-    srcs: [ "llvm/lib/Bitstream/Reader/BitstreamReader.cpp" ],
+    srcs: ["llvm/lib/Bitstream/Reader/BitstreamReader.cpp"],
     cflags: [
         "-Wno-error",
         "-Wno-unreachable-code-loop-increment",
@@ -955,7 +955,7 @@ cc_library_static {
 
 cc_library_static {
     name: "llvm-project_lib_libLLVMIRReader_a",
-    srcs: [ "llvm/lib/IRReader/IRReader.cpp" ],
+    srcs: ["llvm/lib/IRReader/IRReader.cpp"],
     cflags: [
         "-Wno-error",
         "-Wno-unreachable-code-loop-increment",
@@ -1982,7 +1982,7 @@ cc_library_static {
 
 cc_library_static {
     name: "llvm-project_lib_libLLVMFrontendHLSL_a",
-    srcs: [ "llvm/lib/Frontend/HLSL/HLSLResource.cpp" ],
+    srcs: ["llvm/lib/Frontend/HLSL/HLSLResource.cpp"],
     cflags: [
         "-Wno-error",
         "-Wno-unreachable-code-loop-increment",
@@ -2181,7 +2181,7 @@ cc_library_static {
 
 cc_library_static {
     name: "llvm-project_lib_libLLVMWindowsDriver_a",
-    srcs: [ "llvm/lib/WindowsDriver/MSVCPaths.cpp" ],
+    srcs: ["llvm/lib/WindowsDriver/MSVCPaths.cpp"],
     cflags: [
         "-Wno-error",
         "-Wno-unreachable-code-loop-increment",
@@ -2627,7 +2627,7 @@ cc_library_static {
 
 cc_library_static {
     name: "llvm-project_lib_libLLVMIRPrinter_a",
-    srcs: [ "llvm/lib/IRPrinter/IRPrintingPasses.cpp" ],
+    srcs: ["llvm/lib/IRPrinter/IRPrintingPasses.cpp"],
     cflags: [
         "-Wno-error",
         "-Wno-unreachable-code-loop-increment",
@@ -2644,7 +2644,7 @@ cc_library_static {
 
 cc_library_static {
     name: "llvm-project_lib_libLLVMHipStdPar_a",
-    srcs: [ "llvm/lib/Transforms/HipStdPar/HipStdPar.cpp" ],
+    srcs: ["llvm/lib/Transforms/HipStdPar/HipStdPar.cpp"],
     cflags: [
         "-Wno-error",
         "-Wno-unreachable-code-loop-increment",
@@ -2690,7 +2690,7 @@ cc_library_static {
 
 cc_library_static {
     name: "llvm-project_lib_libLLVMCodeGenTypes_a",
-    srcs: [ "llvm/lib/CodeGenTypes/LowLevelType.cpp" ],
+    srcs: ["llvm/lib/CodeGenTypes/LowLevelType.cpp"],
     cflags: [
         "-Wno-error",
         "-Wno-unreachable-code-loop-increment",
@@ -2979,7 +2979,7 @@ cc_library_static {
 
 cc_library_static {
     name: "llvm-project_lib_libLLVMCFGuard_a",
-    srcs: [ "llvm/lib/Transforms/CFGuard/CFGuard.cpp" ],
+    srcs: ["llvm/lib/Transforms/CFGuard/CFGuard.cpp"],
     cflags: [
         "-Wno-error",
         "-Wno-unreachable-code-loop-increment",
@@ -3020,7 +3020,7 @@ cc_library_static {
 
 cc_library_static {
     name: "llvm-project_lib_libLLVMExtensions_a",
-    srcs: [ "llvm/lib/Extensions/Extensions.cpp" ],
+    srcs: ["llvm/lib/Extensions/Extensions.cpp"],
     cflags: [
         "-Wno-error",
         "-Wno-unreachable-code-loop-increment",
@@ -3037,7 +3037,7 @@ cc_library_static {
 
 cc_library_static {
     name: "llvm-project_lib_libLLVMFrontendDriver_a",
-    srcs: [ "llvm/lib/Frontend/Driver/CodeGenOptions.cpp" ],
+    srcs: ["llvm/lib/Frontend/Driver/CodeGenOptions.cpp"],
     cflags: [
         "-Wno-error",
         "-Wno-unreachable-code-loop-increment",
@@ -3092,21 +3092,20 @@ cc_library_headers {
 genrule {
     name: "clang-includes_lib_Headers_opencl-c-base_h",
     cmd: "cp $(in) $(out)",
-    srcs: [ "clang/lib/Headers/opencl-c-base.h" ],
-    out: [ "opencl-c-base.h" ],
+    srcs: ["clang/lib/Headers/opencl-c-base.h"],
+    out: ["opencl-c-base.h"],
 }
 
 genrule {
     name: "llvm-includes_tools_libclc_clspv--_bc",
     cmd: "cp $(in) $(out)",
-    srcs: [ "cmake_generated/tools/libclc/clspv--.bc" ],
-    out: [ "clspv--.bc" ],
+    srcs: ["cmake_generated/tools/libclc/clspv--.bc"],
+    out: ["clspv--.bc"],
 }
 
 genrule {
     name: "llvm-includes_tools_libclc_clspv64--_bc",
     cmd: "cp $(in) $(out)",
-    srcs: [ "cmake_generated/tools/libclc/clspv64--.bc" ],
-    out: [ "clspv64--.bc" ],
+    srcs: ["cmake_generated/tools/libclc/clspv64--.bc"],
+    out: ["clspv64--.bc"],
 }
-

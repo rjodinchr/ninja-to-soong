@@ -85,13 +85,13 @@ impl NinjaTarget {
         &self,
         src_dir: &str,
         project: &dyn Project,
-    ) -> (String, HashSet<String>) {
+    ) -> (Option<String>, HashSet<String>) {
         let mut link_flags: HashSet<String> = HashSet::new();
-        let mut version_script = String::new();
+        let mut version_script = None;
         if let Some(flags) = self.variables.get("LINK_FLAGS") {
             for flag in flags.split(" ") {
                 if let Some(vs) = flag.strip_prefix("-Wl,--version-script=") {
-                    version_script = vs.replace(&add_slash_suffix(src_dir), "");
+                    version_script = Some(vs.replace(&add_slash_suffix(src_dir), ""));
                 } else {
                     project.update_link_flags(flag, &mut link_flags);
                 }
@@ -139,12 +139,15 @@ impl NinjaTarget {
         Ok((static_libraries, shared_libraries, generated_libraries))
     }
 
-    pub fn get_defines(&self) -> HashSet<String> {
+    pub fn get_defines(&self, project: &dyn Project) -> HashSet<String> {
         let mut defines: HashSet<String> = HashSet::new();
 
         if let Some(defs) = self.variables.get("DEFINES") {
-            for define in defs.split(" ") {
-                defines.insert(define.to_string());
+            for define in defs.split("-D") {
+                if define.is_empty() || project.ignore_define(define) {
+                    continue;
+                }
+                defines.insert("-D".to_string() + define.trim());
             }
         };
         defines
@@ -155,22 +158,19 @@ impl NinjaTarget {
         let Some(incs) = self.variables.get("INCLUDES") else {
             return includes;
         };
-        for inc in incs.split(" ") {
-            if project.ignore_include(inc) {
+        for include in incs.split(" ") {
+            if project.ignore_include(include) {
                 continue;
             }
             let inc = project
-                .get_include(inc)
+                .get_include(include.strip_prefix("-I").unwrap_or(include))
                 .replace(&add_slash_suffix(src_dir), "")
                 .replace(src_dir, "");
 
-            if let Some(stripped_inc) = inc.strip_prefix("-I") {
-                includes.insert(stripped_inc.to_string());
-            } else if inc == "-isystem" {
+            if inc.is_empty() || inc == "isystem" {
                 continue;
-            } else {
-                includes.insert(inc);
             }
+            includes.insert(inc);
         }
         includes
     }

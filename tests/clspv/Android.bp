@@ -9,15 +9,15 @@
 //
 
 package {
-    default_visibility: [ "//external/clvk" ],
-    default_applicable_licenses: [ "clspv_license" ],
+    default_visibility: ["//external/clvk"],
+    default_applicable_licenses: ["clspv_license"],
 }
 
 license {
     name: "clspv_license",
-    visibility: [ ":__subpackages__" ],
-    license_kinds: [ "SPDX-license-identifier-Apache-2.0" ],
-    license_text: [ "LICENSE" ],
+    visibility: [":__subpackages__"],
+    license_kinds: ["SPDX-license-identifier-Apache-2.0"],
+    license_text: ["LICENSE"],
 }
 
 cc_library_static {
@@ -102,8 +102,8 @@ cc_library_static {
         "lib/WrapKernelPass.cpp",
         "lib/ZeroInitializeAllocasPass.cpp",
     ],
-    cflags: [ "-Wno-unreachable-code-loop-increment" ],
-    local_include_dirs: [ "include" ],
+    cflags: ["-Wno-unreachable-code-loop-increment"],
+    local_include_dirs: ["include"],
     header_libs: [
         "SPIRV-Headers-includes",
         "clang-includes",
@@ -129,7 +129,7 @@ cc_genrule {
         ":SPIRV-Headers-includes_include_spirv_unified1_extinst_nonsemantic_clspvreflection_grammar_json",
         "cmake/spirv_ext_inst.py",
     ],
-    out: [ "clspv/spirv_reflection.hpp" ],
+    out: ["clspv/spirv_reflection.hpp"],
 }
 
 cc_genrule {
@@ -139,7 +139,7 @@ cc_genrule {
         ":SPIRV-Headers-includes_include_spirv_unified1_extinst_glsl_std_450_grammar_json",
         "cmake/spirv_ext_inst.py",
     ],
-    out: [ "clspv/spirv_glsl.hpp" ],
+    out: ["clspv/spirv_glsl.hpp"],
 }
 
 cc_genrule {
@@ -149,7 +149,7 @@ cc_genrule {
         ":SPIRV-Headers-includes_include_spirv_unified1_spirv_hpp",
         "cmake/spirv_c_strings.py",
     ],
-    out: [ "clspv/spirv_c_strings.hpp" ],
+    out: ["clspv/spirv_c_strings.hpp"],
 }
 
 cc_genrule {
@@ -159,14 +159,14 @@ cc_genrule {
         ":llvm-includes_tools_libclc_clspv--_bc",
         "cmake/bake_file.py",
     ],
-    out: [ "clspv/clspv_builtin_library.h" ],
+    out: ["clspv/clspv_builtin_library.h"],
 }
 
 cc_genrule {
     name: "clspv_cmake_clspv-builtins_h",
     cmd: "$(location cmake/define_clspv_builtins.py) --output-file=$(location clspv-builtins.h)",
-    srcs: [ "cmake/define_clspv_builtins.py" ],
-    out: [ "clspv-builtins.h" ],
+    srcs: ["cmake/define_clspv_builtins.py"],
+    out: ["clspv-builtins.h"],
 }
 
 cc_genrule {
@@ -177,7 +177,7 @@ cc_genrule {
         ":clspv_cmake_clspv-builtins_h",
         "cmake/bake_file.py",
     ],
-    out: [ "clspv/opencl_builtins_header.h" ],
+    out: ["clspv/opencl_builtins_header.h"],
 }
 
 cc_genrule {
@@ -187,11 +187,10 @@ cc_genrule {
         ":llvm-includes_tools_libclc_clspv64--_bc",
         "cmake/bake_file.py",
     ],
-    out: [ "clspv/clspv64_builtin_library.h" ],
+    out: ["clspv/clspv64_builtin_library.h"],
 }
 
 cc_library_headers {
     name: "clspv-includes",
-    export_include_dirs: [ "include" ],
+    export_include_dirs: ["include"],
 }
-

@@ -9,15 +9,15 @@
 //
 
 package {
-    default_visibility: [ "//visibility:public" ],
-    default_applicable_licenses: [ "clvk_license" ],
+    default_visibility: ["//visibility:public"],
+    default_applicable_licenses: ["clvk_license"],
 }
 
 license {
     name: "clvk_license",
-    visibility: [ ":__subpackages__" ],
-    license_kinds: [ "SPDX-license-identifier-Apache-2.0" ],
-    license_text: [ "LICENSE" ],
+    visibility: [":__subpackages__"],
+    license_kinds: ["SPDX-license-identifier-Apache-2.0"],
+    license_text: ["LICENSE"],
 }
 
 cc_library_shared {
@@ -50,8 +50,8 @@ cc_library_shared {
         "-DCLSPV_ONLINE_COMPILER=1",
         "-DCOMPILER_AVAILABLE=1",
     ],
-    ldflags: [ "-Wl,-Bsymbolic" ],
-    shared_libs: [ "libvulkan" ],
+    ldflags: ["-Wl,-Bsymbolic"],
+    shared_libs: ["libvulkan"],
     static_libs: [
         "SPIRV-Tools_source_libSPIRV-Tools_a",
         "SPIRV-Tools_source_link_libSPIRV-Tools-link_a",
@@ -131,4 +131,3 @@ cc_library_shared {
     ],
     use_clang_lld: true,
 }
-

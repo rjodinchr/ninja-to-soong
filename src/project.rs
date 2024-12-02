@@ -123,10 +123,10 @@ pub trait Project<'a> {
     fn get_target_header_libs(&self, _target: &str) -> HashSet<String> {
         HashSet::new()
     }
-    fn get_target_alias(&self, _target: &str) -> String {
-        String::new()
+    fn get_target_alias(&self, _target: &str) -> Option<String> {
+        None
     }
-    fn ignore_defines(&self) -> bool {
+    fn ignore_define(&self, _define: &str) -> bool {
         false
     }
     fn ignore_gen_header(&self, _header: &str) -> bool {

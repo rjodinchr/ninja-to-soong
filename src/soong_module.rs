@@ -12,6 +12,8 @@ pub struct SoongModule {
 }
 
 impl SoongModule {
+    const INDENT: &'static str = "    ";
+
     pub fn new(name: &str) -> Self {
         Self {
             name: name.to_string(),
@@ -49,72 +51,51 @@ impl SoongModule {
         self.bool_map.insert(key.to_string(), bool);
     }
 
-    fn print_bool(&mut self, key: &str) -> String {
-        let mut bool = String::new();
-        let Some((key, value)) = self.bool_map.remove_entry(key) else {
-            return bool;
-        };
-        bool += "    ";
-        bool += &key;
-        bool += ": ";
-        bool += if value { "true" } else { "false" };
-        bool += ",\n";
+    fn print_key_value(key: &str, value: &str) -> String {
+        Self::INDENT.to_string() + key + ": " + value + ",\n"
+    }
 
-        bool
+    fn print_bool(&mut self, key: &str) -> String {
+        let Some((key, bool)) = self.bool_map.remove_entry(key) else {
+            return String::new();
+        };
+        Self::print_key_value(&key, if bool { "true" } else { "false" })
     }
 
     fn print_str(&mut self, key: &str) -> String {
-        let mut str = String::new();
-        let Some((key, value)) = self.str_map.remove_entry(key) else {
-            return str;
+        let Some((key, str)) = self.str_map.remove_entry(key) else {
+            return String::new();
         };
-        if value == "" {
-            return str;
-        }
-        str += "    ";
-        str += &key;
-        str += ": \"";
-        str += &value;
-        str += "\",\n";
-
-        str
+        Self::print_key_value(&key, &("\"".to_string() + &str + "\""))
     }
 
     fn print_set(&mut self, key: &str) -> String {
-        let mut set = String::new();
-        let Some((key, mut hash_set)) = self.set_map.remove_entry(key) else {
-            return set;
+        let Some((key, set)) = self.set_map.remove_entry(key) else {
+            return String::new();
         };
-        hash_set.remove("");
-        if hash_set.len() == 0 {
-            return set;
+        if set.len() == 0 {
+            return String::new();
         }
-        set += "    ";
-        set += &key;
-        set += ": ";
 
-        if hash_set.len() == 1 {
-            set += "[ \"";
-            for value in hash_set {
-                set += &value;
-            }
-            set += "\" ],\n";
-        } else {
-            set += "[\n";
-            let mut sorted = Vec::from_iter(hash_set);
-            sorted.sort();
-            for value in sorted {
-                set += "        \"";
-                set += &value;
-                set += "\",\n";
-            }
-            set += "    ],\n";
-        }
-        set
+        Self::print_key_value(
+            &key,
+            &(if set.len() == 1 {
+                "[\"".to_string() + &(set.into_iter().last().unwrap()) + "\"]"
+            } else {
+                let mut sorted = Vec::from_iter(set);
+                sorted.sort();
+                "[\n".to_string()
+                    + &sorted.iter().fold(String::new(), |values, value| {
+                        values + Self::INDENT + Self::INDENT + "\"" + &value + "\",\n"
+                    })
+                    + "    ]"
+            }),
+        )
     }
 
     pub fn print(mut self) -> String {
         let mut module = String::new();
+        module += "\n";
         module += &self.name;
         module += " {\n";
 
@@ -148,7 +129,7 @@ impl SoongModule {
             module += &self.print_bool(bool);
         }
 
-        module += "}\n\n";
+        module += "}\n";
         module
     }
 }

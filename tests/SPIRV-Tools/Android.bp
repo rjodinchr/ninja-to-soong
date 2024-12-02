@@ -9,15 +9,15 @@
 //
 
 package {
-    default_visibility: [ "//visibility:public" ],
-    default_applicable_licenses: [ "SPIRV-Tools_license" ],
+    default_visibility: ["//visibility:public"],
+    default_applicable_licenses: ["SPIRV-Tools_license"],
 }
 
 license {
     name: "SPIRV-Tools_license",
-    visibility: [ ":__subpackages__" ],
-    license_kinds: [ "SPDX-license-identifier-Apache-2.0" ],
-    license_text: [ "LICENSE" ],
+    visibility: [":__subpackages__"],
+    license_kinds: ["SPDX-license-identifier-Apache-2.0"],
+    license_text: ["LICENSE"],
 }
 
 cc_library_static {
@@ -139,9 +139,9 @@ cc_library_static {
         "source/opt/workaround1209.cpp",
         "source/opt/wrap_opkill.cpp",
     ],
-    cflags: [ "-Wno-implicit-fallthrough" ],
-    local_include_dirs: [ "include" ],
-    header_libs: [ "SPIRV-Headers-includes" ],
+    cflags: ["-Wno-implicit-fallthrough"],
+    local_include_dirs: ["include"],
+    header_libs: ["SPIRV-Headers-includes"],
     generated_headers: [
         "SPIRV-Tools_DebugInfo_h",
         "SPIRV-Tools_NonSemanticShaderDebugInfo100_h",
@@ -242,9 +242,9 @@ cc_library_static {
         "source/val/validate_type.cpp",
         "source/val/validation_state.cpp",
     ],
-    cflags: [ "-Wno-implicit-fallthrough" ],
-    local_include_dirs: [ "include" ],
-    header_libs: [ "SPIRV-Headers-includes" ],
+    cflags: ["-Wno-implicit-fallthrough"],
+    local_include_dirs: ["include"],
+    header_libs: ["SPIRV-Headers-includes"],
     generated_headers: [
         "SPIRV-Tools_DebugInfo_h",
         "SPIRV-Tools_NonSemanticShaderDebugInfo100_h",
@@ -275,7 +275,7 @@ cc_genrule {
         "CHANGES",
         "utils/update_build_version.py",
     ],
-    out: [ "build-version.inc" ],
+    out: ["build-version.inc"],
 }
 
 cc_genrule {
@@ -285,7 +285,7 @@ cc_genrule {
         ":SPIRV-Headers-includes_include_spirv_unified1_extinst_nonsemantic_vkspreflection_grammar_json",
         "utils/generate_grammar_tables.py",
     ],
-    out: [ "nonsemantic.vkspreflection.insts.inc" ],
+    out: ["nonsemantic.vkspreflection.insts.inc"],
 }
 
 cc_genrule {
@@ -295,7 +295,7 @@ cc_genrule {
         ":SPIRV-Headers-includes_include_spirv_unified1_extinst_spv-amd-shader-trinary-minmax_grammar_json",
         "utils/generate_grammar_tables.py",
     ],
-    out: [ "spv-amd-shader-trinary-minmax.insts.inc" ],
+    out: ["spv-amd-shader-trinary-minmax.insts.inc"],
 }
 
 cc_genrule {
@@ -305,7 +305,7 @@ cc_genrule {
         ":SPIRV-Headers-includes_include_spirv_unified1_extinst_spv-amd-shader-explicit-vertex-parameter_grammar_json",
         "utils/generate_grammar_tables.py",
     ],
-    out: [ "spv-amd-shader-explicit-vertex-parameter.insts.inc" ],
+    out: ["spv-amd-shader-explicit-vertex-parameter.insts.inc"],
 }
 
 cc_genrule {
@@ -315,7 +315,7 @@ cc_genrule {
         ":SPIRV-Headers-includes_include_spirv_unified1_extinst_spv-amd-shader-ballot_grammar_json",
         "utils/generate_grammar_tables.py",
     ],
-    out: [ "spv-amd-shader-ballot.insts.inc" ],
+    out: ["spv-amd-shader-ballot.insts.inc"],
 }
 
 cc_genrule {
@@ -325,7 +325,7 @@ cc_genrule {
         ":SPIRV-Headers-includes_include_spirv_unified1_extinst_spv-amd-gcn-shader_grammar_json",
         "utils/generate_grammar_tables.py",
     ],
-    out: [ "spv-amd-gcn-shader.insts.inc" ],
+    out: ["spv-amd-gcn-shader.insts.inc"],
 }
 
 cc_genrule {
@@ -335,7 +335,7 @@ cc_genrule {
         ":SPIRV-Headers-includes_include_spirv_unified1_extinst_nonsemantic_shader_debuginfo_100_grammar_json",
         "utils/generate_grammar_tables.py",
     ],
-    out: [ "nonsemantic.shader.debuginfo.100.insts.inc" ],
+    out: ["nonsemantic.shader.debuginfo.100.insts.inc"],
 }
 
 cc_genrule {
@@ -345,7 +345,7 @@ cc_genrule {
         ":SPIRV-Headers-includes_include_spirv_unified1_extinst_debuginfo_grammar_json",
         "utils/generate_grammar_tables.py",
     ],
-    out: [ "debuginfo.insts.inc" ],
+    out: ["debuginfo.insts.inc"],
 }
 
 cc_genrule {
@@ -355,7 +355,7 @@ cc_genrule {
         ":SPIRV-Headers-includes_include_spirv_unified1_extinst_nonsemantic_clspvreflection_grammar_json",
         "utils/generate_grammar_tables.py",
     ],
-    out: [ "nonsemantic.clspvreflection.insts.inc" ],
+    out: ["nonsemantic.clspvreflection.insts.inc"],
 }
 
 cc_genrule {
@@ -365,7 +365,7 @@ cc_genrule {
         ":SPIRV-Headers-includes_include_spirv_unified1_extinst_opencl_debuginfo_100_grammar_json",
         "utils/generate_grammar_tables.py",
     ],
-    out: [ "opencl.debuginfo.100.insts.inc" ],
+    out: ["opencl.debuginfo.100.insts.inc"],
 }
 
 cc_genrule {
@@ -375,7 +375,7 @@ cc_genrule {
         ":SPIRV-Headers-includes_include_spirv_unified1_extinst_opencl_debuginfo_100_grammar_json",
         "utils/generate_language_headers.py",
     ],
-    out: [ "OpenCLDebugInfo100.h" ],
+    out: ["OpenCLDebugInfo100.h"],
 }
 
 cc_genrule {
@@ -385,7 +385,7 @@ cc_genrule {
         ":SPIRV-Headers-includes_include_spirv_unified1_extinst_nonsemantic_shader_debuginfo_100_grammar_json",
         "utils/generate_language_headers.py",
     ],
-    out: [ "NonSemanticShaderDebugInfo100.h" ],
+    out: ["NonSemanticShaderDebugInfo100.h"],
 }
 
 cc_genrule {
@@ -395,7 +395,7 @@ cc_genrule {
         ":SPIRV-Headers-includes_include_spirv_unified1_extinst_debuginfo_grammar_json",
         "utils/generate_language_headers.py",
     ],
-    out: [ "DebugInfo.h" ],
+    out: ["DebugInfo.h"],
 }
 
 cc_genrule {
@@ -406,7 +406,7 @@ cc_genrule {
         ":SPIRV-Headers-includes_include_spirv_unified1_spirv_core_grammar_json",
         "utils/generate_grammar_tables.py",
     ],
-    out: [ "opencl.std.insts.inc" ],
+    out: ["opencl.std.insts.inc"],
 }
 
 cc_genrule {
@@ -417,7 +417,7 @@ cc_genrule {
         ":SPIRV-Headers-includes_include_spirv_unified1_spirv_core_grammar_json",
         "utils/generate_grammar_tables.py",
     ],
-    out: [ "glsl.std.450.insts.inc" ],
+    out: ["glsl.std.450.insts.inc"],
 }
 
 cc_genrule {
@@ -442,7 +442,7 @@ cc_genrule {
         ":SPIRV-Headers-includes_include_spirv_spir-v_xml",
         "utils/generate_registry_tables.py",
     ],
-    out: [ "generators.inc" ],
+    out: ["generators.inc"],
 }
 
 cc_genrule {
@@ -462,10 +462,10 @@ cc_genrule {
 
 cc_library_static {
     name: "SPIRV-Tools_source_link_libSPIRV-Tools-link_a",
-    srcs: [ "source/link/linker.cpp" ],
-    cflags: [ "-Wno-implicit-fallthrough" ],
-    local_include_dirs: [ "include" ],
-    header_libs: [ "SPIRV-Headers-includes" ],
+    srcs: ["source/link/linker.cpp"],
+    cflags: ["-Wno-implicit-fallthrough"],
+    local_include_dirs: ["include"],
+    header_libs: ["SPIRV-Headers-includes"],
     generated_headers: [
         "SPIRV-Tools_DebugInfo_h",
         "SPIRV-Tools_NonSemanticShaderDebugInfo100_h",
@@ -491,6 +491,5 @@ cc_library_static {
 
 cc_library_headers {
     name: "SPIRV-Tools-includes",
-    export_include_dirs: [ "include" ],
+    export_include_dirs: ["include"],
 }
-
