@@ -145,7 +145,7 @@ fn execute(executable: &str, args: &Vec<String>) -> Result<(), String> {
         &spirv_tools_dir,
         &spirv_headers_dir,
     );
-    let mut spirv_headers = project::spirv_headers::SpirvHeaders::new(ndk_dir, &spirv_headers_dir);
+    let mut spirv_headers = project::spirv_headers::SpirvHeaders::new(&spirv_headers_dir);
     let mut llvm_project =
         project::llvm_project::LlvmProject::new(temp_dir, ndk_dir, &llvm_project_dir);
     let mut clspv = project::clspv::Clspv::new(
