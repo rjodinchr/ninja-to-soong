@@ -105,20 +105,20 @@ fn parse_args<'a>(
         print_warn!(format!("Expected '{ANDROID_NDK}' got '{ndk_name}'"));
     }
 
-    let mut project_ids_to_generate: VecDeque<ProjectId> = VecDeque::new();
+    let mut project_ids_to_write: VecDeque<ProjectId> = VecDeque::new();
     for arg in &args[required_args..] {
         match ProjectId::from(arg) {
-            Some(project_id) => project_ids_to_generate.push_back(project_id),
+            Some(project_id) => project_ids_to_write.push_back(project_id),
             None => return error!(format!("Unknown project '{arg}'")),
         };
     }
-    Ok((android_dir, ndk_dir, project_ids_to_generate))
+    Ok((android_dir, ndk_dir, project_ids_to_write))
 }
 
 fn main() -> Result<(), String> {
     let args: Vec<String> = std::env::args().collect();
     let executable = args[0].rsplit_once("/").unwrap().1;
-    let (android_dir, ndk_dir, project_id_to_generate) = parse_args(executable, &args)?;
+    let (android_dir, ndk_dir, project_ids_to_write) = parse_args(executable, &args)?;
 
     let temp_path = std::env::temp_dir().join(executable);
     let temp_dir = temp_path.to_str().unwrap();
@@ -129,12 +129,8 @@ fn main() -> Result<(), String> {
     let spirv_tools_dir = ProjectId::SpirvTools.android_path(android_dir);
     let spirv_headers_dir = ProjectId::SpirvHeaders.android_path(android_dir);
 
-    let mut spirv_tools = project::spirv_tools::SpirvTools::new(
-        temp_dir,
-        ndk_dir,
-        &spirv_tools_dir,
-        &spirv_headers_dir,
-    );
+    let mut spirv_tools =
+        spirv_tools::SpirvTools::new(temp_dir, ndk_dir, &spirv_tools_dir, &spirv_headers_dir);
     let mut spirv_headers = spirv_headers::SpirvHeaders::new(&spirv_headers_dir);
     let mut llvm_project = llvm_project::LlvmProject::new(temp_dir, ndk_dir, &llvm_project_dir);
     let mut clspv = clspv::Clspv::new(
@@ -162,7 +158,7 @@ fn main() -> Result<(), String> {
     all_projects.push(&mut spirv_tools);
     all_projects.push(&mut spirv_headers);
 
-    if let Err(err) = generate_projects(all_projects, project_id_to_generate) {
+    if let Err(err) = generate_projects(all_projects, project_ids_to_write) {
         print_error!(err);
         Err(format!("{executable} failed"))
     } else {
