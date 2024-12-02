@@ -134,18 +134,21 @@ impl<'a> SoongPackage<'a> {
         let (version_script, link_flags) = target.get_link_flags(self.src_dir, project);
         let (static_libs, shared_libs, generated_libraries) =
             target.get_link_libraries(self.ndk_dir, project)?;
-        self.generated_libraries.extend(generated_libraries);
-        let generated_headers = target.get_generated_headers(targets_map)?;
-        self.gen_deps
-            .extend(project.get_headers_to_copy(&generated_headers));
-        let generated_headers_filtered_raw = project.get_headers_to_generate(&generated_headers);
-        let mut generated_headers_filtered = HashSet::new();
-        for header in generated_headers_filtered_raw {
-            generated_headers_filtered.insert(match targets_map.get(&header) {
-                Some(target_header) => target_header.get_name(self.target_prefix),
-                None => return error!(format!("Could not find target for '{header}'")),
-            });
+        self.generated_libraries = generated_libraries;
+
+        let target_generated_headers = target.get_generated_headers(targets_map)?;
+        let mut generated_headers = HashSet::new();
+        for header in &target_generated_headers {
+            if project.ignore_gen_header(&header) {
+                self.gen_deps.insert(header.clone());
+            } else {
+                generated_headers.insert(match targets_map.get(header) {
+                    Some(target_header) => target_header.get_name(self.target_prefix),
+                    None => return error!(format!("Could not find target for '{header}'")),
+                });
+            }
         }
+
         let target_name = target.get_name(self.target_prefix);
 
         let mut module = crate::soong_module::SoongModule::new(name);
@@ -160,7 +163,7 @@ impl<'a> SoongPackage<'a> {
         module.add_set("static_libs", static_libs);
         module.add_set("shared_libs", shared_libs);
         module.add_set("header_libs", project.get_target_header_libs(&target_name));
-        module.add_set("generated_headers", generated_headers_filtered);
+        module.add_set("generated_headers", generated_headers);
         module.add_str("version_script", version_script);
         module.add_str("stem", project.get_target_alias(&target_name));
         module.add_str("name", target_name);

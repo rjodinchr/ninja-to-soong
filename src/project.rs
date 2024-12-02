@@ -112,12 +112,6 @@ pub trait Project<'a> {
     fn get_gen_deps(&self, _project: ProjectId) -> GenDepsMap {
         HashMap::new()
     }
-    fn get_headers_to_copy(&self, _headers: &HashSet<String>) -> HashSet<String> {
-        HashSet::new()
-    }
-    fn get_headers_to_generate(&self, _headers: &HashSet<String>) -> HashSet<String> {
-        HashSet::new()
-    }
     fn get_include(&self, include: &str) -> String {
         include.to_string()
     }
@@ -134,6 +128,9 @@ pub trait Project<'a> {
         String::new()
     }
     fn ignore_define(&self, _define: &str) -> bool {
+        false
+    }
+    fn ignore_gen_header(&self, _header: &str) -> bool {
         false
     }
     fn ignore_include(&self, _include: &str) -> bool {

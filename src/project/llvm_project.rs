@@ -160,14 +160,6 @@ impl<'a> crate::project::Project<'a> for LlvmProject<'a> {
         .into()
     }
 
-    fn get_headers_to_copy(&self, headers: &HashSet<String>) -> HashSet<String> {
-        let mut set = HashSet::new();
-        for header in headers {
-            set.insert(header.clone());
-        }
-        set
-    }
-
     fn get_include(&self, include: &str) -> String {
         include.replace(&self.build_dir, CMAKE_GENERATED)
     }
@@ -177,6 +169,10 @@ impl<'a> crate::project::Project<'a> for LlvmProject<'a> {
     }
 
     fn ignore_define(&self, _define: &str) -> bool {
+        true
+    }
+
+    fn ignore_gen_header(&self, _header: &str) -> bool {
         true
     }
 

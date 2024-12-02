@@ -149,6 +149,10 @@ impl<'a> crate::project::Project<'a> for Clvk<'a> {
         true
     }
 
+    fn ignore_gen_header(&self, _header: &str) -> bool {
+        true
+    }
+
     fn ignore_target(&self, target: &String) -> bool {
         target.starts_with("external/")
     }

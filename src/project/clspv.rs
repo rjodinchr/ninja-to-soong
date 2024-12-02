@@ -169,10 +169,14 @@ impl<'a> crate::project::Project<'a> for Clspv<'a> {
                     if let Some(strip) = dep.strip_prefix(&add_slash_suffix(self.llvm_project_dir))
                     {
                         clang_headers.insert(strip.to_string());
-                    } else if let Some(strip) =
-                        dep.strip_prefix(&add_slash_suffix("third_party/llvm"))
+                    } else if dep.starts_with("third_party/llvm/tools/libclc/clspv")
+                        && dep.ends_with(".bc")
                     {
-                        libclc_binaries.insert(strip.to_string());
+                        libclc_binaries.insert(
+                            dep.strip_prefix(&add_slash_suffix("third_party/llvm"))
+                                .unwrap()
+                                .to_string(),
+                        );
                     }
                 }
                 deps.insert(GenDeps::ClangHeaders, clang_headers);
@@ -181,16 +185,6 @@ impl<'a> crate::project::Project<'a> for Clspv<'a> {
             _ => (),
         };
         deps
-    }
-
-    fn get_headers_to_generate(&self, headers: &HashSet<String>) -> HashSet<String> {
-        let mut set = HashSet::new();
-        for header in headers {
-            if !header.contains("third_party/llvm") {
-                set.insert(header.clone());
-            }
-        }
-        set
     }
 
     fn get_project_deps(&self) -> Vec<ProjectId> {
@@ -208,6 +202,10 @@ impl<'a> crate::project::Project<'a> for Clspv<'a> {
 
     fn ignore_define(&self, _define: &str) -> bool {
         true
+    }
+
+    fn ignore_gen_header(&self, header: &str) -> bool {
+        header.contains("third_party/llvm")
     }
 
     fn ignore_include(&self, include: &str) -> bool {
