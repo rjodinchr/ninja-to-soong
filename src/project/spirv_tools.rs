@@ -119,7 +119,7 @@ impl<'a> crate::project::Project<'a> for SpirvTools<'a> {
         include.contains(&self.build_dir) || include.contains(self.spirv_headers_dir)
     }
 
-    fn ignore_define(&self, _define: &str) -> bool {
+    fn ignore_defines(&self) -> bool {
         true
     }
 }

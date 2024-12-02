@@ -127,7 +127,7 @@ pub trait Project<'a> {
     fn get_target_alias(&self, _target: &str) -> String {
         String::new()
     }
-    fn ignore_define(&self, _define: &str) -> bool {
+    fn ignore_defines(&self) -> bool {
         false
     }
     fn ignore_gen_header(&self, _header: &str) -> bool {
