@@ -102,7 +102,6 @@ cc_library_static {
         "lib/WrapKernelPass.cpp",
         "lib/ZeroInitializeAllocasPass.cpp",
     ],
-    cflags: ["-Wno-unreachable-code-loop-increment"],
     local_include_dirs: ["include"],
     header_libs: [
         "SPIRV-Headers-includes",
