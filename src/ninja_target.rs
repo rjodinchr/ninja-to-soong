@@ -180,11 +180,14 @@ impl NinjaTarget {
         includes
     }
 
-    pub fn get_generated_headers(
+    pub fn get_gen_headers_and_gen_deps(
         &self,
+        target_prefix: &str,
         targets_map: &NinjaTargetsMap,
-    ) -> Result<HashSet<String>, String> {
-        let mut generated_headers: HashSet<String> = HashSet::new();
+        project: &dyn Project,
+    ) -> Result<(HashSet<String>, HashSet<String>), String> {
+        let mut gen_headers: HashSet<String> = HashSet::new();
+        let mut gen_deps: HashSet<String> = HashSet::new();
         let mut target_seen: HashSet<String> = HashSet::new();
         let mut target_to_parse = vec![self.outputs[0].clone()];
 
@@ -201,14 +204,19 @@ impl NinjaTarget {
                 target_seen.insert(output);
             }
 
-            if target.rule == "CUSTOM_COMMAND" {
-                if target.get_cmd()?.is_none() {
-                    continue;
-                }
-                generated_headers.insert(target_name);
+            if target.rule != "CUSTOM_COMMAND" || target.get_cmd()?.is_none() {
+                continue;
+            }
+            if project.ignore_gen_header(&target_name) {
+                gen_deps.insert(target_name.clone());
+            } else {
+                gen_headers.insert(match targets_map.get(&target_name) {
+                    Some(target_header) => target_header.get_name(target_prefix),
+                    None => return error!(format!("Could not find target for '{target_name}'")),
+                });
             }
         }
-        Ok(generated_headers)
+        Ok((gen_headers, gen_deps))
     }
 
     pub fn get_cmd(&self) -> Result<Option<String>, String> {

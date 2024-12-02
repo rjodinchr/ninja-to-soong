@@ -134,20 +134,10 @@ impl<'a> SoongPackage<'a> {
         let (version_script, link_flags) = target.get_link_flags(self.src_dir, project);
         let (static_libs, shared_libs, generated_libraries) =
             target.get_link_libraries(self.ndk_dir, project)?;
-        self.generated_libraries = generated_libraries;
-
-        let target_generated_headers = target.get_generated_headers(targets_map)?;
-        let mut generated_headers = HashSet::new();
-        for header in &target_generated_headers {
-            if project.ignore_gen_header(&header) {
-                self.gen_deps.insert(header.clone());
-            } else {
-                generated_headers.insert(match targets_map.get(header) {
-                    Some(target_header) => target_header.get_name(self.target_prefix),
-                    None => return error!(format!("Could not find target for '{header}'")),
-                });
-            }
-        }
+        self.generated_libraries.extend(generated_libraries);
+        let (gen_headers, gen_deps) =
+            target.get_gen_headers_and_gen_deps(self.target_prefix, targets_map, project)?;
+        self.gen_deps.extend(gen_deps);
 
         let target_name = target.get_name(self.target_prefix);
 
@@ -163,7 +153,7 @@ impl<'a> SoongPackage<'a> {
         module.add_set("static_libs", static_libs);
         module.add_set("shared_libs", shared_libs);
         module.add_set("header_libs", project.get_target_header_libs(&target_name));
-        module.add_set("generated_headers", generated_headers);
+        module.add_set("generated_headers", gen_headers);
         module.add_str("version_script", version_script);
         module.add_str("stem", project.get_target_alias(&target_name));
         module.add_str("name", target_name);
