@@ -176,11 +176,11 @@ impl<'a> crate::project::Project<'a> for LlvmProject<'a> {
         true
     }
 
-    fn ignore_target(&self, input: &String) -> bool {
+    fn ignore_target(&self, input: &str) -> bool {
         !input.starts_with("lib")
     }
 
-    fn optimize_target_for_size(&self, _target: &String) -> bool {
+    fn optimize_target_for_size(&self, _target: &str) -> bool {
         true
     }
 }

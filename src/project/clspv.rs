@@ -191,7 +191,7 @@ impl<'a> crate::project::Project<'a> for Clspv<'a> {
         vec![ProjectId::Clvk]
     }
 
-    fn get_target_header_libs(&self, _target: &String) -> HashSet<String> {
+    fn get_target_header_libs(&self, _target: &str) -> HashSet<String> {
         [
             CC_LIBRARY_HEADERS_SPIRV_HEADERS.to_string(),
             CC_LIBRARY_HEADERS_LLVM.to_string(),
@@ -214,11 +214,11 @@ impl<'a> crate::project::Project<'a> for Clspv<'a> {
             || include.contains(self.llvm_project_dir)
     }
 
-    fn ignore_target(&self, target: &String) -> bool {
+    fn ignore_target(&self, target: &str) -> bool {
         target.starts_with("third_party/")
     }
 
-    fn optimize_target_for_size(&self, _target: &String) -> bool {
+    fn optimize_target_for_size(&self, _target: &str) -> bool {
         true
     }
 }

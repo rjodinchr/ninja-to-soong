@@ -173,7 +173,7 @@ impl<'a> SoongPackage<'a> {
     fn replace_output_in_cmd(
         &self,
         mut cmd: String,
-        output: &String,
+        output: &str,
         project: &dyn Project,
     ) -> String {
         let marker = "<output>";

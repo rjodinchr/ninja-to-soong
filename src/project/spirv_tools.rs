@@ -111,7 +111,7 @@ impl<'a> crate::project::Project<'a> for SpirvTools<'a> {
         vec![ProjectId::Clvk]
     }
 
-    fn get_target_header_libs(&self, _target: &String) -> HashSet<String> {
+    fn get_target_header_libs(&self, _target: &str) -> HashSet<String> {
         [CC_LIBRARY_HEADERS_SPIRV_HEADERS.to_string()].into()
     }
 

@@ -44,7 +44,7 @@ impl NinjaTarget {
         &self.inputs
     }
 
-    pub fn get_rule(&self) -> &String {
+    pub fn get_rule(&self) -> &str {
         &self.rule
     }
 

@@ -121,10 +121,10 @@ pub trait Project<'a> {
     fn get_project_deps(&self) -> Vec<ProjectId> {
         Vec::new()
     }
-    fn get_target_header_libs(&self, _target: &String) -> HashSet<String> {
+    fn get_target_header_libs(&self, _target: &str) -> HashSet<String> {
         HashSet::new()
     }
-    fn get_target_alias(&self, _target: &String) -> String {
+    fn get_target_alias(&self, _target: &str) -> String {
         String::new()
     }
     fn ignore_define(&self, _define: &str) -> bool {
@@ -136,10 +136,10 @@ pub trait Project<'a> {
     fn ignore_include(&self, _include: &str) -> bool {
         false
     }
-    fn ignore_target(&self, _target: &String) -> bool {
+    fn ignore_target(&self, _target: &str) -> bool {
         false
     }
-    fn optimize_target_for_size(&self, _target: &String) -> bool {
+    fn optimize_target_for_size(&self, _target: &str) -> bool {
         false
     }
     fn update_link_flags(&self, _flag: &str, _link_flags: &mut HashSet<String>) {}
