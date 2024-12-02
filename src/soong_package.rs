@@ -49,7 +49,6 @@ impl<'a> SoongPackage<'a> {
 //
 // https://github.com/rjodinchr/ninja-to-soong
 //
-
 ";
         let license_name =
             target_prefix.to_string() + "_" + &license_text.replace(".", "_").to_lowercase();
@@ -124,9 +123,7 @@ impl<'a> SoongPackage<'a> {
             let target_includes = target.get_includes(self.src_dir, project);
             self.include_dirs.extend(target_includes.clone());
             includes.extend(target_includes);
-            if !project.ignore_defines() {
-                cflags.extend(target.get_defines());
-            }
+            cflags.extend(target.get_defines(project));
         }
 
         let (version_script, link_flags) = target.get_link_flags(self.src_dir, project);
@@ -152,8 +149,12 @@ impl<'a> SoongPackage<'a> {
         module.add_set("shared_libs", shared_libs);
         module.add_set("header_libs", project.get_target_header_libs(&target_name));
         module.add_set("generated_headers", gen_headers);
-        module.add_str("version_script", version_script);
-        module.add_str("stem", project.get_target_alias(&target_name));
+        if let Some(vs) = version_script {
+            module.add_str("version_script", vs);
+        }
+        if let Some(alias) = project.get_target_alias(&target_name) {
+            module.add_str("stem", alias);
+        }
         module.add_str("name", target_name);
         Ok(module.print())
     }

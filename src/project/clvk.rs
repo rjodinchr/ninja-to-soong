@@ -136,11 +136,11 @@ impl<'a> crate::project::Project<'a> for Clvk<'a> {
         .into()
     }
 
-    fn get_target_alias(&self, target: &str) -> String {
+    fn get_target_alias(&self, target: &str) -> Option<String> {
         if target == "clvk_libOpenCL_so" {
-            "libclvk".to_string()
+            Some("libclvk".to_string())
         } else {
-            String::new()
+            None
         }
     }
 
