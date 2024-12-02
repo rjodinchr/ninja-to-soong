@@ -26,7 +26,7 @@ pub enum ProjectId {
 const ALL_NAME: &str = "all";
 const CLVK_NAME: &str = "clvk";
 const CLSPV_NAME: &str = "clspv";
-const LLVM_NAME: &str = "llvm-project";
+const LLVM_PROJECT_NAME: &str = "llvm-project";
 const SPIRV_HEADERS_NAME: &str = "SPIRV-Headers";
 const SPIRV_TOOLS_NAME: &str = "SPIRV-Tools";
 
@@ -36,7 +36,7 @@ impl ProjectId {
             ALL_NAME => Some(ProjectId::All),
             CLVK_NAME => Some(ProjectId::Clvk),
             CLSPV_NAME => Some(ProjectId::Clspv),
-            LLVM_NAME => Some(ProjectId::LlvmProject),
+            LLVM_PROJECT_NAME => Some(ProjectId::LlvmProject),
             SPIRV_HEADERS_NAME => Some(ProjectId::SpirvHeaders),
             SPIRV_TOOLS_NAME => Some(ProjectId::SpirvTools),
             _ => None,
@@ -47,10 +47,13 @@ impl ProjectId {
             ProjectId::All => ALL_NAME,
             ProjectId::Clvk => CLVK_NAME,
             ProjectId::Clspv => CLSPV_NAME,
-            ProjectId::LlvmProject => LLVM_NAME,
+            ProjectId::LlvmProject => LLVM_PROJECT_NAME,
             ProjectId::SpirvHeaders => SPIRV_HEADERS_NAME,
             ProjectId::SpirvTools => SPIRV_TOOLS_NAME,
         }
+    }
+    pub fn android_path(self, android_dir: &str) -> String {
+        android_dir.to_string() + "/external/" + self.str()
     }
 }
 
