@@ -23,7 +23,7 @@ impl<'a> LlvmProject<'a> {
             src_dir: llvm_project_dir,
             build_dir: add_slash_suffix(temp_dir) + ProjectId::LlvmProject.str(),
             ndk_dir,
-            copy_gen_deps: true,
+            copy_gen_deps: false,
         }
     }
 }
@@ -145,8 +145,8 @@ impl<'a> crate::project::Project<'a> for LlvmProject<'a> {
             let mut targets = Vec::new();
             targets.extend(GenDeps::TargetsToGenerate.get(self, ProjectId::Clvk, projects_map));
             targets.extend(GenDeps::LibclcBinaries.get(self, ProjectId::Clspv, projects_map));
-            if !cmake_build(&self.build_dir, &targets)? {
-                self.copy_gen_deps = false;
+            if cmake_build(&self.build_dir, &targets)? {
+                self.copy_gen_deps = true;
             }
         }
         Ok(Some(self.build_dir.clone()))
