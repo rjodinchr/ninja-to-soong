@@ -20,10 +20,8 @@ pub enum ProjectId {
     LlvmProject,
     SpirvHeaders,
     SpirvTools,
-    All,
 }
 
-const ALL_NAME: &str = "all";
 const CLVK_NAME: &str = "clvk";
 const CLSPV_NAME: &str = "clspv";
 const LLVM_PROJECT_NAME: &str = "llvm-project";
@@ -33,7 +31,6 @@ const SPIRV_TOOLS_NAME: &str = "SPIRV-Tools";
 impl ProjectId {
     pub fn from(str: &str) -> Option<ProjectId> {
         match str {
-            ALL_NAME => Some(ProjectId::All),
             CLVK_NAME => Some(ProjectId::Clvk),
             CLSPV_NAME => Some(ProjectId::Clspv),
             LLVM_PROJECT_NAME => Some(ProjectId::LlvmProject),
@@ -44,7 +41,6 @@ impl ProjectId {
     }
     pub const fn str(&self) -> &'static str {
         match self {
-            ProjectId::All => ALL_NAME,
             ProjectId::Clvk => CLVK_NAME,
             ProjectId::Clspv => CLSPV_NAME,
             ProjectId::LlvmProject => LLVM_PROJECT_NAME,
