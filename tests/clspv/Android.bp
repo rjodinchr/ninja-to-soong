@@ -163,9 +163,9 @@ cc_genrule {
 
 cc_genrule {
     name: "clspv_cmake_clspv-builtins_h",
-    cmd: "$(location cmake/define_clspv_builtins.py) --output-file=$(location clspv-builtins.h)",
+    cmd: "$(location cmake/define_clspv_builtins.py) --output-file=$(location cmake/clspv-builtins.h)",
     srcs: ["cmake/define_clspv_builtins.py"],
-    out: ["clspv-builtins.h"],
+    out: ["cmake/clspv-builtins.h"],
 }
 
 cc_genrule {
