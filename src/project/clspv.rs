@@ -125,14 +125,11 @@ impl Project for Clspv {
     }
 
     fn get_cmd_output(&self, output: &str) -> String {
-        if let Some(split) = output.split_once("include/") {
-            split.1
-        } else if !output.contains("libclc") {
-            output.split("/").last().unwrap()
-        } else {
-            output
-        }
-        .to_string()
+        output
+            .split_once("include/")
+            .unwrap_or(("", output))
+            .1
+            .to_string()
     }
 
     fn get_gen_deps(&self, project: ProjectId) -> GenDepsMap {
