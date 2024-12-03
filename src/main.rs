@@ -41,7 +41,7 @@ fn generate_project(
 }
 
 fn generate_projects<'a>(
-    all_projects: Vec<&'a mut dyn Project<'a>>,
+    all_projects: Vec<&'a mut dyn Project>,
     mut project_ids_to_write: VecDeque<ProjectId>,
 ) -> Result<(), String> {
     let write_all = project_ids_to_write.len() == 0;
@@ -123,40 +123,22 @@ fn main() -> Result<(), String> {
     let temp_path = std::env::temp_dir().join(executable);
     let temp_dir = temp_path.to_str().unwrap();
 
-    let clvk_dir = ProjectId::Clvk.android_path(android_dir);
-    let clspv_dir = ProjectId::Clspv.android_path(android_dir);
-    let llvm_project_dir = ProjectId::LlvmProject.android_path(android_dir);
-    let spirv_tools_dir = ProjectId::SpirvTools.android_path(android_dir);
-    let spirv_headers_dir = ProjectId::SpirvHeaders.android_path(android_dir);
+    let mut clvk = clvk::Clvk::default();
+    let mut clspv = clspv::Clspv::default();
+    let mut llvm_project = llvm_project::LlvmProject::default();
+    let mut spirv_tools = spirv_tools::SpirvTools::default();
+    let mut spirv_headers = spirv_headers::SpirvHeaders::default();
 
-    let mut spirv_tools =
-        spirv_tools::SpirvTools::new(temp_dir, ndk_dir, &spirv_tools_dir, &spirv_headers_dir);
-    let mut spirv_headers = spirv_headers::SpirvHeaders::new(&spirv_headers_dir);
-    let mut llvm_project = llvm_project::LlvmProject::new(temp_dir, ndk_dir, &llvm_project_dir);
-    let mut clspv = clspv::Clspv::new(
-        temp_dir,
-        ndk_dir,
-        &clspv_dir,
-        &llvm_project_dir,
-        &spirv_tools_dir,
-        &spirv_headers_dir,
-    );
-    let mut clvk = clvk::Clvk::new(
-        temp_dir,
-        ndk_dir,
-        &clvk_dir,
-        &clspv_dir,
-        &llvm_project_dir,
-        &spirv_tools_dir,
-        &spirv_headers_dir,
-    );
-
-    let mut all_projects: Vec<&mut dyn Project> = Vec::new();
-    all_projects.push(&mut clvk);
-    all_projects.push(&mut clspv);
-    all_projects.push(&mut llvm_project);
-    all_projects.push(&mut spirv_tools);
-    all_projects.push(&mut spirv_headers);
+    let mut all_projects: Vec<&mut dyn Project> = vec![
+        &mut clvk,
+        &mut clspv,
+        &mut llvm_project,
+        &mut spirv_tools,
+        &mut spirv_headers,
+    ];
+    for project in all_projects.iter_mut() {
+        project.init(android_dir, ndk_dir, temp_dir);
+    }
 
     if let Err(err) = generate_projects(all_projects, project_ids_to_write) {
         print_error!(err);

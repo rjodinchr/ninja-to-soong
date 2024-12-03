@@ -82,16 +82,17 @@ impl GenDeps {
 }
 
 pub type GenDepsMap = HashMap<GenDeps, HashSet<String>>;
-pub type ProjectsMap<'a> = HashMap<ProjectId, &'a dyn Project<'a>>;
+pub type ProjectsMap<'a> = HashMap<ProjectId, &'a dyn Project>;
 pub type CmdInputAndDeps = (HashSet<String>, HashSet<(String, String)>);
 
-pub trait Project<'a> {
+pub trait Project {
+    fn init(&mut self, android_dir: &str, ndk_dir: &str, temp_dir: &str);
+    fn get_id(&self) -> ProjectId;
     fn generate_package(
         &mut self,
         targets: Vec<NinjaTarget>,
         projects_map: &ProjectsMap,
     ) -> Result<SoongPackage, String>;
-    fn get_id(&self) -> ProjectId;
 
     fn get_build_dir(&mut self, _projects_map: &ProjectsMap) -> Result<Option<String>, String> {
         Ok(None)

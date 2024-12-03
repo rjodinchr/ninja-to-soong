@@ -6,29 +6,30 @@ use crate::project::*;
 use crate::soong_module::SoongModule;
 use crate::soong_package::SoongPackage;
 
-pub struct SpirvHeaders<'a> {
-    src_dir: &'a str,
+#[derive(Default)]
+pub struct SpirvHeaders {
+    src_dir: String,
 }
 
-impl<'a> SpirvHeaders<'a> {
-    pub fn new(spirv_headers_dir: &'a str) -> Self {
-        SpirvHeaders {
-            src_dir: spirv_headers_dir,
-        }
+impl Project for SpirvHeaders {
+    fn init(&mut self, android_dir: &str, _ndk_dir: &str, _temp_dir: &str) {
+        self.src_dir = self.get_id().android_path(android_dir);
     }
-}
 
-impl<'a> crate::project::Project<'a> for SpirvHeaders<'a> {
+    fn get_id(&self) -> ProjectId {
+        ProjectId::SpirvHeaders
+    }
+
     fn generate_package(
         &mut self,
         _targets: Vec<NinjaTarget>,
         projects_map: &ProjectsMap,
     ) -> Result<SoongPackage, String> {
         let mut package = SoongPackage::new(
-            self.src_dir,
+            &self.src_dir,
             "",
             "",
-            ProjectId::SpirvHeaders.str(),
+            self.get_id().str(),
             "//visibility:public",
             "SPDX-license-identifier-MIT",
             "LICENSE",
@@ -46,17 +47,13 @@ impl<'a> crate::project::Project<'a> for SpirvHeaders<'a> {
         files.sort();
         for file in files {
             package.add_module(SoongModule::new_copy_genrule(
-                spirv_headers_name(self.src_dir, &file),
-                file.replace(&add_slash_suffix(self.src_dir), ""),
+                spirv_headers_name(&self.src_dir, &file),
+                file.replace(&add_slash_suffix(&self.src_dir), ""),
                 file.rsplit_once("/").unwrap().1.to_string(),
             ));
         }
 
         Ok(package)
-    }
-
-    fn get_id(&self) -> ProjectId {
-        ProjectId::SpirvHeaders
     }
 
     fn get_project_deps(&self) -> Vec<ProjectId> {
