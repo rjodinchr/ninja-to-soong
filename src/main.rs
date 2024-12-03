@@ -103,10 +103,7 @@ fn parse_args(
 
     let mut project_ids: Vec<ProjectId> = Vec::new();
     for arg in &args[required_args..] {
-        match ProjectId::from(arg) {
-            Some(project_id) => project_ids.push(project_id),
-            None => return error!(format!("Unknown project '{arg}'")),
-        };
+        project_ids.push(ProjectId::from(arg)?);
     }
     Ok((android_dir, ndk_dir, project_ids))
 }

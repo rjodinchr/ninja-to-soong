@@ -93,11 +93,9 @@ impl Project for Clvk {
     fn get_gen_deps(&self, project: ProjectId) -> GenDepsMap {
         let mut deps: GenDepsMap = HashMap::new();
         let mut libs: HashSet<String> = HashSet::new();
+        let prefix = add_slash_suffix(project.str());
         for library in &self.generated_libraries {
-            if let Some(lib) = self
-                .get_library_name(library)
-                .strip_prefix(&add_slash_suffix(project.str()))
-            {
+            if let Some(lib) = self.get_library_name(library).strip_prefix(&prefix) {
                 libs.insert(lib.to_string());
             }
         }

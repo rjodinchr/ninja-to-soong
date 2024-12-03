@@ -29,17 +29,17 @@ const SPIRV_HEADERS_NAME: &str = "SPIRV-Headers";
 const SPIRV_TOOLS_NAME: &str = "SPIRV-Tools";
 
 impl ProjectId {
-    pub fn from(str: &str) -> Option<ProjectId> {
-        match str {
-            CLVK_NAME => Some(ProjectId::Clvk),
-            CLSPV_NAME => Some(ProjectId::Clspv),
-            LLVM_PROJECT_NAME => Some(ProjectId::LlvmProject),
-            SPIRV_HEADERS_NAME => Some(ProjectId::SpirvHeaders),
-            SPIRV_TOOLS_NAME => Some(ProjectId::SpirvTools),
-            _ => None,
-        }
+    pub fn from(project: &str) -> Result<ProjectId, String> {
+        Ok(match project {
+            CLVK_NAME => ProjectId::Clvk,
+            CLSPV_NAME => ProjectId::Clspv,
+            LLVM_PROJECT_NAME => ProjectId::LlvmProject,
+            SPIRV_HEADERS_NAME => ProjectId::SpirvHeaders,
+            SPIRV_TOOLS_NAME => ProjectId::SpirvTools,
+            _ => return error!(format!("Unknown project '{project}'")),
+        })
     }
-    pub const fn str(&self) -> &'static str {
+    pub const fn str(self) -> &'static str {
         match self {
             ProjectId::Clvk => CLVK_NAME,
             ProjectId::Clspv => CLSPV_NAME,
