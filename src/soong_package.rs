@@ -159,41 +159,14 @@ impl<'a> SoongPackage<'a> {
         Ok(module.print())
     }
 
-    fn replace_output_in_cmd(
+    fn rework_cmd(
         &self,
         mut cmd: String,
-        output: &str,
+        inputs: HashSet<String>,
+        outputs: &Vec<String>,
+        deps: HashSet<(String, String)>,
         project: &dyn Project,
     ) -> String {
-        let marker = "<output>";
-        let space_and_marker = String::from(" ") + marker;
-        let space_and_last_output = String::from(" ") + output.split("/").last().unwrap();
-        cmd = cmd.replace(output, marker);
-        cmd = cmd.replace(&space_and_last_output, &space_and_marker);
-        let replace_output = String::from("$(location ") + &project.get_cmd_output(output) + ")";
-        cmd.replace(marker, &replace_output)
-    }
-
-    fn replace_input_in_cmd(&self, cmd: String, input: String) -> String {
-        let replace_input =
-            String::from("$(location ") + &input.replace(&add_slash_suffix(self.src_dir), "") + ")";
-        cmd.replace(&input, &replace_input)
-    }
-
-    fn replace_dep_in_cmd(
-        &self,
-        cmd: String,
-        dep: String,
-        dep_target_name: String,
-        prefix: &str,
-    ) -> String {
-        let replace_dep = "$(location ".to_string() + &dep_target_name + ")";
-        let dep_with_prefix = String::from(prefix) + &dep;
-        cmd.replace(&dep_with_prefix, &replace_dep)
-            .replace(&dep, &replace_dep)
-    }
-
-    fn remove_python_in_cmd(mut cmd: String) -> String {
         while let Some(index) = cmd.find("bin/python") {
             let begin = std::str::from_utf8(&cmd.as_bytes()[0..index])
                 .unwrap()
@@ -210,27 +183,29 @@ impl<'a> SoongPackage<'a> {
                 None => cmd.replace(std::str::from_utf8(&cmd.as_bytes()[begin..]).unwrap(), ""),
             };
         }
-        cmd
-    }
-
-    fn rework_cmd(
-        &self,
-        mut cmd: String,
-        inputs: HashSet<String>,
-        outputs: &Vec<String>,
-        deps: HashSet<(String, String)>,
-        project: &dyn Project,
-    ) -> String {
-        cmd = Self::remove_python_in_cmd(cmd);
         cmd = cmd.replace(&add_slash_suffix(self.build_dir), "");
         for output in outputs {
-            cmd = self.replace_output_in_cmd(cmd, output, project);
+            let marker = "<output>";
+            let space_and_marker = String::from(" ") + marker;
+            let space_and_last_output = String::from(" ") + output.split("/").last().unwrap();
+            cmd = cmd.replace(output, marker);
+            cmd = cmd.replace(&space_and_last_output, &space_and_marker);
+            let replace_output =
+                String::from("$(location ") + &project.get_cmd_output(output) + ")";
+            cmd = cmd.replace(marker, &replace_output)
         }
-        for input in inputs.clone() {
-            cmd = self.replace_input_in_cmd(cmd, input);
+        for input in inputs {
+            let replace_input = String::from("$(location ")
+                + &input.replace(&add_slash_suffix(self.src_dir), "")
+                + ")";
+            cmd = cmd.replace(&input, &replace_input)
         }
         for (dep, dep_target_name) in deps {
-            cmd = self.replace_dep_in_cmd(cmd, dep, dep_target_name, self.target_prefix);
+            let replace_dep = "$(location ".to_string() + &dep_target_name + ")";
+            let dep_with_prefix = String::from(self.target_prefix) + &dep;
+            cmd = cmd
+                .replace(&dep_with_prefix, &replace_dep)
+                .replace(&dep, &replace_dep)
         }
         cmd
     }
