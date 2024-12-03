@@ -195,9 +195,7 @@ impl NinjaTarget {
             };
 
             target_to_parse.append(&mut target.get_all_inputs());
-            for output in target.get_all_outputs() {
-                target_seen.insert(output);
-            }
+            target_seen.extend(target.get_all_outputs());
 
             if target.rule != "CUSTOM_COMMAND" || target.get_cmd()?.is_none() {
                 continue;

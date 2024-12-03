@@ -293,9 +293,7 @@ impl<'a> SoongPackage<'a> {
             };
 
             targets_to_generate.append(&mut target.get_all_inputs());
-            for output in target.get_all_outputs() {
-                targets_seen.insert(output);
-            }
+            targets_seen.extend(target.get_all_outputs());
 
             if let Some(module) = self.generate_module(target, &targets_map, project)? {
                 self.package += &module;
