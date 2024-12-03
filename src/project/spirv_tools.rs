@@ -8,42 +8,37 @@ use crate::project::*;
 use crate::soong_module::SoongModule;
 use crate::soong_package::SoongPackage;
 
-pub struct SpirvTools<'a> {
-    src_dir: &'a str,
+#[derive(Default)]
+pub struct SpirvTools {
+    src_dir: String,
     build_dir: String,
-    ndk_dir: &'a str,
-    spirv_headers_dir: &'a str,
+    ndk_dir: String,
+    spirv_headers_dir: String,
     gen_deps: HashSet<String>,
 }
 
-impl<'a> SpirvTools<'a> {
-    pub fn new(
-        temp_dir: &'a str,
-        ndk_dir: &'a str,
-        spirv_tools_dir: &'a str,
-        spirv_headers_dir: &'a str,
-    ) -> Self {
-        SpirvTools {
-            src_dir: spirv_tools_dir,
-            build_dir: add_slash_suffix(temp_dir) + ProjectId::SpirvTools.str(),
-            ndk_dir,
-            spirv_headers_dir,
-            gen_deps: HashSet::new(),
-        }
+impl Project for SpirvTools {
+    fn init(&mut self, android_dir: &str, ndk_dir: &str, temp_dir: &str) {
+        self.src_dir = self.get_id().android_path(android_dir);
+        self.build_dir = add_slash_suffix(temp_dir) + self.get_id().str();
+        self.ndk_dir = ndk_dir.to_string();
+        self.spirv_headers_dir = ProjectId::SpirvHeaders.android_path(android_dir);
     }
-}
 
-impl<'a> crate::project::Project<'a> for SpirvTools<'a> {
+    fn get_id(&self) -> ProjectId {
+        ProjectId::SpirvTools
+    }
+
     fn generate_package(
         &mut self,
         targets: Vec<NinjaTarget>,
         projects_map: &ProjectsMap,
     ) -> Result<SoongPackage, String> {
         let mut package = SoongPackage::new(
-            self.src_dir,
-            self.ndk_dir,
+            &self.src_dir,
+            &self.ndk_dir,
             &self.build_dir,
-            ProjectId::SpirvTools.str(),
+            self.get_id().str(),
             "//visibility:public",
             "SPDX-license-identifier-Apache-2.0",
             "LICENSE",
@@ -63,16 +58,12 @@ impl<'a> crate::project::Project<'a> for SpirvTools<'a> {
         Ok(package)
     }
 
-    fn get_id(&self) -> ProjectId {
-        ProjectId::SpirvTools
-    }
-
     fn get_build_dir(&mut self, _projects_map: &ProjectsMap) -> Result<Option<String>, String> {
         cmake_configure(
-            self.src_dir,
+            &self.src_dir,
             &self.build_dir,
-            self.ndk_dir,
-            vec![&("-DSPIRV-Headers_SOURCE_DIR=".to_string() + self.spirv_headers_dir)],
+            &self.ndk_dir,
+            vec![&("-DSPIRV-Headers_SOURCE_DIR=".to_string() + &self.spirv_headers_dir)],
         )?;
         Ok(Some(self.build_dir.clone()))
     }
@@ -85,10 +76,10 @@ impl<'a> crate::project::Project<'a> for SpirvTools<'a> {
         let mut deps: HashSet<(String, String)> = HashSet::new();
 
         for input in target_inputs {
-            if input.contains(self.spirv_headers_dir) {
+            if input.contains(&self.spirv_headers_dir) {
                 deps.insert((
                     input.clone(),
-                    ":".to_string() + &spirv_headers_name(self.spirv_headers_dir, input),
+                    ":".to_string() + &spirv_headers_name(&self.spirv_headers_dir, input),
                 ));
             } else {
                 inputs.insert(input.clone());
@@ -116,7 +107,7 @@ impl<'a> crate::project::Project<'a> for SpirvTools<'a> {
     }
 
     fn ignore_include(&self, include: &str) -> bool {
-        include.contains(&self.build_dir) || include.contains(self.spirv_headers_dir)
+        include.contains(&self.build_dir) || include.contains(&self.spirv_headers_dir)
     }
 
     fn ignore_define(&self, _define: &str) -> bool {

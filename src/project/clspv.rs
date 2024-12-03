@@ -8,48 +8,41 @@ use crate::project::*;
 use crate::soong_module::SoongModule;
 use crate::soong_package::SoongPackage;
 
-pub struct Clspv<'a> {
-    src_dir: &'a str,
+#[derive(Default)]
+pub struct Clspv {
+    src_dir: String,
     build_dir: String,
-    ndk_dir: &'a str,
-    spirv_headers_dir: &'a str,
-    spirv_tools_dir: &'a str,
-    llvm_project_dir: &'a str,
+    ndk_dir: String,
+    spirv_headers_dir: String,
+    spirv_tools_dir: String,
+    llvm_project_dir: String,
     gen_deps: HashSet<String>,
 }
 
-impl<'a> Clspv<'a> {
-    pub fn new(
-        temp_dir: &'a str,
-        ndk_dir: &'a str,
-        clspv_dir: &'a str,
-        llvm_project_dir: &'a str,
-        spirv_tools_dir: &'a str,
-        spirv_headers_dir: &'a str,
-    ) -> Self {
-        Clspv {
-            src_dir: clspv_dir,
-            build_dir: add_slash_suffix(temp_dir) + ProjectId::Clspv.str(),
-            ndk_dir,
-            llvm_project_dir,
-            spirv_tools_dir,
-            spirv_headers_dir,
-            gen_deps: HashSet::new(),
-        }
+impl Project for Clspv {
+    fn init(&mut self, android_dir: &str, ndk_dir: &str, temp_dir: &str) {
+        self.src_dir = self.get_id().android_path(android_dir);
+        self.build_dir = add_slash_suffix(temp_dir) + self.get_id().str();
+        self.ndk_dir = ndk_dir.to_string();
+        self.spirv_headers_dir = ProjectId::SpirvHeaders.android_path(android_dir);
+        self.spirv_tools_dir = ProjectId::SpirvTools.android_path(android_dir);
+        self.llvm_project_dir = ProjectId::LlvmProject.android_path(android_dir);
     }
-}
 
-impl<'a> crate::project::Project<'a> for Clspv<'a> {
+    fn get_id(&self) -> ProjectId {
+        ProjectId::Clspv
+    }
+
     fn generate_package(
         &mut self,
         targets: Vec<NinjaTarget>,
         projects_map: &ProjectsMap,
     ) -> Result<SoongPackage, String> {
         let mut package = SoongPackage::new(
-            self.src_dir,
-            self.ndk_dir,
+            &self.src_dir,
+            &self.ndk_dir,
             &self.build_dir,
-            ProjectId::Clspv.str(),
+            self.get_id().str(),
             "//external/clvk",
             "SPDX-license-identifier-Apache-2.0",
             "LICENSE",
@@ -69,22 +62,18 @@ impl<'a> crate::project::Project<'a> for Clspv<'a> {
         Ok(package)
     }
 
-    fn get_id(&self) -> ProjectId {
-        ProjectId::Clspv
-    }
-
     fn get_build_dir(&mut self, _projects_map: &ProjectsMap) -> Result<Option<String>, String> {
-        let spirv_headers_dir = "-DSPIRV_HEADERS_SOURCE_DIR=".to_string() + self.spirv_headers_dir;
-        let spirv_tools_dir = "-DSPIRV_TOOLS_SOURCE_DIR=".to_string() + self.spirv_tools_dir;
+        let spirv_headers_dir = "-DSPIRV_HEADERS_SOURCE_DIR=".to_string() + &self.spirv_headers_dir;
+        let spirv_tools_dir = "-DSPIRV_TOOLS_SOURCE_DIR=".to_string() + &self.spirv_tools_dir;
         let llvm_project_dir =
-            "-DCLSPV_LLVM_SOURCE_DIR=".to_string() + self.llvm_project_dir + "/llvm";
-        let clang_dir = "-DCLSPV_CLANG_SOURCE_DIR=".to_string() + self.llvm_project_dir + "/clang";
+            "-DCLSPV_LLVM_SOURCE_DIR=".to_string() + &self.llvm_project_dir + "/llvm";
+        let clang_dir = "-DCLSPV_CLANG_SOURCE_DIR=".to_string() + &self.llvm_project_dir + "/clang";
         let libclc_dir =
-            "-DCLSPV_LIBCLC_SOURCE_DIR=".to_string() + self.llvm_project_dir + "/libclc";
+            "-DCLSPV_LIBCLC_SOURCE_DIR=".to_string() + &self.llvm_project_dir + "/libclc";
         cmake_configure(
-            self.src_dir,
+            &self.src_dir,
             &self.build_dir,
-            self.ndk_dir,
+            &self.ndk_dir,
             vec![
                 &spirv_headers_dir,
                 &spirv_tools_dir,
@@ -105,10 +94,10 @@ impl<'a> crate::project::Project<'a> for Clspv<'a> {
         let clang_dir = &(self.llvm_project_dir.to_string() + "/clang");
 
         for input in target_inputs {
-            if input.contains(self.spirv_headers_dir) {
+            if input.contains(&self.spirv_headers_dir) {
                 deps.insert((
                     input.clone(),
-                    ":".to_string() + &spirv_headers_name(self.spirv_headers_dir, input),
+                    ":".to_string() + &spirv_headers_name(&self.spirv_headers_dir, input),
                 ));
             } else if input.contains(clang_dir) {
                 deps.insert((
@@ -120,11 +109,11 @@ impl<'a> crate::project::Project<'a> for Clspv<'a> {
                     input.clone(),
                     ":".to_string() + &llvm_project_headers_name("third_party/llvm", input),
                 ));
-            } else if !input.contains(self.src_dir) {
+            } else if !input.contains(&self.src_dir) {
                 deps.insert((
                     input.clone(),
                     ":".to_string()
-                        + ProjectId::Clspv.str()
+                        + self.get_id().str()
                         + "_"
                         + &rework_name(input.replace(&self.build_dir, "")),
                 ));
@@ -152,7 +141,7 @@ impl<'a> crate::project::Project<'a> for Clspv<'a> {
             ProjectId::SpirvHeaders => {
                 let mut files: HashSet<String> = HashSet::new();
                 for dep in &self.gen_deps {
-                    if dep.starts_with(self.spirv_headers_dir) {
+                    if dep.starts_with(&self.spirv_headers_dir) {
                         files.insert(dep.clone());
                     }
                 }
@@ -162,7 +151,7 @@ impl<'a> crate::project::Project<'a> for Clspv<'a> {
                 let mut clang_headers: HashSet<String> = HashSet::new();
                 let mut libclc_binaries: HashSet<String> = HashSet::new();
                 for dep in &self.gen_deps {
-                    if let Some(strip) = dep.strip_prefix(&add_slash_suffix(self.llvm_project_dir))
+                    if let Some(strip) = dep.strip_prefix(&add_slash_suffix(&self.llvm_project_dir))
                     {
                         clang_headers.insert(strip.to_string());
                     } else if dep.starts_with("third_party/llvm/tools/libclc/clspv")
@@ -206,8 +195,8 @@ impl<'a> crate::project::Project<'a> for Clspv<'a> {
 
     fn ignore_include(&self, include: &str) -> bool {
         include.contains(&self.build_dir)
-            || include.contains(self.spirv_headers_dir)
-            || include.contains(self.llvm_project_dir)
+            || include.contains(&self.spirv_headers_dir)
+            || include.contains(&self.llvm_project_dir)
     }
 
     fn ignore_target(&self, target: &str) -> bool {

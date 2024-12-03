@@ -10,35 +10,36 @@ use crate::soong_package::SoongPackage;
 
 const CMAKE_GENERATED: &str = "cmake_generated";
 
-pub struct LlvmProject<'a> {
-    src_dir: &'a str,
+#[derive(Default)]
+pub struct LlvmProject {
+    src_dir: String,
     build_dir: String,
-    ndk_dir: &'a str,
+    ndk_dir: String,
     copy_gen_deps: bool,
 }
 
-impl<'a> LlvmProject<'a> {
-    pub fn new(temp_dir: &'a str, ndk_dir: &'a str, llvm_project_dir: &'a str) -> Self {
-        LlvmProject {
-            src_dir: llvm_project_dir,
-            build_dir: add_slash_suffix(temp_dir) + ProjectId::LlvmProject.str(),
-            ndk_dir,
-            copy_gen_deps: false,
-        }
+impl Project for LlvmProject {
+    fn init(&mut self, android_dir: &str, ndk_dir: &str, temp_dir: &str) {
+        self.src_dir = self.get_id().android_path(android_dir);
+        self.build_dir = add_slash_suffix(temp_dir) + self.get_id().str();
+        self.ndk_dir = ndk_dir.to_string();
+        self.copy_gen_deps = false;
     }
-}
 
-impl<'a> crate::project::Project<'a> for LlvmProject<'a> {
+    fn get_id(&self) -> ProjectId {
+        ProjectId::LlvmProject
+    }
+
     fn generate_package(
         &mut self,
         targets: Vec<NinjaTarget>,
         projects_map: &ProjectsMap,
     ) -> Result<SoongPackage, String> {
         let mut package = SoongPackage::new(
-            self.src_dir,
-            self.ndk_dir,
+            &self.src_dir,
+            &self.ndk_dir,
             &self.build_dir,
-            ProjectId::LlvmProject.str(),
+            self.get_id().str(),
             "//visibility:public",
             "SPDX-license-identifier-Apache-2.0",
             "LICENSE.TXT",
@@ -75,19 +76,17 @@ impl<'a> crate::project::Project<'a> for LlvmProject<'a> {
         let mut gen_deps_sorted = Vec::from_iter(&gen_deps);
         gen_deps_sorted.sort();
         write_file(
-            &(add_slash_suffix(&get_tests_folder()?)
-                + ProjectId::LlvmProject.str()
-                + "/generated_deps.txt"),
+            &(add_slash_suffix(&get_tests_folder()?) + self.get_id().str() + "/generated_deps.txt"),
             &format!("{gen_deps_sorted:#?}"),
         )?;
         if self.copy_gen_deps {
-            remove_dir(add_slash_suffix(self.src_dir) + CMAKE_GENERATED)?;
+            remove_dir(add_slash_suffix(&self.src_dir) + CMAKE_GENERATED)?;
             copy_files(
                 gen_deps,
                 &self.build_dir,
-                &(add_slash_suffix(self.src_dir) + CMAKE_GENERATED),
+                &(add_slash_suffix(&self.src_dir) + CMAKE_GENERATED),
             )?;
-            touch_dirs(&include_dirs, &add_slash_suffix(self.src_dir))?;
+            touch_dirs(&include_dirs, &add_slash_suffix(&self.src_dir))?;
         }
 
         package.add_module(SoongModule::new_cc_library_headers(
@@ -126,15 +125,11 @@ impl<'a> crate::project::Project<'a> for LlvmProject<'a> {
         Ok(package)
     }
 
-    fn get_id(&self) -> ProjectId {
-        ProjectId::LlvmProject
-    }
-
     fn get_build_dir(&mut self, projects_map: &ProjectsMap) -> Result<Option<String>, String> {
         if cmake_configure(
             &(self.src_dir.to_string() + "/llvm"),
             &self.build_dir,
-            self.ndk_dir,
+            &self.ndk_dir,
             vec![
                 LLVM_DISABLE_ZLIB,
                 "-DLLVM_ENABLE_PROJECTS=clang;libclc",
