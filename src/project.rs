@@ -48,8 +48,8 @@ impl ProjectId {
             Self::SpirvTools => SPIRV_TOOLS_NAME,
         }
     }
-    pub fn android_path(self, android_dir: &str) -> String {
-        android_dir.to_string() + "/external/" + self.str()
+    pub fn android_path(self, android_path: &Path) -> PathBuf {
+        android_path.join("external").join(self.str())
     }
 }
 
@@ -66,7 +66,7 @@ impl GenDeps {
         project: &dyn Project,
         from: ProjectId,
         projects_map: &ProjectsMap,
-    ) -> Vec<String> {
+    ) -> Vec<PathBuf> {
         let mut vec = Vec::from_iter(
             projects_map
                 .get(&from)
@@ -81,12 +81,12 @@ impl GenDeps {
     }
 }
 
-pub type GenDepsMap = HashMap<GenDeps, HashSet<String>>;
+pub type GenDepsMap = HashMap<GenDeps, HashSet<PathBuf>>;
 pub type ProjectsMap<'a> = HashMap<ProjectId, &'a dyn Project>;
-pub type CmdInputAndDeps = (HashSet<String>, HashSet<(String, String)>);
+pub type CmdInputAndDeps = (HashSet<PathBuf>, HashSet<(PathBuf, String)>);
 
 pub trait Project {
-    fn init(&mut self, android_dir: &str, ndk_dir: &str, temp_dir: &str);
+    fn init(&mut self, android_path: &Path, ndk_path: &Path, temp_path: &Path);
     fn get_id(&self) -> ProjectId;
     fn generate_package(
         &mut self,
@@ -97,17 +97,17 @@ pub trait Project {
     fn get_ninja_file_path(
         &mut self,
         _projects_map: &ProjectsMap,
-    ) -> Result<Option<String>, String> {
+    ) -> Result<Option<PathBuf>, String> {
         Ok(None)
     }
     fn get_cmd_inputs_and_deps(
         &self,
-        target_inputs: &Vec<String>,
+        target_inputs: &Vec<PathBuf>,
     ) -> Result<CmdInputAndDeps, String> {
         Ok((HashSet::from_iter(target_inputs.clone()), HashSet::new()))
     }
-    fn get_cmd_output(&self, output: &str) -> String {
-        output.to_string()
+    fn get_cmd_output(&self, output: &Path) -> PathBuf {
+        output.to_path_buf()
     }
     fn get_default_cflags(&self) -> HashSet<String> {
         HashSet::new()
@@ -115,11 +115,11 @@ pub trait Project {
     fn get_gen_deps(&self, _project: ProjectId) -> GenDepsMap {
         HashMap::new()
     }
-    fn get_include(&self, include: &str) -> String {
-        include.to_string()
+    fn get_include(&self, include: &Path) -> PathBuf {
+        include.to_path_buf()
     }
-    fn get_library_name(&self, library: &str) -> String {
-        library.to_string()
+    fn get_library_name(&self, library: &Path) -> PathBuf {
+        library.to_path_buf()
     }
     fn get_project_deps(&self) -> Vec<ProjectId> {
         Vec::new()
@@ -133,16 +133,16 @@ pub trait Project {
     fn ignore_define(&self, _define: &str) -> bool {
         false
     }
-    fn ignore_gen_header(&self, _header: &str) -> bool {
+    fn ignore_gen_header(&self, _header: &Path) -> bool {
         false
     }
-    fn ignore_include(&self, _include: &str) -> bool {
+    fn ignore_include(&self, _include: &Path) -> bool {
         false
     }
     fn ignore_link_flag(&self, _flag: &str) -> bool {
         false
     }
-    fn ignore_target(&self, _target: &str) -> bool {
+    fn ignore_target(&self, _target: &Path) -> bool {
         false
     }
     fn optimize_target_for_size(&self, _target: &str) -> bool {

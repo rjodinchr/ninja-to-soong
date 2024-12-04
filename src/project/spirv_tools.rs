@@ -6,19 +6,19 @@ use crate::soong_module::SoongModule;
 
 #[derive(Default)]
 pub struct SpirvTools {
-    src_dir: String,
-    build_dir: String,
-    ndk_dir: String,
-    spirv_headers_dir: String,
-    gen_deps: HashSet<String>,
+    src_path: PathBuf,
+    build_path: PathBuf,
+    ndk_path: PathBuf,
+    spirv_headers_path: PathBuf,
+    gen_deps: HashSet<PathBuf>,
 }
 
 impl Project for SpirvTools {
-    fn init(&mut self, android_dir: &str, ndk_dir: &str, temp_dir: &str) {
-        self.src_dir = self.get_id().android_path(android_dir);
-        self.build_dir = add_slash_suffix(temp_dir) + self.get_id().str();
-        self.ndk_dir = ndk_dir.to_string();
-        self.spirv_headers_dir = ProjectId::SpirvHeaders.android_path(android_dir);
+    fn init(&mut self, android_path: &Path, ndk_path: &Path, temp_path: &Path) {
+        self.src_path = self.get_id().android_path(android_path);
+        self.build_path = temp_path.join(self.get_id().str());
+        self.ndk_path = ndk_path.to_path_buf();
+        self.spirv_headers_path = ProjectId::SpirvHeaders.android_path(android_path);
     }
 
     fn get_id(&self) -> ProjectId {
@@ -31,9 +31,9 @@ impl Project for SpirvTools {
         projects_map: &ProjectsMap,
     ) -> Result<SoongPackage, String> {
         let mut package = SoongPackage::new(
-            &self.src_dir,
-            &self.ndk_dir,
-            &self.build_dir,
+            &self.src_path,
+            &self.ndk_path,
+            &self.build_path,
             self.get_id().str(),
             "//visibility:public",
             "SPDX-license-identifier-Apache-2.0",
@@ -57,28 +57,28 @@ impl Project for SpirvTools {
     fn get_ninja_file_path(
         &mut self,
         _projects_map: &ProjectsMap,
-    ) -> Result<Option<String>, String> {
+    ) -> Result<Option<PathBuf>, String> {
         let (ninja_file_path, _) = cmake_configure(
-            &self.src_dir,
-            &self.build_dir,
-            &self.ndk_dir,
-            vec![&("-DSPIRV-Headers_SOURCE_DIR=".to_string() + &self.spirv_headers_dir)],
+            &self.src_path,
+            &self.build_path,
+            &self.ndk_path,
+            vec![&("-DSPIRV-Headers_SOURCE_DIR=".to_string() + &str(&self.spirv_headers_path))],
         )?;
         Ok(Some(ninja_file_path))
     }
 
     fn get_cmd_inputs_and_deps(
         &self,
-        target_inputs: &Vec<String>,
+        target_inputs: &Vec<PathBuf>,
     ) -> Result<CmdInputAndDeps, String> {
-        let mut inputs: HashSet<String> = HashSet::new();
-        let mut deps: HashSet<(String, String)> = HashSet::new();
+        let mut inputs = HashSet::new();
+        let mut deps = HashSet::new();
 
         for input in target_inputs {
-            if input.contains(&self.spirv_headers_dir) {
+            if input.starts_with(&self.spirv_headers_path) {
                 deps.insert((
                     input.clone(),
-                    ":".to_string() + &spirv_headers_name(&self.spirv_headers_dir, input),
+                    ":".to_string() + &spirv_headers_name(&self.spirv_headers_path, &input),
                 ));
             } else {
                 inputs.insert(input.clone());
@@ -105,8 +105,8 @@ impl Project for SpirvTools {
         [CC_LIBRARY_HEADERS_SPIRV_HEADERS.to_string()].into()
     }
 
-    fn ignore_include(&self, include: &str) -> bool {
-        include.contains(&self.build_dir) || include.contains(&self.spirv_headers_dir)
+    fn ignore_include(&self, include: &Path) -> bool {
+        include.starts_with(&self.build_path) || include.starts_with(&self.spirv_headers_path)
     }
 
     fn ignore_define(&self, _define: &str) -> bool {

@@ -6,12 +6,12 @@ use crate::soong_module::SoongModule;
 
 #[derive(Default)]
 pub struct SpirvHeaders {
-    src_dir: String,
+    src_path: PathBuf,
 }
 
 impl Project for SpirvHeaders {
-    fn init(&mut self, android_dir: &str, _ndk_dir: &str, _temp_dir: &str) {
-        self.src_dir = self.get_id().android_path(android_dir);
+    fn init(&mut self, android_path: &Path, _ndk_path: &Path, _temp_path: &Path) {
+        self.src_path = self.get_id().android_path(android_path);
     }
 
     fn get_id(&self) -> ProjectId {
@@ -24,9 +24,9 @@ impl Project for SpirvHeaders {
         projects_map: &ProjectsMap,
     ) -> Result<SoongPackage, String> {
         let mut package = SoongPackage::new(
-            &self.src_dir,
-            "",
-            "",
+            &self.src_path,
+            Path::new(""),
+            Path::new(""),
             self.get_id().str(),
             "//visibility:public",
             "SPDX-license-identifier-MIT",
@@ -38,16 +38,16 @@ impl Project for SpirvHeaders {
             ["include".to_string()].into(),
         ));
 
-        let mut set: HashSet<String> = HashSet::new();
+        let mut set: HashSet<PathBuf> = HashSet::new();
         set.extend(GenDeps::SpirvHeadersFiles.get(self, ProjectId::SpirvTools, projects_map));
         set.extend(GenDeps::SpirvHeadersFiles.get(self, ProjectId::Clspv, projects_map));
         let mut files = Vec::from_iter(set);
         files.sort();
         for file in files {
             package.add_module(SoongModule::new_copy_genrule(
-                spirv_headers_name(&self.src_dir, &file),
-                file.replace(&add_slash_suffix(&self.src_dir), ""),
-                file.rsplit_once("/").unwrap().1.to_string(),
+                spirv_headers_name(&self.src_path, &file),
+                str(&strip_prefix(&file, &self.src_path)),
+                file_name(&file),
             ));
         }
 

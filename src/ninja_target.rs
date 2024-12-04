@@ -9,22 +9,22 @@ use crate::utils::*;
 #[derive(Debug)]
 pub struct NinjaTarget {
     rule: String,
-    outputs: Vec<String>,
-    implicit_outputs: Vec<String>,
-    inputs: Vec<String>,
-    implicit_deps: Vec<String>,
-    order_only_deps: Vec<String>,
+    outputs: Vec<PathBuf>,
+    implicit_outputs: Vec<PathBuf>,
+    inputs: Vec<PathBuf>,
+    implicit_deps: Vec<PathBuf>,
+    order_only_deps: Vec<PathBuf>,
     variables: HashMap<String, String>,
 }
 
 impl NinjaTarget {
     pub fn new(
         rule: String,
-        outputs: Vec<String>,
-        implicit_outputs: Vec<String>,
-        inputs: Vec<String>,
-        implicit_dependencies: Vec<String>,
-        order_only_dependencies: Vec<String>,
+        outputs: Vec<PathBuf>,
+        implicit_outputs: Vec<PathBuf>,
+        inputs: Vec<PathBuf>,
+        implicit_deps: Vec<PathBuf>,
+        order_only_deps: Vec<PathBuf>,
         variables: HashMap<String, String>,
     ) -> Self {
         Self {
@@ -32,35 +32,35 @@ impl NinjaTarget {
             outputs,
             implicit_outputs,
             inputs,
-            implicit_deps: implicit_dependencies,
-            order_only_deps: order_only_dependencies,
+            implicit_deps,
+            order_only_deps,
             variables,
         }
     }
 
-    pub fn get_inputs(&self) -> &Vec<String> {
+    pub fn get_inputs(&self) -> &Vec<PathBuf> {
         &self.inputs
     }
 
-    pub fn get_outputs(&self) -> &Vec<String> {
+    pub fn get_outputs(&self) -> &Vec<PathBuf> {
         &self.outputs
     }
 
     pub fn get_name(&self, prefix: &str) -> String {
-        rework_name(prefix.to_string() + "_" + &self.outputs[0])
+        path_to_id(Path::new(prefix).join(&self.outputs[0]))
     }
 
     pub fn get_link_flags(
         &self,
-        src_dir: &str,
+        src_path: &Path,
         project: &dyn Project,
-    ) -> (Option<String>, HashSet<String>) {
-        let mut link_flags: HashSet<String> = HashSet::new();
+    ) -> (Option<PathBuf>, HashSet<String>) {
+        let mut link_flags = HashSet::new();
         let mut version_script = None;
         if let Some(flags) = self.variables.get("LINK_FLAGS") {
             for flag in flags.split(" ") {
                 if let Some(vs) = flag.strip_prefix("-Wl,--version-script=") {
-                    version_script = Some(vs.replace(&add_slash_suffix(src_dir), ""));
+                    version_script = Some(strip_prefix(Path::new(vs), src_path));
                 } else if !project.ignore_link_flag(flag) {
                     link_flags.insert(flag.to_string());
                 }
@@ -71,12 +71,12 @@ impl NinjaTarget {
 
     pub fn get_link_libraries(
         &self,
-        ndk_dir: &str,
+        ndk_path: &Path,
         project: &dyn Project,
-    ) -> Result<(HashSet<String>, HashSet<String>, HashSet<String>), String> {
-        let mut static_libraries: HashSet<String> = HashSet::new();
-        let mut shared_libraries: HashSet<String> = HashSet::new();
-        let mut generated_libraries: HashSet<String> = HashSet::new();
+    ) -> Result<(HashSet<String>, HashSet<String>, HashSet<PathBuf>), String> {
+        let mut static_libraries = HashSet::new();
+        let mut shared_libraries = HashSet::new();
+        let mut generated_libraries = HashSet::new();
         let Some(libs) = self.variables.get("LINK_LIBRARIES") else {
             return Ok((static_libraries, shared_libraries, generated_libraries));
         };
@@ -84,15 +84,12 @@ impl NinjaTarget {
             if lib.starts_with("-") || lib == "" {
                 continue;
             } else {
-                let lib_name = if lib.starts_with(ndk_dir) {
-                    lib.split("/")
-                        .last()
-                        .unwrap()
-                        .replace(".a", "")
-                        .replace(".so", "")
+                let lib_path = PathBuf::from(lib);
+                let lib_name = if lib_path.starts_with(ndk_path) {
+                    lib_path.file_stem().unwrap().to_str().unwrap().to_string()
                 } else {
-                    generated_libraries.insert(lib.to_string());
-                    rework_name(project.get_library_name(lib))
+                    generated_libraries.insert(lib_path.clone());
+                    path_to_id(project.get_library_name(&lib_path))
                 };
                 if lib.ends_with(".a") {
                     static_libraries.insert(lib_name);
@@ -107,8 +104,7 @@ impl NinjaTarget {
     }
 
     pub fn get_defines(&self, project: &dyn Project) -> HashSet<String> {
-        let mut defines: HashSet<String> = HashSet::new();
-
+        let mut defines = HashSet::new();
         if let Some(defs) = self.variables.get("DEFINES") {
             for define in defs.split("-D") {
                 if define.is_empty() || project.ignore_define(define) {
@@ -120,21 +116,19 @@ impl NinjaTarget {
         defines
     }
 
-    pub fn get_includes(&self, src_dir: &str, project: &dyn Project) -> HashSet<String> {
-        let mut includes: HashSet<String> = HashSet::new();
+    pub fn get_includes(&self, src_path: &Path, project: &dyn Project) -> HashSet<PathBuf> {
+        let mut includes = HashSet::new();
         let Some(incs) = self.variables.get("INCLUDES") else {
             return includes;
         };
         for include in incs.split(" ") {
-            if project.ignore_include(include) {
+            let include_path = PathBuf::from(include.strip_prefix("-I").unwrap_or(include));
+            if project.ignore_include(&include_path) {
                 continue;
             }
-            let inc = project
-                .get_include(include.strip_prefix("-I").unwrap_or(include))
-                .replace(&add_slash_suffix(src_dir), "")
-                .replace(src_dir, "");
-
-            if inc.is_empty() || inc == "isystem" {
+            let inc = strip_prefix(&project.get_include(&include_path), src_path);
+            let include_string = str(&inc);
+            if include_string.is_empty() || include_string == "isystem" {
                 continue;
             }
             includes.insert(inc);
@@ -147,7 +141,7 @@ impl NinjaTarget {
         target_prefix: &str,
         targets_map: &NinjaTargetsMap,
         project: &dyn Project,
-    ) -> Result<(HashSet<String>, HashSet<String>), String> {
+    ) -> Result<(HashSet<String>, HashSet<PathBuf>), String> {
         Ok(targets_map.traverse_from(
             vec![self.outputs[0].clone()],
             (HashSet::new(), HashSet::new()),
@@ -155,12 +149,12 @@ impl NinjaTarget {
                 if rule != "CUSTOM_COMMAND" || target.get_cmd()?.is_none() {
                     return Ok(());
                 }
-                if project.ignore_gen_header(&name) {
+                if project.ignore_gen_header(Path::new(&name)) {
                     gen_deps.insert(name);
                 } else {
                     gen_headers.insert(match targets_map.get(&name) {
                         Some(target_header) => target_header.get_name(target_prefix),
-                        None => return error!("Could not find target for '{name}'"),
+                        None => return error!("Could not find target for {name:#?}"),
                     });
                 }
                 Ok(())
@@ -189,7 +183,7 @@ impl NinjaTarget {
     }
 }
 
-pub struct NinjaTargetsMap<'a>(HashMap<String, &'a NinjaTarget>);
+pub struct NinjaTargetsMap<'a>(HashMap<PathBuf, &'a NinjaTarget>);
 
 impl<'a> NinjaTargetsMap<'a> {
     pub fn new(targets: &'a Vec<NinjaTarget>) -> Self {
@@ -204,21 +198,21 @@ impl<'a> NinjaTargetsMap<'a> {
         }
         Self(map)
     }
-    pub fn get(&self, key: &str) -> Option<&&NinjaTarget> {
+    pub fn get(&self, key: &Path) -> Option<&&NinjaTarget> {
         self.0.get(key)
     }
     pub fn traverse_from<I, F, G>(
         &self,
-        mut targets: Vec<String>,
+        mut targets: Vec<PathBuf>,
         mut iterator: I,
         mut f: F,
         ignore_target: G,
     ) -> Result<I, String>
     where
-        F: FnMut(&mut I, &str, String, &NinjaTarget) -> Result<(), String>,
-        G: Fn(&String) -> bool,
+        F: FnMut(&mut I, &str, PathBuf, &NinjaTarget) -> Result<(), String>,
+        G: Fn(&Path) -> bool,
     {
-        let mut targets_seen: HashSet<String> = HashSet::new();
+        let mut targets_seen = HashSet::new();
         while let Some(target_name) = targets.pop() {
             if targets_seen.contains(&target_name) || ignore_target(&target_name) {
                 continue;

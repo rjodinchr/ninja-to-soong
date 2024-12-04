@@ -11,19 +11,19 @@ use crate::utils::*;
 #[derive(Debug)]
 pub struct SoongPackage<'a> {
     modules: Vec<SoongModule>,
-    gen_deps: HashSet<String>,
-    generated_libraries: HashSet<String>,
-    src_dir: &'a str,
-    ndk_dir: &'a str,
-    build_dir: &'a str,
+    gen_deps: HashSet<PathBuf>,
+    generated_libraries: HashSet<PathBuf>,
+    src_path: &'a Path,
+    ndk_path: &'a Path,
+    build_path: &'a Path,
     target_prefix: &'a str,
 }
 
 impl<'a> SoongPackage<'a> {
     pub fn new(
-        src_dir: &'a str,
-        ndk_dir: &'a str,
-        build_dir: &'a str,
+        src_path: &'a Path,
+        ndk_path: &'a Path,
+        build_path: &'a Path,
         target_prefix: &'a str,
         default_visibility: &str,
         license_kinds: &str,
@@ -33,9 +33,9 @@ impl<'a> SoongPackage<'a> {
             modules: Vec::new(),
             gen_deps: HashSet::new(),
             generated_libraries: HashSet::new(),
-            src_dir,
-            ndk_dir,
-            build_dir,
+            src_path,
+            ndk_path,
+            build_path,
             target_prefix,
         };
         let license_name =
@@ -85,11 +85,11 @@ impl<'a> SoongPackage<'a> {
         package
     }
 
-    pub fn get_gen_deps(&self) -> HashSet<String> {
+    pub fn get_gen_deps(&self) -> HashSet<PathBuf> {
         self.gen_deps.to_owned()
     }
 
-    pub fn get_generated_libraries(&self) -> HashSet<String> {
+    pub fn get_generated_libraries(&self) -> HashSet<PathBuf> {
         self.generated_libraries.to_owned()
     }
 
@@ -101,26 +101,28 @@ impl<'a> SoongPackage<'a> {
         project: &dyn Project,
     ) -> Result<SoongModule, String> {
         let mut cflags = project.get_default_cflags();
-        let mut includes: HashSet<String> = HashSet::new();
-        let mut srcs: HashSet<String> = HashSet::new();
+        let mut includes = HashSet::new();
+        let mut srcs = HashSet::new();
         for input in target.get_inputs() {
             let Some(target) = targets_map.get(input) else {
-                return error!("unsupported input for library: {input}");
+                return error!("unsupported input for library: {input:#?}");
             };
 
             let target_srcs = target.get_inputs();
             if target_srcs.len() != 1 {
                 return error!("Too many inputs in target: {self:#?}");
             }
-            srcs.insert(target_srcs[0].replace(&add_slash_suffix(self.src_dir), ""));
+            srcs.insert(str(&strip_prefix(&target_srcs[0], self.src_path)));
 
-            includes.extend(target.get_includes(self.src_dir, project));
+            for include in target.get_includes(self.src_path, project) {
+                includes.insert(str(&include));
+            }
             cflags.extend(target.get_defines(project));
         }
 
-        let (version_script, link_flags) = target.get_link_flags(self.src_dir, project);
+        let (version_script, link_flags) = target.get_link_flags(self.src_path, project);
         let (static_libs, shared_libs, generated_libraries) =
-            target.get_link_libraries(self.ndk_dir, project)?;
+            target.get_link_libraries(self.ndk_path, project)?;
         self.generated_libraries.extend(generated_libraries);
         let (gen_headers, gen_deps) =
             target.get_gen_headers_and_gen_deps(self.target_prefix, targets_map, project)?;
@@ -142,7 +144,7 @@ impl<'a> SoongPackage<'a> {
         module.add_set("header_libs", project.get_target_header_libs(&target_name));
         module.add_set("generated_headers", gen_headers);
         if let Some(vs) = version_script {
-            module.add_str("version_script", vs);
+            module.add_str("version_script", str(&vs));
         }
         if let Some(alias) = project.get_target_alias(&target_name) {
             module.add_str("stem", alias);
@@ -154,9 +156,9 @@ impl<'a> SoongPackage<'a> {
     fn rework_cmd(
         &self,
         mut cmd: String,
-        inputs: HashSet<String>,
-        outputs: &Vec<String>,
-        deps: HashSet<(String, String)>,
+        inputs: HashSet<PathBuf>,
+        outputs: &Vec<PathBuf>,
+        deps: HashSet<(PathBuf, String)>,
         project: &dyn Project,
     ) -> String {
         while let Some(index) = cmd.find("bin/python") {
@@ -175,29 +177,30 @@ impl<'a> SoongPackage<'a> {
                 None => cmd.replace(std::str::from_utf8(&cmd.as_bytes()[begin..]).unwrap(), ""),
             };
         }
-        cmd = cmd.replace(&add_slash_suffix(self.build_dir), "");
+        let build_path = str(self.build_path) + &std::path::MAIN_SEPARATOR.to_string();
+        cmd = cmd.replace(&(build_path), "");
         for output in outputs {
             let marker = "<output>";
             let space_and_marker = String::from(" ") + marker;
-            let space_and_last_output = String::from(" ") + output.split("/").last().unwrap();
-            cmd = cmd.replace(output, marker);
+            let space_and_last_output = String::from(" ") + &file_name(Path::new(&output));
+            cmd = cmd.replace(&str(output), marker);
             cmd = cmd.replace(&space_and_last_output, &space_and_marker);
             let replace_output =
-                String::from("$(location ") + &project.get_cmd_output(output) + ")";
+                String::from("$(location ") + &str(&project.get_cmd_output(output)) + ")";
             cmd = cmd.replace(marker, &replace_output)
         }
         for input in inputs {
             let replace_input = String::from("$(location ")
-                + &input.replace(&add_slash_suffix(self.src_dir), "")
+                + &str(&strip_prefix(Path::new(&input), self.src_path))
                 + ")";
-            cmd = cmd.replace(&input, &replace_input)
+            cmd = cmd.replace(&str(&input), &replace_input)
         }
         for (dep, dep_target_name) in deps {
             let replace_dep = "$(location ".to_string() + &dep_target_name + ")";
-            let dep_with_prefix = String::from(self.target_prefix) + &dep;
+            let dep_with_prefix = String::from(self.target_prefix) + &str(&dep);
             cmd = cmd
                 .replace(&dep_with_prefix, &replace_dep)
-                .replace(&dep, &replace_dep)
+                .replace(&str(&dep), &replace_dep)
         }
         cmd
     }
@@ -211,7 +214,7 @@ impl<'a> SoongPackage<'a> {
         let (inputs, deps) = project.get_cmd_inputs_and_deps(target.get_inputs())?;
         let mut srcs_set: HashSet<String> = HashSet::new();
         for input in &inputs {
-            srcs_set.insert(input.replace(&add_slash_suffix(self.src_dir), ""));
+            srcs_set.insert(str(&strip_prefix(Path::new(input), self.src_path)));
         }
         for (dep, dep_target_name) in &deps {
             srcs_set.insert(dep_target_name.clone());
@@ -220,7 +223,7 @@ impl<'a> SoongPackage<'a> {
         let target_outputs = target.get_outputs();
         let mut out_set: HashSet<String> = HashSet::new();
         for output in target_outputs {
-            out_set.insert(project.get_cmd_output(output));
+            out_set.insert(str(&project.get_cmd_output(output)));
         }
 
         cmd = self.rework_cmd(cmd, inputs, target_outputs, deps, project);
@@ -262,7 +265,7 @@ impl<'a> SoongPackage<'a> {
 
     pub fn generate(
         &mut self,
-        targets_to_generate: Vec<String>,
+        targets_to_generate: Vec<PathBuf>,
         targets: Vec<NinjaTarget>,
         project: &dyn Project,
     ) -> Result<(), String> {

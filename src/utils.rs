@@ -4,6 +4,8 @@
 use std::fs::File;
 use std::io::{Read, Write};
 
+pub use std::path::{Path, PathBuf};
+
 pub const TAB: &str = "   ";
 pub const COLOR_RED: &str = "\x1b[00;31m";
 pub const COLOR_GREEN: &str = "\x1b[00;32m";
@@ -78,33 +80,64 @@ pub const ANDROID_PLATFORM: &str = "35";
 
 pub const LLVM_DISABLE_ZLIB: &str = "-DLLVM_ENABLE_ZLIB=OFF";
 
-pub fn add_slash_suffix(str: &str) -> String {
-    str.to_string() + "/"
+pub fn file_name(path: &Path) -> String {
+    path.file_name()
+        .unwrap_or_default()
+        .to_str()
+        .unwrap()
+        .to_string()
 }
 
-pub fn rework_name(origin: String) -> String {
-    origin.replace("/", "_").replace(".", "_")
+pub fn strip_prefix(base: &Path, prefix: &Path) -> PathBuf {
+    PathBuf::from(base.strip_prefix(prefix).unwrap_or(base))
 }
 
-pub fn spirv_headers_name(spirv_headers_dir: &str, str: &str) -> String {
-    rework_name(str.replace(spirv_headers_dir, CC_LIBRARY_HEADERS_SPIRV_HEADERS))
+pub fn str(path: &Path) -> String {
+    path.to_str().unwrap().to_string()
 }
 
-pub fn clang_headers_name(clang_headers_dir: &str, str: &str) -> String {
-    rework_name(str.replace(clang_headers_dir, CC_LIBRARY_HEADERS_CLANG))
+pub fn path_to_id(path: PathBuf) -> String {
+    path.to_str()
+        .unwrap()
+        .to_string()
+        .replace(std::path::MAIN_SEPARATOR, "_")
+        .replace(".", "_")
 }
 
-pub fn llvm_project_headers_name(llvm_project_headers_dir: &str, str: &str) -> String {
-    rework_name(str.replace(llvm_project_headers_dir, CC_LIBRARY_HEADERS_LLVM))
+pub fn split_include(path: &Path) -> Option<(PathBuf, PathBuf)> {
+    let mut sub_path = path;
+    while let Some(parent) = sub_path.parent() {
+        if file_name(parent) == "include" {
+            return Some((parent.to_path_buf(), strip_prefix(path, parent)));
+        }
+        sub_path = parent;
+    }
+    None
+}
+
+fn headers_name(headers_path: &Path, path: &Path, str: &str) -> String {
+    path_to_id(Path::new(str).join(strip_prefix(path, headers_path)))
+}
+
+pub fn spirv_headers_name(spirv_headers_path: &Path, path: &Path) -> String {
+    headers_name(spirv_headers_path, path, CC_LIBRARY_HEADERS_SPIRV_HEADERS)
+}
+
+pub fn clang_headers_name(clang_headers_path: &Path, path: &Path) -> String {
+    headers_name(clang_headers_path, path, CC_LIBRARY_HEADERS_CLANG)
+}
+
+pub fn llvm_headers_name(llvm_headers_path: &Path, path: &Path) -> String {
+    headers_name(llvm_headers_path, path, CC_LIBRARY_HEADERS_LLVM)
 }
 
 pub fn cmake_configure(
-    src_dir: &str,
-    build_dir: &str,
-    ndk_dir: &str,
+    src_path: &Path,
+    build_path: &Path,
+    ndk_path: &Path,
     args: Vec<&str>,
-) -> Result<(String, bool), String> {
-    let ninja_file_path = build_dir.to_string() + "/build.ninja";
+) -> Result<(PathBuf, bool), String> {
+    let ninja_file_path = build_path.join("build.ninja");
     if std::env::var("NINJA_TO_SOONG_SKIP_CMAKE_CONFIGURE").is_ok() {
         return Ok((ninja_file_path, false));
     }
@@ -112,79 +145,80 @@ pub fn cmake_configure(
     command
         .args([
             "-B",
-            build_dir,
+            &str(build_path),
             "-S",
-            src_dir,
+            &str(src_path),
             "-G",
             "Ninja",
             "-DCMAKE_BUILD_TYPE=Release",
             &("-DCMAKE_TOOLCHAIN_FILE=".to_string()
-                + ndk_dir
-                + "/build/cmake/android.toolchain.cmake"),
+                + &str(&ndk_path.join("build/cmake/android.toolchain.cmake"))),
             &("-DANDROID_ABI=".to_string() + ANDROID_ABI),
             &("-DANDROID_PLATFORM=".to_string() + ANDROID_PLATFORM),
         ])
         .args(args);
     println!("{command:#?}");
     if let Err(err) = command.status() {
-        return error!("cmake_configure({src_dir}) failed: {err}");
+        return error!("cmake_configure({src_path:#?}) failed: {err}");
     }
     Ok((ninja_file_path, true))
 }
 
-pub fn cmake_build(build_dir: &str, targets: &Vec<String>) -> Result<bool, String> {
+pub fn cmake_build(build_path: &Path, targets: &Vec<PathBuf>) -> Result<bool, String> {
     if std::env::var("NINJA_TO_SOONG_SKIP_CMAKE_BUILD").is_ok() {
         return Ok(false);
     }
     let targets_args = targets.into_iter().fold(Vec::new(), |mut vec, target| {
         vec.push("--target");
-        vec.push(&target);
+        vec.push(target.to_str().unwrap());
         vec
     });
     let mut command = std::process::Command::new("cmake");
-    command.args(["--build", &build_dir]).args(targets_args);
+    command
+        .args(["--build", &str(build_path)])
+        .args(targets_args);
     println!("{command:#?}");
     if let Err(err) = command.status() {
-        return error!("cmake_build({build_dir}) failed: {err}");
+        return error!("cmake_build({build_path:#?}) failed: {err}");
     }
     Ok(true)
 }
 
-pub fn copy_file(from: &str, to: &str) -> Result<(), String> {
+pub fn copy_file(from: &Path, to: &Path) -> Result<(), String> {
     if let Err(err) = std::fs::copy(from, to) {
-        return error!("copy({from}, {to}) failed: {err}");
+        return error!("copy({from:#?}, {to:#?}) failed: {err}");
     }
     Ok(())
 }
 
-pub fn write_file(file_path: &str, content: &str) -> Result<(), String> {
+pub fn write_file(file_path: &Path, content: &str) -> Result<(), String> {
     match File::create(file_path) {
         Ok(mut file) => {
             if let Err(err) = file.write_fmt(format_args!("{0}", content)) {
-                return error!("Could not write into '{file_path}': '{err:#?}");
+                return error!("Could not write into {file_path:#?}: '{err:#?}");
             }
         }
         Err(err) => {
-            return error!("Could not create '{file_path}': '{err}'");
+            return error!("Could not create {file_path:#?}: '{err}'");
         }
     }
     Ok(())
 }
 
-pub fn read_file(file_path: &str) -> Result<String, String> {
+pub fn read_file(file_path: &Path) -> Result<String, String> {
     match File::open(&file_path) {
         Ok(mut file) => {
             let mut content = String::new();
             if let Err(err) = file.read_to_string(&mut content) {
-                return error!("Could not read '{file_path}': '{err}'");
+                return error!("Could not read {file_path:#?}: '{err}'");
             }
             Ok(content)
         }
-        Err(err) => return error!("Could not open '{file_path}': '{err}'"),
+        Err(err) => return error!("Could not open {file_path:#?}: '{err}'"),
     }
 }
 
-pub fn get_tests_folder() -> Result<String, String> {
+pub fn get_tests_folder() -> Result<PathBuf, String> {
     match std::env::current_exe() {
         Ok(exe_path) => {
             let tests_path = exe_path // <ninja-to-soong>/target/debug/ninja-to-soong
@@ -195,7 +229,7 @@ pub fn get_tests_folder() -> Result<String, String> {
                 .parent() // <ninja-to-soong>
                 .unwrap()
                 .join("tests"); // <ninja-to-soong>/tests
-            Ok(tests_path.to_str().unwrap().to_string())
+            Ok(tests_path)
         }
         Err(err) => return error!("Could not get current executable path: {err}"),
     }

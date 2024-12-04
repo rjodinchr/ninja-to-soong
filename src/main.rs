@@ -17,10 +17,10 @@ fn generate_project(
     project: &mut dyn Project,
     is_dependency: bool,
     projects_generated: &ProjectsMap,
-    android_dir: &str,
+    android_path: &Path,
 ) -> Result<(), String> {
     let project_name = project.get_id().str();
-    let project_path = project.get_id().android_path(android_dir);
+    let project_path = project.get_id().android_path(android_path);
     if !is_dependency {
         print_info!("Generating '{project_name}'");
     } else {
@@ -28,7 +28,7 @@ fn generate_project(
     }
     print_debug!("Get Ninja file's path...");
     let targets = if let Some(ninja_file_path) = project.get_ninja_file_path(projects_generated)? {
-        print_debug!("Parsing '{ninja_file_path}'...");
+        print_debug!("Parsing {ninja_file_path:#?}...");
         parser::parse_build_ninja(ninja_file_path)?
     } else {
         Vec::new()
@@ -38,14 +38,14 @@ fn generate_project(
     if !is_dependency {
         print_debug!("Writing soong file...");
 
-        const ANDROID_BP: &str = "/Android.bp";
-        let file_path = project_path + ANDROID_BP;
-        write_file(&file_path, &package.print())?;
-        print_verbose!("'{file_path}' created");
+        const ANDROID_BP: &str = "Android.bp";
+        let file_path = project_path.join(ANDROID_BP);
+        write_file(file_path.as_path(), &package.print())?;
+        print_verbose!("{file_path:#?} created");
 
-        let copy_dst = add_slash_suffix(&get_tests_folder()?) + project_name + ANDROID_BP;
+        let copy_dst = get_tests_folder()?.join(project_name).join(ANDROID_BP);
         copy_file(&file_path, &copy_dst)?;
-        print_verbose!("'{file_path}' copied to '{copy_dst}'");
+        print_verbose!("{file_path:#?} copied to {copy_dst:#?}");
     }
     Ok(())
 }
@@ -53,7 +53,7 @@ fn generate_project(
 fn generate_projects<'a>(
     all_projects: Vec<&'a mut dyn Project>,
     project_ids: Vec<ProjectId>,
-    android_dir: &str,
+    android_path: &Path,
 ) -> Result<(), String> {
     let mut projects_not_generated: HashMap<ProjectId, &mut dyn Project> = HashMap::new();
     let mut project_ids_to_generate: VecDeque<ProjectId> = VecDeque::new();
@@ -87,7 +87,7 @@ fn generate_projects<'a>(
             project,
             !project_ids_to_write.contains(project_id),
             &projects_generated,
-            android_dir,
+            android_path,
         )?;
         projects_generated.insert(project.get_id(), project);
     }
@@ -98,15 +98,15 @@ fn generate_projects<'a>(
 fn parse_args(
     executable: &str,
     args: Vec<String>,
-) -> Result<(String, String, Vec<ProjectId>), String> {
+) -> Result<(PathBuf, PathBuf, Vec<ProjectId>), String> {
     let required_args = 3;
     if args.len() < required_args {
         return error!("USAGE: {executable} <android_dir> <{ANDROID_NDK}_dir> [<projects>]");
     }
-    let android_dir = args[1].clone();
-    let ndk_dir = args[2].clone();
+    let android_path = PathBuf::from(args[1].clone());
+    let ndk_path = PathBuf::from(args[2].clone());
 
-    let ndk_name = ndk_dir.rsplit_once("/").unwrap().1;
+    let ndk_name = file_name(&ndk_path);
     if ndk_name != ANDROID_NDK {
         print_warn!("Expected '{ANDROID_NDK}' got '{ndk_name}'");
     }
@@ -115,16 +115,15 @@ fn parse_args(
     for arg in &args[required_args..] {
         project_ids.push(ProjectId::from(arg)?);
     }
-    Ok((android_dir, ndk_dir, project_ids))
+    Ok((android_path, ndk_path, project_ids))
 }
 
 fn main() -> Result<(), String> {
     let args: Vec<String> = std::env::args().collect();
-    let executable = args[0].clone().rsplit_once("/").unwrap().1.to_string();
-    let (android_dir, ndk_dir, project_ids) = parse_args(&executable, args)?;
-
+    let executable_path = PathBuf::from(&args[0]);
+    let executable = file_name(&executable_path);
+    let (android_path, ndk_path, project_ids) = parse_args(&executable, args)?;
     let temp_path = std::env::temp_dir().join(&executable);
-    let temp_dir = temp_path.to_str().unwrap();
 
     let mut clvk = clvk::Clvk::default();
     let mut clspv = clspv::Clspv::default();
@@ -140,10 +139,10 @@ fn main() -> Result<(), String> {
         &mut spirv_headers,
     ];
     for project in all_projects.iter_mut() {
-        project.init(&android_dir, &ndk_dir, temp_dir);
+        project.init(&android_path, &ndk_path, &temp_path);
     }
 
-    if let Err(err) = generate_projects(all_projects, project_ids, &android_dir) {
+    if let Err(err) = generate_projects(all_projects, project_ids, &android_path) {
         print_error!("{err}");
         Err(format!("{executable} failed"))
     } else {
