@@ -51,7 +51,7 @@ If you want more information take a look at the [github action script](.github/w
 
 After a **full** first run of `ninja-to-soong`, it is possible to run with the environment variable `NINJA_TO_SOONG_SKIP_CMAKE_CONFIGURE` set to skip the cmake configure step for every project.
 
-It is possible a specific set of projects by adding them after the required arguments:
+It is possible to run a specific set of projects by adding them after the required arguments:
 ```
 <ninja-to-soong> $ cargo run -- <android_tree_root> <android_ndk_path> <project1> <project2>
 ```

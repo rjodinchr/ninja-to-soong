@@ -1,7 +1,6 @@
 // Copyright 2024 ninja-to-soong authors
 // SPDX-License-Identifier: Apache-2.0
 
-use std::collections::HashSet;
 use std::fs::File;
 use std::io::{Read, Write};
 
@@ -63,7 +62,7 @@ macro_rules! error {
         Err(format!("{0}:{1}: {2}", file!(), line!(), $message))
     };
 }
-pub use error;
+pub use {error, print_internal, print_verbose};
 
 pub const CC_LIBRARY_HEADERS_SPIRV_TOOLS: &str = "SPIRV-Tools-includes";
 pub const CC_LIBRARY_HEADERS_SPIRV_HEADERS: &str = "SPIRV-Headers-includes";
@@ -156,48 +155,6 @@ pub fn copy_file(from: &str, to: &str, print: bool) -> Result<(), String> {
     if print {
         print_verbose!(format!("'{from}' copied to '{to}'"));
     }
-    Ok(())
-}
-
-pub fn copy_files(files: HashSet<String>, src_dir: &str, dst_dir: &str) -> Result<(), String> {
-    for file in files {
-        let from = add_slash_suffix(src_dir) + &file;
-        let to = add_slash_suffix(dst_dir) + &file;
-        let to_dir = to.rsplit_once("/").unwrap().0;
-        if let Err(err) = std::fs::create_dir_all(to_dir) {
-            return error!(format!("create_dir_all({to_dir}) failed: {err}"));
-        }
-        copy_file(&from, &to, false)?;
-    }
-    print_verbose!(format!("Files copied from '{src_dir}' to '{dst_dir}'"));
-    Ok(())
-}
-
-pub fn touch_dirs(dirs: &HashSet<String>, dst_dir: &str) -> Result<(), String> {
-    for include_dir in dirs {
-        let dir = dst_dir.to_string() + include_dir;
-        if File::open(&dir).is_ok() {
-            continue;
-        }
-        if let Err(err) = std::fs::create_dir_all(&dir) {
-            return error!(format!("create_dir_all({dir}) failed: {err}"));
-        }
-        if let Err(err) = File::create(&(dir.clone() + "/touch")) {
-            return error!(format!("Could not create '{dir}/touch': {err}"));
-        }
-    }
-    print_verbose!(format!("Directories touched in '{dst_dir}'"));
-    Ok(())
-}
-
-pub fn remove_dir(dir: String) -> Result<(), String> {
-    if File::open(&dir).is_err() {
-        return Ok(());
-    }
-    if let Err(err) = std::fs::remove_dir_all(&dir) {
-        return error!(format!("remove_dir_all failed: {err}"));
-    }
-    print_verbose!(format!("'{dir}' removed"));
     Ok(())
 }
 
