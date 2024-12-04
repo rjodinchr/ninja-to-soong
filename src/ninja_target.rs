@@ -27,7 +27,7 @@ impl NinjaTarget {
         order_only_dependencies: Vec<String>,
         variables: HashMap<String, String>,
     ) -> Self {
-        NinjaTarget {
+        Self {
             rule,
             outputs,
             implicit_outputs,
@@ -191,13 +191,11 @@ impl NinjaTarget {
     }
 }
 
-pub struct NinjaTargetsMap<'a> {
-    map: HashMap<String, &'a NinjaTarget>,
-}
+pub struct NinjaTargetsMap<'a>(HashMap<String, &'a NinjaTarget>);
 
 impl<'a> NinjaTargetsMap<'a> {
     pub fn new(targets: &'a Vec<NinjaTarget>) -> Self {
-        let mut map: HashMap<String, &'a NinjaTarget> = HashMap::new();
+        let mut map = HashMap::new();
         for target in targets {
             for output in &target.outputs {
                 map.insert(output.clone(), target);
@@ -206,10 +204,10 @@ impl<'a> NinjaTargetsMap<'a> {
                 map.insert(output.clone(), target);
             }
         }
-        NinjaTargetsMap { map }
+        Self(map)
     }
     pub fn get(&self, key: &str) -> Option<&&NinjaTarget> {
-        self.map.get(key)
+        self.0.get(key)
     }
     pub fn traverse_from<I, F, G>(
         &self,
