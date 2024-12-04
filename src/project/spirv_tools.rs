@@ -58,14 +58,17 @@ impl Project for SpirvTools {
         Ok(package)
     }
 
-    fn get_build_dir(&mut self, _projects_map: &ProjectsMap) -> Result<Option<String>, String> {
-        cmake_configure(
+    fn get_ninja_file_path(
+        &mut self,
+        _projects_map: &ProjectsMap,
+    ) -> Result<Option<String>, String> {
+        let (ninja_file_path, _) = cmake_configure(
             &self.src_dir,
             &self.build_dir,
             &self.ndk_dir,
             vec![&("-DSPIRV-Headers_SOURCE_DIR=".to_string() + &self.spirv_headers_dir)],
         )?;
-        Ok(Some(self.build_dir.clone()))
+        Ok(Some(ninja_file_path))
     }
 
     fn get_cmd_inputs_and_deps(

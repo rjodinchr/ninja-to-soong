@@ -94,7 +94,10 @@ pub trait Project {
         projects_map: &ProjectsMap,
     ) -> Result<SoongPackage, String>;
 
-    fn get_build_dir(&mut self, _projects_map: &ProjectsMap) -> Result<Option<String>, String> {
+    fn get_ninja_file_path(
+        &mut self,
+        _projects_map: &ProjectsMap,
+    ) -> Result<Option<String>, String> {
         Ok(None)
     }
     fn get_cmd_inputs_and_deps(

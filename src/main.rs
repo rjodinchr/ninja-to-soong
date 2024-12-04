@@ -26,10 +26,10 @@ fn generate_project(
     } else {
         print_info!("Generating dependency '{project_name}'");
     }
-    print_debug!("Get build dir...");
-    let targets = if let Some(build_dir) = project.get_build_dir(projects_generated)? {
-        print_debug!("Parsing '{build_dir}/build.ninja'...");
-        parser::parse_build_ninja(build_dir)?
+    print_debug!("Get Ninja file's path...");
+    let targets = if let Some(ninja_file_path) = project.get_ninja_file_path(projects_generated)? {
+        print_debug!("Parsing '{ninja_file_path}'...");
+        parser::parse_build_ninja(ninja_file_path)?
     } else {
         Vec::new()
     };

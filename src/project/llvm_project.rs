@@ -157,8 +157,11 @@ impl Project for LlvmProject {
         Ok(package)
     }
 
-    fn get_build_dir(&mut self, projects_map: &ProjectsMap) -> Result<Option<String>, String> {
-        if cmake_configure(
+    fn get_ninja_file_path(
+        &mut self,
+        projects_map: &ProjectsMap,
+    ) -> Result<Option<String>, String> {
+        let (ninja_file_path, configured) = cmake_configure(
             &(self.src_dir.to_string() + "/llvm"),
             &self.build_dir,
             &self.ndk_dir,
@@ -168,7 +171,8 @@ impl Project for LlvmProject {
                 "-DLIBCLC_TARGETS_TO_BUILD=clspv--;clspv64--",
                 "-DLLVM_TARGETS_TO_BUILD=",
             ],
-        )? {
+        )?;
+        if configured {
             let mut targets = Vec::new();
             targets.extend(GenDeps::TargetsToGenerate.get(self, ProjectId::Clvk, projects_map));
             targets.extend(GenDeps::LibclcBinaries.get(self, ProjectId::Clspv, projects_map));
@@ -176,7 +180,7 @@ impl Project for LlvmProject {
                 self.copy_gen_deps = true;
             }
         }
-        Ok(Some(self.build_dir.clone()))
+        Ok(Some(ninja_file_path))
     }
 
     fn get_default_cflags(&self) -> HashSet<String> {
