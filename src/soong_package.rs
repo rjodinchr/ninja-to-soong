@@ -29,7 +29,7 @@ impl<'a> SoongPackage<'a> {
         license_kinds: &str,
         license_text: &str,
     ) -> Self {
-        let mut package = SoongPackage {
+        let mut package = Self {
             modules: Vec::new(),
             gen_deps: HashSet::new(),
             generated_libraries: HashSet::new(),

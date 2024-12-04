@@ -29,23 +29,23 @@ const SPIRV_HEADERS_NAME: &str = "SPIRV-Headers";
 const SPIRV_TOOLS_NAME: &str = "SPIRV-Tools";
 
 impl ProjectId {
-    pub fn from(project: &str) -> Result<ProjectId, String> {
+    pub fn from(project: &str) -> Result<Self, String> {
         Ok(match project {
-            CLVK_NAME => ProjectId::Clvk,
-            CLSPV_NAME => ProjectId::Clspv,
-            LLVM_PROJECT_NAME => ProjectId::LlvmProject,
-            SPIRV_HEADERS_NAME => ProjectId::SpirvHeaders,
-            SPIRV_TOOLS_NAME => ProjectId::SpirvTools,
+            CLVK_NAME => Self::Clvk,
+            CLSPV_NAME => Self::Clspv,
+            LLVM_PROJECT_NAME => Self::LlvmProject,
+            SPIRV_HEADERS_NAME => Self::SpirvHeaders,
+            SPIRV_TOOLS_NAME => Self::SpirvTools,
             _ => return error!(format!("Unknown project '{project}'")),
         })
     }
     pub const fn str(self) -> &'static str {
         match self {
-            ProjectId::Clvk => CLVK_NAME,
-            ProjectId::Clspv => CLSPV_NAME,
-            ProjectId::LlvmProject => LLVM_PROJECT_NAME,
-            ProjectId::SpirvHeaders => SPIRV_HEADERS_NAME,
-            ProjectId::SpirvTools => SPIRV_TOOLS_NAME,
+            Self::Clvk => CLVK_NAME,
+            Self::Clspv => CLSPV_NAME,
+            Self::LlvmProject => LLVM_PROJECT_NAME,
+            Self::SpirvHeaders => SPIRV_HEADERS_NAME,
+            Self::SpirvTools => SPIRV_TOOLS_NAME,
         }
     }
     pub fn android_path(self, android_dir: &str) -> String {
