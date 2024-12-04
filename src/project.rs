@@ -136,11 +136,13 @@ pub trait Project {
     fn ignore_include(&self, _include: &str) -> bool {
         false
     }
+    fn ignore_link_flag(&self, _flag: &str) -> bool {
+        false
+    }
     fn ignore_target(&self, _target: &str) -> bool {
         false
     }
     fn optimize_target_for_size(&self, _target: &str) -> bool {
         false
     }
-    fn update_link_flags(&self, _flag: &str, _link_flags: &mut HashSet<String>) {}
 }

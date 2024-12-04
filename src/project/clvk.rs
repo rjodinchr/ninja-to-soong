@@ -130,21 +130,19 @@ impl Project for Clvk {
         }
     }
 
-    fn ignore_include(&self, _include: &str) -> bool {
-        true
-    }
-
     fn ignore_gen_header(&self, _header: &str) -> bool {
         true
     }
 
-    fn ignore_target(&self, target: &str) -> bool {
-        target.starts_with("external/")
+    fn ignore_include(&self, _include: &str) -> bool {
+        true
     }
 
-    fn update_link_flags(&self, flag: &str, link_flags: &mut HashSet<String>) {
-        if flag == "-Wl,-Bsymbolic" {
-            link_flags.insert(flag.to_string());
-        }
+    fn ignore_link_flag(&self, flag: &str) -> bool {
+        flag != "-Wl,-Bsymbolic"
+    }
+
+    fn ignore_target(&self, target: &str) -> bool {
+        target.starts_with("external/")
     }
 }

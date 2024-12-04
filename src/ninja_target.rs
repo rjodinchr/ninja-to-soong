@@ -61,8 +61,8 @@ impl NinjaTarget {
             for flag in flags.split(" ") {
                 if let Some(vs) = flag.strip_prefix("-Wl,--version-script=") {
                     version_script = Some(vs.replace(&add_slash_suffix(src_dir), ""));
-                } else {
-                    project.update_link_flags(flag, &mut link_flags);
+                } else if !project.ignore_link_flag(flag) {
+                    link_flags.insert(flag.to_string());
                 }
             }
         }
