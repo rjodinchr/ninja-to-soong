@@ -82,14 +82,16 @@ impl<'a> SoongPackage<'a> {
         for module in self.modules {
             package += &module.print();
         }
+
         const ANDROID_BP: &str = "/Android.bp";
-        write_file(&(self.src_dir.to_string() + ANDROID_BP), &package)?;
-        let tests_path = get_tests_folder()?;
-        copy_file(
-            &(self.src_dir.to_string() + ANDROID_BP),
-            &(add_slash_suffix(&tests_path) + project_name + ANDROID_BP),
-            true,
-        )?;
+        let file_path = self.src_dir.to_string() + ANDROID_BP;
+        write_file(&file_path, &package)?;
+        print_verbose!(format!("'{file_path}' created"));
+
+        let copy_dst = add_slash_suffix(&get_tests_folder()?) + project_name + ANDROID_BP;
+        copy_file(&file_path, &copy_dst)?;
+        print_verbose!(format!("'{file_path}' copied to '{copy_dst}'"));
+
         Ok(())
     }
 
