@@ -108,11 +108,12 @@ impl SoongModule {
                 } else {
                     let mut sorted = Vec::from_iter(set);
                     sorted.sort();
-                    "[\n".to_string()
-                        + &sorted.iter().fold(String::new(), |values, value| {
-                            values + Self::INDENT + Self::INDENT + "\"" + &value + "\",\n"
-                        })
-                        + "    ]"
+                    let mut values = String::from("[\n");
+                    for value in sorted {
+                        values = values + Self::INDENT + Self::INDENT + "\"" + &value + "\",\n";
+                    }
+                    values = values + Self::INDENT + "]";
+                    values
                 }),
             );
         }
