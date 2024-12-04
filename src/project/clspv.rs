@@ -62,7 +62,10 @@ impl Project for Clspv {
         Ok(package)
     }
 
-    fn get_build_dir(&mut self, _projects_map: &ProjectsMap) -> Result<Option<String>, String> {
+    fn get_ninja_file_path(
+        &mut self,
+        _projects_map: &ProjectsMap,
+    ) -> Result<Option<String>, String> {
         let spirv_headers_dir = "-DSPIRV_HEADERS_SOURCE_DIR=".to_string() + &self.spirv_headers_dir;
         let spirv_tools_dir = "-DSPIRV_TOOLS_SOURCE_DIR=".to_string() + &self.spirv_tools_dir;
         let llvm_project_dir =
@@ -70,7 +73,7 @@ impl Project for Clspv {
         let clang_dir = "-DCLSPV_CLANG_SOURCE_DIR=".to_string() + &self.llvm_project_dir + "/clang";
         let libclc_dir =
             "-DCLSPV_LIBCLC_SOURCE_DIR=".to_string() + &self.llvm_project_dir + "/libclc";
-        cmake_configure(
+        let (ninja_file_path, _) = cmake_configure(
             &self.src_dir,
             &self.build_dir,
             &self.ndk_dir,
@@ -82,7 +85,7 @@ impl Project for Clspv {
                 &libclc_dir,
             ],
         )?;
-        Ok(Some(self.build_dir.clone()))
+        Ok(Some(ninja_file_path))
     }
 
     fn get_cmd_inputs_and_deps(

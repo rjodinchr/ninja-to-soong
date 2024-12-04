@@ -103,9 +103,10 @@ pub fn cmake_configure(
     build_dir: &str,
     ndk_dir: &str,
     args: Vec<&str>,
-) -> Result<bool, String> {
+) -> Result<(String, bool), String> {
+    let ninja_file_path = build_dir.to_string() + "/build.ninja";
     if std::env::var("NINJA_TO_SOONG_SKIP_CMAKE_CONFIGURE").is_ok() {
-        return Ok(false);
+        return Ok((ninja_file_path, false));
     }
     let mut command = std::process::Command::new("cmake");
     command
@@ -128,7 +129,7 @@ pub fn cmake_configure(
     if let Err(err) = command.status() {
         return error!("cmake_configure({src_dir}) failed: {err}");
     }
-    Ok(true)
+    Ok((ninja_file_path, true))
 }
 
 pub fn cmake_build(build_dir: &str, targets: &Vec<String>) -> Result<bool, String> {
