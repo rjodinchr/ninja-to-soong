@@ -9,7 +9,7 @@ use crate::utils::*;
 fn parse_output_section(section: &str) -> Result<(Vec<String>, Vec<String>), String> {
     let mut split = section.split("|");
     if split.clone().count() < 1 {
-        return error!(format!("parse_output_section failed: '{section}'"));
+        return error!("parse_output_section failed: '{section}'");
     }
     let mut target_outputs: Vec<String> = Vec::new();
     for output in split.nth(0).unwrap().trim().split(" ") {
@@ -27,7 +27,7 @@ fn parse_output_section(section: &str) -> Result<(Vec<String>, Vec<String>), Str
 fn parse_input_and_rule_section(section: &str) -> Result<(String, Vec<String>), String> {
     let mut split = section.trim().split(" ");
     if split.clone().count() < 1 {
-        return error!(format!("parse_input_and_rule_section failed: '{section}'"));
+        return error!("parse_input_and_rule_section failed: '{section}'");
     }
     let target_rule = String::from(split.nth(0).unwrap());
     let mut target_inputs: Vec<String> = Vec::new();
@@ -43,7 +43,7 @@ fn parse_input_and_deps_section(
     let mut split = section.split("|");
     let split_count = split.clone().count();
     if split_count != 1 && split_count != 2 {
-        return error!(format!("parse_input_and_deps_section failed: '{section}'"));
+        return error!("parse_input_and_deps_section failed: '{section}'");
     }
 
     let (target_rule, target_inputs) = parse_input_and_rule_section(split.nth(0).unwrap())?;
@@ -63,7 +63,7 @@ fn parse_input_section(
     let mut split = section.split("||");
     let split_count = split.clone().count();
     if split_count != 1 && split_count != 2 {
-        return error!(format!("parse_input_section failed: '{section}'"));
+        return error!("parse_input_section failed: '{section}'");
     }
 
     let (target_rule, target_inputs, target_implicit_dependencies) =
@@ -85,13 +85,13 @@ fn parse_input_section(
 
 fn parse_build_target(line: &str, lines: &mut std::str::Lines<'_>) -> Result<NinjaTarget, String> {
     let Some(line_stripped) = line.strip_prefix("build") else {
-        return error!(format!("parse_build_target failed: '{line}'"));
+        return error!("parse_build_target failed: '{line}'");
     };
 
     let mut split = line_stripped.split(":");
     let split_count = split.clone().count();
     if split_count != 2 {
-        return error!(format!("parse_build_target failed: '{line}'"));
+        return error!("parse_build_target failed: '{line}'");
     }
 
     let (target_outputs, target_implicit_outputs) = parse_output_section(split.nth(0).unwrap())?;
@@ -104,7 +104,7 @@ fn parse_build_target(line: &str, lines: &mut std::str::Lines<'_>) -> Result<Nin
             break;
         }
         let Some(split) = next_line.split_once("=") else {
-            return error!(format!("parse_build_target failed: '{next_line}'"));
+            return error!("parse_build_target failed: '{next_line}'");
         };
         let key = String::from(split.0.trim());
         let val = String::from(split.1.trim());

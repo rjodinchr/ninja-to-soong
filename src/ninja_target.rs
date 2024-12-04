@@ -99,9 +99,7 @@ impl NinjaTarget {
                 } else if lib.ends_with(".so") {
                     shared_libraries.insert(lib_name);
                 } else {
-                    return error!(format!(
-                        "unsupported library '{lib}' from target: {self:#?}"
-                    ));
+                    return error!("unsupported library '{lib}' from target: {self:#?}");
                 }
             }
         }
@@ -162,7 +160,7 @@ impl NinjaTarget {
                 } else {
                     gen_headers.insert(match targets_map.get(&name) {
                         Some(target_header) => target_header.get_name(target_prefix),
-                        None => return error!(format!("Could not find target for '{name}'")),
+                        None => return error!("Could not find target for '{name}'"),
                     });
                 }
                 Ok(())
@@ -173,14 +171,14 @@ impl NinjaTarget {
 
     pub fn get_cmd(&self) -> Result<Option<String>, String> {
         let Some(command) = self.variables.get("COMMAND") else {
-            return error!(format!("No command in: {self:#?}"));
+            return error!("No command in: {self:#?}");
         };
         let mut split = command.split(" && ");
         let split_count = split.clone().count();
         if split_count < 2 {
-            return error!(format!(
+            return error!(
                 "Could not find enough split in command (expected at least 2, got {split_count}"
-            ));
+            );
         }
         let command = split.nth(1).unwrap();
         Ok(if command.contains("bin/cmake ") {

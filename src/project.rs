@@ -36,7 +36,7 @@ impl ProjectId {
             LLVM_PROJECT_NAME => Self::LlvmProject,
             SPIRV_HEADERS_NAME => Self::SpirvHeaders,
             SPIRV_TOOLS_NAME => Self::SpirvTools,
-            _ => return error!(format!("Unknown project '{project}'")),
+            _ => return error!("Unknown project '{project}'"),
         })
     }
     pub const fn str(self) -> &'static str {

@@ -105,12 +105,12 @@ impl<'a> SoongPackage<'a> {
         let mut srcs: HashSet<String> = HashSet::new();
         for input in target.get_inputs() {
             let Some(target) = targets_map.get(input) else {
-                return error!(format!("unsupported input for library: {input}"));
+                return error!("unsupported input for library: {input}");
             };
 
             let target_srcs = target.get_inputs();
             if target_srcs.len() != 1 {
-                return error!(format!("Too many inputs in target: {self:#?}"));
+                return error!("Too many inputs in target: {self:#?}");
             }
             srcs.insert(target_srcs[0].replace(&add_slash_suffix(self.src_dir), ""));
 
@@ -256,7 +256,7 @@ impl<'a> SoongPackage<'a> {
         {
             return Ok(None);
         } else {
-            error!(format!("unsupported rule ({rule}) for target: {target:#?}"))
+            error!("unsupported rule ({rule}) for target: {target:#?}")
         }?))
     }
 
