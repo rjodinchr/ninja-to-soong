@@ -1,10 +1,8 @@
 // Copyright 2024 ninja-to-soong authors
 // SPDX-License-Identifier: Apache-2.0
 
-use crate::ninja_target::NinjaTarget;
 use crate::project::*;
 use crate::soong_module::SoongModule;
-use crate::soong_package::SoongPackage;
 
 #[derive(Default)]
 pub struct SpirvHeaders {

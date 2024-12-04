@@ -3,7 +3,7 @@
 
 use std::collections::HashSet;
 
-use crate::ninja_target::*;
+use crate::ninja_target::{NinjaTarget, NinjaTargetsMap};
 use crate::project::Project;
 use crate::soong_module::SoongModule;
 use crate::utils::*;
