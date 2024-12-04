@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use std::collections::HashSet;
+use std::fs::File;
 
 use crate::ninja_target::NinjaTarget;
 use crate::project::*;
@@ -51,7 +52,6 @@ impl Project for LlvmProject {
         )?;
 
         let libclc_deps = GenDeps::LibclcBinaries.get(self, ProjectId::Clspv, projects_map);
-        let include_dirs = package.get_include_dirs();
         let mut gen_deps = package.get_gen_deps();
         gen_deps.extend(libclc_deps.clone());
         let missing_gen_deps = vec![
@@ -73,20 +73,52 @@ impl Project for LlvmProject {
             gen_deps.insert(header.to_string());
         }
 
-        let mut gen_deps_sorted = Vec::from_iter(&gen_deps);
+        let mut gen_deps_folders: HashSet<String> = HashSet::new();
+        for gen_dep in &gen_deps {
+            let folder = gen_dep.rsplit_once("/").unwrap().0;
+            let include_str = "include";
+            if let Some(include) = folder.split_once(include_str) {
+                gen_deps_folders.insert(include.0.to_string() + include_str);
+            } else {
+                gen_deps_folders.insert(folder.to_string());
+            }
+        }
+        for module in package.get_modules() {
+            module.filter_set("local_include_dirs", |include| {
+                if let Some(strip) = include.strip_prefix(&add_slash_suffix(CMAKE_GENERATED)) {
+                    gen_deps_folders.contains(strip)
+                } else {
+                    true
+                }
+            });
+        }
+
+        let mut gen_deps_sorted = Vec::from_iter(gen_deps);
         gen_deps_sorted.sort();
         write_file(
             &(add_slash_suffix(&get_tests_folder()?) + self.get_id().str() + "/generated_deps.txt"),
-            &format!("{gen_deps_sorted:#?}"),
+            &format!("{0:#?}", &gen_deps_sorted),
         )?;
-        if self.copy_gen_deps {
-            remove_dir(add_slash_suffix(&self.src_dir) + CMAKE_GENERATED)?;
-            copy_files(
-                gen_deps,
-                &self.build_dir,
-                &(add_slash_suffix(&self.src_dir) + CMAKE_GENERATED),
-            )?;
-            touch_dirs(&include_dirs, &add_slash_suffix(&self.src_dir))?;
+
+        let cmake_generated_dir = add_slash_suffix(&self.src_dir) + CMAKE_GENERATED;
+        if self.copy_gen_deps && File::open(&cmake_generated_dir).is_ok() {
+            if let Err(err) = std::fs::remove_dir_all(&cmake_generated_dir) {
+                return error!(format!("remove_dir_all failed: {err}"));
+            }
+            print_verbose!(format!("'{cmake_generated_dir}' removed"));
+            for file in gen_deps_sorted {
+                let from = add_slash_suffix(&self.build_dir) + &file;
+                let to = add_slash_suffix(&cmake_generated_dir) + &file;
+                let to_dir = to.rsplit_once("/").unwrap().0;
+                if let Err(err) = std::fs::create_dir_all(to_dir) {
+                    return error!(format!("create_dir_all({to_dir}) failed: {err}"));
+                }
+                copy_file(&from, &to, false)?;
+            }
+            print_verbose!(format!(
+                "Files copied from '{0}' to '{cmake_generated_dir}'",
+                &self.build_dir
+            ));
         }
 
         package.add_module(SoongModule::new_cc_library_headers(

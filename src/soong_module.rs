@@ -51,6 +51,16 @@ impl SoongModule {
         self.bool_map.insert(key.to_string(), bool);
     }
 
+    pub fn filter_set<F>(&mut self, key: &str, f: F)
+    where
+        F: FnMut(&String) -> bool + Clone,
+    {
+        let Some(set) = self.set_map.remove(key) else {
+            return;
+        };
+        self.add_set(key, HashSet::from_iter(set.into_iter().filter(f.clone())));
+    }
+
     fn print_key_value(key: &str, value: &str) -> String {
         Self::INDENT.to_string() + key + ": " + value + ",\n"
     }
