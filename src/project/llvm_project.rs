@@ -1,13 +1,10 @@
 // Copyright 2024 ninja-to-soong authors
 // SPDX-License-Identifier: Apache-2.0
 
-use std::collections::HashSet;
 use std::fs::File;
 
-use crate::ninja_target::NinjaTarget;
 use crate::project::*;
 use crate::soong_module::SoongModule;
-use crate::soong_package::SoongPackage;
 
 const CMAKE_GENERATED: &str = "cmake_generated";
 

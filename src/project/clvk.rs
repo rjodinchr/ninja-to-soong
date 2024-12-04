@@ -1,11 +1,7 @@
 // Copyright 2024 ninja-to-soong authors
 // SPDX-License-Identifier: Apache-2.0
 
-use std::collections::{HashMap, HashSet};
-
-use crate::ninja_target::NinjaTarget;
 use crate::project::*;
-use crate::soong_package::SoongPackage;
 
 #[derive(Default)]
 pub struct Clvk {
