@@ -6,40 +6,40 @@ use std::collections::HashMap;
 use crate::ninja_target::NinjaTarget;
 use crate::utils::*;
 
-fn parse_output_section(section: &str) -> Result<(Vec<String>, Vec<String>), String> {
+fn parse_output_section(section: &str) -> Result<(Vec<PathBuf>, Vec<PathBuf>), String> {
     let mut split = section.split("|");
     if split.clone().count() < 1 {
         return error!("parse_output_section failed: '{section}'");
     }
-    let mut target_outputs: Vec<String> = Vec::new();
+    let mut target_outputs = Vec::new();
     for output in split.nth(0).unwrap().trim().split(" ") {
-        target_outputs.push(String::from(output.trim()));
+        target_outputs.push(PathBuf::from(output.trim()));
     }
-    let mut target_implicit_outputs: Vec<String> = Vec::new();
+    let mut target_implicit_outputs = Vec::new();
     if let Some(implicit_outputs) = split.next() {
         for implicit_output in implicit_outputs.trim().split(" ") {
-            target_implicit_outputs.push(String::from(implicit_output.trim()));
+            target_implicit_outputs.push(PathBuf::from(implicit_output.trim()));
         }
     }
     Ok((target_outputs, target_implicit_outputs))
 }
 
-fn parse_input_and_rule_section(section: &str) -> Result<(String, Vec<String>), String> {
+fn parse_input_and_rule_section(section: &str) -> Result<(String, Vec<PathBuf>), String> {
     let mut split = section.trim().split(" ");
     if split.clone().count() < 1 {
         return error!("parse_input_and_rule_section failed: '{section}'");
     }
     let target_rule = String::from(split.nth(0).unwrap());
-    let mut target_inputs: Vec<String> = Vec::new();
+    let mut target_inputs = Vec::new();
     for input in split {
-        target_inputs.push(String::from(input.trim()));
+        target_inputs.push(PathBuf::from(input.trim()));
     }
     Ok((target_rule, target_inputs))
 }
 
 fn parse_input_and_deps_section(
     section: &str,
-) -> Result<(String, Vec<String>, Vec<String>), String> {
+) -> Result<(String, Vec<PathBuf>, Vec<PathBuf>), String> {
     let mut split = section.split("|");
     let split_count = split.clone().count();
     if split_count != 1 && split_count != 2 {
@@ -48,10 +48,10 @@ fn parse_input_and_deps_section(
 
     let (target_rule, target_inputs) = parse_input_and_rule_section(split.nth(0).unwrap())?;
 
-    let mut target_implicit_dependencies: Vec<String> = Vec::new();
+    let mut target_implicit_dependencies = Vec::new();
     if let Some(implicit_dependencies) = split.next() {
         for implicit_dep in implicit_dependencies.trim().split(" ") {
-            target_implicit_dependencies.push(String::from(implicit_dep.trim()));
+            target_implicit_dependencies.push(PathBuf::from(implicit_dep.trim()));
         }
     }
     Ok((target_rule, target_inputs, target_implicit_dependencies))
@@ -59,7 +59,7 @@ fn parse_input_and_deps_section(
 
 fn parse_input_section(
     section: &str,
-) -> Result<(String, Vec<String>, Vec<String>, Vec<String>), String> {
+) -> Result<(String, Vec<PathBuf>, Vec<PathBuf>, Vec<PathBuf>), String> {
     let mut split = section.split("||");
     let split_count = split.clone().count();
     if split_count != 1 && split_count != 2 {
@@ -69,10 +69,10 @@ fn parse_input_section(
     let (target_rule, target_inputs, target_implicit_dependencies) =
         parse_input_and_deps_section(split.nth(0).unwrap())?;
 
-    let mut target_order_only_dependencies: Vec<String> = Vec::new();
+    let mut target_order_only_dependencies = Vec::new();
     if let Some(order_only_dependencies) = split.next() {
         for dep in order_only_dependencies.trim().split(" ") {
-            target_order_only_dependencies.push(String::from(dep.trim()));
+            target_order_only_dependencies.push(PathBuf::from(dep.trim()));
         }
     }
     Ok((
@@ -122,7 +122,7 @@ fn parse_build_target(line: &str, lines: &mut std::str::Lines<'_>) -> Result<Nin
     ))
 }
 
-pub fn parse_build_ninja(ninja_file_path: String) -> Result<Vec<NinjaTarget>, String> {
+pub fn parse_build_ninja(ninja_file_path: PathBuf) -> Result<Vec<NinjaTarget>, String> {
     let mut targets: Vec<NinjaTarget> = Vec::new();
     let file = read_file(&ninja_file_path)?;
     let mut lines = file.lines();

@@ -10,17 +10,17 @@ const CMAKE_GENERATED: &str = "cmake_generated";
 
 #[derive(Default)]
 pub struct LlvmProject {
-    src_dir: String,
-    build_dir: String,
-    ndk_dir: String,
+    src_path: PathBuf,
+    build_path: PathBuf,
+    ndk_path: PathBuf,
     copy_gen_deps: bool,
 }
 
 impl Project for LlvmProject {
-    fn init(&mut self, android_dir: &str, ndk_dir: &str, temp_dir: &str) {
-        self.src_dir = self.get_id().android_path(android_dir);
-        self.build_dir = add_slash_suffix(temp_dir) + self.get_id().str();
-        self.ndk_dir = ndk_dir.to_string();
+    fn init(&mut self, android_path: &Path, ndk_path: &Path, temp_path: &Path) {
+        self.src_path = self.get_id().android_path(android_path);
+        self.build_path = temp_path.join(self.get_id().str());
+        self.ndk_path = ndk_path.to_path_buf();
         self.copy_gen_deps = false;
     }
 
@@ -34,9 +34,9 @@ impl Project for LlvmProject {
         projects_map: &ProjectsMap,
     ) -> Result<SoongPackage, String> {
         let mut package = SoongPackage::new(
-            &self.src_dir,
-            &self.ndk_dir,
-            &self.build_dir,
+            &self.src_path,
+            &self.ndk_path,
+            &self.build_path,
             self.get_id().str(),
             "//visibility:public",
             "SPDX-license-identifier-Apache-2.0",
@@ -67,22 +67,21 @@ impl Project for LlvmProject {
             "tools/clang/include/clang/Config/config.h",
         ];
         for header in missing_gen_deps {
-            gen_deps.insert(header.to_string());
+            gen_deps.insert(PathBuf::from(header));
         }
 
-        let mut gen_deps_folders: HashSet<String> = HashSet::new();
+        let mut gen_deps_folders: HashSet<PathBuf> = HashSet::new();
         for gen_dep in &gen_deps {
-            let folder = gen_dep.rsplit_once("/").unwrap().0;
-            let include_str = "include";
-            if let Some(include) = folder.split_once(include_str) {
-                gen_deps_folders.insert(include.0.to_string() + include_str);
+            let folder = gen_dep.parent().unwrap();
+            if let Some((include_folder, _)) = split_include(folder) {
+                gen_deps_folders.insert(include_folder);
             } else {
-                gen_deps_folders.insert(folder.to_string());
+                gen_deps_folders.insert(folder.to_path_buf());
             }
         }
         for module in package.get_modules() {
             module.filter_set("local_include_dirs", |include| {
-                if let Some(strip) = include.strip_prefix(&add_slash_suffix(CMAKE_GENERATED)) {
+                if let Ok(strip) = Path::new(include).strip_prefix(CMAKE_GENERATED) {
                     gen_deps_folders.contains(strip)
                 } else {
                     true
@@ -93,28 +92,30 @@ impl Project for LlvmProject {
         let mut gen_deps_sorted = Vec::from_iter(gen_deps);
         gen_deps_sorted.sort();
         write_file(
-            &(add_slash_suffix(&get_tests_folder()?) + self.get_id().str() + "/generated_deps.txt"),
+            &get_tests_folder()?
+                .join(self.get_id().str())
+                .join("generated_deps.txt"),
             &format!("{0:#?}", &gen_deps_sorted),
         )?;
 
-        let cmake_generated_dir = add_slash_suffix(&self.src_dir) + CMAKE_GENERATED;
-        if self.copy_gen_deps && File::open(&cmake_generated_dir).is_ok() {
-            if let Err(err) = std::fs::remove_dir_all(&cmake_generated_dir) {
+        let cmake_generated_path = Path::new(CMAKE_GENERATED);
+        if self.copy_gen_deps && File::open(&cmake_generated_path).is_ok() {
+            if let Err(err) = std::fs::remove_dir_all(cmake_generated_path) {
                 return error!("remove_dir_all failed: {err}");
             }
-            print_verbose!("'{cmake_generated_dir}' removed");
+            print_verbose!("'{cmake_generated_path:#?}' removed");
             for file in gen_deps_sorted {
-                let from = add_slash_suffix(&self.build_dir) + &file;
-                let to = add_slash_suffix(&cmake_generated_dir) + &file;
-                let to_dir = to.rsplit_once("/").unwrap().0;
-                if let Err(err) = std::fs::create_dir_all(to_dir) {
-                    return error!("create_dir_all({to_dir}) failed: {err}");
+                let from = self.build_path.join(&file);
+                let to = cmake_generated_path.join(file);
+                let to_path = to.parent().unwrap();
+                if let Err(err) = std::fs::create_dir_all(to_path) {
+                    return error!("create_dir_all({to_path:#?}) failed: {err}");
                 }
                 copy_file(&from, &to)?;
             }
             print_verbose!(
-                "Files copied from '{0}' to '{cmake_generated_dir}'",
-                &self.build_dir
+                "Files copied from '{0:#?}' to '{cmake_generated_path:#?}'",
+                &self.build_path
             );
         }
 
@@ -122,7 +123,7 @@ impl Project for LlvmProject {
             CC_LIBRARY_HEADERS_LLVM,
             [
                 "llvm/include".to_string(),
-                CMAKE_GENERATED.to_string() + "/include",
+                str(&cmake_generated_path.join("include")),
             ]
             .into(),
         ));
@@ -130,24 +131,24 @@ impl Project for LlvmProject {
             CC_LIBRARY_HEADERS_CLANG,
             [
                 "clang/include".to_string(),
-                CMAKE_GENERATED.to_string() + "/tools/clang/include",
+                str(&cmake_generated_path.join("tools/clang/include")),
             ]
             .into(),
         ));
 
         for clang_header in GenDeps::ClangHeaders.get(self, ProjectId::Clspv, projects_map) {
             package.add_module(SoongModule::new_copy_genrule(
-                clang_headers_name("clang", &clang_header),
-                clang_header.clone(),
-                clang_header.rsplit_once("/").unwrap().1.to_string(),
+                clang_headers_name(Path::new("clang"), &clang_header),
+                str(&clang_header),
+                file_name(&clang_header),
             ));
         }
         for file in libclc_deps {
-            let file_path = add_slash_suffix(CMAKE_GENERATED) + &file;
+            let file_path = cmake_generated_path.join(file);
             package.add_module(SoongModule::new_copy_genrule(
-                llvm_project_headers_name(CMAKE_GENERATED, &file_path),
-                file_path.clone(),
-                file_path.rsplit_once("/").unwrap().1.to_string(),
+                llvm_headers_name(cmake_generated_path, &file_path),
+                str(&file_path),
+                file_name(&file_path),
             ));
         }
 
@@ -157,11 +158,11 @@ impl Project for LlvmProject {
     fn get_ninja_file_path(
         &mut self,
         projects_map: &ProjectsMap,
-    ) -> Result<Option<String>, String> {
+    ) -> Result<Option<PathBuf>, String> {
         let (ninja_file_path, configured) = cmake_configure(
-            &(self.src_dir.to_string() + "/llvm"),
-            &self.build_dir,
-            &self.ndk_dir,
+            &self.src_path.join("llvm"),
+            &self.build_path,
+            &self.ndk_path,
             vec![
                 LLVM_DISABLE_ZLIB,
                 "-DLLVM_ENABLE_PROJECTS=clang;libclc",
@@ -173,7 +174,7 @@ impl Project for LlvmProject {
             let mut targets = Vec::new();
             targets.extend(GenDeps::TargetsToGenerate.get(self, ProjectId::Clvk, projects_map));
             targets.extend(GenDeps::LibclcBinaries.get(self, ProjectId::Clspv, projects_map));
-            if cmake_build(&self.build_dir, &targets)? {
+            if cmake_build(&self.build_path, &targets)? {
                 self.copy_gen_deps = true;
             }
         }
@@ -188,8 +189,8 @@ impl Project for LlvmProject {
         .into()
     }
 
-    fn get_include(&self, include: &str) -> String {
-        include.replace(&self.build_dir, CMAKE_GENERATED)
+    fn get_include(&self, include: &Path) -> PathBuf {
+        Path::new(CMAKE_GENERATED).join(strip_prefix(include, &self.build_path))
     }
 
     fn get_project_deps(&self) -> Vec<ProjectId> {
@@ -200,11 +201,11 @@ impl Project for LlvmProject {
         true
     }
 
-    fn ignore_gen_header(&self, _header: &str) -> bool {
+    fn ignore_gen_header(&self, _header: &Path) -> bool {
         true
     }
 
-    fn ignore_target(&self, input: &str) -> bool {
+    fn ignore_target(&self, input: &Path) -> bool {
         !input.starts_with("lib")
     }
 
