@@ -31,7 +31,7 @@
 # Using `ninja-to-soong`
 
 ```
-<ninja-to-soong> $ cargo run -- <android_repository_path> <android_ndk_path>
+<ninja-to-soong> $ cargo run --release -- <android_repository_path> <android_ndk_path>
 ```
 
 # Tests

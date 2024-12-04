@@ -6,8 +6,6 @@ use std::collections::{HashMap, HashSet};
 use crate::project::Project;
 use crate::utils::*;
 
-pub type NinjaTargetsMap<'a> = HashMap<String, &'a NinjaTarget>;
-
 #[derive(Debug)]
 pub struct NinjaTarget {
     rule: String,
@@ -44,41 +42,12 @@ impl NinjaTarget {
         &self.inputs
     }
 
-    pub fn get_rule(&self) -> &str {
-        &self.rule
-    }
-
-    pub fn get_name(&self, prefix: &str) -> String {
-        rework_name(prefix.to_string() + "_" + &self.outputs[0])
-    }
-
     pub fn get_outputs(&self) -> &Vec<String> {
         &self.outputs
     }
 
-    pub fn get_all_inputs(&self) -> Vec<String> {
-        let mut inputs: Vec<String> = Vec::new();
-        for input in &self.inputs {
-            inputs.push(input.clone());
-        }
-        for input in &self.implicit_deps {
-            inputs.push(input.clone());
-        }
-        for input in &self.order_only_deps {
-            inputs.push(input.clone());
-        }
-        inputs
-    }
-
-    pub fn get_all_outputs(&self) -> Vec<String> {
-        let mut outputs: Vec<String> = Vec::new();
-        for output in &self.outputs {
-            outputs.push(output.clone());
-        }
-        for output in &self.implicit_outputs {
-            outputs.push(output.clone());
-        }
-        outputs
+    pub fn get_name(&self, prefix: &str) -> String {
+        rework_name(prefix.to_string() + "_" + &self.outputs[0])
     }
 
     pub fn get_link_flags(
@@ -181,35 +150,25 @@ impl NinjaTarget {
         targets_map: &NinjaTargetsMap,
         project: &dyn Project,
     ) -> Result<(HashSet<String>, HashSet<String>), String> {
-        let mut gen_headers: HashSet<String> = HashSet::new();
-        let mut gen_deps: HashSet<String> = HashSet::new();
-        let mut target_seen: HashSet<String> = HashSet::new();
-        let mut target_to_parse = vec![self.outputs[0].clone()];
-
-        while let Some(target_name) = target_to_parse.pop() {
-            if target_seen.contains(&target_name) {
-                continue;
-            }
-            let Some(target) = targets_map.get(&target_name) else {
-                continue;
-            };
-
-            target_to_parse.append(&mut target.get_all_inputs());
-            target_seen.extend(target.get_all_outputs());
-
-            if target.rule != "CUSTOM_COMMAND" || target.get_cmd()?.is_none() {
-                continue;
-            }
-            if project.ignore_gen_header(&target_name) {
-                gen_deps.insert(target_name.clone());
-            } else {
-                gen_headers.insert(match targets_map.get(&target_name) {
-                    Some(target_header) => target_header.get_name(target_prefix),
-                    None => return error!(format!("Could not find target for '{target_name}'")),
-                });
-            }
-        }
-        Ok((gen_headers, gen_deps))
+        Ok(targets_map.traverse_from(
+            vec![self.outputs[0].clone()],
+            (HashSet::new(), HashSet::new()),
+            |(gen_headers, gen_deps), rule, name, target| {
+                if rule != "CUSTOM_COMMAND" || target.get_cmd()?.is_none() {
+                    return Ok(());
+                }
+                if project.ignore_gen_header(&name) {
+                    gen_deps.insert(name);
+                } else {
+                    gen_headers.insert(match targets_map.get(&name) {
+                        Some(target_header) => target_header.get_name(target_prefix),
+                        None => return error!(format!("Could not find target for '{name}'")),
+                    });
+                }
+                Ok(())
+            },
+            |_target_name| false,
+        )?)
     }
 
     pub fn get_cmd(&self) -> Result<Option<String>, String> {
@@ -229,5 +188,55 @@ impl NinjaTarget {
         } else {
             Some(command.to_string())
         })
+    }
+}
+
+pub struct NinjaTargetsMap<'a> {
+    map: HashMap<String, &'a NinjaTarget>,
+}
+
+impl<'a> NinjaTargetsMap<'a> {
+    pub fn new(targets: &'a Vec<NinjaTarget>) -> Self {
+        let mut map: HashMap<String, &'a NinjaTarget> = HashMap::new();
+        for target in targets {
+            for output in &target.outputs {
+                map.insert(output.clone(), target);
+            }
+            for output in &target.implicit_outputs {
+                map.insert(output.clone(), target);
+            }
+        }
+        NinjaTargetsMap { map }
+    }
+    pub fn get(&self, key: &str) -> Option<&&NinjaTarget> {
+        self.map.get(key)
+    }
+    pub fn traverse_from<I, F, G>(
+        &self,
+        mut targets: Vec<String>,
+        mut iterator: I,
+        mut f: F,
+        ignore_target: G,
+    ) -> Result<I, String>
+    where
+        F: FnMut(&mut I, &str, String, &NinjaTarget) -> Result<(), String>,
+        G: Fn(&String) -> bool,
+    {
+        let mut targets_seen: HashSet<String> = HashSet::new();
+        while let Some(target_name) = targets.pop() {
+            if targets_seen.contains(&target_name) || ignore_target(&target_name) {
+                continue;
+            }
+            let Some(target) = self.get(&target_name) else {
+                continue;
+            };
+            targets.append(&mut target.inputs.clone());
+            targets.append(&mut target.implicit_deps.clone());
+            targets.append(&mut target.order_only_deps.clone());
+            targets_seen.extend(target.outputs.clone());
+            targets_seen.extend(target.implicit_outputs.clone());
+            f(&mut iterator, &target.rule, target_name, target)?;
+        }
+        Ok(iterator)
     }
 }

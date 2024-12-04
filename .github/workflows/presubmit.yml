@@ -47,7 +47,7 @@ jobs:
           NINJA_TO_SOONG_SKIP_CMAKE_BUILD: 1
         run: |
           set -x
-          cargo run -- $(realpath ${{ env.android }}) $(realpath ${{ env.ndk }})
+          cargo run --release -- $(realpath ${{ env.android }}) $(realpath ${{ env.ndk }})
       - name: Check generated files
         shell: bash
         run: |
