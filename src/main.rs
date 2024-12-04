@@ -17,8 +17,10 @@ fn generate_project(
     project: &mut dyn Project,
     is_dependency: bool,
     projects_generated: &ProjectsMap,
+    android_dir: &str,
 ) -> Result<(), String> {
     let project_name = project.get_id().str();
+    let project_path = project.get_id().android_path(android_dir);
     if !is_dependency {
         print_info!(format!("Generating '{0}'", project_name));
     } else {
@@ -35,7 +37,15 @@ fn generate_project(
     let package = project.generate_package(targets, projects_generated)?;
     if !is_dependency {
         print_debug!("Writing soong file...");
-        package.write(project_name)?;
+
+        const ANDROID_BP: &str = "/Android.bp";
+        let file_path = project_path + ANDROID_BP;
+        write_file(&file_path, &package.print())?;
+        print_verbose!(format!("'{file_path}' created"));
+
+        let copy_dst = add_slash_suffix(&get_tests_folder()?) + project_name + ANDROID_BP;
+        copy_file(&file_path, &copy_dst)?;
+        print_verbose!(format!("'{file_path}' copied to '{copy_dst}'"));
     }
     Ok(())
 }
@@ -43,6 +53,7 @@ fn generate_project(
 fn generate_projects<'a>(
     all_projects: Vec<&'a mut dyn Project>,
     project_ids: Vec<ProjectId>,
+    android_dir: &str,
 ) -> Result<(), String> {
     let mut projects_not_generated: HashMap<ProjectId, &mut dyn Project> = HashMap::new();
     let mut project_ids_to_generate: VecDeque<ProjectId> = VecDeque::new();
@@ -76,6 +87,7 @@ fn generate_projects<'a>(
             project,
             !project_ids_to_write.contains(project_id),
             &projects_generated,
+            android_dir,
         )?;
         projects_generated.insert(project.get_id(), project);
     }
@@ -133,7 +145,7 @@ fn main() -> Result<(), String> {
         project.init(&android_dir, &ndk_dir, temp_dir);
     }
 
-    if let Err(err) = generate_projects(all_projects, project_ids) {
+    if let Err(err) = generate_projects(all_projects, project_ids, &android_dir) {
         print_error!(err);
         Err(format!("{executable} failed"))
     } else {

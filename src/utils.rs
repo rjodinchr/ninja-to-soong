@@ -176,7 +176,7 @@ pub fn read_file(file_path: &str) -> Result<String, String> {
             if let Err(err) = file.read_to_string(&mut content) {
                 return error!(format!("Could not read '{file_path}': '{err}'"));
             }
-            Ok(content.to_owned())
+            Ok(content)
         }
         Err(err) => return error!(format!("Could not open '{file_path}': '{err}'")),
     }
