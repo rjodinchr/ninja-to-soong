@@ -21,14 +21,9 @@ macro_rules! print_internal {
     };
 }
 #[macro_export]
-macro_rules! print_info {
+macro_rules! print_verbose {
     ($message:expr) => {
-        print_internal!(
-            format!("\n{COLOR_GREEN}"),
-            COLOR_GREEN_BOLD,
-            $message,
-            COLOR_NONE
-        );
+        print_internal!(COLOR_GREEN, format!("{COLOR_NONE}{TAB}{TAB}"), $message, "");
     };
 }
 #[macro_export]
@@ -38,9 +33,14 @@ macro_rules! print_debug {
     };
 }
 #[macro_export]
-macro_rules! print_verbose {
+macro_rules! print_info {
     ($message:expr) => {
-        print_internal!(COLOR_GREEN, format!("{COLOR_NONE}{TAB}{TAB}"), $message, "");
+        print_internal!(
+            format!("\n{COLOR_GREEN}"),
+            COLOR_GREEN_BOLD,
+            $message,
+            COLOR_NONE
+        );
     };
 }
 #[macro_export]
@@ -148,12 +148,9 @@ pub fn cmake_build(build_dir: &str, targets: &Vec<String>) -> Result<bool, Strin
     Ok(true)
 }
 
-pub fn copy_file(from: &str, to: &str, print: bool) -> Result<(), String> {
+pub fn copy_file(from: &str, to: &str) -> Result<(), String> {
     if let Err(err) = std::fs::copy(from, to) {
         return error!(format!("copy({from}, {to}) failed: {err}"));
-    }
-    if print {
-        print_verbose!(format!("'{from}' copied to '{to}'"));
     }
     Ok(())
 }
@@ -169,7 +166,6 @@ pub fn write_file(file_path: &str, content: &str) -> Result<(), String> {
             return error!(format!("Could not create '{file_path}': '{err}'"));
         }
     }
-    print_verbose!(format!("'{file_path}' created"));
     Ok(())
 }
 

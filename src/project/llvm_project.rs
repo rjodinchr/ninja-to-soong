@@ -113,7 +113,7 @@ impl Project for LlvmProject {
                 if let Err(err) = std::fs::create_dir_all(to_dir) {
                     return error!(format!("create_dir_all({to_dir}) failed: {err}"));
                 }
-                copy_file(&from, &to, false)?;
+                copy_file(&from, &to)?;
             }
             print_verbose!(format!(
                 "Files copied from '{0}' to '{cmake_generated_dir}'",
