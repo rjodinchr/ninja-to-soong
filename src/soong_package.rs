@@ -1,7 +1,7 @@
 // Copyright 2024 ninja-to-soong authors
 // SPDX-License-Identifier: Apache-2.0
 
-use std::collections::{HashMap, HashSet};
+use std::collections::HashSet;
 
 use crate::ninja_target::*;
 use crate::project::Project;
@@ -226,12 +226,10 @@ impl<'a> SoongPackage<'a> {
             self.gen_deps.insert(dep.clone());
         }
         let target_outputs = target.get_outputs();
-        let out_set = target_outputs
-            .into_iter()
-            .fold(HashSet::new(), |mut set, output| {
-                set.insert(project.get_cmd_output(output));
-                set
-            });
+        let mut out_set: HashSet<String> = HashSet::new();
+        for output in target_outputs {
+            out_set.insert(project.get_cmd_output(output));
+        }
 
         cmd = self.rework_cmd(cmd, inputs, target_outputs, deps, project);
 
@@ -245,11 +243,11 @@ impl<'a> SoongPackage<'a> {
 
     fn generate_module(
         &mut self,
+        rule: &str,
         target: &NinjaTarget,
         targets_map: &NinjaTargetsMap,
         project: &dyn Project,
     ) -> Result<Option<String>, String> {
-        let rule = target.get_rule();
         Ok(Some(if rule.starts_with("CXX_SHARED_LIBRARY") {
             self.generate_library("cc_library_shared", target, targets_map, project)
         } else if rule.starts_with("CXX_STATIC_LIBRARY") {
@@ -272,33 +270,21 @@ impl<'a> SoongPackage<'a> {
 
     pub fn generate(
         &mut self,
-        mut targets_to_generate: Vec<String>,
+        targets_to_generate: Vec<String>,
         targets: Vec<NinjaTarget>,
         project: &dyn Project,
     ) -> Result<(), String> {
-        let mut targets_seen: HashSet<String> = HashSet::new();
-        let mut targets_map: NinjaTargetsMap = HashMap::new();
-        for target in &targets {
-            for output in &target.get_all_outputs() {
-                targets_map.insert(output.clone(), target);
-            }
-        }
-
-        while let Some(input) = targets_to_generate.pop() {
-            if targets_seen.contains(&input) || project.ignore_target(&input) {
-                continue;
-            }
-            let Some(target) = targets_map.get(&input) else {
-                continue;
-            };
-
-            targets_to_generate.append(&mut target.get_all_inputs());
-            targets_seen.extend(target.get_all_outputs());
-
-            if let Some(module) = self.generate_module(target, &targets_map, project)? {
-                self.package += &module;
-            }
-        }
-        Ok(())
+        let targets_map = NinjaTargetsMap::new(&targets);
+        targets_map.traverse_from(
+            targets_to_generate,
+            (),
+            |_, rule, _name, target| {
+                if let Some(module) = self.generate_module(rule, target, &targets_map, project)? {
+                    self.package += &module;
+                }
+                Ok(())
+            },
+            |target_name| project.ignore_target(target_name),
+        )
     }
 }
