@@ -13,53 +13,54 @@ pub const COLOR_NONE: &str = "\x1b[0m";
 
 #[macro_export]
 macro_rules! print_internal {
-    ($print_prefix:expr, $message_prefix:expr, $message:expr, $print_suffix:expr) => {
+    ($print_prefix:expr, $message_prefix:expr, $print_suffix:expr, $($arg:tt)*) => {
         println!(
             "{0}[NINJA-TO-SOONG]{1} {2}{3}",
-            $print_prefix, $message_prefix, $message, $print_suffix
+            $print_prefix, $message_prefix, format!($($arg)*), $print_suffix
         );
     };
 }
 #[macro_export]
 macro_rules! print_verbose {
-    ($message:expr) => {
-        print_internal!(COLOR_GREEN, format!("{COLOR_NONE}{TAB}{TAB}"), $message, "");
+    ($($arg:tt)*) => {
+        print_internal!(COLOR_GREEN, format!("{COLOR_NONE}{TAB}{TAB}"), "", $($arg)*);
     };
 }
 #[macro_export]
 macro_rules! print_debug {
-    ($message:expr) => {
-        print_internal!(COLOR_GREEN, format!("{COLOR_NONE}{TAB}"), $message, "");
+    ($($arg:tt)*) => {
+        print_internal!(COLOR_GREEN, format!("{COLOR_NONE}{TAB}"), "", $($arg)*);
     };
 }
 #[macro_export]
 macro_rules! print_info {
-    ($message:expr) => {
+    ($($arg:tt)*) => {
         print_internal!(
             format!("\n{COLOR_GREEN}"),
             COLOR_GREEN_BOLD,
-            $message,
-            COLOR_NONE
+
+            COLOR_NONE,
+            $($arg)*,
         );
     };
 }
 #[macro_export]
 macro_rules! print_warn {
-    ($message:expr) => {
-        print_internal!(COLOR_YELLOW_BOLD, "", $message, COLOR_NONE);
+    ($($arg:tt)*) => {
+        print_internal!(COLOR_YELLOW_BOLD, "", COLOR_NONE, $($arg)*);
     };
 }
 #[macro_export]
 macro_rules! print_error {
-    ($message:expr) => {
-        print_internal!(COLOR_RED, "", $message, COLOR_NONE);
+    ($($arg:tt)*) => {
+        print_internal!(COLOR_RED, "", COLOR_NONE, $($arg)*);
     };
 }
 
 #[macro_export]
 macro_rules! error {
-    ($message:expr) => {
-        Err(format!("{0}:{1}: {2}", file!(), line!(), $message))
+    ($($arg:tt)*) => {
+        Err(format!("{0}:{1}: {2}", file!(), line!(), format!($($arg)*)))
     };
 }
 pub use {error, print_internal, print_verbose};
@@ -125,7 +126,7 @@ pub fn cmake_configure(
         .args(args);
     println!("{command:#?}");
     if let Err(err) = command.status() {
-        return error!(format!("cmake_configure({src_dir}) failed: {err}"));
+        return error!("cmake_configure({src_dir}) failed: {err}");
     }
     Ok(true)
 }
@@ -143,14 +144,14 @@ pub fn cmake_build(build_dir: &str, targets: &Vec<String>) -> Result<bool, Strin
     command.args(["--build", &build_dir]).args(targets_args);
     println!("{command:#?}");
     if let Err(err) = command.status() {
-        return error!(format!("cmake_build({build_dir}) failed: {err}"));
+        return error!("cmake_build({build_dir}) failed: {err}");
     }
     Ok(true)
 }
 
 pub fn copy_file(from: &str, to: &str) -> Result<(), String> {
     if let Err(err) = std::fs::copy(from, to) {
-        return error!(format!("copy({from}, {to}) failed: {err}"));
+        return error!("copy({from}, {to}) failed: {err}");
     }
     Ok(())
 }
@@ -159,11 +160,11 @@ pub fn write_file(file_path: &str, content: &str) -> Result<(), String> {
     match File::create(file_path) {
         Ok(mut file) => {
             if let Err(err) = file.write_fmt(format_args!("{0}", content)) {
-                return error!(format!("Could not write into '{file_path}': '{err:#?}"));
+                return error!("Could not write into '{file_path}': '{err:#?}");
             }
         }
         Err(err) => {
-            return error!(format!("Could not create '{file_path}': '{err}'"));
+            return error!("Could not create '{file_path}': '{err}'");
         }
     }
     Ok(())
@@ -174,11 +175,11 @@ pub fn read_file(file_path: &str) -> Result<String, String> {
         Ok(mut file) => {
             let mut content = String::new();
             if let Err(err) = file.read_to_string(&mut content) {
-                return error!(format!("Could not read '{file_path}': '{err}'"));
+                return error!("Could not read '{file_path}': '{err}'");
             }
             Ok(content)
         }
-        Err(err) => return error!(format!("Could not open '{file_path}': '{err}'")),
+        Err(err) => return error!("Could not open '{file_path}': '{err}'"),
     }
 }
 
@@ -195,6 +196,6 @@ pub fn get_tests_folder() -> Result<String, String> {
                 .join("tests"); // <ninja-to-soong>/tests
             Ok(tests_path.to_str().unwrap().to_string())
         }
-        Err(err) => return error!(format!("Could not get current executable path: {err}")),
+        Err(err) => return error!("Could not get current executable path: {err}"),
     }
 }

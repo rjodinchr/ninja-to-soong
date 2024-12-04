@@ -103,22 +103,22 @@ impl Project for LlvmProject {
         let cmake_generated_dir = add_slash_suffix(&self.src_dir) + CMAKE_GENERATED;
         if self.copy_gen_deps && File::open(&cmake_generated_dir).is_ok() {
             if let Err(err) = std::fs::remove_dir_all(&cmake_generated_dir) {
-                return error!(format!("remove_dir_all failed: {err}"));
+                return error!("remove_dir_all failed: {err}");
             }
-            print_verbose!(format!("'{cmake_generated_dir}' removed"));
+            print_verbose!("'{cmake_generated_dir}' removed");
             for file in gen_deps_sorted {
                 let from = add_slash_suffix(&self.build_dir) + &file;
                 let to = add_slash_suffix(&cmake_generated_dir) + &file;
                 let to_dir = to.rsplit_once("/").unwrap().0;
                 if let Err(err) = std::fs::create_dir_all(to_dir) {
-                    return error!(format!("create_dir_all({to_dir}) failed: {err}"));
+                    return error!("create_dir_all({to_dir}) failed: {err}");
                 }
                 copy_file(&from, &to)?;
             }
-            print_verbose!(format!(
+            print_verbose!(
                 "Files copied from '{0}' to '{cmake_generated_dir}'",
                 &self.build_dir
-            ));
+            );
         }
 
         package.add_module(SoongModule::new_cc_library_headers(

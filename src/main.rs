@@ -22,13 +22,13 @@ fn generate_project(
     let project_name = project.get_id().str();
     let project_path = project.get_id().android_path(android_dir);
     if !is_dependency {
-        print_info!(format!("Generating '{0}'", project_name));
+        print_info!("Generating '{project_name}'");
     } else {
-        print_info!(format!("Generating dependency '{0}'", project_name));
+        print_info!("Generating dependency '{project_name}'");
     }
     print_debug!("Get build dir...");
     let targets = if let Some(build_dir) = project.get_build_dir(projects_generated)? {
-        print_debug!(format!("Parsing '{build_dir}/build.ninja'..."));
+        print_debug!("Parsing '{build_dir}/build.ninja'...");
         parser::parse_build_ninja(build_dir)?
     } else {
         Vec::new()
@@ -41,11 +41,11 @@ fn generate_project(
         const ANDROID_BP: &str = "/Android.bp";
         let file_path = project_path + ANDROID_BP;
         write_file(&file_path, &package.print())?;
-        print_verbose!(format!("'{file_path}' created"));
+        print_verbose!("'{file_path}' created");
 
         let copy_dst = add_slash_suffix(&get_tests_folder()?) + project_name + ANDROID_BP;
         copy_file(&file_path, &copy_dst)?;
-        print_verbose!(format!("'{file_path}' copied to '{copy_dst}'"));
+        print_verbose!("'{file_path}' copied to '{copy_dst}'");
     }
     Ok(())
 }
@@ -101,16 +101,14 @@ fn parse_args(
 ) -> Result<(String, String, Vec<ProjectId>), String> {
     let required_args = 3;
     if args.len() < required_args {
-        return error!(format!(
-            "USAGE: {executable} <android_dir> <{ANDROID_NDK}_dir> [<projects>]"
-        ));
+        return error!("USAGE: {executable} <android_dir> <{ANDROID_NDK}_dir> [<projects>]");
     }
     let android_dir = args[1].clone();
     let ndk_dir = args[2].clone();
 
     let ndk_name = ndk_dir.rsplit_once("/").unwrap().1;
     if ndk_name != ANDROID_NDK {
-        print_warn!(format!("Expected '{ANDROID_NDK}' got '{ndk_name}'"));
+        print_warn!("Expected '{ANDROID_NDK}' got '{ndk_name}'");
     }
 
     let mut project_ids: Vec<ProjectId> = Vec::new();
@@ -146,7 +144,7 @@ fn main() -> Result<(), String> {
     }
 
     if let Err(err) = generate_projects(all_projects, project_ids, &android_dir) {
-        print_error!(err);
+        print_error!("{err}");
         Err(format!("{executable} failed"))
     } else {
         Ok(())
