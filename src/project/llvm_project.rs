@@ -138,7 +138,7 @@ impl Project for LlvmProject {
 
         for clang_header in GenDeps::ClangHeaders.get(self, ProjectId::Clspv, projects_map) {
             package.add_module(SoongModule::new_copy_genrule(
-                dep_name(&clang_header, "clang", CC_LIBRARY_HEADERS_CLANG),
+                dep_name(&clang_header, "clang", GenDeps::ClangHeaders),
                 path_to_string(&clang_header),
                 file_name(&clang_header),
             ));
@@ -146,7 +146,7 @@ impl Project for LlvmProject {
         for file in libclc_deps {
             let file_path = cmake_generated_path.join(file);
             package.add_module(SoongModule::new_copy_genrule(
-                dep_name(&file_path, cmake_generated_path, CC_LIBRARY_HEADERS_LLVM),
+                dep_name(&file_path, cmake_generated_path, GenDeps::LibclcBinaries),
                 path_to_string(&file_path),
                 file_name(&file_path),
             ));

@@ -280,9 +280,9 @@ cc_genrule {
 
 cc_genrule {
     name: "SPIRV-Tools_nonsemantic_vkspreflection_insts_inc",
-    cmd: "$(location utils/generate_grammar_tables.py) --extinst-vendor-grammar=$(location :SPIRV-Headers-includes_include_spirv_unified1_extinst_nonsemantic_vkspreflection_grammar_json) --vendor-insts-output=$(location nonsemantic.vkspreflection.insts.inc) --vendor-operand-kind-prefix=",
+    cmd: "$(location utils/generate_grammar_tables.py) --extinst-vendor-grammar=$(location :spirv-header-dep_include_spirv_unified1_extinst_nonsemantic_vkspreflection_grammar_json) --vendor-insts-output=$(location nonsemantic.vkspreflection.insts.inc) --vendor-operand-kind-prefix=",
     srcs: [
-        ":SPIRV-Headers-includes_include_spirv_unified1_extinst_nonsemantic_vkspreflection_grammar_json",
+        ":spirv-header-dep_include_spirv_unified1_extinst_nonsemantic_vkspreflection_grammar_json",
         "utils/generate_grammar_tables.py",
     ],
     out: ["nonsemantic.vkspreflection.insts.inc"],
@@ -290,9 +290,9 @@ cc_genrule {
 
 cc_genrule {
     name: "SPIRV-Tools_spv-amd-shader-trinary-minmax_insts_inc",
-    cmd: "$(location utils/generate_grammar_tables.py) --extinst-vendor-grammar=$(location :SPIRV-Headers-includes_include_spirv_unified1_extinst_spv-amd-shader-trinary-minmax_grammar_json) --vendor-insts-output=$(location spv-amd-shader-trinary-minmax.insts.inc) --vendor-operand-kind-prefix=",
+    cmd: "$(location utils/generate_grammar_tables.py) --extinst-vendor-grammar=$(location :spirv-header-dep_include_spirv_unified1_extinst_spv-amd-shader-trinary-minmax_grammar_json) --vendor-insts-output=$(location spv-amd-shader-trinary-minmax.insts.inc) --vendor-operand-kind-prefix=",
     srcs: [
-        ":SPIRV-Headers-includes_include_spirv_unified1_extinst_spv-amd-shader-trinary-minmax_grammar_json",
+        ":spirv-header-dep_include_spirv_unified1_extinst_spv-amd-shader-trinary-minmax_grammar_json",
         "utils/generate_grammar_tables.py",
     ],
     out: ["spv-amd-shader-trinary-minmax.insts.inc"],
@@ -300,9 +300,9 @@ cc_genrule {
 
 cc_genrule {
     name: "SPIRV-Tools_spv-amd-shader-explicit-vertex-parameter_insts_inc",
-    cmd: "$(location utils/generate_grammar_tables.py) --extinst-vendor-grammar=$(location :SPIRV-Headers-includes_include_spirv_unified1_extinst_spv-amd-shader-explicit-vertex-parameter_grammar_json) --vendor-insts-output=$(location spv-amd-shader-explicit-vertex-parameter.insts.inc) --vendor-operand-kind-prefix=",
+    cmd: "$(location utils/generate_grammar_tables.py) --extinst-vendor-grammar=$(location :spirv-header-dep_include_spirv_unified1_extinst_spv-amd-shader-explicit-vertex-parameter_grammar_json) --vendor-insts-output=$(location spv-amd-shader-explicit-vertex-parameter.insts.inc) --vendor-operand-kind-prefix=",
     srcs: [
-        ":SPIRV-Headers-includes_include_spirv_unified1_extinst_spv-amd-shader-explicit-vertex-parameter_grammar_json",
+        ":spirv-header-dep_include_spirv_unified1_extinst_spv-amd-shader-explicit-vertex-parameter_grammar_json",
         "utils/generate_grammar_tables.py",
     ],
     out: ["spv-amd-shader-explicit-vertex-parameter.insts.inc"],
@@ -310,9 +310,9 @@ cc_genrule {
 
 cc_genrule {
     name: "SPIRV-Tools_spv-amd-shader-ballot_insts_inc",
-    cmd: "$(location utils/generate_grammar_tables.py) --extinst-vendor-grammar=$(location :SPIRV-Headers-includes_include_spirv_unified1_extinst_spv-amd-shader-ballot_grammar_json) --vendor-insts-output=$(location spv-amd-shader-ballot.insts.inc) --vendor-operand-kind-prefix=",
+    cmd: "$(location utils/generate_grammar_tables.py) --extinst-vendor-grammar=$(location :spirv-header-dep_include_spirv_unified1_extinst_spv-amd-shader-ballot_grammar_json) --vendor-insts-output=$(location spv-amd-shader-ballot.insts.inc) --vendor-operand-kind-prefix=",
     srcs: [
-        ":SPIRV-Headers-includes_include_spirv_unified1_extinst_spv-amd-shader-ballot_grammar_json",
+        ":spirv-header-dep_include_spirv_unified1_extinst_spv-amd-shader-ballot_grammar_json",
         "utils/generate_grammar_tables.py",
     ],
     out: ["spv-amd-shader-ballot.insts.inc"],
@@ -320,9 +320,9 @@ cc_genrule {
 
 cc_genrule {
     name: "SPIRV-Tools_spv-amd-gcn-shader_insts_inc",
-    cmd: "$(location utils/generate_grammar_tables.py) --extinst-vendor-grammar=$(location :SPIRV-Headers-includes_include_spirv_unified1_extinst_spv-amd-gcn-shader_grammar_json) --vendor-insts-output=$(location spv-amd-gcn-shader.insts.inc) --vendor-operand-kind-prefix=",
+    cmd: "$(location utils/generate_grammar_tables.py) --extinst-vendor-grammar=$(location :spirv-header-dep_include_spirv_unified1_extinst_spv-amd-gcn-shader_grammar_json) --vendor-insts-output=$(location spv-amd-gcn-shader.insts.inc) --vendor-operand-kind-prefix=",
     srcs: [
-        ":SPIRV-Headers-includes_include_spirv_unified1_extinst_spv-amd-gcn-shader_grammar_json",
+        ":spirv-header-dep_include_spirv_unified1_extinst_spv-amd-gcn-shader_grammar_json",
         "utils/generate_grammar_tables.py",
     ],
     out: ["spv-amd-gcn-shader.insts.inc"],
@@ -330,9 +330,9 @@ cc_genrule {
 
 cc_genrule {
     name: "SPIRV-Tools_nonsemantic_shader_debuginfo_100_insts_inc",
-    cmd: "$(location utils/generate_grammar_tables.py) --extinst-vendor-grammar=$(location :SPIRV-Headers-includes_include_spirv_unified1_extinst_nonsemantic_shader_debuginfo_100_grammar_json) --vendor-insts-output=$(location nonsemantic.shader.debuginfo.100.insts.inc) --vendor-operand-kind-prefix=SHDEBUG100_",
+    cmd: "$(location utils/generate_grammar_tables.py) --extinst-vendor-grammar=$(location :spirv-header-dep_include_spirv_unified1_extinst_nonsemantic_shader_debuginfo_100_grammar_json) --vendor-insts-output=$(location nonsemantic.shader.debuginfo.100.insts.inc) --vendor-operand-kind-prefix=SHDEBUG100_",
     srcs: [
-        ":SPIRV-Headers-includes_include_spirv_unified1_extinst_nonsemantic_shader_debuginfo_100_grammar_json",
+        ":spirv-header-dep_include_spirv_unified1_extinst_nonsemantic_shader_debuginfo_100_grammar_json",
         "utils/generate_grammar_tables.py",
     ],
     out: ["nonsemantic.shader.debuginfo.100.insts.inc"],
@@ -340,9 +340,9 @@ cc_genrule {
 
 cc_genrule {
     name: "SPIRV-Tools_debuginfo_insts_inc",
-    cmd: "$(location utils/generate_grammar_tables.py) --extinst-vendor-grammar=$(location :SPIRV-Headers-includes_include_spirv_unified1_extinst_debuginfo_grammar_json) --vendor-insts-output=$(location debuginfo.insts.inc) --vendor-operand-kind-prefix=",
+    cmd: "$(location utils/generate_grammar_tables.py) --extinst-vendor-grammar=$(location :spirv-header-dep_include_spirv_unified1_extinst_debuginfo_grammar_json) --vendor-insts-output=$(location debuginfo.insts.inc) --vendor-operand-kind-prefix=",
     srcs: [
-        ":SPIRV-Headers-includes_include_spirv_unified1_extinst_debuginfo_grammar_json",
+        ":spirv-header-dep_include_spirv_unified1_extinst_debuginfo_grammar_json",
         "utils/generate_grammar_tables.py",
     ],
     out: ["debuginfo.insts.inc"],
@@ -350,9 +350,9 @@ cc_genrule {
 
 cc_genrule {
     name: "SPIRV-Tools_nonsemantic_clspvreflection_insts_inc",
-    cmd: "$(location utils/generate_grammar_tables.py) --extinst-vendor-grammar=$(location :SPIRV-Headers-includes_include_spirv_unified1_extinst_nonsemantic_clspvreflection_grammar_json) --vendor-insts-output=$(location nonsemantic.clspvreflection.insts.inc) --vendor-operand-kind-prefix=",
+    cmd: "$(location utils/generate_grammar_tables.py) --extinst-vendor-grammar=$(location :spirv-header-dep_include_spirv_unified1_extinst_nonsemantic_clspvreflection_grammar_json) --vendor-insts-output=$(location nonsemantic.clspvreflection.insts.inc) --vendor-operand-kind-prefix=",
     srcs: [
-        ":SPIRV-Headers-includes_include_spirv_unified1_extinst_nonsemantic_clspvreflection_grammar_json",
+        ":spirv-header-dep_include_spirv_unified1_extinst_nonsemantic_clspvreflection_grammar_json",
         "utils/generate_grammar_tables.py",
     ],
     out: ["nonsemantic.clspvreflection.insts.inc"],
@@ -360,9 +360,9 @@ cc_genrule {
 
 cc_genrule {
     name: "SPIRV-Tools_opencl_debuginfo_100_insts_inc",
-    cmd: "$(location utils/generate_grammar_tables.py) --extinst-vendor-grammar=$(location :SPIRV-Headers-includes_include_spirv_unified1_extinst_opencl_debuginfo_100_grammar_json) --vendor-insts-output=$(location opencl.debuginfo.100.insts.inc) --vendor-operand-kind-prefix=CLDEBUG100_",
+    cmd: "$(location utils/generate_grammar_tables.py) --extinst-vendor-grammar=$(location :spirv-header-dep_include_spirv_unified1_extinst_opencl_debuginfo_100_grammar_json) --vendor-insts-output=$(location opencl.debuginfo.100.insts.inc) --vendor-operand-kind-prefix=CLDEBUG100_",
     srcs: [
-        ":SPIRV-Headers-includes_include_spirv_unified1_extinst_opencl_debuginfo_100_grammar_json",
+        ":spirv-header-dep_include_spirv_unified1_extinst_opencl_debuginfo_100_grammar_json",
         "utils/generate_grammar_tables.py",
     ],
     out: ["opencl.debuginfo.100.insts.inc"],
@@ -370,9 +370,9 @@ cc_genrule {
 
 cc_genrule {
     name: "SPIRV-Tools_OpenCLDebugInfo100_h",
-    cmd: "$(location utils/generate_language_headers.py) --extinst-grammar=$(location :SPIRV-Headers-includes_include_spirv_unified1_extinst_opencl_debuginfo_100_grammar_json) --extinst-output-path=$(location OpenCLDebugInfo100.h)",
+    cmd: "$(location utils/generate_language_headers.py) --extinst-grammar=$(location :spirv-header-dep_include_spirv_unified1_extinst_opencl_debuginfo_100_grammar_json) --extinst-output-path=$(location OpenCLDebugInfo100.h)",
     srcs: [
-        ":SPIRV-Headers-includes_include_spirv_unified1_extinst_opencl_debuginfo_100_grammar_json",
+        ":spirv-header-dep_include_spirv_unified1_extinst_opencl_debuginfo_100_grammar_json",
         "utils/generate_language_headers.py",
     ],
     out: ["OpenCLDebugInfo100.h"],
@@ -380,9 +380,9 @@ cc_genrule {
 
 cc_genrule {
     name: "SPIRV-Tools_NonSemanticShaderDebugInfo100_h",
-    cmd: "$(location utils/generate_language_headers.py) --extinst-grammar=$(location :SPIRV-Headers-includes_include_spirv_unified1_extinst_nonsemantic_shader_debuginfo_100_grammar_json) --extinst-output-path=$(location NonSemanticShaderDebugInfo100.h)",
+    cmd: "$(location utils/generate_language_headers.py) --extinst-grammar=$(location :spirv-header-dep_include_spirv_unified1_extinst_nonsemantic_shader_debuginfo_100_grammar_json) --extinst-output-path=$(location NonSemanticShaderDebugInfo100.h)",
     srcs: [
-        ":SPIRV-Headers-includes_include_spirv_unified1_extinst_nonsemantic_shader_debuginfo_100_grammar_json",
+        ":spirv-header-dep_include_spirv_unified1_extinst_nonsemantic_shader_debuginfo_100_grammar_json",
         "utils/generate_language_headers.py",
     ],
     out: ["NonSemanticShaderDebugInfo100.h"],
@@ -390,9 +390,9 @@ cc_genrule {
 
 cc_genrule {
     name: "SPIRV-Tools_DebugInfo_h",
-    cmd: "$(location utils/generate_language_headers.py) --extinst-grammar=$(location :SPIRV-Headers-includes_include_spirv_unified1_extinst_debuginfo_grammar_json) --extinst-output-path=$(location DebugInfo.h)",
+    cmd: "$(location utils/generate_language_headers.py) --extinst-grammar=$(location :spirv-header-dep_include_spirv_unified1_extinst_debuginfo_grammar_json) --extinst-output-path=$(location DebugInfo.h)",
     srcs: [
-        ":SPIRV-Headers-includes_include_spirv_unified1_extinst_debuginfo_grammar_json",
+        ":spirv-header-dep_include_spirv_unified1_extinst_debuginfo_grammar_json",
         "utils/generate_language_headers.py",
     ],
     out: ["DebugInfo.h"],
@@ -400,10 +400,10 @@ cc_genrule {
 
 cc_genrule {
     name: "SPIRV-Tools_opencl_std_insts_inc",
-    cmd: "$(location utils/generate_grammar_tables.py) --extinst-opencl-grammar=$(location :SPIRV-Headers-includes_include_spirv_unified1_extinst_opencl_std_100_grammar_json) --opencl-insts-output=$(location opencl.std.insts.inc)",
+    cmd: "$(location utils/generate_grammar_tables.py) --extinst-opencl-grammar=$(location :spirv-header-dep_include_spirv_unified1_extinst_opencl_std_100_grammar_json) --opencl-insts-output=$(location opencl.std.insts.inc)",
     srcs: [
-        ":SPIRV-Headers-includes_include_spirv_unified1_extinst_opencl_std_100_grammar_json",
-        ":SPIRV-Headers-includes_include_spirv_unified1_spirv_core_grammar_json",
+        ":spirv-header-dep_include_spirv_unified1_extinst_opencl_std_100_grammar_json",
+        ":spirv-header-dep_include_spirv_unified1_spirv_core_grammar_json",
         "utils/generate_grammar_tables.py",
     ],
     out: ["opencl.std.insts.inc"],
@@ -411,10 +411,10 @@ cc_genrule {
 
 cc_genrule {
     name: "SPIRV-Tools_glsl_std_450_insts_inc",
-    cmd: "$(location utils/generate_grammar_tables.py) --extinst-glsl-grammar=$(location :SPIRV-Headers-includes_include_spirv_unified1_extinst_glsl_std_450_grammar_json) --glsl-insts-output=$(location glsl.std.450.insts.inc) --output-language=c++",
+    cmd: "$(location utils/generate_grammar_tables.py) --extinst-glsl-grammar=$(location :spirv-header-dep_include_spirv_unified1_extinst_glsl_std_450_grammar_json) --glsl-insts-output=$(location glsl.std.450.insts.inc) --output-language=c++",
     srcs: [
-        ":SPIRV-Headers-includes_include_spirv_unified1_extinst_glsl_std_450_grammar_json",
-        ":SPIRV-Headers-includes_include_spirv_unified1_spirv_core_grammar_json",
+        ":spirv-header-dep_include_spirv_unified1_extinst_glsl_std_450_grammar_json",
+        ":spirv-header-dep_include_spirv_unified1_spirv_core_grammar_json",
         "utils/generate_grammar_tables.py",
     ],
     out: ["glsl.std.450.insts.inc"],
@@ -422,11 +422,11 @@ cc_genrule {
 
 cc_genrule {
     name: "SPIRV-Tools_extension_enum_inc",
-    cmd: "$(location utils/generate_grammar_tables.py) --spirv-core-grammar=$(location :SPIRV-Headers-includes_include_spirv_unified1_spirv_core_grammar_json) --extinst-debuginfo-grammar=$(location :SPIRV-Headers-includes_include_spirv_unified1_extinst_debuginfo_grammar_json) --extinst-cldebuginfo100-grammar=$(location :SPIRV-Headers-includes_include_spirv_unified1_extinst_opencl_debuginfo_100_grammar_json) --extension-enum-output=$(location extension_enum.inc) --enum-string-mapping-output=$(location enum_string_mapping.inc) --output-language=c++",
+    cmd: "$(location utils/generate_grammar_tables.py) --spirv-core-grammar=$(location :spirv-header-dep_include_spirv_unified1_spirv_core_grammar_json) --extinst-debuginfo-grammar=$(location :spirv-header-dep_include_spirv_unified1_extinst_debuginfo_grammar_json) --extinst-cldebuginfo100-grammar=$(location :spirv-header-dep_include_spirv_unified1_extinst_opencl_debuginfo_100_grammar_json) --extension-enum-output=$(location extension_enum.inc) --enum-string-mapping-output=$(location enum_string_mapping.inc) --output-language=c++",
     srcs: [
-        ":SPIRV-Headers-includes_include_spirv_unified1_extinst_debuginfo_grammar_json",
-        ":SPIRV-Headers-includes_include_spirv_unified1_extinst_opencl_debuginfo_100_grammar_json",
-        ":SPIRV-Headers-includes_include_spirv_unified1_spirv_core_grammar_json",
+        ":spirv-header-dep_include_spirv_unified1_extinst_debuginfo_grammar_json",
+        ":spirv-header-dep_include_spirv_unified1_extinst_opencl_debuginfo_100_grammar_json",
+        ":spirv-header-dep_include_spirv_unified1_spirv_core_grammar_json",
         "utils/generate_grammar_tables.py",
     ],
     out: [
@@ -437,9 +437,9 @@ cc_genrule {
 
 cc_genrule {
     name: "SPIRV-Tools_generators_inc",
-    cmd: "$(location utils/generate_registry_tables.py) --xml=$(location :SPIRV-Headers-includes_include_spirv_spir-v_xml) --generator-output=$(location generators.inc)",
+    cmd: "$(location utils/generate_registry_tables.py) --xml=$(location :spirv-header-dep_include_spirv_spir-v_xml) --generator-output=$(location generators.inc)",
     srcs: [
-        ":SPIRV-Headers-includes_include_spirv_spir-v_xml",
+        ":spirv-header-dep_include_spirv_spir-v_xml",
         "utils/generate_registry_tables.py",
     ],
     out: ["generators.inc"],
@@ -447,11 +447,11 @@ cc_genrule {
 
 cc_genrule {
     name: "SPIRV-Tools_core_insts-unified1_inc",
-    cmd: "$(location utils/generate_grammar_tables.py) --spirv-core-grammar=$(location :SPIRV-Headers-includes_include_spirv_unified1_spirv_core_grammar_json) --extinst-debuginfo-grammar=$(location :SPIRV-Headers-includes_include_spirv_unified1_extinst_debuginfo_grammar_json) --extinst-cldebuginfo100-grammar=$(location :SPIRV-Headers-includes_include_spirv_unified1_extinst_opencl_debuginfo_100_grammar_json) --core-insts-output=$(location core.insts-unified1.inc) --operand-kinds-output=$(location operand.kinds-unified1.inc) --output-language=c++",
+    cmd: "$(location utils/generate_grammar_tables.py) --spirv-core-grammar=$(location :spirv-header-dep_include_spirv_unified1_spirv_core_grammar_json) --extinst-debuginfo-grammar=$(location :spirv-header-dep_include_spirv_unified1_extinst_debuginfo_grammar_json) --extinst-cldebuginfo100-grammar=$(location :spirv-header-dep_include_spirv_unified1_extinst_opencl_debuginfo_100_grammar_json) --core-insts-output=$(location core.insts-unified1.inc) --operand-kinds-output=$(location operand.kinds-unified1.inc) --output-language=c++",
     srcs: [
-        ":SPIRV-Headers-includes_include_spirv_unified1_extinst_debuginfo_grammar_json",
-        ":SPIRV-Headers-includes_include_spirv_unified1_extinst_opencl_debuginfo_100_grammar_json",
-        ":SPIRV-Headers-includes_include_spirv_unified1_spirv_core_grammar_json",
+        ":spirv-header-dep_include_spirv_unified1_extinst_debuginfo_grammar_json",
+        ":spirv-header-dep_include_spirv_unified1_extinst_opencl_debuginfo_100_grammar_json",
+        ":spirv-header-dep_include_spirv_unified1_spirv_core_grammar_json",
         "utils/generate_grammar_tables.py",
     ],
     out: [

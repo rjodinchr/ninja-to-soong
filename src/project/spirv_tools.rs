@@ -70,29 +70,12 @@ impl Project for SpirvTools {
         Ok(Some(ninja_file_path))
     }
 
-    fn get_cmd_inputs_and_deps(
-        &self,
-        target_inputs: &Vec<PathBuf>,
-    ) -> Result<CmdInputAndDeps, String> {
-        let mut inputs = HashSet::new();
-        let mut deps = HashSet::new();
-
-        for input in target_inputs {
-            if input.starts_with(&self.spirv_headers_path) {
-                deps.insert(cmd_dep(
-                    input,
-                    &self.spirv_headers_path,
-                    CC_LIBRARY_HEADERS_SPIRV_HEADERS,
-                ));
-            } else {
-                inputs.insert(input.clone());
-            }
-        }
-        Ok((inputs, deps))
-    }
-
     fn get_default_cflags(&self) -> HashSet<String> {
         ["-Wno-implicit-fallthrough".to_string()].into()
+    }
+
+    fn get_deps_info(&self) -> Vec<(PathBuf, GenDeps)> {
+        vec![(self.spirv_headers_path.clone(), GenDeps::SpirvHeadersFiles)]
     }
 
     fn get_gen_deps(&self, _project: ProjectId) -> GenDepsMap {

@@ -87,40 +87,20 @@ impl Project for Clspv {
         Ok(Some(ninja_file_path))
     }
 
-    fn get_cmd_inputs_and_deps(
-        &self,
-        target_inputs: &Vec<PathBuf>,
-    ) -> Result<CmdInputAndDeps, String> {
-        let mut inputs = HashSet::new();
-        let mut deps = HashSet::new();
-        let clang_path = self.llvm_project_path.join("clang");
-
-        for input in target_inputs {
-            if input.starts_with(&self.spirv_headers_path) {
-                deps.insert(cmd_dep(
-                    input,
-                    &self.spirv_headers_path,
-                    CC_LIBRARY_HEADERS_SPIRV_HEADERS,
-                ));
-            } else if input.starts_with(&clang_path) {
-                deps.insert(cmd_dep(input, &clang_path, CC_LIBRARY_HEADERS_CLANG));
-            } else if input.starts_with("third_party/llvm") {
-                deps.insert(cmd_dep(input, "third_party/llvm", CC_LIBRARY_HEADERS_LLVM));
-            } else if !input.starts_with(&self.src_path) {
-                deps.insert(cmd_dep(input, &self.build_path, self.get_id().str()));
-            } else {
-                inputs.insert(input.clone());
-            }
-        }
-        Ok((inputs, deps))
-    }
-
     fn get_cmd_output(&self, output: &Path) -> PathBuf {
         if let Some((_, header)) = split_path(output, "include") {
             header
         } else {
             output.to_path_buf()
         }
+    }
+
+    fn get_deps_info(&self) -> Vec<(PathBuf, GenDeps)> {
+        vec![
+            (self.spirv_headers_path.clone(), GenDeps::SpirvHeadersFiles),
+            (self.llvm_project_path.join("clang"), GenDeps::ClangHeaders),
+            (PathBuf::from("third_party/llvm"), GenDeps::LibclcBinaries),
+        ]
     }
 
     fn get_gen_deps(&self, project: ProjectId) -> GenDepsMap {
