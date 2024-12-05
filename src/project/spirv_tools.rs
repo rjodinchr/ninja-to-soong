@@ -45,7 +45,7 @@ impl Project for SpirvTools {
             self,
         )?;
         package.add_module(SoongModule::new_cc_library_headers(
-            CC_LIBRARY_HEADERS_SPIRV_TOOLS,
+            CcLibraryHeaders::SpirvTools,
             ["include".to_string()].into(),
         ));
 
@@ -89,7 +89,7 @@ impl Project for SpirvTools {
     }
 
     fn get_target_header_libs(&self, _target: &str) -> HashSet<String> {
-        [CC_LIBRARY_HEADERS_SPIRV_HEADERS.to_string()].into()
+        [CcLibraryHeaders::SpirvHeaders.str()].into()
     }
 
     fn ignore_include(&self, include: &Path) -> bool {

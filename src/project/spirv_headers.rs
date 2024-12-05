@@ -34,7 +34,7 @@ impl Project for SpirvHeaders {
         );
 
         package.add_module(SoongModule::new_cc_library_headers(
-            CC_LIBRARY_HEADERS_SPIRV_HEADERS,
+            CcLibraryHeaders::SpirvHeaders,
             ["include".to_string()].into(),
         ));
 

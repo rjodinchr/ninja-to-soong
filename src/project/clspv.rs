@@ -49,7 +49,7 @@ impl Project for Clspv {
             self,
         )?;
         package.add_module(SoongModule::new_cc_library_headers(
-            CC_LIBRARY_HEADERS_CLSPV,
+            CcLibraryHeaders::Clspv,
             ["include".to_string()].into(),
         ));
 
@@ -139,9 +139,9 @@ impl Project for Clspv {
 
     fn get_target_header_libs(&self, _target: &str) -> HashSet<String> {
         [
-            CC_LIBRARY_HEADERS_SPIRV_HEADERS.to_string(),
-            CC_LIBRARY_HEADERS_LLVM.to_string(),
-            CC_LIBRARY_HEADERS_CLANG.to_string(),
+            CcLibraryHeaders::SpirvHeaders.str(),
+            CcLibraryHeaders::Llvm.str(),
+            CcLibraryHeaders::Clang.str(),
         ]
         .into()
     }

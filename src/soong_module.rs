@@ -3,6 +3,8 @@
 
 use std::collections::{HashMap, HashSet};
 
+use crate::CcLibraryHeaders;
+
 #[derive(Debug)]
 pub struct SoongModule {
     name: String,
@@ -23,9 +25,9 @@ impl SoongModule {
         }
     }
 
-    pub fn new_cc_library_headers(name: &str, include_dirs: HashSet<String>) -> Self {
+    pub fn new_cc_library_headers(name: CcLibraryHeaders, include_dirs: HashSet<String>) -> Self {
         let mut module = Self::new("cc_library_headers");
-        module.add_str("name", name.to_string());
+        module.add_str("name", name.str());
         module.add_set("export_include_dirs", include_dirs);
         module
     }

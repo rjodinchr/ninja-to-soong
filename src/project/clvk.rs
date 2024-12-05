@@ -120,9 +120,9 @@ impl Project for Clvk {
 
     fn get_target_header_libs(&self, _target: &str) -> HashSet<String> {
         [
-            CC_LIBRARY_HEADERS_SPIRV_TOOLS.to_string(),
-            CC_LIBRARY_HEADERS_SPIRV_HEADERS.to_string(),
-            CC_LIBRARY_HEADERS_CLSPV.to_string(),
+            CcLibraryHeaders::SpirvTools.str(),
+            CcLibraryHeaders::SpirvHeaders.str(),
+            CcLibraryHeaders::Clspv.str(),
             "OpenCL-Headers".to_string(),
         ]
         .into()
