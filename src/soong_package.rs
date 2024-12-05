@@ -16,7 +16,7 @@ pub struct SoongPackage<'a> {
     src_path: &'a Path,
     ndk_path: &'a Path,
     build_path: &'a Path,
-    target_prefix: &'a str,
+    target_prefix: &'a Path,
 }
 
 impl<'a> SoongPackage<'a> {
@@ -24,7 +24,7 @@ impl<'a> SoongPackage<'a> {
         src_path: &'a Path,
         ndk_path: &'a Path,
         build_path: &'a Path,
-        target_prefix: &'a str,
+        target_prefix: &'a Path,
         default_visibility: &str,
         license_kinds: &str,
         license_text: &str,
@@ -38,8 +38,7 @@ impl<'a> SoongPackage<'a> {
             build_path,
             target_prefix,
         };
-        let license_name =
-            target_prefix.to_string() + "_" + &license_text.replace(".", "_").to_lowercase();
+        let license_name = path_to_id(target_prefix.join(license_text.to_lowercase()));
 
         let mut package_module = SoongModule::new("package");
         package_module.add_set("default_applicable_licenses", [license_name.clone()].into());
@@ -112,10 +111,10 @@ impl<'a> SoongPackage<'a> {
             if target_srcs.len() != 1 {
                 return error!("Too many inputs in target: {self:#?}");
             }
-            srcs.insert(str(&strip_prefix(&target_srcs[0], self.src_path)));
+            srcs.insert(path_to_string(strip_prefix(&target_srcs[0], self.src_path)));
 
             for include in target.get_includes(self.src_path, project) {
-                includes.insert(str(&include));
+                includes.insert(path_to_string(include));
             }
             cflags.extend(target.get_defines(project));
         }
@@ -144,7 +143,7 @@ impl<'a> SoongPackage<'a> {
         module.add_set("header_libs", project.get_target_header_libs(&target_name));
         module.add_set("generated_headers", gen_headers);
         if let Some(vs) = version_script {
-            module.add_str("version_script", str(&vs));
+            module.add_str("version_script", path_to_string(vs));
         }
         if let Some(alias) = project.get_target_alias(&target_name) {
             module.add_str("stem", alias);
@@ -177,30 +176,30 @@ impl<'a> SoongPackage<'a> {
                 None => cmd.replace(std::str::from_utf8(&cmd.as_bytes()[begin..]).unwrap(), ""),
             };
         }
-        let build_path = str(self.build_path) + &std::path::MAIN_SEPARATOR.to_string();
+        let build_path = path_to_string(self.build_path) + &std::path::MAIN_SEPARATOR.to_string();
         cmd = cmd.replace(&(build_path), "");
         for output in outputs {
             let marker = "<output>";
             let space_and_marker = String::from(" ") + marker;
-            let space_and_last_output = String::from(" ") + &file_name(Path::new(&output));
-            cmd = cmd.replace(&str(output), marker);
+            let space_and_last_output = String::from(" ") + &file_name(output);
+            cmd = cmd.replace(&path_to_string(output), marker);
             cmd = cmd.replace(&space_and_last_output, &space_and_marker);
             let replace_output =
-                String::from("$(location ") + &str(&project.get_cmd_output(output)) + ")";
+                String::from("$(location ") + &path_to_string(project.get_cmd_output(output)) + ")";
             cmd = cmd.replace(marker, &replace_output)
         }
         for input in inputs {
             let replace_input = String::from("$(location ")
-                + &str(&strip_prefix(Path::new(&input), self.src_path))
+                + &path_to_string(strip_prefix(&input, self.src_path))
                 + ")";
-            cmd = cmd.replace(&str(&input), &replace_input)
+            cmd = cmd.replace(&path_to_string(&input), &replace_input)
         }
         for (dep, dep_target_name) in deps {
             let replace_dep = "$(location ".to_string() + &dep_target_name + ")";
-            let dep_with_prefix = String::from(self.target_prefix) + &str(&dep);
+            let dep_with_prefix = path_to_string(self.target_prefix.join(&dep));
             cmd = cmd
                 .replace(&dep_with_prefix, &replace_dep)
-                .replace(&str(&dep), &replace_dep)
+                .replace(&path_to_string(&dep), &replace_dep)
         }
         cmd
     }
@@ -214,7 +213,7 @@ impl<'a> SoongPackage<'a> {
         let (inputs, deps) = project.get_cmd_inputs_and_deps(target.get_inputs())?;
         let mut srcs_set: HashSet<String> = HashSet::new();
         for input in &inputs {
-            srcs_set.insert(str(&strip_prefix(Path::new(input), self.src_path)));
+            srcs_set.insert(path_to_string(strip_prefix(input, self.src_path)));
         }
         for (dep, dep_target_name) in &deps {
             srcs_set.insert(dep_target_name.clone());
@@ -223,7 +222,7 @@ impl<'a> SoongPackage<'a> {
         let target_outputs = target.get_outputs();
         let mut out_set: HashSet<String> = HashSet::new();
         for output in target_outputs {
-            out_set.insert(str(&project.get_cmd_output(output)));
+            out_set.insert(path_to_string(project.get_cmd_output(output)));
         }
 
         cmd = self.rework_cmd(cmd, inputs, target_outputs, deps, project);

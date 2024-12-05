@@ -34,7 +34,7 @@ impl Project for SpirvTools {
             &self.src_path,
             &self.ndk_path,
             &self.build_path,
-            self.get_id().str(),
+            Path::new(self.get_id().str()),
             "//visibility:public",
             "SPDX-license-identifier-Apache-2.0",
             "LICENSE",
@@ -62,7 +62,10 @@ impl Project for SpirvTools {
             &self.src_path,
             &self.build_path,
             &self.ndk_path,
-            vec![&("-DSPIRV-Headers_SOURCE_DIR=".to_string() + &str(&self.spirv_headers_path))],
+            vec![
+                &("-DSPIRV-Headers_SOURCE_DIR=".to_string()
+                    + &path_to_string(&self.spirv_headers_path)),
+            ],
         )?;
         Ok(Some(ninja_file_path))
     }
@@ -76,9 +79,10 @@ impl Project for SpirvTools {
 
         for input in target_inputs {
             if input.starts_with(&self.spirv_headers_path) {
-                deps.insert((
-                    input.clone(),
-                    ":".to_string() + &spirv_headers_name(&self.spirv_headers_path, &input),
+                deps.insert(cmd_dep(
+                    input,
+                    &self.spirv_headers_path,
+                    CC_LIBRARY_HEADERS_SPIRV_HEADERS,
                 ));
             } else {
                 inputs.insert(input.clone());

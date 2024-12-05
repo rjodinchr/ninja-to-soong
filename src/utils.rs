@@ -80,55 +80,57 @@ pub const ANDROID_PLATFORM: &str = "35";
 
 pub const LLVM_DISABLE_ZLIB: &str = "-DLLVM_ENABLE_ZLIB=OFF";
 
-pub fn file_name(path: &Path) -> String {
-    path.file_name()
-        .unwrap_or_default()
-        .to_str()
-        .unwrap()
-        .to_string()
-}
-
-pub fn strip_prefix(base: &Path, prefix: &Path) -> PathBuf {
-    PathBuf::from(base.strip_prefix(prefix).unwrap_or(base))
-}
-
-pub fn str(path: &Path) -> String {
-    path.to_str().unwrap().to_string()
+pub fn path_to_string<P: AsRef<Path>>(path: P) -> String {
+    path.as_ref().to_str().unwrap_or_default().to_string()
 }
 
 pub fn path_to_id(path: PathBuf) -> String {
     path.to_str()
-        .unwrap()
-        .to_string()
+        .unwrap_or_default()
         .replace(std::path::MAIN_SEPARATOR, "_")
         .replace(".", "_")
 }
 
-pub fn split_include(path: &Path) -> Option<(PathBuf, PathBuf)> {
+pub fn file_name(path: &Path) -> String {
+    path.file_name()
+        .unwrap_or_default()
+        .to_str()
+        .unwrap_or_default()
+        .to_string()
+}
+
+pub fn strip_prefix<F: AsRef<Path>, P: AsRef<Path>>(from: F, prefix: P) -> PathBuf {
+    PathBuf::from(from.as_ref().strip_prefix(prefix).unwrap_or(from.as_ref()))
+}
+
+pub fn split_path(path: &Path, delimiter: &str) -> Option<(PathBuf, PathBuf)> {
     let mut sub_path = path;
-    while let Some(parent) = sub_path.parent() {
-        if file_name(parent) == "include" {
-            return Some((parent.to_path_buf(), strip_prefix(path, parent)));
+    while sub_path.parent().is_some() {
+        sub_path = sub_path.parent().unwrap();
+        if file_name(sub_path) == delimiter {
+            return Some((sub_path.to_path_buf(), strip_prefix(path, sub_path)));
         }
-        sub_path = parent;
     }
     None
 }
 
-fn headers_name(headers_path: &Path, path: &Path, str: &str) -> String {
-    path_to_id(Path::new(str).join(strip_prefix(path, headers_path)))
+pub fn dep_name<B: AsRef<Path>, P: AsRef<Path>, N: AsRef<Path>>(
+    base: B,
+    base_prefix: P,
+    prefix: N,
+) -> String {
+    path_to_id(prefix.as_ref().join(strip_prefix(base, base_prefix)))
 }
 
-pub fn spirv_headers_name(spirv_headers_path: &Path, path: &Path) -> String {
-    headers_name(spirv_headers_path, path, CC_LIBRARY_HEADERS_SPIRV_HEADERS)
-}
-
-pub fn clang_headers_name(clang_headers_path: &Path, path: &Path) -> String {
-    headers_name(clang_headers_path, path, CC_LIBRARY_HEADERS_CLANG)
-}
-
-pub fn llvm_headers_name(llvm_headers_path: &Path, path: &Path) -> String {
-    headers_name(llvm_headers_path, path, CC_LIBRARY_HEADERS_LLVM)
+pub fn cmd_dep<B: AsRef<Path>, P: AsRef<Path>, N: AsRef<Path>>(
+    input: B,
+    input_prefix: P,
+    prefix: N,
+) -> (PathBuf, String) {
+    (
+        input.as_ref().to_path_buf(),
+        String::from(":") + &dep_name(input, input_prefix, prefix),
+    )
 }
 
 pub fn cmake_configure(
@@ -145,14 +147,14 @@ pub fn cmake_configure(
     command
         .args([
             "-B",
-            &str(build_path),
+            &path_to_string(build_path),
             "-S",
-            &str(src_path),
+            &path_to_string(src_path),
             "-G",
             "Ninja",
             "-DCMAKE_BUILD_TYPE=Release",
             &("-DCMAKE_TOOLCHAIN_FILE=".to_string()
-                + &str(&ndk_path.join("build/cmake/android.toolchain.cmake"))),
+                + &path_to_string(ndk_path.join("build/cmake/android.toolchain.cmake"))),
             &("-DANDROID_ABI=".to_string() + ANDROID_ABI),
             &("-DANDROID_PLATFORM=".to_string() + ANDROID_PLATFORM),
         ])
@@ -170,12 +172,12 @@ pub fn cmake_build(build_path: &Path, targets: &Vec<PathBuf>) -> Result<bool, St
     }
     let targets_args = targets.into_iter().fold(Vec::new(), |mut vec, target| {
         vec.push("--target");
-        vec.push(target.to_str().unwrap());
+        vec.push(target.to_str().unwrap_or_default());
         vec
     });
     let mut command = std::process::Command::new("cmake");
     command
-        .args(["--build", &str(build_path)])
+        .args(["--build", &path_to_string(build_path)])
         .args(targets_args);
     println!("{command:#?}");
     if let Err(err) = command.status() {

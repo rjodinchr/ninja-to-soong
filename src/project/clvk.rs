@@ -39,7 +39,7 @@ impl Project for Clvk {
             &self.src_path,
             &self.ndk_path,
             &self.build_path,
-            self.get_id().str(),
+            Path::new(self.get_id().str()),
             "//visibility:public",
             "SPDX-license-identifier-Apache-2.0",
             "LICENSE",
@@ -55,23 +55,24 @@ impl Project for Clvk {
         _projects_map: &ProjectsMap,
     ) -> Result<Option<PathBuf>, String> {
         let spirv_headers_path =
-            "-DSPIRV_HEADERS_SOURCE_DIR=".to_string() + &str(&self.spirv_headers_path);
+            "-DSPIRV_HEADERS_SOURCE_DIR=".to_string() + &path_to_string(&self.spirv_headers_path);
         let spirv_tools_path =
-            "-DSPIRV_TOOLS_SOURCE_DIR=".to_string() + &str(&self.spirv_tools_path);
-        let clspv_path = "-DCLSPV_SOURCE_DIR=".to_string() + &str(&self.clspv_path);
-        let llvm_path =
-            "-DCLSPV_LLVM_SOURCE_DIR=".to_string() + &str(&self.llvm_project_path.join("llvm"));
-        let clang_path =
-            "-DCLSPV_CLANG_SOURCE_DIR=".to_string() + &str(&self.llvm_project_path.join("clang"));
-        let libclc_path =
-            "-DCLSPV_LIBCLC_SOURCE_DIR=".to_string() + &str(&self.llvm_project_path.join("libclc"));
+            "-DSPIRV_TOOLS_SOURCE_DIR=".to_string() + &path_to_string(&self.spirv_tools_path);
+        let clspv_path = "-DCLSPV_SOURCE_DIR=".to_string() + &path_to_string(&self.clspv_path);
+        let llvm_path = "-DCLSPV_LLVM_SOURCE_DIR=".to_string()
+            + &path_to_string(self.llvm_project_path.join("llvm"));
+        let clang_path = "-DCLSPV_CLANG_SOURCE_DIR=".to_string()
+            + &path_to_string(self.llvm_project_path.join("clang"));
+        let libclc_path = "-DCLSPV_LIBCLC_SOURCE_DIR=".to_string()
+            + &path_to_string(self.llvm_project_path.join("libclc"));
         let vulkan_library = "-DVulkan_LIBRARY=".to_string()
-            + &str(&self
-                .ndk_path
-                .join("toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/lib")
-                .join(ANDROID_ISA.to_string() + "-linux-android")
-                .join(ANDROID_PLATFORM)
-                .join("libvulkan.so"));
+            + &path_to_string(
+                self.ndk_path
+                    .join("toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/lib")
+                    .join(ANDROID_ISA.to_string() + "-linux-android")
+                    .join(ANDROID_PLATFORM)
+                    .join("libvulkan.so"),
+            );
         let (ninja_file_path, _) = cmake_configure(
             &self.src_path,
             &self.build_path,
@@ -96,7 +97,7 @@ impl Project for Clvk {
     fn get_gen_deps(&self, project: ProjectId) -> GenDepsMap {
         let mut deps = HashMap::new();
         let mut libs = HashSet::new();
-        let prefix = Path::new(project.str());
+        let prefix = project.str();
         for library in &self.generated_libraries {
             let library_path = PathBuf::from(library);
             if let Ok(lib) = self.get_library_name(&library_path).strip_prefix(prefix) {
@@ -114,7 +115,7 @@ impl Project for Clvk {
             } else {
                 library.to_path_buf()
             };
-        strip_prefix(&strip, Path::new("external"))
+        strip_prefix(&strip, "external")
     }
 
     fn get_target_header_libs(&self, _target: &str) -> HashSet<String> {
@@ -148,6 +149,6 @@ impl Project for Clvk {
     }
 
     fn ignore_target(&self, target: &Path) -> bool {
-        target.starts_with("external/")
+        target.starts_with("external")
     }
 }

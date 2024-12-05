@@ -46,8 +46,8 @@ impl NinjaTarget {
         &self.outputs
     }
 
-    pub fn get_name(&self, prefix: &str) -> String {
-        path_to_id(Path::new(prefix).join(&self.outputs[0]))
+    pub fn get_name(&self, prefix: &Path) -> String {
+        path_to_id(prefix.join(&self.outputs[0]))
     }
 
     pub fn get_link_flags(
@@ -60,7 +60,7 @@ impl NinjaTarget {
         if let Some(flags) = self.variables.get("LINK_FLAGS") {
             for flag in flags.split(" ") {
                 if let Some(vs) = flag.strip_prefix("-Wl,--version-script=") {
-                    version_script = Some(strip_prefix(Path::new(vs), src_path));
+                    version_script = Some(strip_prefix(vs, src_path));
                 } else if !project.ignore_link_flag(flag) {
                     link_flags.insert(flag.to_string());
                 }
@@ -126,8 +126,8 @@ impl NinjaTarget {
             if project.ignore_include(&include_path) {
                 continue;
             }
-            let inc = strip_prefix(&project.get_include(&include_path), src_path);
-            let include_string = str(&inc);
+            let inc = strip_prefix(project.get_include(&include_path), src_path);
+            let include_string = path_to_string(&inc);
             if include_string.is_empty() || include_string == "isystem" {
                 continue;
             }
@@ -138,7 +138,7 @@ impl NinjaTarget {
 
     pub fn get_gen_headers_and_gen_deps(
         &self,
-        target_prefix: &str,
+        target_prefix: &Path,
         targets_map: &NinjaTargetsMap,
         project: &dyn Project,
     ) -> Result<(HashSet<String>, HashSet<PathBuf>), String> {
