@@ -204,15 +204,15 @@ impl<'a> SoongPackage<'a> {
         cmd
     }
 
-    fn get_cmd_inputs_and_deps(
-        &self,
-        target_inputs: &Vec<PathBuf>,
+    fn generate_custom_command(
+        &mut self,
+        target: &NinjaTarget,
+        mut cmd: String,
         project: &dyn Project,
-    ) -> (HashSet<PathBuf>, HashMap<PathBuf, String>) {
+    ) -> Result<SoongModule, String> {
         let mut inputs = HashSet::new();
         let mut deps = HashMap::new();
-
-        'target_inputs: for input in target_inputs {
+        'target_inputs: for input in target.get_inputs() {
             for (prefix, dep) in project.get_deps_info() {
                 if input.starts_with(&prefix) {
                     deps.insert(input.clone(), dep_name(input, &prefix, dep.str()));
@@ -228,16 +228,6 @@ impl<'a> SoongPackage<'a> {
                 inputs.insert(input.clone());
             }
         }
-        (inputs, deps)
-    }
-
-    fn generate_custom_command(
-        &mut self,
-        target: &NinjaTarget,
-        mut cmd: String,
-        project: &dyn Project,
-    ) -> Result<SoongModule, String> {
-        let (inputs, deps) = self.get_cmd_inputs_and_deps(target.get_inputs(), project);
         let mut srcs_set: HashSet<String> = HashSet::new();
         for input in &inputs {
             srcs_set.insert(path_to_string(strip_prefix(input, self.src_path)));
