@@ -3,7 +3,24 @@
 
 use std::collections::HashMap;
 
-use crate::CcLibraryHeaders;
+pub enum CcLibraryHeaders {
+    SpirvTools,
+    SpirvHeaders,
+    Llvm,
+    Clang,
+    Clspv,
+}
+impl CcLibraryHeaders {
+    pub fn str(self) -> String {
+        String::from(match self {
+            Self::SpirvTools => "SPIRV-Tools-includes",
+            Self::SpirvHeaders => "SPIRV-Headers-includes",
+            Self::Llvm => "llvm-includes",
+            Self::Clang => "clang-includes",
+            Self::Clspv => "clspv-includes",
+        })
+    }
+}
 
 #[derive(Debug)]
 pub struct SoongModule {

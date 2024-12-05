@@ -5,7 +5,6 @@ use std::collections::HashSet;
 use std::fs::File;
 
 use crate::project::*;
-use crate::soong_module::SoongModule;
 
 const CMAKE_GENERATED: &str = "cmake_generated";
 

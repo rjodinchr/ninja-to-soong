@@ -4,7 +4,8 @@
 use std::collections::HashMap;
 
 use crate::ninja_target::NinjaTarget;
-use crate::soong_package::SoongPackage;
+use crate::soong_module::*;
+use crate::soong_package::*;
 use crate::utils::*;
 
 pub mod clspv;

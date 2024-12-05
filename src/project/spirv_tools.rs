@@ -2,7 +2,6 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use crate::project::*;
-use crate::soong_module::SoongModule;
 
 #[derive(Default)]
 pub struct SpirvTools {

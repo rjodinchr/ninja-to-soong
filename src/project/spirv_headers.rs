@@ -4,7 +4,6 @@
 use std::collections::HashSet;
 
 use crate::project::*;
-use crate::soong_module::SoongModule;
 
 #[derive(Default)]
 pub struct SpirvHeaders {
