@@ -69,11 +69,24 @@ macro_rules! error {
 }
 pub use {error, print_internal, print_verbose};
 
-pub const CC_LIBRARY_HEADERS_SPIRV_TOOLS: &str = "SPIRV-Tools-includes";
-pub const CC_LIBRARY_HEADERS_SPIRV_HEADERS: &str = "SPIRV-Headers-includes";
-pub const CC_LIBRARY_HEADERS_LLVM: &str = "llvm-includes";
-pub const CC_LIBRARY_HEADERS_CLANG: &str = "clang-includes";
-pub const CC_LIBRARY_HEADERS_CLSPV: &str = "clspv-includes";
+pub enum CcLibraryHeaders {
+    SpirvTools,
+    SpirvHeaders,
+    Llvm,
+    Clang,
+    Clspv,
+}
+impl CcLibraryHeaders {
+    pub fn str(self) -> String {
+        String::from(match self {
+            Self::SpirvTools => "SPIRV-Tools-includes",
+            Self::SpirvHeaders => "SPIRV-Headers-includes",
+            Self::Llvm => "llvm-includes",
+            Self::Clang => "clang-includes",
+            Self::Clspv => "clspv-includes",
+        })
+    }
+}
 
 pub const ANDROID_NDK: &str = "android-ndk-r27c";
 pub const ANDROID_ISA: &str = "aarch64"; // "x86_64"

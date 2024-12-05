@@ -120,7 +120,7 @@ impl Project for LlvmProject {
         }
 
         package.add_module(SoongModule::new_cc_library_headers(
-            CC_LIBRARY_HEADERS_LLVM,
+            CcLibraryHeaders::Llvm,
             [
                 "llvm/include".to_string(),
                 path_to_string(cmake_generated_path.join("include")),
@@ -128,7 +128,7 @@ impl Project for LlvmProject {
             .into(),
         ));
         package.add_module(SoongModule::new_cc_library_headers(
-            CC_LIBRARY_HEADERS_CLANG,
+            CcLibraryHeaders::Clang,
             [
                 "clang/include".to_string(),
                 path_to_string(cmake_generated_path.join("tools/clang/include")),
