@@ -27,7 +27,7 @@ impl Project for SpirvHeaders {
             &self.src_path,
             Path::new(""),
             Path::new(""),
-            self.get_id().str(),
+            Path::new(self.get_id().str()),
             "//visibility:public",
             "SPDX-license-identifier-MIT",
             "LICENSE",
@@ -45,8 +45,8 @@ impl Project for SpirvHeaders {
         files.sort();
         for file in files {
             package.add_module(SoongModule::new_copy_genrule(
-                spirv_headers_name(&self.src_path, &file),
-                str(&strip_prefix(&file, &self.src_path)),
+                dep_name(&file, &self.src_path, CC_LIBRARY_HEADERS_SPIRV_HEADERS),
+                path_to_string(strip_prefix(&file, &self.src_path)),
                 file_name(&file),
             ));
         }

@@ -38,7 +38,7 @@ impl Project for Clspv {
             &self.src_path,
             &self.ndk_path,
             &self.build_path,
-            self.get_id().str(),
+            Path::new(self.get_id().str()),
             "//external/clvk",
             "SPDX-license-identifier-Apache-2.0",
             "LICENSE",
@@ -63,15 +63,15 @@ impl Project for Clspv {
         _projects_map: &ProjectsMap,
     ) -> Result<Option<PathBuf>, String> {
         let spirv_headers_path =
-            "-DSPIRV_HEADERS_SOURCE_DIR=".to_string() + &str(&self.spirv_headers_path);
+            "-DSPIRV_HEADERS_SOURCE_DIR=".to_string() + &path_to_string(&self.spirv_headers_path);
         let spirv_tools_path =
-            "-DSPIRV_TOOLS_SOURCE_DIR=".to_string() + &str(&self.spirv_tools_path);
-        let llvm_project_path =
-            "-DCLSPV_LLVM_SOURCE_DIR=".to_string() + &str(&self.llvm_project_path.join("llvm"));
-        let clang_path =
-            "-DCLSPV_CLANG_SOURCE_DIR=".to_string() + &str(&self.llvm_project_path.join("clang"));
-        let libclc_path =
-            "-DCLSPV_LIBCLC_SOURCE_DIR=".to_string() + &str(&self.llvm_project_path.join("libclc"));
+            "-DSPIRV_TOOLS_SOURCE_DIR=".to_string() + &path_to_string(&self.spirv_tools_path);
+        let llvm_project_path = "-DCLSPV_LLVM_SOURCE_DIR=".to_string()
+            + &path_to_string(self.llvm_project_path.join("llvm"));
+        let clang_path = "-DCLSPV_CLANG_SOURCE_DIR=".to_string()
+            + &path_to_string(self.llvm_project_path.join("clang"));
+        let libclc_path = "-DCLSPV_LIBCLC_SOURCE_DIR=".to_string()
+            + &path_to_string(self.llvm_project_path.join("libclc"));
         let (ninja_file_path, _) = cmake_configure(
             &self.src_path,
             &self.build_path,
@@ -97,29 +97,17 @@ impl Project for Clspv {
 
         for input in target_inputs {
             if input.starts_with(&self.spirv_headers_path) {
-                deps.insert((
-                    input.clone(),
-                    ":".to_string() + &spirv_headers_name(&self.spirv_headers_path, &input),
+                deps.insert(cmd_dep(
+                    input,
+                    &self.spirv_headers_path,
+                    CC_LIBRARY_HEADERS_SPIRV_HEADERS,
                 ));
             } else if input.starts_with(&clang_path) {
-                deps.insert((
-                    input.clone(),
-                    ":".to_string() + &clang_headers_name(&clang_path, &input),
-                ));
+                deps.insert(cmd_dep(input, &clang_path, CC_LIBRARY_HEADERS_CLANG));
             } else if input.starts_with("third_party/llvm") {
-                deps.insert((
-                    input.clone(),
-                    ":".to_string() + &llvm_headers_name(Path::new("third_party/llvm"), &input),
-                ));
+                deps.insert(cmd_dep(input, "third_party/llvm", CC_LIBRARY_HEADERS_LLVM));
             } else if !input.starts_with(&self.src_path) {
-                deps.insert((
-                    input.clone(),
-                    ":".to_string()
-                        + &path_to_id(
-                            Path::new(self.get_id().str())
-                                .join(strip_prefix(&input, &self.build_path)),
-                        ),
-                ));
+                deps.insert(cmd_dep(input, &self.build_path, self.get_id().str()));
             } else {
                 inputs.insert(input.clone());
             }
@@ -128,7 +116,7 @@ impl Project for Clspv {
     }
 
     fn get_cmd_output(&self, output: &Path) -> PathBuf {
-        if let Some((_, header)) = split_include(output) {
+        if let Some((_, header)) = split_path(output, "include") {
             header
         } else {
             output.to_path_buf()
@@ -154,7 +142,7 @@ impl Project for Clspv {
                     if let Ok(strip) = dep.strip_prefix(&self.llvm_project_path) {
                         clang_headers.insert(strip.to_path_buf());
                     } else if file_name(dep) == "clspv--.bc" || file_name(dep) == "clspv64--.bc" {
-                        libclc_binaries.insert(strip_prefix(&dep, Path::new("third_party/llvm")));
+                        libclc_binaries.insert(strip_prefix(dep, "third_party/llvm"));
                     }
                 }
                 deps.insert(GenDeps::ClangHeaders, clang_headers);

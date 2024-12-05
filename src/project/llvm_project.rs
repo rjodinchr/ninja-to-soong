@@ -37,7 +37,7 @@ impl Project for LlvmProject {
             &self.src_path,
             &self.ndk_path,
             &self.build_path,
-            self.get_id().str(),
+            Path::new(self.get_id().str()),
             "//visibility:public",
             "SPDX-license-identifier-Apache-2.0",
             "LICENSE.TXT",
@@ -73,7 +73,7 @@ impl Project for LlvmProject {
         let mut gen_deps_folders: HashSet<PathBuf> = HashSet::new();
         for gen_dep in &gen_deps {
             let folder = gen_dep.parent().unwrap();
-            if let Some((include_folder, _)) = split_include(folder) {
+            if let Some((include_folder, _)) = split_path(folder, "include") {
                 gen_deps_folders.insert(include_folder);
             } else {
                 gen_deps_folders.insert(folder.to_path_buf());
@@ -99,11 +99,11 @@ impl Project for LlvmProject {
         )?;
 
         let cmake_generated_path = Path::new(CMAKE_GENERATED);
-        if self.copy_gen_deps && File::open(&cmake_generated_path).is_ok() {
+        if self.copy_gen_deps && File::open(cmake_generated_path).is_ok() {
             if let Err(err) = std::fs::remove_dir_all(cmake_generated_path) {
                 return error!("remove_dir_all failed: {err}");
             }
-            print_verbose!("'{cmake_generated_path:#?}' removed");
+            print_verbose!("{cmake_generated_path:#?} removed");
             for file in gen_deps_sorted {
                 let from = self.build_path.join(&file);
                 let to = cmake_generated_path.join(file);
@@ -114,7 +114,7 @@ impl Project for LlvmProject {
                 copy_file(&from, &to)?;
             }
             print_verbose!(
-                "Files copied from '{0:#?}' to '{cmake_generated_path:#?}'",
+                "Files copied from {0:#?} to {cmake_generated_path:#?}",
                 &self.build_path
             );
         }
@@ -123,7 +123,7 @@ impl Project for LlvmProject {
             CC_LIBRARY_HEADERS_LLVM,
             [
                 "llvm/include".to_string(),
-                str(&cmake_generated_path.join("include")),
+                path_to_string(cmake_generated_path.join("include")),
             ]
             .into(),
         ));
@@ -131,23 +131,23 @@ impl Project for LlvmProject {
             CC_LIBRARY_HEADERS_CLANG,
             [
                 "clang/include".to_string(),
-                str(&cmake_generated_path.join("tools/clang/include")),
+                path_to_string(cmake_generated_path.join("tools/clang/include")),
             ]
             .into(),
         ));
 
         for clang_header in GenDeps::ClangHeaders.get(self, ProjectId::Clspv, projects_map) {
             package.add_module(SoongModule::new_copy_genrule(
-                clang_headers_name(Path::new("clang"), &clang_header),
-                str(&clang_header),
+                dep_name(&clang_header, "clang", CC_LIBRARY_HEADERS_CLANG),
+                path_to_string(&clang_header),
                 file_name(&clang_header),
             ));
         }
         for file in libclc_deps {
             let file_path = cmake_generated_path.join(file);
             package.add_module(SoongModule::new_copy_genrule(
-                llvm_headers_name(cmake_generated_path, &file_path),
-                str(&file_path),
+                dep_name(&file_path, cmake_generated_path, CC_LIBRARY_HEADERS_LLVM),
+                path_to_string(&file_path),
                 file_name(&file_path),
             ));
         }
