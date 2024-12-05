@@ -24,11 +24,19 @@ impl Project for SpirvTools {
         ProjectId::SpirvTools
     }
 
-    fn generate_package(
-        &mut self,
-        targets: Vec<NinjaTarget>,
-        projects_map: &ProjectsMap,
-    ) -> Result<SoongPackage, String> {
+    fn generate_package(&mut self, projects_map: &ProjectsMap) -> Result<SoongPackage, String> {
+        cmake_configure(
+            &self.src_path,
+            &self.build_path,
+            &self.ndk_path,
+            vec![
+                &("-DSPIRV-Headers_SOURCE_DIR=".to_string()
+                    + &path_to_string(&self.spirv_headers_path)),
+            ],
+        )?;
+
+        let targets = parse_build_ninja(&self.build_path)?;
+
         let mut package = SoongPackage::new(
             &self.src_path,
             &self.ndk_path,
@@ -51,22 +59,6 @@ impl Project for SpirvTools {
         self.gen_deps = Vec::from_iter(package.get_gen_deps());
 
         Ok(package)
-    }
-
-    fn get_ninja_file_path(
-        &mut self,
-        _projects_map: &ProjectsMap,
-    ) -> Result<Option<PathBuf>, String> {
-        let (ninja_file_path, _) = cmake_configure(
-            &self.src_path,
-            &self.build_path,
-            &self.ndk_path,
-            vec![
-                &("-DSPIRV-Headers_SOURCE_DIR=".to_string()
-                    + &path_to_string(&self.spirv_headers_path)),
-            ],
-        )?;
-        Ok(Some(ninja_file_path))
     }
 
     fn get_default_cflags(&self) -> Vec<String> {

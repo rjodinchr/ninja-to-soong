@@ -26,15 +26,8 @@ fn generate_project(
     } else {
         print_info!("Generating dependency '{project_name}'");
     }
-    print_debug!("Get Ninja file's path...");
-    let targets = if let Some(ninja_file_path) = project.get_ninja_file_path(projects_generated)? {
-        print_debug!("Parsing {ninja_file_path:#?}...");
-        parser::parse_build_ninja(ninja_file_path)?
-    } else {
-        Vec::new()
-    };
-    print_debug!("Generating soong package...");
-    let package = project.generate_package(targets, projects_generated)?;
+    print_debug!("Creating soong package...");
+    let package = project.generate_package(projects_generated)?;
     if !is_dependency {
         print_debug!("Writing soong file...");
 

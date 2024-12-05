@@ -28,11 +28,32 @@ impl Project for Clspv {
         ProjectId::Clspv
     }
 
-    fn generate_package(
-        &mut self,
-        targets: Vec<NinjaTarget>,
-        projects_map: &ProjectsMap,
-    ) -> Result<SoongPackage, String> {
+    fn generate_package(&mut self, projects_map: &ProjectsMap) -> Result<SoongPackage, String> {
+        let spirv_headers_path =
+            "-DSPIRV_HEADERS_SOURCE_DIR=".to_string() + &path_to_string(&self.spirv_headers_path);
+        let spirv_tools_path =
+            "-DSPIRV_TOOLS_SOURCE_DIR=".to_string() + &path_to_string(&self.spirv_tools_path);
+        let llvm_project_path = "-DCLSPV_LLVM_SOURCE_DIR=".to_string()
+            + &path_to_string(self.llvm_project_path.join("llvm"));
+        let clang_path = "-DCLSPV_CLANG_SOURCE_DIR=".to_string()
+            + &path_to_string(self.llvm_project_path.join("clang"));
+        let libclc_path = "-DCLSPV_LIBCLC_SOURCE_DIR=".to_string()
+            + &path_to_string(self.llvm_project_path.join("libclc"));
+        cmake_configure(
+            &self.src_path,
+            &self.build_path,
+            &self.ndk_path,
+            vec![
+                &spirv_headers_path,
+                &spirv_tools_path,
+                &llvm_project_path,
+                &clang_path,
+                &libclc_path,
+            ],
+        )?;
+
+        let targets = parse_build_ninja(&self.build_path)?;
+
         let mut package = SoongPackage::new(
             &self.src_path,
             &self.ndk_path,
@@ -55,35 +76,6 @@ impl Project for Clspv {
         self.gen_deps = Vec::from_iter(package.get_gen_deps());
 
         Ok(package)
-    }
-
-    fn get_ninja_file_path(
-        &mut self,
-        _projects_map: &ProjectsMap,
-    ) -> Result<Option<PathBuf>, String> {
-        let spirv_headers_path =
-            "-DSPIRV_HEADERS_SOURCE_DIR=".to_string() + &path_to_string(&self.spirv_headers_path);
-        let spirv_tools_path =
-            "-DSPIRV_TOOLS_SOURCE_DIR=".to_string() + &path_to_string(&self.spirv_tools_path);
-        let llvm_project_path = "-DCLSPV_LLVM_SOURCE_DIR=".to_string()
-            + &path_to_string(self.llvm_project_path.join("llvm"));
-        let clang_path = "-DCLSPV_CLANG_SOURCE_DIR=".to_string()
-            + &path_to_string(self.llvm_project_path.join("clang"));
-        let libclc_path = "-DCLSPV_LIBCLC_SOURCE_DIR=".to_string()
-            + &path_to_string(self.llvm_project_path.join("libclc"));
-        let (ninja_file_path, _) = cmake_configure(
-            &self.src_path,
-            &self.build_path,
-            &self.ndk_path,
-            vec![
-                &spirv_headers_path,
-                &spirv_tools_path,
-                &llvm_project_path,
-                &clang_path,
-                &libclc_path,
-            ],
-        )?;
-        Ok(Some(ninja_file_path))
     }
 
     fn get_cmd_output(&self, output: &Path) -> PathBuf {
