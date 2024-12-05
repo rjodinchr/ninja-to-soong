@@ -12,7 +12,7 @@ pub struct Clvk {
     llvm_project_path: PathBuf,
     spirv_tools_path: PathBuf,
     spirv_headers_path: PathBuf,
-    generated_libraries: HashSet<PathBuf>,
+    generated_libraries: Vec<PathBuf>,
 }
 
 impl Project for Clvk {
@@ -46,7 +46,7 @@ impl Project for Clvk {
         );
         package.generate(vec![PathBuf::from("libOpenCL.so")], targets, self)?;
 
-        self.generated_libraries = package.get_generated_libraries();
+        self.generated_libraries = Vec::from_iter(package.get_generated_libraries());
         Ok(package)
     }
 
@@ -96,15 +96,15 @@ impl Project for Clvk {
 
     fn get_gen_deps(&self, project: ProjectId) -> GenDepsMap {
         let mut deps = HashMap::new();
-        let mut libs = HashSet::new();
+        let mut libs = Vec::new();
         let prefix = project.str();
         for library in &self.generated_libraries {
             let library_path = PathBuf::from(library);
             if let Ok(lib) = self.get_library_name(&library_path).strip_prefix(prefix) {
-                libs.insert(lib.to_path_buf());
+                libs.push(lib.to_path_buf());
             }
         }
-        deps.insert(GenDeps::TargetsToGenerate, libs);
+        deps.insert(GenDeps::TargetsToGen, libs);
         deps
     }
 
@@ -118,14 +118,13 @@ impl Project for Clvk {
         strip_prefix(&strip, "external")
     }
 
-    fn get_target_header_libs(&self, _target: &str) -> HashSet<String> {
-        [
+    fn get_target_header_libs(&self, _target: &str) -> Vec<String> {
+        vec![
             CcLibraryHeaders::SpirvTools.str(),
             CcLibraryHeaders::SpirvHeaders.str(),
             CcLibraryHeaders::Clspv.str(),
             "OpenCL-Headers".to_string(),
         ]
-        .into()
     }
 
     fn get_target_alias(&self, target: &str) -> Option<String> {

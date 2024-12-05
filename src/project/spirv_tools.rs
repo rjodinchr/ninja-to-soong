@@ -10,7 +10,7 @@ pub struct SpirvTools {
     build_path: PathBuf,
     ndk_path: PathBuf,
     spirv_headers_path: PathBuf,
-    gen_deps: HashSet<PathBuf>,
+    gen_deps: Vec<PathBuf>,
 }
 
 impl Project for SpirvTools {
@@ -40,7 +40,7 @@ impl Project for SpirvTools {
             "LICENSE",
         );
         package.generate(
-            GenDeps::TargetsToGenerate.get(self, ProjectId::Clvk, projects_map),
+            GenDeps::TargetsToGen.get(self, ProjectId::Clvk, projects_map),
             targets,
             self,
         )?;
@@ -49,7 +49,7 @@ impl Project for SpirvTools {
             ["include".to_string()].into(),
         ));
 
-        self.gen_deps = package.get_gen_deps();
+        self.gen_deps = Vec::from_iter(package.get_gen_deps());
 
         Ok(package)
     }
@@ -70,17 +70,17 @@ impl Project for SpirvTools {
         Ok(Some(ninja_file_path))
     }
 
-    fn get_default_cflags(&self) -> HashSet<String> {
-        ["-Wno-implicit-fallthrough".to_string()].into()
+    fn get_default_cflags(&self) -> Vec<String> {
+        vec!["-Wno-implicit-fallthrough".to_string()]
     }
 
     fn get_deps_info(&self) -> Vec<(PathBuf, GenDeps)> {
-        vec![(self.spirv_headers_path.clone(), GenDeps::SpirvHeadersFiles)]
+        vec![(self.spirv_headers_path.clone(), GenDeps::SpirvHeaders)]
     }
 
     fn get_gen_deps(&self, _project: ProjectId) -> GenDepsMap {
         let mut deps: GenDepsMap = HashMap::new();
-        deps.insert(GenDeps::SpirvHeadersFiles, self.gen_deps.clone());
+        deps.insert(GenDeps::SpirvHeaders, self.gen_deps.clone());
         deps
     }
 
@@ -88,8 +88,8 @@ impl Project for SpirvTools {
         vec![ProjectId::Clvk]
     }
 
-    fn get_target_header_libs(&self, _target: &str) -> HashSet<String> {
-        [CcLibraryHeaders::SpirvHeaders.str()].into()
+    fn get_target_header_libs(&self, _target: &str) -> Vec<String> {
+        vec![CcLibraryHeaders::SpirvHeaders.str()]
     }
 
     fn ignore_include(&self, include: &Path) -> bool {

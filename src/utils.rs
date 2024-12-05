@@ -6,8 +6,6 @@ use std::io::{Read, Write};
 
 pub use std::path::{Path, PathBuf};
 
-use crate::project::GenDeps;
-
 pub const TAB: &str = "   ";
 pub const COLOR_RED: &str = "\x1b[00;31m";
 pub const COLOR_GREEN: &str = "\x1b[00;32m";
@@ -129,19 +127,8 @@ pub fn split_path(path: &Path, delimiter: &str) -> Option<(PathBuf, PathBuf)> {
     None
 }
 
-fn dep_name_internal<P: AsRef<Path>>(from: &Path, prefix: P, path: &str) -> String {
+pub fn dep_name<P: AsRef<Path>>(from: &Path, prefix: P, path: &str) -> String {
     path_to_id(Path::new(path).join(strip_prefix(from, prefix)))
-}
-
-pub fn dep_name<P: AsRef<Path>>(from: &Path, prefix: P, dep: GenDeps) -> String {
-    dep_name_internal(from, prefix, dep.str())
-}
-
-pub fn cmd_dep(input: &Path, prefix: &Path, path: &str) -> (PathBuf, String) {
-    (
-        input.to_path_buf(),
-        String::from(":") + &dep_name_internal(input, prefix, path),
-    )
 }
 
 pub fn cmake_configure(

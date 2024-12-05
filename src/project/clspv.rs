@@ -12,7 +12,7 @@ pub struct Clspv {
     spirv_headers_path: PathBuf,
     spirv_tools_path: PathBuf,
     llvm_project_path: PathBuf,
-    gen_deps: HashSet<PathBuf>,
+    gen_deps: Vec<PathBuf>,
 }
 
 impl Project for Clspv {
@@ -44,7 +44,7 @@ impl Project for Clspv {
             "LICENSE",
         );
         package.generate(
-            GenDeps::TargetsToGenerate.get(self, ProjectId::Clvk, projects_map),
+            GenDeps::TargetsToGen.get(self, ProjectId::Clvk, projects_map),
             targets,
             self,
         )?;
@@ -53,7 +53,7 @@ impl Project for Clspv {
             ["include".to_string()].into(),
         ));
 
-        self.gen_deps = package.get_gen_deps();
+        self.gen_deps = Vec::from_iter(package.get_gen_deps());
 
         Ok(package)
     }
@@ -97,9 +97,9 @@ impl Project for Clspv {
 
     fn get_deps_info(&self) -> Vec<(PathBuf, GenDeps)> {
         vec![
-            (self.spirv_headers_path.clone(), GenDeps::SpirvHeadersFiles),
+            (self.spirv_headers_path.clone(), GenDeps::SpirvHeaders),
             (self.llvm_project_path.join("clang"), GenDeps::ClangHeaders),
-            (PathBuf::from("third_party/llvm"), GenDeps::LibclcBinaries),
+            (PathBuf::from("third_party/llvm"), GenDeps::LibclcBins),
         ]
     }
 
@@ -107,26 +107,26 @@ impl Project for Clspv {
         let mut deps: GenDepsMap = HashMap::new();
         match project {
             ProjectId::SpirvHeaders => {
-                let mut files = HashSet::new();
+                let mut files = Vec::new();
                 for dep in &self.gen_deps {
                     if dep.starts_with(&self.spirv_headers_path) {
-                        files.insert(dep.clone());
+                        files.push(dep.clone());
                     }
                 }
-                deps.insert(GenDeps::SpirvHeadersFiles, files);
+                deps.insert(GenDeps::SpirvHeaders, files);
             }
             ProjectId::LlvmProject => {
-                let mut clang_headers = HashSet::new();
-                let mut libclc_binaries = HashSet::new();
+                let mut clang_headers = Vec::new();
+                let mut libclc_binaries = Vec::new();
                 for dep in &self.gen_deps {
                     if let Ok(strip) = dep.strip_prefix(&self.llvm_project_path) {
-                        clang_headers.insert(strip.to_path_buf());
+                        clang_headers.push(strip.to_path_buf());
                     } else if file_name(dep) == "clspv--.bc" || file_name(dep) == "clspv64--.bc" {
-                        libclc_binaries.insert(strip_prefix(dep, "third_party/llvm"));
+                        libclc_binaries.push(strip_prefix(dep, "third_party/llvm"));
                     }
                 }
                 deps.insert(GenDeps::ClangHeaders, clang_headers);
-                deps.insert(GenDeps::LibclcBinaries, libclc_binaries);
+                deps.insert(GenDeps::LibclcBins, libclc_binaries);
             }
             _ => (),
         };
@@ -137,13 +137,12 @@ impl Project for Clspv {
         vec![ProjectId::Clvk]
     }
 
-    fn get_target_header_libs(&self, _target: &str) -> HashSet<String> {
-        [
+    fn get_target_header_libs(&self, _target: &str) -> Vec<String> {
+        vec![
             CcLibraryHeaders::SpirvHeaders.str(),
             CcLibraryHeaders::Llvm.str(),
             CcLibraryHeaders::Clang.str(),
         ]
-        .into()
     }
 
     fn ignore_define(&self, _define: &str) -> bool {
