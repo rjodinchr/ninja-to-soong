@@ -19,11 +19,7 @@ impl Project for SpirvHeaders {
         ProjectId::SpirvHeaders
     }
 
-    fn generate_package(
-        &mut self,
-        _targets: Vec<NinjaTarget>,
-        projects_map: &ProjectsMap,
-    ) -> Result<SoongPackage, String> {
+    fn generate_package(&mut self, projects_map: &ProjectsMap) -> Result<SoongPackage, String> {
         let mut package = SoongPackage::new(
             &self.src_path,
             Path::new(""),

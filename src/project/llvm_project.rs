@@ -28,11 +28,29 @@ impl Project for LlvmProject {
         ProjectId::LlvmProject
     }
 
-    fn generate_package(
-        &mut self,
-        targets: Vec<NinjaTarget>,
-        projects_map: &ProjectsMap,
-    ) -> Result<SoongPackage, String> {
+    fn generate_package(&mut self, projects_map: &ProjectsMap) -> Result<SoongPackage, String> {
+        let configured = cmake_configure(
+            &self.src_path.join("llvm"),
+            &self.build_path,
+            &self.ndk_path,
+            vec![
+                LLVM_DISABLE_ZLIB,
+                "-DLLVM_ENABLE_PROJECTS=clang;libclc",
+                "-DLIBCLC_TARGETS_TO_BUILD=clspv--;clspv64--",
+                "-DLLVM_TARGETS_TO_BUILD=",
+            ],
+        )?;
+        if configured {
+            let mut targets = Vec::new();
+            targets.extend(GenDeps::TargetsToGen.get(self, ProjectId::Clvk, projects_map));
+            targets.extend(GenDeps::LibclcBins.get(self, ProjectId::Clspv, projects_map));
+            if cmake_build(&self.build_path, &targets)? {
+                self.copy_gen_deps = true;
+            }
+        }
+
+        let targets = parse_build_ninja(&self.build_path)?;
+
         let mut package = SoongPackage::new(
             &self.src_path,
             &self.ndk_path,
@@ -153,32 +171,6 @@ impl Project for LlvmProject {
         }
 
         Ok(package)
-    }
-
-    fn get_ninja_file_path(
-        &mut self,
-        projects_map: &ProjectsMap,
-    ) -> Result<Option<PathBuf>, String> {
-        let (ninja_file_path, configured) = cmake_configure(
-            &self.src_path.join("llvm"),
-            &self.build_path,
-            &self.ndk_path,
-            vec![
-                LLVM_DISABLE_ZLIB,
-                "-DLLVM_ENABLE_PROJECTS=clang;libclc",
-                "-DLIBCLC_TARGETS_TO_BUILD=clspv--;clspv64--",
-                "-DLLVM_TARGETS_TO_BUILD=",
-            ],
-        )?;
-        if configured {
-            let mut targets = Vec::new();
-            targets.extend(GenDeps::TargetsToGen.get(self, ProjectId::Clvk, projects_map));
-            targets.extend(GenDeps::LibclcBins.get(self, ProjectId::Clspv, projects_map));
-            if cmake_build(&self.build_path, &targets)? {
-                self.copy_gen_deps = true;
-            }
-        }
-        Ok(Some(ninja_file_path))
     }
 
     fn get_default_cflags(&self) -> Vec<String> {

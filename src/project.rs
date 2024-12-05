@@ -3,7 +3,7 @@
 
 use std::collections::HashMap;
 
-use crate::ninja_target::NinjaTarget;
+use crate::parser::*;
 use crate::soong_module::*;
 use crate::soong_package::*;
 use crate::utils::*;
@@ -94,18 +94,8 @@ pub type ProjectsMap<'a> = HashMap<ProjectId, &'a dyn Project>;
 pub trait Project {
     fn init(&mut self, android_path: &Path, ndk_path: &Path, temp_path: &Path);
     fn get_id(&self) -> ProjectId;
-    fn generate_package(
-        &mut self,
-        targets: Vec<NinjaTarget>,
-        projects_map: &ProjectsMap,
-    ) -> Result<SoongPackage, String>;
+    fn generate_package(&mut self, projects_map: &ProjectsMap) -> Result<SoongPackage, String>;
 
-    fn get_ninja_file_path(
-        &mut self,
-        _projects_map: &ProjectsMap,
-    ) -> Result<Option<PathBuf>, String> {
-        Ok(None)
-    }
     fn get_cmd_output(&self, output: &Path) -> PathBuf {
         output.to_path_buf()
     }

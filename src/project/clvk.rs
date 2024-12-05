@@ -30,30 +30,7 @@ impl Project for Clvk {
         ProjectId::Clvk
     }
 
-    fn generate_package(
-        &mut self,
-        targets: Vec<NinjaTarget>,
-        _projects_map: &ProjectsMap,
-    ) -> Result<SoongPackage, String> {
-        let mut package = SoongPackage::new(
-            &self.src_path,
-            &self.ndk_path,
-            &self.build_path,
-            Path::new(self.get_id().str()),
-            "//visibility:public",
-            "SPDX-license-identifier-Apache-2.0",
-            "LICENSE",
-        );
-        package.generate(vec![PathBuf::from("libOpenCL.so")], targets, self)?;
-
-        self.generated_libraries = Vec::from_iter(package.get_generated_libraries());
-        Ok(package)
-    }
-
-    fn get_ninja_file_path(
-        &mut self,
-        _projects_map: &ProjectsMap,
-    ) -> Result<Option<PathBuf>, String> {
+    fn generate_package(&mut self, _projects_map: &ProjectsMap) -> Result<SoongPackage, String> {
         let spirv_headers_path =
             "-DSPIRV_HEADERS_SOURCE_DIR=".to_string() + &path_to_string(&self.spirv_headers_path);
         let spirv_tools_path =
@@ -73,7 +50,7 @@ impl Project for Clvk {
                     .join(ANDROID_PLATFORM)
                     .join("libvulkan.so"),
             );
-        let (ninja_file_path, _) = cmake_configure(
+        cmake_configure(
             &self.src_path,
             &self.build_path,
             &self.ndk_path,
@@ -91,7 +68,22 @@ impl Project for Clvk {
                 &vulkan_library,
             ],
         )?;
-        Ok(Some(ninja_file_path))
+
+        let targets = parse_build_ninja(&self.build_path)?;
+
+        let mut package = SoongPackage::new(
+            &self.src_path,
+            &self.ndk_path,
+            &self.build_path,
+            Path::new(self.get_id().str()),
+            "//visibility:public",
+            "SPDX-license-identifier-Apache-2.0",
+            "LICENSE",
+        );
+        package.generate(vec![PathBuf::from("libOpenCL.so")], targets, self)?;
+
+        self.generated_libraries = Vec::from_iter(package.get_generated_libraries());
+        Ok(package)
     }
 
     fn get_gen_deps(&self, project: ProjectId) -> GenDepsMap {

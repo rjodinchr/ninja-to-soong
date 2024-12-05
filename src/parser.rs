@@ -122,9 +122,9 @@ fn parse_build_target(line: &str, lines: &mut std::str::Lines<'_>) -> Result<Nin
     ))
 }
 
-pub fn parse_build_ninja(ninja_file_path: PathBuf) -> Result<Vec<NinjaTarget>, String> {
+pub fn parse_build_ninja(ninja_file_path: &Path) -> Result<Vec<NinjaTarget>, String> {
     let mut targets: Vec<NinjaTarget> = Vec::new();
-    let file = read_file(&ninja_file_path)?;
+    let file = read_file(&ninja_file_path.join("build.ninja"))?;
     let mut lines = file.lines();
     while let Some(line) = lines.next() {
         if !line.trim().starts_with("build") {
