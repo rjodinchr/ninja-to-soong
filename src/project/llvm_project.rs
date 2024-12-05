@@ -1,6 +1,7 @@
 // Copyright 2024 ninja-to-soong authors
 // SPDX-License-Identifier: Apache-2.0
 
+use std::collections::HashSet;
 use std::fs::File;
 
 use crate::project::*;
@@ -43,12 +44,12 @@ impl Project for LlvmProject {
             "LICENSE.TXT",
         );
         package.generate(
-            GenDeps::TargetsToGenerate.get(self, ProjectId::Clvk, projects_map),
+            GenDeps::TargetsToGen.get(self, ProjectId::Clvk, projects_map),
             targets,
             self,
         )?;
 
-        let libclc_deps = GenDeps::LibclcBinaries.get(self, ProjectId::Clspv, projects_map);
+        let libclc_deps = GenDeps::LibclcBins.get(self, ProjectId::Clspv, projects_map);
         let mut gen_deps = package.get_gen_deps();
         gen_deps.extend(libclc_deps.clone());
         let missing_gen_deps = vec![
@@ -80,7 +81,7 @@ impl Project for LlvmProject {
             }
         }
         for module in package.get_modules() {
-            module.filter_set("local_include_dirs", |include| {
+            module.filter_vec("local_include_dirs", |include| {
                 if let Ok(strip) = Path::new(include).strip_prefix(CMAKE_GENERATED) {
                     gen_deps_folders.contains(strip)
                 } else {
@@ -138,7 +139,7 @@ impl Project for LlvmProject {
 
         for clang_header in GenDeps::ClangHeaders.get(self, ProjectId::Clspv, projects_map) {
             package.add_module(SoongModule::new_copy_genrule(
-                dep_name(&clang_header, "clang", GenDeps::ClangHeaders),
+                dep_name(&clang_header, "clang", GenDeps::ClangHeaders.str()),
                 path_to_string(&clang_header),
                 file_name(&clang_header),
             ));
@@ -146,7 +147,7 @@ impl Project for LlvmProject {
         for file in libclc_deps {
             let file_path = cmake_generated_path.join(file);
             package.add_module(SoongModule::new_copy_genrule(
-                dep_name(&file_path, cmake_generated_path, GenDeps::LibclcBinaries),
+                dep_name(&file_path, cmake_generated_path, GenDeps::LibclcBins.str()),
                 path_to_string(&file_path),
                 file_name(&file_path),
             ));
@@ -172,8 +173,8 @@ impl Project for LlvmProject {
         )?;
         if configured {
             let mut targets = Vec::new();
-            targets.extend(GenDeps::TargetsToGenerate.get(self, ProjectId::Clvk, projects_map));
-            targets.extend(GenDeps::LibclcBinaries.get(self, ProjectId::Clspv, projects_map));
+            targets.extend(GenDeps::TargetsToGen.get(self, ProjectId::Clvk, projects_map));
+            targets.extend(GenDeps::LibclcBins.get(self, ProjectId::Clspv, projects_map));
             if cmake_build(&self.build_path, &targets)? {
                 self.copy_gen_deps = true;
             }
@@ -181,12 +182,11 @@ impl Project for LlvmProject {
         Ok(Some(ninja_file_path))
     }
 
-    fn get_default_cflags(&self) -> HashSet<String> {
-        [
+    fn get_default_cflags(&self) -> Vec<String> {
+        vec![
             "-Wno-error".to_string(),
             "-Wno-unreachable-code-loop-increment".to_string(),
         ]
-        .into()
     }
 
     fn get_include(&self, include: &Path) -> PathBuf {

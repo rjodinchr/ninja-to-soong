@@ -1,7 +1,7 @@
 // Copyright 2024 ninja-to-soong authors
 // SPDX-License-Identifier: Apache-2.0
 
-use std::collections::HashSet;
+use std::collections::{HashMap, HashSet};
 
 use crate::ninja_target::{NinjaTarget, NinjaTargetsMap};
 use crate::project::Project;
@@ -41,8 +41,8 @@ impl<'a> SoongPackage<'a> {
         let license_name = path_to_id(target_prefix.join(license_text.to_lowercase()));
 
         let mut package_module = SoongModule::new("package");
-        package_module.add_set("default_applicable_licenses", [license_name.clone()].into());
-        package_module.add_set(
+        package_module.add_vec("default_applicable_licenses", [license_name.clone()].into());
+        package_module.add_vec(
             "default_visibility",
             [default_visibility.to_string()].into(),
         );
@@ -50,9 +50,9 @@ impl<'a> SoongPackage<'a> {
 
         let mut license_module = SoongModule::new("license");
         license_module.add_str("name", license_name.clone());
-        license_module.add_set("visibility", [":__subpackages__".to_string()].into());
-        license_module.add_set("license_kinds", [license_kinds.to_string()].into());
-        license_module.add_set("license_text", [license_text.to_string()].into());
+        license_module.add_vec("visibility", [":__subpackages__".to_string()].into());
+        license_module.add_vec("license_kinds", [license_kinds.to_string()].into());
+        license_module.add_vec("license_text", [license_text.to_string()].into());
         package.add_module(license_module);
 
         package
@@ -99,7 +99,7 @@ impl<'a> SoongPackage<'a> {
         targets_map: &NinjaTargetsMap,
         project: &dyn Project,
     ) -> Result<SoongModule, String> {
-        let mut cflags = project.get_default_cflags();
+        let mut cflags: HashSet<String> = HashSet::from_iter(project.get_default_cflags());
         let mut includes = HashSet::new();
         let mut srcs = HashSet::new();
         for input in target.get_inputs() {
@@ -134,14 +134,14 @@ impl<'a> SoongPackage<'a> {
             module.add_bool("optimize_for_size", true);
         }
         module.add_bool("use_clang_lld", true);
-        module.add_set("srcs", srcs);
-        module.add_set("local_include_dirs", includes);
-        module.add_set("cflags", cflags);
-        module.add_set("ldflags", link_flags);
-        module.add_set("static_libs", static_libs);
-        module.add_set("shared_libs", shared_libs);
-        module.add_set("header_libs", project.get_target_header_libs(&target_name));
-        module.add_set("generated_headers", gen_headers);
+        module.add_vec("srcs", Vec::from_iter(srcs));
+        module.add_vec("local_include_dirs", Vec::from_iter(includes));
+        module.add_vec("cflags", Vec::from_iter(cflags));
+        module.add_vec("ldflags", Vec::from_iter(link_flags));
+        module.add_vec("static_libs", Vec::from_iter(static_libs));
+        module.add_vec("shared_libs", Vec::from_iter(shared_libs));
+        module.add_vec("header_libs", project.get_target_header_libs(&target_name));
+        module.add_vec("generated_headers", Vec::from_iter(gen_headers));
         if let Some(vs) = version_script {
             module.add_str("version_script", path_to_string(vs));
         }
@@ -157,7 +157,7 @@ impl<'a> SoongPackage<'a> {
         mut cmd: String,
         inputs: HashSet<PathBuf>,
         outputs: &Vec<PathBuf>,
-        deps: HashSet<(PathBuf, String)>,
+        deps: HashMap<PathBuf, String>,
         project: &dyn Project,
     ) -> String {
         while let Some(index) = cmd.find("bin/python") {
@@ -195,7 +195,7 @@ impl<'a> SoongPackage<'a> {
             cmd = cmd.replace(&path_to_string(&input), &replace_input)
         }
         for (dep, dep_target_name) in deps {
-            let replace_dep = "$(location ".to_string() + &dep_target_name + ")";
+            let replace_dep = "$(location :".to_string() + &dep_target_name + ")";
             let dep_with_prefix = path_to_string(self.target_prefix.join(&dep));
             cmd = cmd
                 .replace(&dep_with_prefix, &replace_dep)
@@ -208,19 +208,22 @@ impl<'a> SoongPackage<'a> {
         &self,
         target_inputs: &Vec<PathBuf>,
         project: &dyn Project,
-    ) -> (HashSet<PathBuf>, HashSet<(PathBuf, String)>) {
+    ) -> (HashSet<PathBuf>, HashMap<PathBuf, String>) {
         let mut inputs = HashSet::new();
-        let mut deps = HashSet::new();
+        let mut deps = HashMap::new();
 
         'target_inputs: for input in target_inputs {
             for (prefix, dep) in project.get_deps_info() {
                 if input.starts_with(&prefix) {
-                    deps.insert(cmd_dep(input, &prefix, dep.str()));
+                    deps.insert(input.clone(), dep_name(input, &prefix, dep.str()));
                     continue 'target_inputs;
                 }
             }
             if !input.starts_with(self.src_path) {
-                deps.insert(cmd_dep(input, self.build_path, project.get_id().str()));
+                deps.insert(
+                    input.clone(),
+                    dep_name(input, self.build_path, project.get_id().str()),
+                );
             } else {
                 inputs.insert(input.clone());
             }
@@ -240,7 +243,7 @@ impl<'a> SoongPackage<'a> {
             srcs_set.insert(path_to_string(strip_prefix(input, self.src_path)));
         }
         for (dep, dep_target_name) in &deps {
-            srcs_set.insert(dep_target_name.clone());
+            srcs_set.insert(String::from(":") + dep_target_name);
             self.gen_deps.insert(dep.clone());
         }
         let target_outputs = target.get_outputs();
@@ -252,8 +255,8 @@ impl<'a> SoongPackage<'a> {
 
         let mut module = crate::soong_module::SoongModule::new("cc_genrule");
         module.add_str("name", target.get_name(self.target_prefix));
-        module.add_set("srcs", srcs_set);
-        module.add_set("out", out_set);
+        module.add_vec("srcs", Vec::from_iter(srcs_set));
+        module.add_vec("out", Vec::from_iter(out_set));
         module.add_str("cmd", cmd.to_string());
         Ok(module)
     }

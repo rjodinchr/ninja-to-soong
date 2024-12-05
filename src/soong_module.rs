@@ -1,7 +1,7 @@
 // Copyright 2024 ninja-to-soong authors
 // SPDX-License-Identifier: Apache-2.0
 
-use std::collections::{HashMap, HashSet};
+use std::collections::HashMap;
 
 use crate::CcLibraryHeaders;
 
@@ -9,7 +9,7 @@ use crate::CcLibraryHeaders;
 pub struct SoongModule {
     name: String,
     str_map: HashMap<String, String>,
-    set_map: HashMap<String, HashSet<String>>,
+    vec_map: HashMap<String, Vec<String>>,
     bool_map: HashMap<String, bool>,
 }
 
@@ -20,23 +20,23 @@ impl SoongModule {
         Self {
             name: name.to_string(),
             str_map: HashMap::new(),
-            set_map: HashMap::new(),
+            vec_map: HashMap::new(),
             bool_map: HashMap::new(),
         }
     }
 
-    pub fn new_cc_library_headers(name: CcLibraryHeaders, include_dirs: HashSet<String>) -> Self {
+    pub fn new_cc_library_headers(name: CcLibraryHeaders, include_dirs: Vec<String>) -> Self {
         let mut module = Self::new("cc_library_headers");
         module.add_str("name", name.str());
-        module.add_set("export_include_dirs", include_dirs);
+        module.add_vec("export_include_dirs", include_dirs);
         module
     }
 
     pub fn new_copy_genrule(name: String, src: String, out: String) -> Self {
         let mut module = Self::new("genrule");
         module.add_str("name", name);
-        module.add_set("srcs", [src].into());
-        module.add_set("out", [out].into());
+        module.add_vec("srcs", vec![src]);
+        module.add_vec("out", vec![out]);
         module.add_str("cmd", "cp $(in) $(out)".to_string());
         module
     }
@@ -45,22 +45,22 @@ impl SoongModule {
         self.str_map.insert(key.to_string(), str);
     }
 
-    pub fn add_set(&mut self, key: &str, set: HashSet<String>) {
-        self.set_map.insert(key.to_string(), set);
+    pub fn add_vec(&mut self, key: &str, vec: Vec<String>) {
+        self.vec_map.insert(key.to_string(), vec);
     }
 
     pub fn add_bool(&mut self, key: &str, bool: bool) {
         self.bool_map.insert(key.to_string(), bool);
     }
 
-    pub fn filter_set<F>(&mut self, key: &str, f: F)
+    pub fn filter_vec<F>(&mut self, key: &str, f: F)
     where
         F: FnMut(&String) -> bool + Clone,
     {
-        let Some(set) = self.set_map.remove(key) else {
+        let Some(vec) = self.vec_map.remove(key) else {
             return;
         };
-        self.add_set(key, HashSet::from_iter(set.into_iter().filter(f.clone())));
+        self.add_vec(key, vec.into_iter().filter(f.clone()).collect())
     }
 
     fn print_key_value(key: &str, value: &str) -> String {
@@ -96,22 +96,21 @@ impl SoongModule {
             "license_kinds",
             "license_text",
         ] {
-            let Some(set) = self.set_map.remove(key) else {
+            let Some(mut vec) = self.vec_map.remove(key) else {
                 continue;
             };
-            if set.len() == 0 {
+            if vec.len() == 0 {
                 continue;
             }
 
             module += &Self::print_key_value(
                 &key,
-                &(if set.len() == 1 {
-                    "[\"".to_string() + &(set.into_iter().last().unwrap()) + "\"]"
+                &(if vec.len() == 1 {
+                    "[\"".to_string() + &(vec[0]) + "\"]"
                 } else {
-                    let mut sorted = Vec::from_iter(set);
-                    sorted.sort();
+                    vec.sort();
                     let mut values = String::from("[\n");
-                    for value in sorted {
+                    for value in vec {
                         values = values + Self::INDENT + Self::INDENT + "\"" + &value + "\",\n";
                     }
                     values = values + Self::INDENT + "]";

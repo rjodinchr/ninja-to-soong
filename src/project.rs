@@ -1,7 +1,7 @@
 // Copyright 2024 ninja-to-soong authors
 // SPDX-License-Identifier: Apache-2.0
 
-use std::collections::{HashMap, HashSet};
+use std::collections::HashMap;
 
 use crate::ninja_target::NinjaTarget;
 use crate::soong_package::SoongPackage;
@@ -55,10 +55,10 @@ impl ProjectId {
 
 #[derive(Eq, PartialEq, Hash)]
 pub enum GenDeps {
-    SpirvHeadersFiles,
-    TargetsToGenerate,
+    SpirvHeaders,
+    TargetsToGen,
     ClangHeaders,
-    LibclcBinaries,
+    LibclcBins,
 }
 impl GenDeps {
     fn get(
@@ -67,29 +67,27 @@ impl GenDeps {
         from: ProjectId,
         projects_map: &ProjectsMap,
     ) -> Vec<PathBuf> {
-        let mut vec = Vec::from_iter(
-            projects_map
-                .get(&from)
-                .unwrap()
-                .get_gen_deps(project.get_id())
-                .get(&self)
-                .unwrap()
-                .clone(),
-        );
+        let mut vec = projects_map
+            .get(&from)
+            .unwrap()
+            .get_gen_deps(project.get_id())
+            .get(&self)
+            .unwrap()
+            .clone();
         vec.sort();
         vec
     }
     pub const fn str(self) -> &'static str {
         match self {
-            Self::SpirvHeadersFiles => "spirv-header-dep",
-            Self::TargetsToGenerate => "target-dep",
+            Self::SpirvHeaders => "spirv-header-dep",
+            Self::TargetsToGen => "target-dep",
             Self::ClangHeaders => "clang-dep",
-            Self::LibclcBinaries => "libclc-dep",
+            Self::LibclcBins => "libclc-dep",
         }
     }
 }
 
-pub type GenDepsMap = HashMap<GenDeps, HashSet<PathBuf>>;
+pub type GenDepsMap = HashMap<GenDeps, Vec<PathBuf>>;
 pub type ProjectsMap<'a> = HashMap<ProjectId, &'a dyn Project>;
 
 pub trait Project {
@@ -110,8 +108,8 @@ pub trait Project {
     fn get_cmd_output(&self, output: &Path) -> PathBuf {
         output.to_path_buf()
     }
-    fn get_default_cflags(&self) -> HashSet<String> {
-        HashSet::new()
+    fn get_default_cflags(&self) -> Vec<String> {
+        Vec::new()
     }
     fn get_deps_info(&self) -> Vec<(PathBuf, GenDeps)> {
         Vec::new()
@@ -128,8 +126,8 @@ pub trait Project {
     fn get_project_deps(&self) -> Vec<ProjectId> {
         Vec::new()
     }
-    fn get_target_header_libs(&self, _target: &str) -> HashSet<String> {
-        HashSet::new()
+    fn get_target_header_libs(&self, _target: &str) -> Vec<String> {
+        Vec::new()
     }
     fn get_target_alias(&self, _target: &str) -> Option<String> {
         None
