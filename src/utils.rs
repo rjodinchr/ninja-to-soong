@@ -6,6 +6,8 @@ use std::io::{Read, Write};
 
 pub use std::path::{Path, PathBuf};
 
+use crate::project::GenDeps;
+
 pub const TAB: &str = "   ";
 pub const COLOR_RED: &str = "\x1b[00;31m";
 pub const COLOR_GREEN: &str = "\x1b[00;32m";
@@ -114,22 +116,18 @@ pub fn split_path(path: &Path, delimiter: &str) -> Option<(PathBuf, PathBuf)> {
     None
 }
 
-pub fn dep_name<B: AsRef<Path>, P: AsRef<Path>, N: AsRef<Path>>(
-    base: B,
-    base_prefix: P,
-    prefix: N,
-) -> String {
-    path_to_id(prefix.as_ref().join(strip_prefix(base, base_prefix)))
+fn dep_name_internal<P: AsRef<Path>>(from: &Path, prefix: P, path: &str) -> String {
+    path_to_id(Path::new(path).join(strip_prefix(from, prefix)))
 }
 
-pub fn cmd_dep<B: AsRef<Path>, P: AsRef<Path>, N: AsRef<Path>>(
-    input: B,
-    input_prefix: P,
-    prefix: N,
-) -> (PathBuf, String) {
+pub fn dep_name<P: AsRef<Path>>(from: &Path, prefix: P, dep: GenDeps) -> String {
+    dep_name_internal(from, prefix, dep.str())
+}
+
+pub fn cmd_dep(input: &Path, prefix: &Path, path: &str) -> (PathBuf, String) {
     (
-        input.as_ref().to_path_buf(),
-        String::from(":") + &dep_name(input, input_prefix, prefix),
+        input.to_path_buf(),
+        String::from(":") + &dep_name_internal(input, prefix, path),
     )
 }
 

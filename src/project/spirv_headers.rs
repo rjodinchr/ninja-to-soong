@@ -45,7 +45,7 @@ impl Project for SpirvHeaders {
         files.sort();
         for file in files {
             package.add_module(SoongModule::new_copy_genrule(
-                dep_name(&file, &self.src_path, CC_LIBRARY_HEADERS_SPIRV_HEADERS),
+                dep_name(&file, &self.src_path, GenDeps::SpirvHeadersFiles),
                 path_to_string(strip_prefix(&file, &self.src_path)),
                 file_name(&file),
             ));

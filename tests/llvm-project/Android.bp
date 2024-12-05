@@ -3027,21 +3027,21 @@ cc_library_headers {
 }
 
 genrule {
-    name: "clang-includes_lib_Headers_opencl-c-base_h",
+    name: "clang-dep_lib_Headers_opencl-c-base_h",
     cmd: "cp $(in) $(out)",
     srcs: ["clang/lib/Headers/opencl-c-base.h"],
     out: ["opencl-c-base.h"],
 }
 
 genrule {
-    name: "llvm-includes_tools_libclc_clspv--_bc",
+    name: "libclc-dep_tools_libclc_clspv--_bc",
     cmd: "cp $(in) $(out)",
     srcs: ["cmake_generated/tools/libclc/clspv--.bc"],
     out: ["clspv--.bc"],
 }
 
 genrule {
-    name: "llvm-includes_tools_libclc_clspv64--_bc",
+    name: "libclc-dep_tools_libclc_clspv64--_bc",
     cmd: "cp $(in) $(out)",
     srcs: ["cmake_generated/tools/libclc/clspv64--.bc"],
     out: ["clspv64--.bc"],

@@ -79,11 +79,18 @@ impl GenDeps {
         vec.sort();
         vec
     }
+    pub const fn str(self) -> &'static str {
+        match self {
+            Self::SpirvHeadersFiles => "spirv-header-dep",
+            Self::TargetsToGenerate => "target-dep",
+            Self::ClangHeaders => "clang-dep",
+            Self::LibclcBinaries => "libclc-dep",
+        }
+    }
 }
 
 pub type GenDepsMap = HashMap<GenDeps, HashSet<PathBuf>>;
 pub type ProjectsMap<'a> = HashMap<ProjectId, &'a dyn Project>;
-pub type CmdInputAndDeps = (HashSet<PathBuf>, HashSet<(PathBuf, String)>);
 
 pub trait Project {
     fn init(&mut self, android_path: &Path, ndk_path: &Path, temp_path: &Path);
@@ -100,17 +107,14 @@ pub trait Project {
     ) -> Result<Option<PathBuf>, String> {
         Ok(None)
     }
-    fn get_cmd_inputs_and_deps(
-        &self,
-        target_inputs: &Vec<PathBuf>,
-    ) -> Result<CmdInputAndDeps, String> {
-        Ok((HashSet::from_iter(target_inputs.clone()), HashSet::new()))
-    }
     fn get_cmd_output(&self, output: &Path) -> PathBuf {
         output.to_path_buf()
     }
     fn get_default_cflags(&self) -> HashSet<String> {
         HashSet::new()
+    }
+    fn get_deps_info(&self) -> Vec<(PathBuf, GenDeps)> {
+        Vec::new()
     }
     fn get_gen_deps(&self, _project: ProjectId) -> GenDepsMap {
         HashMap::new()
