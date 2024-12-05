@@ -195,11 +195,8 @@ impl<'a> SoongPackage<'a> {
             cmd = cmd.replace(&path_to_string(&input), &replace_input)
         }
         for (dep, dep_target_name) in deps {
-            let replace_dep = "$(location :".to_string() + &dep_target_name + ")";
-            let dep_with_prefix = path_to_string(self.target_prefix.join(&dep));
-            cmd = cmd
-                .replace(&dep_with_prefix, &replace_dep)
-                .replace(&path_to_string(&dep), &replace_dep)
+            let replace_dep = String::from("$(location :") + &dep_target_name + ")";
+            cmd = cmd.replace(&path_to_string(&dep), &replace_dep)
         }
         cmd
     }
