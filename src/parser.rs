@@ -188,16 +188,16 @@ where
     let mut lines = file.lines();
     while let Some(line) = lines.next() {
         if line.is_empty()
-            || line.starts_with("default")
-            || line.starts_with("pool")
+            || line.starts_with("default ")
+            || line.starts_with("pool ")
             || line.starts_with("#")
         {
             continue;
-        } else if line.starts_with("build") {
+        } else if line.starts_with("build ") {
             targets.push(parse_build_target(line, &mut lines)?);
-        } else if line.starts_with("rule") {
+        } else if line.starts_with("rule ") {
             skip_ninja_rule(&mut lines);
-        } else if line.starts_with("subninja") || line.starts_with("include") {
+        } else if line.starts_with("subninja ") || line.starts_with("include ") {
             let subtargets = parse_subninja_file(line, dir_path)?;
             all_targets.extend(subtargets);
         } else {
