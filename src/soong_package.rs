@@ -3,7 +3,7 @@
 
 use std::collections::{HashMap, HashSet};
 
-use crate::ninja_target::{NinjaTarget, NinjaTargetsMap};
+use crate::ninja_target::*;
 use crate::project::Project;
 use crate::soong_module::SoongModule;
 use crate::utils::*;
@@ -92,13 +92,16 @@ impl<'a> SoongPackage<'a> {
         self.generated_libraries.to_owned()
     }
 
-    fn generate_library(
+    fn generate_library<G>(
         &mut self,
         name: &str,
-        target: &NinjaTarget,
-        targets_map: &NinjaTargetsMap,
+        target: &NinjaTarget<G>,
+        targets_map: &NinjaTargetsMap<G>,
         project: &dyn Project,
-    ) -> Result<SoongModule, String> {
+    ) -> Result<SoongModule, String>
+    where
+        G: GeneratorTarget,
+    {
         let mut cflags: HashSet<String> = HashSet::from_iter(project.get_default_cflags());
         let mut includes = HashSet::new();
         let mut srcs = HashSet::new();
@@ -117,7 +120,6 @@ impl<'a> SoongPackage<'a> {
                 if project.ignore_include(&include) {
                     continue;
                 }
-                println!("{include:#?} {0:#?}", &self.src_path);
                 includes.insert(path_to_string(strip_prefix(
                     project.get_include(&include),
                     self.src_path,
@@ -160,13 +162,34 @@ impl<'a> SoongPackage<'a> {
         });
         self.generated_libraries.extend(generated_libraries);
 
+        let headers = targets_map.traverse_from(
+            target.get_all_outputs(),
+            HashSet::new(),
+            |gen_headers, rule, name, target| {
+                if rule.is_none() {
+                    return Ok(());
+                }
+                match rule.unwrap() {
+                    NinjaRule::CustomCommand => {
+                        if target.get_cmd()?.is_none() {
+                            return Ok(());
+                        }
+                        gen_headers.insert(name.to_path_buf());
+                        return Ok(());
+                    }
+                    _ => return Ok(()),
+                }
+            },
+            |_target_name| false,
+        )?;
         let mut gen_headers = Vec::new();
         let mut gen_deps = Vec::new();
-        for headers in target.get_gen_headers(targets_map)? {
-            if project.ignore_gen_header(&headers) {
-                gen_deps.push(headers);
+
+        for header in headers {
+            if project.ignore_gen_header(&header) {
+                gen_deps.push(header);
             } else {
-                gen_headers.push(match targets_map.get(&headers) {
+                gen_headers.push(match targets_map.get(&header) {
                     Some(target_header) => target_header.get_name(self.target_prefix),
                     None => return error!("Could not find target for {name:#?}"),
                 });
@@ -251,12 +274,15 @@ impl<'a> SoongPackage<'a> {
         cmd
     }
 
-    fn generate_custom_command(
+    fn generate_custom_command<G>(
         &mut self,
-        target: &NinjaTarget,
+        target: &NinjaTarget<G>,
         mut cmd: String,
         project: &dyn Project,
-    ) -> Result<SoongModule, String> {
+    ) -> Result<SoongModule, String>
+    where
+        G: GeneratorTarget,
+    {
         let mut inputs = HashSet::new();
         let mut deps = HashMap::new();
         'target_inputs: for input in target.get_inputs() {
@@ -298,47 +324,37 @@ impl<'a> SoongPackage<'a> {
         Ok(module)
     }
 
-    fn generate_module(
-        &mut self,
-        rule: &str,
-        target: &NinjaTarget,
-        targets_map: &NinjaTargetsMap,
-        project: &dyn Project,
-    ) -> Result<Option<SoongModule>, String> {
-        Ok(Some(if rule.starts_with("CXX_SHARED_LIBRARY") {
-            self.generate_library("cc_library_shared", target, targets_map, project)
-        } else if rule.starts_with("CXX_STATIC_LIBRARY") {
-            self.generate_library("cc_library_static", target, targets_map, project)
-        } else if rule.starts_with("CUSTOM_COMMAND") {
-            match target.get_cmd()? {
-                Some(cmd) => self.generate_custom_command(target, cmd, project),
-                None => return Ok(None),
-            }
-        } else if rule.starts_with("CXX_COMPILER")
-            || rule.starts_with("C_COMPILER")
-            || rule.starts_with("ASM_COMPILER")
-            || rule == "phony"
-        {
-            return Ok(None);
-        } else {
-            error!("unsupported rule ({rule}) for target: {target:#?}")
-        }?))
-    }
-
-    pub fn generate(
+    pub fn generate<G>(
         &mut self,
         targets_to_generate: Vec<PathBuf>,
-        targets: Vec<NinjaTarget>,
+        targets: Vec<NinjaTarget<G>>,
         project: &dyn Project,
-    ) -> Result<(), String> {
+    ) -> Result<(), String>
+    where
+        G: GeneratorTarget,
+    {
         let targets_map = NinjaTargetsMap::new(&targets);
         targets_map.traverse_from(
             targets_to_generate,
             (),
             |_, rule, _name, target| {
-                if let Some(module) = self.generate_module(rule, target, &targets_map, project)? {
-                    self.modules.push(module);
-                }
+                let Some(ninja_rule) = rule else {
+                    return Ok(());
+                };
+                let module = match ninja_rule {
+                    NinjaRule::SharedLibrary => {
+                        self.generate_library("cc_library_shared", target, &targets_map, project)?
+                    }
+                    NinjaRule::StaticLibrary => {
+                        self.generate_library("cc_library_static", target, &targets_map, project)?
+                    }
+                    NinjaRule::CustomCommand => match target.get_cmd()? {
+                        Some(cmd) => self.generate_custom_command(target, cmd, project)?,
+                        None => return Ok(()),
+                    },
+                };
+                self.modules.push(module);
+
                 Ok(())
             },
             |target_name| project.ignore_target(target_name),

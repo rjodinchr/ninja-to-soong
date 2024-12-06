@@ -118,7 +118,13 @@ fn parse_key_value(line: &str) -> Result<(String, String), String> {
     Ok((String::from(split.0.trim()), String::from(split.1.trim())))
 }
 
-fn parse_build_target(line: &str, lines: &mut std::str::Lines<'_>) -> Result<NinjaTarget, String> {
+fn parse_build_target<G>(
+    line: &str,
+    lines: &mut std::str::Lines<'_>,
+) -> Result<NinjaTarget<G>, String>
+where
+    G: GeneratorTarget,
+{
     let Some(line_stripped) = line.strip_prefix("build") else {
         return error!("parse_build_target failed: '{line}'");
     };
@@ -157,7 +163,10 @@ fn skip_ninja_rule(lines: &mut std::str::Lines<'_>) {
     }
 }
 
-fn parse_subninja_file(line: &str, dir_path: &Path) -> Result<Vec<NinjaTarget>, String> {
+fn parse_subninja_file<G>(line: &str, dir_path: &Path) -> Result<Vec<NinjaTarget<G>>, String>
+where
+    G: GeneratorTarget,
+{
     let mut split = line.split(" ");
     let split_count = split.clone().count();
     if split_count != 2 {
@@ -166,7 +175,10 @@ fn parse_subninja_file(line: &str, dir_path: &Path) -> Result<Vec<NinjaTarget>, 
     parse_ninja_file(dir_path.join(split.nth(1).unwrap()))
 }
 
-fn parse_ninja_file<'a>(file_path: PathBuf) -> Result<Vec<NinjaTarget>, String> {
+fn parse_ninja_file<'a, G>(file_path: PathBuf) -> Result<Vec<NinjaTarget<G>>, String>
+where
+    G: GeneratorTarget,
+{
     let mut all_targets = Vec::new();
     let mut targets = Vec::new();
     let mut globals = HashMap::new();
@@ -201,7 +213,10 @@ fn parse_ninja_file<'a>(file_path: PathBuf) -> Result<Vec<NinjaTarget>, String> 
     Ok(all_targets)
 }
 
-pub fn parse_build_ninja(ninja_file_dir_path: &Path) -> Result<Vec<NinjaTarget>, String> {
+pub fn parse_build_ninja<G>(ninja_file_dir_path: &Path) -> Result<Vec<NinjaTarget<G>>, String>
+where
+    G: GeneratorTarget,
+{
     let file_path = ninja_file_dir_path.join("build.ninja");
     parse_ninja_file(file_path)
 }

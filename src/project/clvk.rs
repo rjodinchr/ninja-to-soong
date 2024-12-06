@@ -69,7 +69,7 @@ impl Project for Clvk {
             ],
         )?;
 
-        let targets = parse_build_ninja(&self.build_path)?;
+        let targets: Vec<NinjaTarget<CmakeNinjaTarget>> = parse_build_ninja(&self.build_path)?;
 
         let mut package = SoongPackage::new(
             &self.src_path,
