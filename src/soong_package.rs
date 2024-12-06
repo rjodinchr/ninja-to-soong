@@ -113,18 +113,65 @@ impl<'a> SoongPackage<'a> {
             }
             srcs.insert(path_to_string(strip_prefix(&target_srcs[0], self.src_path)));
 
-            for include in target.get_includes(self.src_path, project) {
-                includes.insert(path_to_string(include));
+            for include in target.get_includes() {
+                if project.ignore_include(&include) {
+                    continue;
+                }
+                println!("{include:#?} {0:#?}", &self.src_path);
+                includes.insert(path_to_string(strip_prefix(
+                    project.get_include(&include),
+                    self.src_path,
+                )));
             }
-            cflags.extend(target.get_defines(project));
+            for define in target.get_defines() {
+                if project.ignore_define(&define) {
+                    continue;
+                }
+                cflags.insert("-D".to_string() + &define);
+            }
         }
 
-        let (version_script, link_flags) = target.get_link_flags(self.src_path, project);
-        let (static_libs, shared_libs, generated_libraries) =
-            target.get_link_libraries(self.ndk_path, project)?;
+        let (version_script, link_flags) = target.get_link_flags();
+        let link_flags = link_flags.into_iter().fold(Vec::new(), |mut vec, flag| {
+            if !project.ignore_link_flag(&flag) {
+                vec.push(flag)
+            }
+            vec
+        });
+        let (static_libs, shared_libs) = target.get_link_libraries()?;
+        let mut generated_libraries = Vec::new();
+        let static_libs = static_libs.into_iter().fold(Vec::new(), |mut vec, lib| {
+            vec.push(if lib.starts_with(self.ndk_path) {
+                lib.file_stem().unwrap().to_str().unwrap().to_string()
+            } else {
+                generated_libraries.push(lib.clone());
+                path_to_id(project.get_library_name(&lib))
+            });
+            vec
+        });
+        let shared_libs = shared_libs.into_iter().fold(Vec::new(), |mut vec, lib| {
+            vec.push(if lib.starts_with(self.ndk_path) {
+                lib.file_stem().unwrap().to_str().unwrap().to_string()
+            } else {
+                generated_libraries.push(lib.clone());
+                path_to_id(project.get_library_name(&lib))
+            });
+            vec
+        });
         self.generated_libraries.extend(generated_libraries);
-        let (gen_headers, gen_deps) =
-            target.get_gen_headers_and_gen_deps(self.target_prefix, targets_map, project)?;
+
+        let mut gen_headers = Vec::new();
+        let mut gen_deps = Vec::new();
+        for headers in target.get_gen_headers(targets_map)? {
+            if project.ignore_gen_header(&headers) {
+                gen_deps.push(headers);
+            } else {
+                gen_headers.push(match targets_map.get(&headers) {
+                    Some(target_header) => target_header.get_name(self.target_prefix),
+                    None => return error!("Could not find target for {name:#?}"),
+                });
+            }
+        }
         self.gen_deps.extend(gen_deps);
 
         let target_name = target.get_name(self.target_prefix);
@@ -137,13 +184,16 @@ impl<'a> SoongPackage<'a> {
         module.add_vec("srcs", Vec::from_iter(srcs));
         module.add_vec("local_include_dirs", Vec::from_iter(includes));
         module.add_vec("cflags", Vec::from_iter(cflags));
-        module.add_vec("ldflags", Vec::from_iter(link_flags));
-        module.add_vec("static_libs", Vec::from_iter(static_libs));
-        module.add_vec("shared_libs", Vec::from_iter(shared_libs));
+        module.add_vec("ldflags", link_flags);
+        module.add_vec("static_libs", static_libs);
+        module.add_vec("shared_libs", shared_libs);
         module.add_vec("header_libs", project.get_target_header_libs(&target_name));
-        module.add_vec("generated_headers", Vec::from_iter(gen_headers));
+        module.add_vec("generated_headers", gen_headers);
         if let Some(vs) = version_script {
-            module.add_str("version_script", path_to_string(vs));
+            module.add_str(
+                "version_script",
+                path_to_string(strip_prefix(vs, &self.src_path)),
+            );
         }
         if let Some(alias) = project.get_target_alias(&target_name) {
             module.add_str("stem", alias);
