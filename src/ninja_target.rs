@@ -15,6 +15,7 @@ pub struct NinjaTarget {
     implicit_deps: Vec<PathBuf>,
     order_only_deps: Vec<PathBuf>,
     variables: HashMap<String, String>,
+    globals: Option<HashMap<String, String>>,
 }
 
 impl NinjaTarget {
@@ -35,7 +36,12 @@ impl NinjaTarget {
             implicit_deps,
             order_only_deps,
             variables,
+            globals: None,
         }
+    }
+
+    pub fn set_globals(&mut self, globals: HashMap<String, String>) {
+        self.globals = Some(globals);
     }
 
     pub fn get_inputs(&self) -> &Vec<PathBuf> {

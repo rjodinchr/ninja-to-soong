@@ -3,8 +3,10 @@
 
 use std::collections::HashMap;
 
-use crate::ninja_target::NinjaTarget;
+use crate::ninja_target::*;
 use crate::utils::*;
+
+const INDENT: &str = "  ";
 
 fn parse_output_section(section: &str) -> Result<(Vec<PathBuf>, Vec<PathBuf>), String> {
     let mut split = section.split("|");
@@ -83,32 +85,57 @@ fn parse_input_section(
     ))
 }
 
+fn find_column_index(line: &str) -> Option<usize> {
+    let Some(index) = line.find(":") else {
+        return None;
+    };
+    if line.as_bytes()[0..index].ends_with("$".as_bytes()) {
+        if let Some(sub_index) =
+            find_column_index(std::str::from_utf8(&line.as_bytes()[index + 1..]).unwrap())
+        {
+            return Some(index + 1 + sub_index);
+        } else {
+            return None;
+        }
+    }
+    Some(index)
+}
+
+fn split_output_and_input_sections(line: &str) -> Result<(&str, &str), String> {
+    let Some(index) = find_column_index(line) else {
+        return error!("split_output_and_input_sections failed: '{line}'");
+    };
+    Ok((
+        std::str::from_utf8(&line.as_bytes()[0..index]).unwrap(),
+        std::str::from_utf8(&line.as_bytes()[index + 1..]).unwrap(),
+    ))
+}
+
+fn parse_key_value(line: &str) -> Result<(String, String), String> {
+    let Some(split) = line.split_once("=") else {
+        return error!("parse_key_value failed: '{line}'");
+    };
+    Ok((String::from(split.0.trim()), String::from(split.1.trim())))
+}
+
 fn parse_build_target(line: &str, lines: &mut std::str::Lines<'_>) -> Result<NinjaTarget, String> {
     let Some(line_stripped) = line.strip_prefix("build") else {
         return error!("parse_build_target failed: '{line}'");
     };
 
-    let mut split = line_stripped.split(":");
-    let split_count = split.clone().count();
-    if split_count != 2 {
-        return error!("parse_build_target failed: '{line}'");
-    }
+    let (output_section, input_section) = split_output_and_input_sections(line_stripped)?;
 
-    let (target_outputs, target_implicit_outputs) = parse_output_section(split.nth(0).unwrap())?;
+    let (target_outputs, target_implicit_outputs) = parse_output_section(output_section)?;
     let (target_rule, target_inputs, target_implicit_dependencies, target_order_only_dependencies) =
-        parse_input_section(split.nth(0).unwrap())?;
+        parse_input_section(input_section)?;
 
     let mut target_variables: HashMap<String, String> = HashMap::new();
     while let Some(next_line) = lines.next() {
-        if !next_line.starts_with("  ") {
+        if !next_line.starts_with(INDENT) {
             break;
         }
-        let Some(split) = next_line.split_once("=") else {
-            return error!("parse_build_target failed: '{next_line}'");
-        };
-        let key = String::from(split.0.trim());
-        let val = String::from(split.1.trim());
-        target_variables.insert(key, val);
+        let (key, value) = parse_key_value(next_line)?;
+        target_variables.insert(key, value);
     }
 
     Ok(NinjaTarget::new(
@@ -122,16 +149,59 @@ fn parse_build_target(line: &str, lines: &mut std::str::Lines<'_>) -> Result<Nin
     ))
 }
 
-pub fn parse_build_ninja(ninja_file_path: &Path) -> Result<Vec<NinjaTarget>, String> {
-    let mut targets: Vec<NinjaTarget> = Vec::new();
-    let file = read_file(&ninja_file_path.join("build.ninja"))?;
+fn skip_ninja_rule(lines: &mut std::str::Lines<'_>) {
+    while let Some(next_line) = lines.next() {
+        if !next_line.starts_with(INDENT) {
+            return;
+        }
+    }
+}
+
+fn parse_subninja_file(line: &str, dir_path: &Path) -> Result<Vec<NinjaTarget>, String> {
+    let mut split = line.split(" ");
+    let split_count = split.clone().count();
+    if split_count != 2 {
+        return error!("parse_subninja_file failed: '{line}'");
+    }
+    parse_ninja_file(dir_path.join(split.nth(1).unwrap()))
+}
+
+fn parse_ninja_file<'a>(file_path: PathBuf) -> Result<Vec<NinjaTarget>, String> {
+    let mut all_targets = Vec::new();
+    let mut targets = Vec::new();
+    let mut globals = HashMap::new();
+
+    let dir_path = file_path.parent().unwrap();
+    let file = read_file(&file_path)?.replace("$\n", " ");
     let mut lines = file.lines();
     while let Some(line) = lines.next() {
-        if !line.trim().starts_with("build") {
+        if line.is_empty()
+            || line.starts_with("default")
+            || line.starts_with("pool")
+            || line.starts_with("#")
+        {
             continue;
+        } else if line.starts_with("build") {
+            targets.push(parse_build_target(line, &mut lines)?);
+        } else if line.starts_with("rule") {
+            skip_ninja_rule(&mut lines);
+        } else if line.starts_with("subninja") || line.starts_with("include") {
+            let subtargets = parse_subninja_file(line, dir_path)?;
+            all_targets.extend(subtargets);
+        } else {
+            let (key, value) = parse_key_value(line)?;
+            globals.insert(key, value);
         }
-        targets.push(parse_build_target(line, &mut lines)?);
     }
+    for target in &mut targets {
+        target.set_globals(globals.clone());
+    }
+    all_targets.extend(targets);
 
-    Ok(targets)
+    Ok(all_targets)
+}
+
+pub fn parse_build_ninja(ninja_file_dir_path: &Path) -> Result<Vec<NinjaTarget>, String> {
+    let file_path = ninja_file_dir_path.join("build.ninja");
+    parse_ninja_file(file_path)
 }
