@@ -35,7 +35,7 @@ impl Project for SpirvTools {
             ],
         )?;
 
-        let targets: Vec<NinjaTarget<CmakeNinjaTarget>> = parse_build_ninja(&self.build_path)?;
+        let targets = parse_build_ninja::<CmakeNinjaTarget>(&self.build_path)?;
 
         let mut package = SoongPackage::new(
             &self.src_path,
@@ -81,6 +81,10 @@ impl Project for SpirvTools {
 
     fn get_target_header_libs(&self, _target: &str) -> Vec<String> {
         vec![CcLibraryHeaders::SpirvHeaders.str()]
+    }
+
+    fn ignore_cflag(&self, _cflag: &str) -> bool {
+        true
     }
 
     fn ignore_include(&self, include: &Path) -> bool {

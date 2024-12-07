@@ -140,7 +140,10 @@ cc_library_static {
         "source/opt/wrap_opkill.cpp",
     ],
     cflags: ["-Wno-implicit-fallthrough"],
-    local_include_dirs: ["include"],
+    local_include_dirs: [
+        "",
+        "include",
+    ],
     header_libs: ["SPIRV-Headers-includes"],
     generated_headers: [
         "SPIRV-Tools_DebugInfo_h",
@@ -243,7 +246,10 @@ cc_library_static {
         "source/val/validation_state.cpp",
     ],
     cflags: ["-Wno-implicit-fallthrough"],
-    local_include_dirs: ["include"],
+    local_include_dirs: [
+        "",
+        "include",
+    ],
     header_libs: ["SPIRV-Headers-includes"],
     generated_headers: [
         "SPIRV-Tools_DebugInfo_h",
@@ -464,7 +470,10 @@ cc_library_static {
     name: "SPIRV-Tools_source_link_libSPIRV-Tools-link_a",
     srcs: ["source/link/linker.cpp"],
     cflags: ["-Wno-implicit-fallthrough"],
-    local_include_dirs: ["include"],
+    local_include_dirs: [
+        "",
+        "include",
+    ],
     header_libs: ["SPIRV-Headers-includes"],
     generated_headers: [
         "SPIRV-Tools_DebugInfo_h",

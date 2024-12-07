@@ -1,4 +1,7 @@
-use std::collections::{HashMap, HashSet};
+// Copyright 2024 ninja-to-soong authors
+// SPDX-License-Identifier: Apache-2.0
+
+use std::collections::HashMap;
 
 use super::*;
 
@@ -13,7 +16,7 @@ pub struct CmakeNinjaTarget {
     variables: HashMap<String, String>,
 }
 
-impl GeneratorTarget for CmakeNinjaTarget {
+impl NinjaTarget for CmakeNinjaTarget {
     fn new(
         rule: String,
         outputs: Vec<PathBuf>,
@@ -36,6 +39,8 @@ impl GeneratorTarget for CmakeNinjaTarget {
 
     fn set_globals(&mut self, _globals: HashMap<String, String>) {}
 
+    fn set_rule(&mut self, _rules: &HashMap<String, String>) {}
+
     fn get_rule(&self) -> Option<NinjaRule> {
         Some(if self.rule.starts_with("CXX_SHARED_LIBRARY") {
             NinjaRule::SharedLibrary
@@ -48,106 +53,66 @@ impl GeneratorTarget for CmakeNinjaTarget {
         })
     }
 
-    fn get_all_inputs(&self) -> Vec<PathBuf> {
-        let mut inputs = Vec::new();
-        for input in &self.inputs {
-            inputs.push(input.clone());
-        }
-        for input in &self.implicit_deps {
-            inputs.push(input.clone());
-        }
-        for input in &self.order_only_deps {
-            inputs.push(input.clone());
-        }
-        inputs
-    }
-
     fn get_inputs(&self) -> &Vec<PathBuf> {
         &self.inputs
     }
 
-    fn get_all_outputs(&self) -> Vec<PathBuf> {
-        let mut outputs = Vec::new();
-        for output in &self.outputs {
-            outputs.push(output.clone());
-        }
-        for output in &self.implicit_outputs {
-            outputs.push(output.clone());
-        }
-        outputs
+    fn get_implicit_deps(&self) -> &Vec<PathBuf> {
+        &self.implicit_deps
+    }
+
+    fn get_order_only_deps(&self) -> &Vec<PathBuf> {
+        &self.order_only_deps
     }
 
     fn get_outputs(&self) -> &Vec<PathBuf> {
         &self.outputs
     }
 
-    fn get_name(&self, prefix: &Path) -> String {
-        path_to_id(prefix.join(&self.outputs[0]))
+    fn get_implicit_ouputs(&self) -> &Vec<PathBuf> {
+        &self.implicit_outputs
     }
 
-    fn get_link_flags(&self) -> (Option<PathBuf>, HashSet<String>) {
-        let mut link_flags = HashSet::new();
-        let mut version_script = None;
-        if let Some(flags) = self.variables.get("LINK_FLAGS") {
-            for flag in flags.split(" ") {
-                if let Some(vs) = flag.strip_prefix("-Wl,--version-script=") {
-                    version_script = Some(PathBuf::from(vs));
-                }
-                link_flags.insert(flag.to_string());
-            }
+    fn get_sources(&self) -> Result<Vec<PathBuf>, String> {
+        if self.inputs.len() != 1 {
+            return error!("Too many inputs in: {self:#?}");
         }
-        (version_script, link_flags)
+        Ok(self.inputs.clone())
     }
 
-    fn get_link_libraries(&self) -> Result<(HashSet<PathBuf>, HashSet<PathBuf>), String> {
-        let mut static_libraries = HashSet::new();
-        let mut shared_libraries = HashSet::new();
+    fn get_link_flags(&self) -> (Option<PathBuf>, Vec<String>) {
+        let Some(flags) = self.variables.get("LINK_FLAGS") else {
+            return (None, Vec::new());
+        };
+        common::get_link_flags(flags)
+    }
+
+    fn get_link_libraries(&self, _prefix: &Path) -> Result<(Vec<PathBuf>, Vec<PathBuf>), String> {
         let Some(libs) = self.variables.get("LINK_LIBRARIES") else {
-            return Ok((static_libraries, shared_libraries));
+            return Ok((Vec::new(), Vec::new()));
         };
-        for lib in libs.split(" ") {
-            if lib.starts_with("-") || lib.is_empty() {
-                continue;
-            } else {
-                let lib_path = PathBuf::from(lib);
-                if lib.ends_with(".a") {
-                    static_libraries.insert(lib_path);
-                } else if lib.ends_with(".so") {
-                    shared_libraries.insert(lib_path);
-                } else {
-                    return error!("unsupported library '{lib}' from target: {self:#?}");
-                }
-            }
-        }
-        Ok((static_libraries, shared_libraries))
+        common::get_link_libraries(libs)
     }
 
-    fn get_defines(&self) -> HashSet<String> {
-        let mut defines = HashSet::new();
-        if let Some(defs) = self.variables.get("DEFINES") {
-            for define in defs.split("-D") {
-                if define.is_empty() {
-                    continue;
-                }
-                defines.insert(define.trim().to_string());
-            }
+    fn get_defines(&self) -> Vec<String> {
+        let Some(defs) = self.variables.get("DEFINES") else {
+            return Vec::new();
         };
-        defines
+        common::get_defines(defs)
     }
 
-    fn get_includes(&self) -> HashSet<PathBuf> {
-        let mut includes = HashSet::new();
+    fn get_includes(&self) -> Vec<PathBuf> {
         let Some(incs) = self.variables.get("INCLUDES") else {
-            return includes;
+            return Vec::new();
         };
-        for inc in incs.split(" ") {
-            let include = inc.strip_prefix("-I").unwrap_or(inc);
-            if include.is_empty() || include == "isystem" {
-                continue;
-            }
-            includes.insert(PathBuf::from(include));
-        }
-        includes
+        common::get_includes(incs)
+    }
+
+    fn get_cflags(&self) -> Vec<String> {
+        let Some(flags) = self.variables.get("FLAGS") else {
+            return Vec::new();
+        };
+        common::get_cflags(flags)
     }
 
     fn get_cmd(&self) -> Result<Option<String>, String> {

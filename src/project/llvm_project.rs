@@ -49,7 +49,7 @@ impl Project for LlvmProject {
             }
         }
 
-        let targets: Vec<NinjaTarget<CmakeNinjaTarget>> = parse_build_ninja(&self.build_path)?;
+        let targets = parse_build_ninja::<CmakeNinjaTarget>(&self.build_path)?;
 
         let mut package = SoongPackage::new(
             &self.src_path,
@@ -186,6 +186,10 @@ impl Project for LlvmProject {
 
     fn get_project_deps(&self) -> Vec<ProjectId> {
         vec![ProjectId::Clvk, ProjectId::Clspv]
+    }
+
+    fn ignore_cflag(&self, _cflag: &str) -> bool {
+        true
     }
 
     fn ignore_define(&self, _define: &str) -> bool {

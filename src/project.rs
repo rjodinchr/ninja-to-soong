@@ -3,6 +3,7 @@
 
 use std::collections::HashMap;
 
+use crate::ninja_target::*;
 use crate::parser::*;
 use crate::soong_module::*;
 use crate::soong_package::*;
@@ -123,6 +124,9 @@ pub trait Project {
     fn get_target_alias(&self, _target: &str) -> Option<String> {
         None
     }
+    fn ignore_cflag(&self, _cflag: &str) -> bool {
+        false
+    }
     fn ignore_define(&self, _define: &str) -> bool {
         false
     }
@@ -130,6 +134,9 @@ pub trait Project {
         false
     }
     fn ignore_include(&self, _include: &Path) -> bool {
+        false
+    }
+    fn ignore_lib(&self, _lib: &str) -> bool {
         false
     }
     fn ignore_link_flag(&self, _flag: &str) -> bool {

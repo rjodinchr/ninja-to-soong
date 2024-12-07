@@ -6,16 +6,17 @@ use std::collections::{HashMap, HashSet};
 use crate::utils::*;
 
 pub mod cmake;
+pub mod common;
+
 pub use cmake::*;
 
-#[derive(PartialEq, Eq)]
 pub enum NinjaRule {
     StaticLibrary,
     SharedLibrary,
     CustomCommand,
 }
 
-pub trait GeneratorTarget {
+pub trait NinjaTarget: std::fmt::Debug {
     fn new(
         rule: String,
         outputs: Vec<PathBuf>,
@@ -25,108 +26,49 @@ pub trait GeneratorTarget {
         order_only_deps: Vec<PathBuf>,
         variables: HashMap<String, String>,
     ) -> Self;
+    fn get_name(&self, prefix: &Path) -> String {
+        path_to_id(prefix.join(&self.get_outputs()[0]))
+    }
+
     fn set_globals(&mut self, globals: HashMap<String, String>);
+    fn set_rule(&mut self, rules: &HashMap<String, String>);
     fn get_rule(&self) -> Option<NinjaRule>;
-    fn get_all_inputs(&self) -> Vec<PathBuf>;
     fn get_inputs(&self) -> &Vec<PathBuf>;
-    fn get_all_outputs(&self) -> Vec<PathBuf>;
+    fn get_implicit_deps(&self) -> &Vec<PathBuf>;
+    fn get_order_only_deps(&self) -> &Vec<PathBuf>;
     fn get_outputs(&self) -> &Vec<PathBuf>;
-    fn get_name(&self, prefix: &Path) -> String;
-    fn get_link_flags(&self) -> (Option<PathBuf>, HashSet<String>);
-    fn get_link_libraries(&self) -> Result<(HashSet<PathBuf>, HashSet<PathBuf>), String>;
-    fn get_defines(&self) -> HashSet<String>;
-    fn get_includes(&self) -> HashSet<PathBuf>;
+    fn get_implicit_ouputs(&self) -> &Vec<PathBuf>;
+    fn get_sources(&self) -> Result<Vec<PathBuf>, String>;
+    fn get_link_flags(&self) -> (Option<PathBuf>, Vec<String>);
+    fn get_link_libraries(&self, prefix: &Path) -> Result<(Vec<PathBuf>, Vec<PathBuf>), String>;
+    fn get_defines(&self) -> Vec<String>;
+    fn get_includes(&self) -> Vec<PathBuf>;
+    fn get_cflags(&self) -> Vec<String>;
     fn get_cmd(&self) -> Result<Option<String>, String>;
 }
 
-pub struct NinjaTarget<G>
+#[derive(Debug)]
+pub struct NinjaTargetsMap<'a, T>(HashMap<PathBuf, &'a T>)
 where
-    G: GeneratorTarget,
-{
-    target: G,
-}
+    T: NinjaTarget;
 
-impl<'a, G> NinjaTarget<G>
+impl<'a, T> NinjaTargetsMap<'a, T>
 where
-    G: GeneratorTarget,
+    T: NinjaTarget,
 {
-    pub fn new(
-        rule: String,
-        outputs: Vec<PathBuf>,
-        implicit_outputs: Vec<PathBuf>,
-        inputs: Vec<PathBuf>,
-        implicit_deps: Vec<PathBuf>,
-        order_only_deps: Vec<PathBuf>,
-        variables: HashMap<String, String>,
-    ) -> Self {
-        Self {
-            target: G::new(
-                rule,
-                outputs,
-                implicit_outputs,
-                inputs,
-                implicit_deps,
-                order_only_deps,
-                variables,
-            ),
-        }
-    }
-    pub fn set_globals(&mut self, globals: HashMap<String, String>) {
-        self.target.set_globals(globals);
-    }
-    pub fn get_rule(&self) -> Option<NinjaRule> {
-        self.target.get_rule()
-    }
-    pub fn get_all_inputs(&self) -> Vec<PathBuf> {
-        self.target.get_all_inputs()
-    }
-    pub fn get_inputs(&self) -> &Vec<PathBuf> {
-        self.target.get_inputs()
-    }
-    pub fn get_all_outputs(&self) -> Vec<PathBuf> {
-        self.target.get_all_outputs()
-    }
-    pub fn get_outputs(&self) -> &Vec<PathBuf> {
-        self.target.get_outputs()
-    }
-    pub fn get_name(&self, prefix: &Path) -> String {
-        self.target.get_name(prefix)
-    }
-    pub fn get_link_flags(&self) -> (Option<PathBuf>, HashSet<String>) {
-        self.target.get_link_flags()
-    }
-    pub fn get_link_libraries(&self) -> Result<(HashSet<PathBuf>, HashSet<PathBuf>), String> {
-        self.target.get_link_libraries()
-    }
-    pub fn get_defines(&self) -> HashSet<String> {
-        self.target.get_defines()
-    }
-    pub fn get_includes(&self) -> HashSet<PathBuf> {
-        self.target.get_includes()
-    }
-    pub fn get_cmd(&self) -> Result<Option<String>, String> {
-        self.target.get_cmd()
-    }
-}
-
-pub struct NinjaTargetsMap<'a, Gen>(HashMap<PathBuf, &'a NinjaTarget<Gen>>)
-where
-    Gen: GeneratorTarget;
-
-impl<'a, Gen> NinjaTargetsMap<'a, Gen>
-where
-    Gen: GeneratorTarget,
-{
-    pub fn new(targets: &'a Vec<NinjaTarget<Gen>>) -> Self {
+    pub fn new(targets: &'a Vec<T>) -> Self {
         let mut map = HashMap::new();
         for target in targets {
-            for output in target.get_all_outputs() {
-                map.insert(output, target);
+            for output in target.get_outputs() {
+                map.insert(output.clone(), target);
+            }
+            for output in target.get_implicit_ouputs() {
+                map.insert(output.clone(), target);
             }
         }
         Self(map)
     }
-    pub fn get(&self, key: &Path) -> Option<&&NinjaTarget<Gen>> {
+    pub fn get(&self, key: &Path) -> Option<&&T> {
         self.0.get(key)
     }
     pub fn traverse_from<Iterator, F, G>(
@@ -137,12 +79,7 @@ where
         ignore_target: G,
     ) -> Result<Iterator, String>
     where
-        F: FnMut(
-            &mut Iterator,
-            Option<NinjaRule>,
-            PathBuf,
-            &NinjaTarget<Gen>,
-        ) -> Result<(), String>,
+        F: FnMut(&mut Iterator, Option<NinjaRule>, PathBuf, &T) -> Result<(), String>,
         G: Fn(&Path) -> bool,
     {
         let mut targets_seen = HashSet::new();
@@ -153,8 +90,11 @@ where
             let Some(target) = self.get(&target_name) else {
                 continue;
             };
-            targets.extend(target.get_all_inputs());
-            targets_seen.extend(target.get_all_outputs());
+            targets.extend(target.get_inputs().clone());
+            targets.extend(target.get_implicit_deps().clone());
+            targets.extend(target.get_order_only_deps().clone());
+            targets_seen.extend(target.get_outputs().clone());
+            targets_seen.extend(target.get_implicit_ouputs().clone());
             f(&mut iterator, target.get_rule(), target_name, target)?;
         }
         Ok(iterator)

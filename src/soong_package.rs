@@ -8,6 +8,45 @@ use crate::project::Project;
 use crate::soong_module::SoongModule;
 use crate::utils::*;
 
+fn update_cflags_with_defines(
+    defines: Vec<String>,
+    project: &dyn Project,
+    cflags: &mut HashSet<String>,
+) {
+    for define in defines {
+        if project.ignore_define(&define) {
+            continue;
+        }
+        cflags.insert("-D".to_string() + &define);
+    }
+}
+
+fn update_cflags(cflags: Vec<String>, project: &dyn Project, all_cflags: &mut HashSet<String>) {
+    for cflag in cflags {
+        if project.ignore_cflag(&cflag) {
+            continue;
+        }
+        all_cflags.insert(cflag);
+    }
+}
+
+fn update_includes(
+    incs: Vec<PathBuf>,
+    project: &dyn Project,
+    includes: &mut HashSet<String>,
+    src_path: &Path,
+) {
+    for include in incs {
+        if project.ignore_include(&include) {
+            continue;
+        }
+        includes.insert(path_to_string(strip_prefix(
+            project.get_include(&include),
+            src_path,
+        )));
+    }
+}
+
 #[derive(Debug)]
 pub struct SoongPackage<'a> {
     modules: Vec<SoongModule>,
@@ -92,46 +131,44 @@ impl<'a> SoongPackage<'a> {
         self.generated_libraries.to_owned()
     }
 
-    fn generate_library<G>(
+    fn generate_library<T>(
         &mut self,
         name: &str,
-        target: &NinjaTarget<G>,
-        targets_map: &NinjaTargetsMap<G>,
+        target: &T,
+        targets_map: &NinjaTargetsMap<T>,
         project: &dyn Project,
     ) -> Result<SoongModule, String>
     where
-        G: GeneratorTarget,
+        T: NinjaTarget,
     {
         let mut cflags: HashSet<String> = HashSet::from_iter(project.get_default_cflags());
         let mut includes = HashSet::new();
         let mut srcs = HashSet::new();
+        let mut static_libs = HashSet::new();
+        let mut shared_libs = HashSet::new();
         for input in target.get_inputs() {
             let Some(target) = targets_map.get(input) else {
                 return error!("unsupported input for library: {input:#?}");
             };
 
-            let target_srcs = target.get_inputs();
-            if target_srcs.len() != 1 {
-                return error!("Too many inputs in target: {self:#?}");
+            let sources = target.get_sources()?;
+            for source in sources {
+                srcs.insert(path_to_string(strip_prefix(source, self.src_path)));
             }
-            srcs.insert(path_to_string(strip_prefix(&target_srcs[0], self.src_path)));
 
-            for include in target.get_includes() {
-                if project.ignore_include(&include) {
-                    continue;
-                }
-                includes.insert(path_to_string(strip_prefix(
-                    project.get_include(&include),
-                    self.src_path,
-                )));
-            }
-            for define in target.get_defines() {
-                if project.ignore_define(&define) {
-                    continue;
-                }
-                cflags.insert("-D".to_string() + &define);
-            }
+            let (static_libraries, shared_libraries) =
+                target.get_link_libraries(self.target_prefix)?;
+            static_libs.extend(static_libraries);
+            shared_libs.extend(shared_libraries);
+
+            update_includes(target.get_includes(), project, &mut includes, self.src_path);
+            update_cflags_with_defines(target.get_defines(), project, &mut cflags);
+            update_cflags(target.get_cflags(), project, &mut cflags);
         }
+
+        update_includes(target.get_includes(), project, &mut includes, self.src_path);
+        update_cflags_with_defines(target.get_defines(), project, &mut cflags);
+        update_cflags(target.get_cflags(), project, &mut cflags);
 
         let (version_script, link_flags) = target.get_link_flags();
         let link_flags = link_flags.into_iter().fold(Vec::new(), |mut vec, flag| {
@@ -140,30 +177,41 @@ impl<'a> SoongPackage<'a> {
             }
             vec
         });
-        let (static_libs, shared_libs) = target.get_link_libraries()?;
-        let mut generated_libraries = Vec::new();
+        let (static_libraries, shared_libraries) = target.get_link_libraries(self.target_prefix)?;
+        static_libs.extend(static_libraries);
+        shared_libs.extend(shared_libraries);
+
+        let target_name = target.get_name(self.target_prefix);
+
         let static_libs = static_libs.into_iter().fold(Vec::new(), |mut vec, lib| {
+            let library = path_to_string(&lib);
+            if project.ignore_lib(&library) || library == target_name {
+                return vec;
+            }
             vec.push(if lib.starts_with(self.ndk_path) {
                 lib.file_stem().unwrap().to_str().unwrap().to_string()
             } else {
-                generated_libraries.push(lib.clone());
+                self.generated_libraries.insert(lib.clone());
                 path_to_id(project.get_library_name(&lib))
             });
             vec
         });
         let shared_libs = shared_libs.into_iter().fold(Vec::new(), |mut vec, lib| {
+            let library = path_to_string(&lib);
+            if project.ignore_lib(&library) || library == target_name {
+                return vec;
+            }
             vec.push(if lib.starts_with(self.ndk_path) {
                 lib.file_stem().unwrap().to_str().unwrap().to_string()
             } else {
-                generated_libraries.push(lib.clone());
+                self.generated_libraries.insert(lib.clone());
                 path_to_id(project.get_library_name(&lib))
             });
             vec
         });
-        self.generated_libraries.extend(generated_libraries);
 
         let headers = targets_map.traverse_from(
-            target.get_all_outputs(),
+            target.get_outputs().clone(),
             HashSet::new(),
             |gen_headers, rule, name, target| {
                 if rule.is_none() {
@@ -197,9 +245,7 @@ impl<'a> SoongPackage<'a> {
         }
         self.gen_deps.extend(gen_deps);
 
-        let target_name = target.get_name(self.target_prefix);
-
-        let mut module = crate::soong_module::SoongModule::new(name);
+        let mut module = SoongModule::new(name);
         if project.optimize_target_for_size(&target_name) {
             module.add_bool("optimize_for_size", true);
         }
@@ -218,10 +264,14 @@ impl<'a> SoongPackage<'a> {
                 path_to_string(strip_prefix(vs, &self.src_path)),
             );
         }
-        if let Some(alias) = project.get_target_alias(&target_name) {
-            module.add_str("stem", alias);
-        }
-        module.add_str("name", target_name);
+        module.add_str(
+            "name",
+            if let Some(alias) = project.get_target_alias(&target_name) {
+                alias
+            } else {
+                target_name
+            },
+        );
         Ok(module)
     }
 
@@ -233,7 +283,7 @@ impl<'a> SoongPackage<'a> {
         deps: HashMap<PathBuf, String>,
         project: &dyn Project,
     ) -> String {
-        while let Some(index) = cmd.find("bin/python") {
+        while let Some(index) = cmd.find("python") {
             let begin = std::str::from_utf8(&cmd.as_bytes()[0..index])
                 .unwrap()
                 .rfind(" ")
@@ -274,28 +324,30 @@ impl<'a> SoongPackage<'a> {
         cmd
     }
 
-    fn generate_custom_command<G>(
+    fn generate_custom_command<T>(
         &mut self,
-        target: &NinjaTarget<G>,
+        target: &T,
         mut cmd: String,
         project: &dyn Project,
     ) -> Result<SoongModule, String>
     where
-        G: GeneratorTarget,
+        T: NinjaTarget,
     {
         let mut inputs = HashSet::new();
         let mut deps = HashMap::new();
-        'target_inputs: for input in target.get_inputs() {
+        let mut all_inputs = target.get_inputs().clone();
+        all_inputs.extend(target.get_implicit_deps().clone());
+        'target_inputs: for input in all_inputs {
             for (prefix, dep) in project.get_deps_info() {
                 if input.starts_with(&prefix) {
-                    deps.insert(input.clone(), dep_name(input, &prefix, dep.str()));
+                    deps.insert(input.clone(), dep_name(&input, &prefix, dep.str()));
                     continue 'target_inputs;
                 }
             }
             if !input.starts_with(self.src_path) {
                 deps.insert(
                     input.clone(),
-                    dep_name(input, self.build_path, project.get_id().str()),
+                    dep_name(&input, self.build_path, project.get_id().str()),
                 );
             } else {
                 inputs.insert(input.clone());
@@ -316,7 +368,7 @@ impl<'a> SoongPackage<'a> {
         }
         cmd = self.rework_cmd(cmd, inputs, target_outputs, deps, project);
 
-        let mut module = crate::soong_module::SoongModule::new("cc_genrule");
+        let mut module = SoongModule::new("cc_genrule");
         module.add_str("name", target.get_name(self.target_prefix));
         module.add_vec("srcs", Vec::from_iter(srcs_set));
         module.add_vec("out", Vec::from_iter(out_set));
@@ -324,14 +376,14 @@ impl<'a> SoongPackage<'a> {
         Ok(module)
     }
 
-    pub fn generate<G>(
+    pub fn generate<T>(
         &mut self,
         targets_to_generate: Vec<PathBuf>,
-        targets: Vec<NinjaTarget<G>>,
+        targets: Vec<T>,
         project: &dyn Project,
     ) -> Result<(), String>
     where
-        G: GeneratorTarget,
+        T: NinjaTarget,
     {
         let targets_map = NinjaTargetsMap::new(&targets);
         targets_map.traverse_from(
