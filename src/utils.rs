@@ -112,58 +112,6 @@ pub fn dep_name<P: AsRef<Path>>(from: &Path, prefix: P, path: &str) -> String {
     path_to_id(Path::new(path).join(strip_prefix(from, prefix)))
 }
 
-pub fn cmake_configure(
-    src_path: &Path,
-    build_path: &Path,
-    ndk_path: &Path,
-    args: Vec<&str>,
-) -> Result<bool, String> {
-    if std::env::var("NINJA_TO_SOONG_SKIP_CMAKE_CONFIGURE").is_ok() {
-        return Ok(false);
-    }
-    let mut command = std::process::Command::new("cmake");
-    command
-        .args([
-            "-B",
-            &path_to_string(build_path),
-            "-S",
-            &path_to_string(src_path),
-            "-G",
-            "Ninja",
-            "-DCMAKE_BUILD_TYPE=Release",
-            &("-DCMAKE_TOOLCHAIN_FILE=".to_string()
-                + &path_to_string(ndk_path.join("build/cmake/android.toolchain.cmake"))),
-            &("-DANDROID_ABI=".to_string() + ANDROID_ABI),
-            &("-DANDROID_PLATFORM=".to_string() + ANDROID_PLATFORM),
-        ])
-        .args(args);
-    println!("{command:#?}");
-    if let Err(err) = command.status() {
-        return error!("cmake_configure({src_path:#?}) failed: {err}");
-    }
-    Ok(true)
-}
-
-pub fn cmake_build(build_path: &Path, targets: &Vec<PathBuf>) -> Result<bool, String> {
-    if std::env::var("NINJA_TO_SOONG_SKIP_CMAKE_BUILD").is_ok() {
-        return Ok(false);
-    }
-    let targets_args = targets.into_iter().fold(Vec::new(), |mut vec, target| {
-        vec.push("--target");
-        vec.push(target.to_str().unwrap_or_default());
-        vec
-    });
-    let mut command = std::process::Command::new("cmake");
-    command
-        .args(["--build", &path_to_string(build_path)])
-        .args(targets_args);
-    println!("{command:#?}");
-    if let Err(err) = command.status() {
-        return error!("cmake_build({build_path:#?}) failed: {err}");
-    }
-    Ok(true)
-}
-
 pub fn copy_file(from: &Path, to: &Path) -> Result<(), String> {
     if let Err(err) = std::fs::copy(from, to) {
         return error!("copy({from:#?}, {to:#?}) failed: {err}");

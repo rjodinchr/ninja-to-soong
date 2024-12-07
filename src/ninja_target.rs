@@ -3,22 +3,21 @@
 
 use std::collections::{HashMap, HashSet};
 
-use crate::project::Project;
 use crate::utils::*;
 
-#[derive(Debug)]
-pub struct NinjaTarget {
-    rule: String,
-    outputs: Vec<PathBuf>,
-    implicit_outputs: Vec<PathBuf>,
-    inputs: Vec<PathBuf>,
-    implicit_deps: Vec<PathBuf>,
-    order_only_deps: Vec<PathBuf>,
-    variables: HashMap<String, String>,
+pub mod cmake;
+pub mod common;
+
+pub use cmake::*;
+
+pub enum NinjaRule {
+    StaticLibrary,
+    SharedLibrary,
+    CustomCommand,
 }
 
-impl NinjaTarget {
-    pub fn new(
+pub trait NinjaTarget: std::fmt::Debug {
+    fn new(
         rule: String,
         outputs: Vec<PathBuf>,
         implicit_outputs: Vec<PathBuf>,
@@ -26,190 +25,61 @@ impl NinjaTarget {
         implicit_deps: Vec<PathBuf>,
         order_only_deps: Vec<PathBuf>,
         variables: HashMap<String, String>,
-    ) -> Self {
-        Self {
-            rule,
-            outputs,
-            implicit_outputs,
-            inputs,
-            implicit_deps,
-            order_only_deps,
-            variables,
-        }
+    ) -> Self;
+    fn get_name(&self, prefix: &Path) -> String {
+        path_to_id(prefix.join(&self.get_outputs()[0]))
     }
 
-    pub fn get_inputs(&self) -> &Vec<PathBuf> {
-        &self.inputs
-    }
-
-    pub fn get_outputs(&self) -> &Vec<PathBuf> {
-        &self.outputs
-    }
-
-    pub fn get_name(&self, prefix: &Path) -> String {
-        path_to_id(prefix.join(&self.outputs[0]))
-    }
-
-    pub fn get_link_flags(
-        &self,
-        src_path: &Path,
-        project: &dyn Project,
-    ) -> (Option<PathBuf>, HashSet<String>) {
-        let mut link_flags = HashSet::new();
-        let mut version_script = None;
-        if let Some(flags) = self.variables.get("LINK_FLAGS") {
-            for flag in flags.split(" ") {
-                if let Some(vs) = flag.strip_prefix("-Wl,--version-script=") {
-                    version_script = Some(strip_prefix(vs, src_path));
-                } else if !project.ignore_link_flag(flag) {
-                    link_flags.insert(flag.to_string());
-                }
-            }
-        }
-        (version_script, link_flags)
-    }
-
-    pub fn get_link_libraries(
-        &self,
-        ndk_path: &Path,
-        project: &dyn Project,
-    ) -> Result<(HashSet<String>, HashSet<String>, HashSet<PathBuf>), String> {
-        let mut static_libraries = HashSet::new();
-        let mut shared_libraries = HashSet::new();
-        let mut generated_libraries = HashSet::new();
-        let Some(libs) = self.variables.get("LINK_LIBRARIES") else {
-            return Ok((static_libraries, shared_libraries, generated_libraries));
-        };
-        for lib in libs.split(" ") {
-            if lib.starts_with("-") || lib == "" {
-                continue;
-            } else {
-                let lib_path = PathBuf::from(lib);
-                let lib_name = if lib_path.starts_with(ndk_path) {
-                    lib_path.file_stem().unwrap().to_str().unwrap().to_string()
-                } else {
-                    generated_libraries.insert(lib_path.clone());
-                    path_to_id(project.get_library_name(&lib_path))
-                };
-                if lib.ends_with(".a") {
-                    static_libraries.insert(lib_name);
-                } else if lib.ends_with(".so") {
-                    shared_libraries.insert(lib_name);
-                } else {
-                    return error!("unsupported library '{lib}' from target: {self:#?}");
-                }
-            }
-        }
-        Ok((static_libraries, shared_libraries, generated_libraries))
-    }
-
-    pub fn get_defines(&self, project: &dyn Project) -> HashSet<String> {
-        let mut defines = HashSet::new();
-        if let Some(defs) = self.variables.get("DEFINES") {
-            for define in defs.split("-D") {
-                if define.is_empty() || project.ignore_define(define) {
-                    continue;
-                }
-                defines.insert("-D".to_string() + define.trim());
-            }
-        };
-        defines
-    }
-
-    pub fn get_includes(&self, src_path: &Path, project: &dyn Project) -> HashSet<PathBuf> {
-        let mut includes = HashSet::new();
-        let Some(incs) = self.variables.get("INCLUDES") else {
-            return includes;
-        };
-        for include in incs.split(" ") {
-            let include_path = PathBuf::from(include.strip_prefix("-I").unwrap_or(include));
-            if project.ignore_include(&include_path) {
-                continue;
-            }
-            let inc = strip_prefix(project.get_include(&include_path), src_path);
-            let include_string = path_to_string(&inc);
-            if include_string.is_empty() || include_string == "isystem" {
-                continue;
-            }
-            includes.insert(inc);
-        }
-        includes
-    }
-
-    pub fn get_gen_headers_and_gen_deps(
-        &self,
-        target_prefix: &Path,
-        targets_map: &NinjaTargetsMap,
-        project: &dyn Project,
-    ) -> Result<(HashSet<String>, HashSet<PathBuf>), String> {
-        Ok(targets_map.traverse_from(
-            vec![self.outputs[0].clone()],
-            (HashSet::new(), HashSet::new()),
-            |(gen_headers, gen_deps), rule, name, target| {
-                if rule != "CUSTOM_COMMAND" || target.get_cmd()?.is_none() {
-                    return Ok(());
-                }
-                if project.ignore_gen_header(Path::new(&name)) {
-                    gen_deps.insert(name);
-                } else {
-                    gen_headers.insert(match targets_map.get(&name) {
-                        Some(target_header) => target_header.get_name(target_prefix),
-                        None => return error!("Could not find target for {name:#?}"),
-                    });
-                }
-                Ok(())
-            },
-            |_target_name| false,
-        )?)
-    }
-
-    pub fn get_cmd(&self) -> Result<Option<String>, String> {
-        let Some(command) = self.variables.get("COMMAND") else {
-            return error!("No command in: {self:#?}");
-        };
-        let mut split = command.split(" && ");
-        let split_count = split.clone().count();
-        if split_count < 2 {
-            return error!(
-                "Could not find enough split in command (expected at least 2, got {split_count}"
-            );
-        }
-        let command = split.nth(1).unwrap();
-        Ok(if command.contains("bin/cmake ") {
-            None
-        } else {
-            Some(command.to_string())
-        })
-    }
+    fn set_globals(&mut self, globals: HashMap<String, String>);
+    fn set_rule(&mut self, rules: &HashMap<String, String>);
+    fn get_rule(&self) -> Option<NinjaRule>;
+    fn get_inputs(&self) -> &Vec<PathBuf>;
+    fn get_implicit_deps(&self) -> &Vec<PathBuf>;
+    fn get_order_only_deps(&self) -> &Vec<PathBuf>;
+    fn get_outputs(&self) -> &Vec<PathBuf>;
+    fn get_implicit_ouputs(&self) -> &Vec<PathBuf>;
+    fn get_sources(&self) -> Result<Vec<PathBuf>, String>;
+    fn get_link_flags(&self) -> (Option<PathBuf>, Vec<String>);
+    fn get_link_libraries(&self, prefix: &Path) -> Result<(Vec<PathBuf>, Vec<PathBuf>), String>;
+    fn get_defines(&self) -> Vec<String>;
+    fn get_includes(&self) -> Vec<PathBuf>;
+    fn get_cflags(&self) -> Vec<String>;
+    fn get_cmd(&self) -> Result<Option<String>, String>;
 }
 
-pub struct NinjaTargetsMap<'a>(HashMap<PathBuf, &'a NinjaTarget>);
+#[derive(Debug)]
+pub struct NinjaTargetsMap<'a, T>(HashMap<PathBuf, &'a T>)
+where
+    T: NinjaTarget;
 
-impl<'a> NinjaTargetsMap<'a> {
-    pub fn new(targets: &'a Vec<NinjaTarget>) -> Self {
+impl<'a, T> NinjaTargetsMap<'a, T>
+where
+    T: NinjaTarget,
+{
+    pub fn new(targets: &'a Vec<T>) -> Self {
         let mut map = HashMap::new();
         for target in targets {
-            for output in &target.outputs {
+            for output in target.get_outputs() {
                 map.insert(output.clone(), target);
             }
-            for output in &target.implicit_outputs {
+            for output in target.get_implicit_ouputs() {
                 map.insert(output.clone(), target);
             }
         }
         Self(map)
     }
-    pub fn get(&self, key: &Path) -> Option<&&NinjaTarget> {
+    pub fn get(&self, key: &Path) -> Option<&&T> {
         self.0.get(key)
     }
-    pub fn traverse_from<I, F, G>(
+    pub fn traverse_from<Iterator, F, G>(
         &self,
         mut targets: Vec<PathBuf>,
-        mut iterator: I,
+        mut iterator: Iterator,
         mut f: F,
         ignore_target: G,
-    ) -> Result<I, String>
+    ) -> Result<Iterator, String>
     where
-        F: FnMut(&mut I, &str, PathBuf, &NinjaTarget) -> Result<(), String>,
+        F: FnMut(&mut Iterator, Option<NinjaRule>, PathBuf, &T) -> Result<(), String>,
         G: Fn(&Path) -> bool,
     {
         let mut targets_seen = HashSet::new();
@@ -220,12 +90,12 @@ impl<'a> NinjaTargetsMap<'a> {
             let Some(target) = self.get(&target_name) else {
                 continue;
             };
-            targets.append(&mut target.inputs.clone());
-            targets.append(&mut target.implicit_deps.clone());
-            targets.append(&mut target.order_only_deps.clone());
-            targets_seen.extend(target.outputs.clone());
-            targets_seen.extend(target.implicit_outputs.clone());
-            f(&mut iterator, &target.rule, target_name, target)?;
+            targets.extend(target.get_inputs().clone());
+            targets.extend(target.get_implicit_deps().clone());
+            targets.extend(target.get_order_only_deps().clone());
+            targets_seen.extend(target.get_outputs().clone());
+            targets_seen.extend(target.get_implicit_ouputs().clone());
+            f(&mut iterator, target.get_rule(), target_name, target)?;
         }
         Ok(iterator)
     }

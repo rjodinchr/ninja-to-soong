@@ -52,7 +52,7 @@ impl Project for Clspv {
             ],
         )?;
 
-        let targets = parse_build_ninja(&self.build_path)?;
+        let targets = parse_build_ninja::<CmakeNinjaTarget>(&self.build_path)?;
 
         let mut package = SoongPackage::new(
             &self.src_path,
@@ -134,6 +134,10 @@ impl Project for Clspv {
             CcLibraryHeaders::Llvm.str(),
             CcLibraryHeaders::Clang.str(),
         ]
+    }
+
+    fn ignore_cflag(&self, _cflag: &str) -> bool {
+        true
     }
 
     fn ignore_define(&self, _define: &str) -> bool {

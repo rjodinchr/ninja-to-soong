@@ -69,7 +69,7 @@ impl Project for Clvk {
             ],
         )?;
 
-        let targets = parse_build_ninja(&self.build_path)?;
+        let targets = parse_build_ninja::<CmakeNinjaTarget>(&self.build_path)?;
 
         let mut package = SoongPackage::new(
             &self.src_path,
@@ -127,12 +127,20 @@ impl Project for Clvk {
         }
     }
 
+    fn ignore_cflag(&self, _cflag: &str) -> bool {
+        true
+    }
+
     fn ignore_gen_header(&self, _header: &Path) -> bool {
         true
     }
 
     fn ignore_include(&self, _include: &Path) -> bool {
         true
+    }
+
+    fn ignore_lib(&self, lib: &str) -> bool {
+        lib == "libatomic"
     }
 
     fn ignore_link_flag(&self, flag: &str) -> bool {

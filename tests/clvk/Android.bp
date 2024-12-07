@@ -21,8 +21,7 @@ license {
 }
 
 cc_library_shared {
-    name: "clvk_libOpenCL_so",
-    stem: "libclvk",
+    name: "libclvk",
     version_script: "src/exports.map",
     srcs: [
         "src/api.cpp",
