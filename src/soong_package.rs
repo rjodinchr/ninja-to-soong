@@ -195,32 +195,36 @@ impl<'a> SoongPackage<'a> {
 
         let target_name = target.get_name(self.target_prefix);
 
-        let static_libs = static_libs.into_iter().fold(Vec::new(), |mut vec, lib| {
-            let library = path_to_string(&lib);
-            if project.ignore_lib(&library) || library == target_name {
-                return vec;
-            }
-            vec.push(if lib.starts_with(self.ndk_path) {
-                lib.file_stem().unwrap().to_str().unwrap().to_string()
-            } else {
-                self.generated_libraries.insert(lib.clone());
-                path_to_id(project.get_library_name(&lib))
+        let static_libs = static_libs
+            .into_iter()
+            .fold(HashSet::new(), |mut vec, lib| {
+                let library = path_to_string(&lib);
+                if project.ignore_lib(&library) || library == target_name {
+                    return vec;
+                }
+                vec.insert(if lib.starts_with(self.ndk_path) {
+                    lib.file_stem().unwrap().to_str().unwrap().to_string()
+                } else {
+                    self.generated_libraries.insert(lib.clone());
+                    path_to_id(project.get_library_name(&lib))
+                });
+                vec
             });
-            vec
-        });
-        let shared_libs = shared_libs.into_iter().fold(Vec::new(), |mut vec, lib| {
-            let library = path_to_string(&lib);
-            if project.ignore_lib(&library) || library == target_name {
-                return vec;
-            }
-            vec.push(if lib.starts_with(self.ndk_path) {
-                lib.file_stem().unwrap().to_str().unwrap().to_string()
-            } else {
-                self.generated_libraries.insert(lib.clone());
-                path_to_id(project.get_library_name(&lib))
+        let shared_libs = shared_libs
+            .into_iter()
+            .fold(HashSet::new(), |mut vec, lib| {
+                let library = path_to_string(&lib);
+                if project.ignore_lib(&library) || library == target_name {
+                    return vec;
+                }
+                vec.insert(if lib.starts_with(self.ndk_path) {
+                    lib.file_stem().unwrap().to_str().unwrap().to_string()
+                } else {
+                    self.generated_libraries.insert(lib.clone());
+                    path_to_id(project.get_library_name(&lib))
+                });
+                vec
             });
-            vec
-        });
 
         let headers = targets_map.traverse_from(
             target.get_outputs().clone(),
@@ -266,8 +270,8 @@ impl<'a> SoongPackage<'a> {
         module.add_vec("local_include_dirs", Vec::from_iter(includes));
         module.add_vec("cflags", Vec::from_iter(cflags));
         module.add_vec("ldflags", link_flags);
-        module.add_vec("static_libs", static_libs);
-        module.add_vec("shared_libs", shared_libs);
+        module.add_vec("static_libs", Vec::from_iter(static_libs));
+        module.add_vec("shared_libs", Vec::from_iter(shared_libs));
         module.add_vec("header_libs", project.get_target_header_libs(&target_name));
         module.add_vec("generated_headers", gen_headers);
         if let Some(vs) = version_script {
