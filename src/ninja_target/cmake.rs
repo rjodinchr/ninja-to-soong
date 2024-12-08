@@ -40,7 +40,7 @@ impl NinjaTarget for CmakeNinjaTarget {
 
     fn set_globals(&mut self, _globals: HashMap<String, String>) {}
 
-    fn set_rule(&mut self, _rules: &HashMap<String, String>) {}
+    fn set_rule(&mut self, _rules: &NinjaRulesMap) {}
 
     fn get_rule(&self) -> Option<NinjaRule> {
         Some(if self.rule.starts_with("CXX_SHARED_LIBRARY") {
@@ -116,7 +116,7 @@ impl NinjaTarget for CmakeNinjaTarget {
         common::get_cflags(flags)
     }
 
-    fn get_cmd(&self) -> Result<Option<String>, String> {
+    fn get_cmd(&self) -> Result<Option<NinjaRuleCmd>, String> {
         let Some(command) = self.variables.get("COMMAND") else {
             return error!("No command in: {self:#?}");
         };
@@ -131,7 +131,7 @@ impl NinjaTarget for CmakeNinjaTarget {
         Ok(if command.contains("bin/cmake ") {
             None
         } else {
-            Some(command.to_string())
+            Some((command.to_string(), None))
         })
     }
 }

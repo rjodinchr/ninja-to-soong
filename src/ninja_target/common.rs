@@ -34,7 +34,7 @@ pub fn get_defines(defs: &str) -> Vec<String> {
         if define.is_empty() {
             continue;
         }
-        defines.push(define.trim().to_string());
+        defines.push(define.trim().replace("\\(", "(").replace("\\)", ")"));
     }
     defines
 }

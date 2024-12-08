@@ -277,12 +277,13 @@ impl<'a> SoongPackage<'a> {
 
     fn rework_cmd(
         &self,
-        mut cmd: String,
+        rule_cmd: NinjaRuleCmd,
         inputs: HashSet<PathBuf>,
         outputs: &Vec<PathBuf>,
         deps: HashMap<PathBuf, String>,
         project: &dyn Project,
     ) -> String {
+        let mut cmd = rule_cmd.0;
         while let Some(index) = cmd.find("python") {
             let begin = std::str::from_utf8(&cmd.as_bytes()[0..index])
                 .unwrap()
@@ -321,13 +322,24 @@ impl<'a> SoongPackage<'a> {
             let replace_dep = String::from("$(location :") + &dep_target_name + ")";
             cmd = cmd.replace(&path_to_string(&dep), &replace_dep)
         }
+        if let Some((rsp_file, rsp_content)) = rule_cmd.1 {
+            let rsp = "$(genDir)/".to_string() + &rsp_file;
+            let src_path = path_to_string(self.src_path) + &std::path::MAIN_SEPARATOR.to_string();
+            cmd = "echo \\\"".to_string()
+                + &rsp_content.replace(&src_path, "")
+                + "\\\" > "
+                + &rsp
+                + " && "
+                + &cmd;
+            cmd = cmd.replace("${rspfile}", &rsp);
+        }
         cmd
     }
 
     fn generate_custom_command<T>(
         &mut self,
         target: &T,
-        mut cmd: String,
+        rule_cmd: NinjaRuleCmd,
         project: &dyn Project,
     ) -> Result<SoongModule, String>
     where
@@ -366,7 +378,7 @@ impl<'a> SoongPackage<'a> {
         for output in target_outputs {
             out_set.insert(path_to_string(project.get_cmd_output(output)));
         }
-        cmd = self.rework_cmd(cmd, inputs, target_outputs, deps, project);
+        let cmd = self.rework_cmd(rule_cmd, inputs, target_outputs, deps, project);
 
         let mut module = SoongModule::new("cc_genrule");
         module.add_str("name", target.get_name(self.target_prefix));
