@@ -67,10 +67,14 @@ macro_rules! error {
 }
 pub use {error, print_internal, print_verbose};
 
+const ARM: bool = true;
 pub const ANDROID_NDK: &str = "android-ndk-r27c";
-pub const ANDROID_ISA: &str = "aarch64"; // "x86_64"
-pub const ANDROID_ABI: &str = "arm64-v8a"; // "x86_64"
 pub const ANDROID_PLATFORM: &str = "35";
+pub const ANDROID_ISA: &str = if ARM { "aarch64" } else { "x86_64" };
+pub const ANDROID_ABI: &str = if ARM { "arm64-v8a" } else { "x86_64" };
+pub const ANDROID_CPU: &str = if ARM { "arm64" } else { "x64" };
+
+pub const SKIP_GEN_NINJA: &str = "NINJA_TO_SOONG_SKIP_GEN_NINJA";
 
 pub const LLVM_DISABLE_ZLIB: &str = "-DLLVM_ENABLE_ZLIB=OFF";
 

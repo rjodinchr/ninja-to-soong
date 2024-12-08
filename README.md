@@ -49,7 +49,7 @@ If you want more information take a look at the [github action script](.github/w
 
 # Developement tips
 
-After a **full** first run of `ninja-to-soong`, it is possible to run with the environment variable `NINJA_TO_SOONG_SKIP_CMAKE_CONFIGURE` set to skip the cmake configure step for every project.
+After a **full** first run of `ninja-to-soong`, it is possible to run with the environment variable `NINJA_TO_SOONG_SKIP_GEN_NINJA` set to skip the generation of `Ninja` file for every project.
 
 It is possible to run a specific set of projects by adding them after the required arguments:
 ```

@@ -4,6 +4,7 @@
 use std::collections::HashMap;
 
 use super::*;
+use crate::utils::SKIP_GEN_NINJA;
 
 #[derive(Debug)]
 pub struct CmakeNinjaTarget {
@@ -141,7 +142,7 @@ pub fn cmake_configure(
     ndk_path: &Path,
     args: Vec<&str>,
 ) -> Result<bool, String> {
-    if std::env::var("NINJA_TO_SOONG_SKIP_CMAKE_CONFIGURE").is_ok() {
+    if std::env::var(SKIP_GEN_NINJA).is_ok() {
         return Ok(false);
     }
     let mut command = std::process::Command::new("cmake");
