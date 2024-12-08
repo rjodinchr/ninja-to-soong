@@ -153,6 +153,9 @@ impl<'a> SoongPackage<'a> {
 
             let sources = target.get_sources()?;
             for source in sources {
+                if project.ignore_source(&source) {
+                    continue;
+                }
                 srcs.insert(path_to_string(strip_prefix(source, self.src_path)));
             }
 

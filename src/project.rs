@@ -142,6 +142,9 @@ pub trait Project {
     fn ignore_link_flag(&self, _flag: &str) -> bool {
         false
     }
+    fn ignore_source(&self, _source: &Path) -> bool {
+        false
+    }
     fn ignore_target(&self, _target: &Path) -> bool {
         false
     }
