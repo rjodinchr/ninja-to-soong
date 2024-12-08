@@ -93,7 +93,7 @@ pub type GenDepsMap = HashMap<GenDeps, Vec<PathBuf>>;
 pub type ProjectsMap<'a> = HashMap<ProjectId, &'a dyn Project>;
 
 pub trait Project {
-    fn init(&mut self, android_path: &Path, ndk_path: &Path, temp_path: &Path);
+    fn init(&mut self, android_path: &Path, ndk_path: &Path, temp_path: &Path) -> Result<(), String>;
     fn get_id(&self) -> ProjectId;
     fn generate_package(&mut self, projects_map: &ProjectsMap) -> Result<SoongPackage, String>;
 

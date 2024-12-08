@@ -132,7 +132,7 @@ fn main() -> Result<(), String> {
         &mut spirv_headers,
     ];
     for project in all_projects.iter_mut() {
-        project.init(&android_path, &ndk_path, &temp_path);
+        project.init(&android_path, &ndk_path, &temp_path)?;
     }
 
     if let Err(err) = generate_projects(all_projects, project_ids, &android_path) {
