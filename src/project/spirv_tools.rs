@@ -28,7 +28,7 @@ impl Project for SpirvTools {
         self.ndk_path = get_ndk_path(temp_path)?;
         self.spirv_headers_path = ProjectId::SpirvHeaders.android_path(android_path);
 
-        cmake_configure(
+        let (targets, _) = cmake::get_targets(
             &self.src_path,
             &self.build_path,
             &self.ndk_path,
@@ -36,9 +36,8 @@ impl Project for SpirvTools {
                 &("-DSPIRV-Headers_SOURCE_DIR=".to_string()
                     + &path_to_string(&self.spirv_headers_path)),
             ],
+            None,
         )?;
-
-        let targets = parse_build_ninja::<CmakeNinjaTarget>(&self.build_path)?;
 
         let mut package = SoongPackage::new(
             &self.src_path,

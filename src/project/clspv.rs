@@ -42,7 +42,8 @@ impl Project for Clspv {
             + &path_to_string(self.llvm_project_path.join("clang"));
         let libclc_path = "-DCLSPV_LIBCLC_SOURCE_DIR=".to_string()
             + &path_to_string(self.llvm_project_path.join("libclc"));
-        cmake_configure(
+
+        let (targets, _) = cmake::get_targets(
             &self.src_path,
             &self.build_path,
             &self.ndk_path,
@@ -53,9 +54,8 @@ impl Project for Clspv {
                 &clang_path,
                 &libclc_path,
             ],
+            None,
         )?;
-
-        let targets = parse_build_ninja::<CmakeNinjaTarget>(&self.build_path)?;
 
         let mut package = SoongPackage::new(
             &self.src_path,

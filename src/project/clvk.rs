@@ -53,7 +53,7 @@ impl Project for Clvk {
                     .join(ANDROID_PLATFORM)
                     .join("libvulkan.so"),
             );
-        cmake_configure(
+        let (targets, _) = cmake::get_targets(
             &self.src_path,
             &self.build_path,
             &self.ndk_path,
@@ -70,9 +70,8 @@ impl Project for Clvk {
                 &libclc_path,
                 &vulkan_library,
             ],
+            None,
         )?;
-
-        let targets = parse_build_ninja::<CmakeNinjaTarget>(&self.build_path)?;
 
         let mut package = SoongPackage::new(
             &self.src_path,

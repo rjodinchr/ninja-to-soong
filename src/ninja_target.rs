@@ -5,10 +5,10 @@ use std::collections::{HashMap, HashSet};
 
 use crate::utils::*;
 
+pub use crate::parser::parse_build_ninja;
+
 pub mod cmake;
 pub mod common;
-
-pub use cmake::*;
 
 pub type NinjaRuleCmd = (String, Option<(String, String)>);
 pub type NinjaRulesMap = HashMap<String, NinjaRuleCmd>;

@@ -32,7 +32,10 @@ impl Project for LlvmProject {
         self.ndk_path = get_ndk_path(temp_path)?;
         self.copy_gen_deps = false;
 
-        let configured = cmake_configure(
+        let mut targets_to_build = Vec::new();
+        targets_to_build.extend(GenDeps::TargetsToGen.get(self, ProjectId::Clvk, projects_map));
+        targets_to_build.extend(GenDeps::LibclcBins.get(self, ProjectId::Clspv, projects_map));
+        let (targets, built) = cmake::get_targets(
             &self.src_path.join("llvm"),
             &self.build_path,
             &self.ndk_path,
@@ -42,17 +45,11 @@ impl Project for LlvmProject {
                 "-DLIBCLC_TARGETS_TO_BUILD=clspv--;clspv64--",
                 "-DLLVM_TARGETS_TO_BUILD=",
             ],
+            Some(targets_to_build),
         )?;
-        if configured {
-            let mut targets = Vec::new();
-            targets.extend(GenDeps::TargetsToGen.get(self, ProjectId::Clvk, projects_map));
-            targets.extend(GenDeps::LibclcBins.get(self, ProjectId::Clspv, projects_map));
-            if cmake_build(&self.build_path, &targets)? {
-                self.copy_gen_deps = true;
-            }
+        if built {
+            self.copy_gen_deps = true;
         }
-
-        let targets = parse_build_ninja::<CmakeNinjaTarget>(&self.build_path)?;
 
         let mut package = SoongPackage::new(
             &self.src_path,

@@ -135,7 +135,7 @@ impl NinjaTarget for CmakeNinjaTarget {
     }
 }
 
-pub fn cmake_configure(
+fn cmake_configure(
     src_path: &Path,
     build_path: &Path,
     ndk_path: &Path,
@@ -167,7 +167,7 @@ pub fn cmake_configure(
     Ok(true)
 }
 
-pub fn cmake_build(build_path: &Path, targets: &Vec<PathBuf>) -> Result<bool, String> {
+fn cmake_build(build_path: &Path, targets: &Vec<PathBuf>) -> Result<bool, String> {
     if std::env::var("NINJA_TO_SOONG_SKIP_CMAKE_BUILD").is_ok() {
         return Ok(false);
     }
@@ -185,4 +185,25 @@ pub fn cmake_build(build_path: &Path, targets: &Vec<PathBuf>) -> Result<bool, St
         return error!("cmake_build({build_path:#?}) failed: {err}");
     }
     Ok(true)
+}
+
+pub fn get_targets(
+    src_path: &Path,
+    build_path: &Path,
+    ndk_path: &Path,
+    args: Vec<&str>,
+    targets_to_build: Option<Vec<PathBuf>>,
+) -> Result<(Vec<CmakeNinjaTarget>, bool), String> {
+    let configured = cmake_configure(src_path, build_path, ndk_path, args)?;
+    let built = if configured {
+        if let Some(targets) = targets_to_build {
+            cmake_build(build_path, &targets)?
+        } else {
+            false
+        }
+    } else {
+        false
+    };
+
+    Ok((parse_build_ninja::<CmakeNinjaTarget>(build_path)?, built))
 }
