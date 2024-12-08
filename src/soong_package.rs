@@ -159,8 +159,7 @@ impl<'a> SoongPackage<'a> {
                 srcs.insert(path_to_string(strip_prefix(source, self.src_path)));
             }
 
-            let (static_libraries, shared_libraries) =
-                target.get_link_libraries(self.target_prefix)?;
+            let (static_libraries, shared_libraries) = target.get_link_libraries()?;
             static_libs.extend(static_libraries);
             shared_libs.extend(shared_libraries);
 
@@ -190,7 +189,7 @@ impl<'a> SoongPackage<'a> {
             }
             vec
         });
-        let (static_libraries, shared_libraries) = target.get_link_libraries(self.target_prefix)?;
+        let (static_libraries, shared_libraries) = target.get_link_libraries()?;
         static_libs.extend(static_libraries);
         shared_libs.extend(shared_libraries);
 

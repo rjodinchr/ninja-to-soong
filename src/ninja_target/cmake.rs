@@ -87,7 +87,7 @@ impl NinjaTarget for CmakeNinjaTarget {
         common::get_link_flags(flags)
     }
 
-    fn get_link_libraries(&self, _prefix: &Path) -> Result<(Vec<PathBuf>, Vec<PathBuf>), String> {
+    fn get_link_libraries(&self) -> Result<(Vec<PathBuf>, Vec<PathBuf>), String> {
         let Some(libs) = self.variables.get("LINK_LIBRARIES") else {
             return Ok((Vec::new(), Vec::new()));
         };
