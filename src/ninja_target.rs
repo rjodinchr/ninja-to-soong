@@ -43,11 +43,11 @@ pub trait NinjaTarget: std::fmt::Debug {
     fn get_order_only_deps(&self) -> &Vec<PathBuf>;
     fn get_outputs(&self) -> &Vec<PathBuf>;
     fn get_implicit_ouputs(&self) -> &Vec<PathBuf>;
-    fn get_sources(&self) -> Result<Vec<PathBuf>, String>;
+    fn get_sources(&self, build_path: &Path) -> Result<Vec<PathBuf>, String>;
     fn get_link_flags(&self) -> (Option<PathBuf>, Vec<String>);
     fn get_link_libraries(&self, prefix: &Path) -> Result<(Vec<PathBuf>, Vec<PathBuf>), String>;
     fn get_defines(&self) -> Vec<String>;
-    fn get_includes(&self) -> Vec<PathBuf>;
+    fn get_includes(&self, build_path: &Path) -> Vec<PathBuf>;
     fn get_cflags(&self) -> Vec<String>;
     fn get_cmd(&self) -> Result<Option<NinjaRuleCmd>, String>;
 }

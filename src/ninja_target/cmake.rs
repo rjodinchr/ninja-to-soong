@@ -73,11 +73,11 @@ impl NinjaTarget for CmakeNinjaTarget {
         &self.implicit_outputs
     }
 
-    fn get_sources(&self) -> Result<Vec<PathBuf>, String> {
+    fn get_sources(&self, build_path: &Path) -> Result<Vec<PathBuf>, String> {
         if self.inputs.len() != 1 {
             return error!("Too many inputs in: {self:#?}");
         }
-        Ok(self.inputs.clone())
+        Ok(common::get_sources(&self.inputs, build_path))
     }
 
     fn get_link_flags(&self) -> (Option<PathBuf>, Vec<String>) {
@@ -101,11 +101,11 @@ impl NinjaTarget for CmakeNinjaTarget {
         common::get_defines(defs)
     }
 
-    fn get_includes(&self) -> Vec<PathBuf> {
+    fn get_includes(&self, build_path: &Path) -> Vec<PathBuf> {
         let Some(incs) = self.variables.get("INCLUDES") else {
             return Vec::new();
         };
-        common::get_includes(incs)
+        common::get_includes(incs, build_path)
     }
 
     fn get_cflags(&self) -> Vec<String> {

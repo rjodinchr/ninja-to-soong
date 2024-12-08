@@ -197,7 +197,7 @@ where
 
 fn parse_ninja_file<'a, T>(
     file_path: PathBuf,
-    dir_path: &Path,
+    build_path: &Path,
 ) -> Result<(Vec<T>, NinjaRulesMap), String>
 where
     T: NinjaTarget,
@@ -224,7 +224,7 @@ where
         } else if line.starts_with("build ") {
             targets.push(parse_build_target(line, lines.clone())?);
         } else if line.starts_with("subninja ") || line.starts_with("include ") {
-            let (subtargets, rules) = parse_subninja_file(line, dir_path)?;
+            let (subtargets, rules) = parse_subninja_file(line, build_path)?;
             all_targets.extend(subtargets);
             all_rules.extend(rules);
         } else {
@@ -240,12 +240,12 @@ where
     Ok((all_targets, all_rules))
 }
 
-pub fn parse_build_ninja<T>(ninja_file_dir_path: &Path) -> Result<Vec<T>, String>
+pub fn parse_build_ninja<T>(build_path: &Path) -> Result<Vec<T>, String>
 where
     T: NinjaTarget,
 {
-    let file_path = ninja_file_dir_path.join("build.ninja");
-    let (mut targets, rules) = parse_ninja_file::<T>(file_path, ninja_file_dir_path)?;
+    let file_path = build_path.join("build.ninja");
+    let (mut targets, rules) = parse_ninja_file::<T>(file_path, build_path)?;
     for target in &mut targets {
         target.set_rule(&rules);
     }

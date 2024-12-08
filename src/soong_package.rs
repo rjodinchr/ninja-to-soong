@@ -151,7 +151,7 @@ impl<'a> SoongPackage<'a> {
                 return error!("unsupported input for library: {input:#?}");
             };
 
-            let sources = target.get_sources()?;
+            let sources = target.get_sources(self.build_path)?;
             for source in sources {
                 if project.ignore_source(&source) {
                     continue;
@@ -164,12 +164,22 @@ impl<'a> SoongPackage<'a> {
             static_libs.extend(static_libraries);
             shared_libs.extend(shared_libraries);
 
-            update_includes(target.get_includes(), project, &mut includes, self.src_path);
+            update_includes(
+                target.get_includes(self.build_path),
+                project,
+                &mut includes,
+                self.src_path,
+            );
             update_cflags_with_defines(target.get_defines(), project, &mut cflags);
             update_cflags(target.get_cflags(), project, &mut cflags);
         }
 
-        update_includes(target.get_includes(), project, &mut includes, self.src_path);
+        update_includes(
+            target.get_includes(self.build_path),
+            project,
+            &mut includes,
+            self.src_path,
+        );
         update_cflags_with_defines(target.get_defines(), project, &mut cflags);
         update_cflags(target.get_cflags(), project, &mut cflags);
 
@@ -317,7 +327,10 @@ impl<'a> SoongPackage<'a> {
         }
         for input in inputs {
             let replace_input = String::from("$(location ")
-                + &path_to_string(strip_prefix(&input, self.src_path))
+                + &path_to_string(strip_prefix(
+                    canonicalize_path(&input, self.build_path),
+                    self.src_path,
+                ))
                 + ")";
             cmd = cmd.replace(&path_to_string(&input), &replace_input)
         }
@@ -355,22 +368,33 @@ impl<'a> SoongPackage<'a> {
         'target_inputs: for input in all_inputs {
             for (prefix, dep) in project.get_deps_info() {
                 if input.starts_with(&prefix) {
-                    deps.insert(input.clone(), dep_name(&input, &prefix, dep.str()));
+                    deps.insert(
+                        input.clone(),
+                        dep_name(&input, &prefix, dep.str(), self.build_path),
+                    );
                     continue 'target_inputs;
                 }
             }
             if !input.starts_with(self.src_path) {
                 deps.insert(
                     input.clone(),
-                    dep_name(&input, self.build_path, project.get_id().str()),
+                    dep_name(
+                        &input,
+                        self.build_path,
+                        project.get_id().str(),
+                        self.build_path,
+                    ),
                 );
             } else {
-                inputs.insert(input.clone());
+                inputs.insert(input);
             }
         }
         let mut srcs_set: HashSet<String> = HashSet::new();
         for input in &inputs {
-            srcs_set.insert(path_to_string(strip_prefix(input, self.src_path)));
+            srcs_set.insert(path_to_string(strip_prefix(
+                canonicalize_path(input, self.build_path),
+                self.src_path,
+            )));
         }
         for (dep, dep_target_name) in &deps {
             srcs_set.insert(String::from(":") + dep_target_name);

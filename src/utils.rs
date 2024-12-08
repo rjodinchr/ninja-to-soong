@@ -97,6 +97,18 @@ pub fn get_ndk_path(temp_path: &Path) -> Result<PathBuf, String> {
     Ok(ndk_path)
 }
 
+pub fn canonicalize_path<P: AsRef<Path>>(path: P, build_path: &Path) -> PathBuf {
+    let path_buf = path.as_ref().to_path_buf();
+    if path_buf.has_root() {
+        path_buf
+    } else {
+        build_path
+            .join(&path_buf)
+            .canonicalize()
+            .unwrap_or(path_buf)
+    }
+}
+
 pub fn path_to_string<P: AsRef<Path>>(path: P) -> String {
     path.as_ref().to_str().unwrap_or_default().to_string()
 }
@@ -131,8 +143,8 @@ pub fn split_path(path: &Path, delimiter: &str) -> Option<(PathBuf, PathBuf)> {
     None
 }
 
-pub fn dep_name<P: AsRef<Path>>(from: &Path, prefix: P, path: &str) -> String {
-    path_to_id(Path::new(path).join(strip_prefix(from, prefix)))
+pub fn dep_name<P: AsRef<Path>>(from: &Path, prefix: P, path: &str, build_path: &Path) -> String {
+    path_to_id(Path::new(path).join(strip_prefix(canonicalize_path(from, build_path), prefix)))
 }
 
 pub fn copy_file(from: &Path, to: &Path) -> Result<(), String> {
