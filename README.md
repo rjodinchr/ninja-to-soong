@@ -13,11 +13,13 @@
 
 # Supported projects
 
-* [clvk](https://github.com/kpet/clvk) and all its submodules (within the of limit of clvk's requirement)
-  * [clspv](https://github.com/google/clspv)
-    * [llvm-project](https://github.com/llvm/llvm-project)
-  * [SPIRV-Tools](https://github.com/KhronosGroup/SPIRV-Tools)
-  * [SPIRV-Headers](https://github.com/KhronosGroup/SPIRV-Headers)
+| Project | Ninja Generator | Targets |
+|-|-|-|
+| [clvk](https://github.com/kpet/clvk) | `CMake` | `libclvk.so` |
+| [clspv](https://github.com/google/clspv) | `CMake` | `clvk` dependencies |
+| [llvm-project](https://github.com/llvm/llvm-project) | `CMake` | `clvk` & `clspv` dependencies |
+| [SPIRV-Tools](https://github.com/KhronosGroup/SPIRV-Tools) | `CMake` | `clvk` dependencies |
+| [SPIRV-Headers](https://github.com/KhronosGroup/SPIRV-Headers) | `CMake` | `clspv` & `SPIRV-Tools` dependencies |
 
 # Dependencies
 
