@@ -375,7 +375,7 @@ impl<'a> SoongPackage<'a> {
                     continue 'target_inputs;
                 }
             }
-            if !input.starts_with(self.src_path) {
+            if !canonicalize_path(&input, self.build_path).starts_with(self.src_path) {
                 deps.insert(
                     input.clone(),
                     dep_name(
