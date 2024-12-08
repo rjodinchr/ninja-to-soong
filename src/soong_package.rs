@@ -199,7 +199,11 @@ impl<'a> SoongPackage<'a> {
             .into_iter()
             .fold(HashSet::new(), |mut vec, lib| {
                 let library = path_to_string(&lib);
-                if project.ignore_lib(&library) || library == target_name {
+                if project.ignore_lib(&library)
+                    || path_to_id(
+                        Path::new(project.get_id().str()).join(project.get_library_name(&lib)),
+                    ) == target_name
+                {
                     return vec;
                 }
                 vec.insert(if lib.starts_with(self.ndk_path) {
@@ -214,7 +218,11 @@ impl<'a> SoongPackage<'a> {
             .into_iter()
             .fold(HashSet::new(), |mut vec, lib| {
                 let library = path_to_string(&lib);
-                if project.ignore_lib(&library) || library == target_name {
+                if project.ignore_lib(&library)
+                    || path_to_id(
+                        Path::new(project.get_id().str()).join(project.get_library_name(&lib)),
+                    ) == target_name
+                {
                     return vec;
                 }
                 vec.insert(if lib.starts_with(self.ndk_path) {
