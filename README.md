@@ -26,9 +26,10 @@
 `ninja-to-soong` depends on the following:
 
 * [Rust](https://www.rust-lang.org/)
-* [Android NDK](https://developer.android.com/ndk)
 * [Ninja](https://ninja-build.org/)
 * [CMake](https://cmake.org/)
+* [wget](https://www.gnu.org/software/wget/)
+* `unzip`
 
 # Using `ninja-to-soong`
 

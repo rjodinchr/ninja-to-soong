@@ -11,21 +11,17 @@ pub struct SpirvHeaders {
 }
 
 impl Project for SpirvHeaders {
-    fn init(
-        &mut self,
-        android_path: &Path,
-        _ndk_path: &Path,
-        _temp_path: &Path,
-    ) -> Result<(), String> {
-        self.src_path = self.get_id().android_path(android_path);
-        Ok(())
-    }
-
     fn get_id(&self) -> ProjectId {
         ProjectId::SpirvHeaders
     }
 
-    fn generate_package(&mut self, projects_map: &ProjectsMap) -> Result<SoongPackage, String> {
+    fn generate_package(
+        &mut self,
+        android_path: &Path,
+        _temp_path: &Path,
+        projects_map: &ProjectsMap,
+    ) -> Result<SoongPackage, String> {
+        self.src_path = self.get_id().android_path(android_path);
         let mut package = SoongPackage::new(
             &self.src_path,
             Path::new(""),

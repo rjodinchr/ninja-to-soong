@@ -18,6 +18,7 @@ fn generate_project(
     is_dependency: bool,
     projects_generated: &ProjectsMap,
     android_path: &Path,
+    temp_path: &Path,
 ) -> Result<(), String> {
     let project_name = project.get_id().str();
     let project_path = project.get_id().android_path(android_path);
@@ -27,7 +28,7 @@ fn generate_project(
         print_info!("Generating dependency '{project_name}'");
     }
     print_debug!("Creating soong package...");
-    let package = project.generate_package(projects_generated)?;
+    let package = project.generate_package(android_path, temp_path, projects_generated)?;
     if !is_dependency {
         print_debug!("Writing soong file...");
 
@@ -47,6 +48,7 @@ fn generate_projects<'a>(
     all_projects: Vec<&'a mut dyn Project>,
     project_ids: Vec<ProjectId>,
     android_path: &Path,
+    temp_path: &Path,
 ) -> Result<(), String> {
     let mut projects_not_generated: HashMap<ProjectId, &mut dyn Project> = HashMap::new();
     let mut project_ids_to_generate: VecDeque<ProjectId> = VecDeque::new();
@@ -81,6 +83,7 @@ fn generate_projects<'a>(
             !project_ids_to_write.contains(project_id),
             &projects_generated,
             android_path,
+            temp_path,
         )?;
         projects_generated.insert(project.get_id(), project);
     }
@@ -88,35 +91,29 @@ fn generate_projects<'a>(
     Ok(())
 }
 
-fn parse_args(
-    executable: &str,
-    args: Vec<String>,
-) -> Result<(PathBuf, PathBuf, Vec<ProjectId>), String> {
-    let required_args = 3;
+fn parse_args(executable: &str, args: Vec<String>) -> Result<(PathBuf, Vec<ProjectId>), String> {
+    let required_args = 2;
     if args.len() < required_args {
-        return error!("USAGE: {executable} <android_dir> <{ANDROID_NDK}_dir> [<projects>]");
+        return error!("USAGE: {executable} <android_dir> [<projects>]");
     }
     let android_path = PathBuf::from(args[1].clone());
-    let ndk_path = PathBuf::from(args[2].clone());
-
-    let ndk_name = file_name(&ndk_path);
-    if ndk_name != ANDROID_NDK {
-        print_warn!("Expected '{ANDROID_NDK}' got '{ndk_name}'");
-    }
 
     let mut project_ids: Vec<ProjectId> = Vec::new();
     for arg in &args[required_args..] {
         project_ids.push(ProjectId::from(arg)?);
     }
-    Ok((android_path, ndk_path, project_ids))
+    Ok((android_path, project_ids))
 }
 
 fn main() -> Result<(), String> {
     let args: Vec<String> = std::env::args().collect();
     let executable_path = PathBuf::from(&args[0]);
     let executable = file_name(&executable_path);
-    let (android_path, ndk_path, project_ids) = parse_args(&executable, args)?;
+    let (android_path, project_ids) = parse_args(&executable, args)?;
     let temp_path = std::env::temp_dir().join(&executable);
+    if let Err(err) = std::fs::create_dir_all(&temp_path) {
+        return error!("Could not create temporary directory {temp_path:#?}: {err}");
+    }
 
     let mut clvk = clvk::Clvk::default();
     let mut clspv = clspv::Clspv::default();
@@ -124,18 +121,15 @@ fn main() -> Result<(), String> {
     let mut spirv_tools = spirv_tools::SpirvTools::default();
     let mut spirv_headers = spirv_headers::SpirvHeaders::default();
 
-    let mut all_projects: Vec<&mut dyn Project> = vec![
+    let all_projects: Vec<&mut dyn Project> = vec![
         &mut clvk,
         &mut clspv,
         &mut llvm_project,
         &mut spirv_tools,
         &mut spirv_headers,
     ];
-    for project in all_projects.iter_mut() {
-        project.init(&android_path, &ndk_path, &temp_path)?;
-    }
 
-    if let Err(err) = generate_projects(all_projects, project_ids, &android_path) {
+    if let Err(err) = generate_projects(all_projects, project_ids, &android_path, &temp_path) {
         print_error!("{err}");
         Err(format!("{executable} failed"))
     } else {

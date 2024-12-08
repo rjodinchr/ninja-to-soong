@@ -34,13 +34,6 @@ jobs:
             git -C ${{ env.android }}/external/${name} fetch --depth 1 origin $(cat ${repo}/VERSION)
             git -C ${{ env.android }}/external/${name} checkout $(cat ${repo}/VERSION)
           done
-      - name: Download NDK
-        shell: bash
-        run: |
-          set -x
-          ndk_zip=${{ env.ndk }}-linux.zip
-          wget -q https://dl.google.com/android/repository/${ndk_zip}
-          unzip -q ${ndk_zip}
       - name: Run ninja-to-soong
         shell: bash
         env:

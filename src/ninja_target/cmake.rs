@@ -4,7 +4,6 @@
 use std::collections::HashMap;
 
 use super::*;
-use crate::utils::SKIP_GEN_NINJA;
 
 #[derive(Debug)]
 pub struct CmakeNinjaTarget {
@@ -156,7 +155,7 @@ pub fn cmake_configure(
             "Ninja",
             "-DCMAKE_BUILD_TYPE=Release",
             &("-DCMAKE_TOOLCHAIN_FILE=".to_string()
-                + &path_to_string(ndk_path.join("build/cmake/android.toolchain.cmake"))),
+                + &path_to_string(ndk_path.join(NDK_CMAKE_TOOLCHAIN_PATH))),
             &("-DANDROID_ABI=".to_string() + ANDROID_ABI),
             &("-DANDROID_PLATFORM=".to_string() + ANDROID_PLATFORM),
         ])
