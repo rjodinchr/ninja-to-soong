@@ -195,41 +195,35 @@ impl<'a> SoongPackage<'a> {
 
         let target_name = target.get_name(self.target_prefix);
 
-        let static_libs = static_libs
+        let mut static_libs = static_libs
             .into_iter()
             .fold(HashSet::new(), |mut vec, lib| {
                 let library = path_to_string(&lib);
-                if project.ignore_lib(&library)
-                    || path_to_id(
-                        Path::new(project.get_id().str()).join(project.get_library_name(&lib)),
-                    ) == target_name
-                {
+                if project.ignore_lib(&library) {
                     return vec;
                 }
                 vec.insert(if lib.starts_with(self.ndk_path) {
                     lib.file_stem().unwrap().to_str().unwrap().to_string()
                 } else {
                     self.generated_libraries.insert(lib.clone());
-                    path_to_id(project.get_library_name(&lib))
+                    let lib_id = path_to_id(project.get_library_name(&lib));
+                    project.get_target_alias(&lib_id).unwrap_or(lib_id)
                 });
                 vec
             });
-        let shared_libs = shared_libs
+        let mut shared_libs = shared_libs
             .into_iter()
             .fold(HashSet::new(), |mut vec, lib| {
                 let library = path_to_string(&lib);
-                if project.ignore_lib(&library)
-                    || path_to_id(
-                        Path::new(project.get_id().str()).join(project.get_library_name(&lib)),
-                    ) == target_name
-                {
+                if project.ignore_lib(&library) {
                     return vec;
                 }
                 vec.insert(if lib.starts_with(self.ndk_path) {
                     lib.file_stem().unwrap().to_str().unwrap().to_string()
                 } else {
                     self.generated_libraries.insert(lib.clone());
-                    path_to_id(project.get_library_name(&lib))
+                    let lib_id = path_to_id(project.get_library_name(&lib));
+                    project.get_target_alias(&lib_id).unwrap_or(lib_id)
                 });
                 vec
             });
@@ -269,6 +263,14 @@ impl<'a> SoongPackage<'a> {
         }
         self.gen_deps.extend(gen_deps);
 
+        let module_name = if let Some(alias) = project.get_target_alias(&target_name) {
+            alias
+        } else {
+            target_name.clone()
+        };
+        static_libs.remove(&module_name);
+        shared_libs.remove(&module_name);
+
         let mut module = SoongModule::new(name);
         if project.optimize_target_for_size(&target_name) {
             module.add_bool("optimize_for_size", true);
@@ -288,14 +290,7 @@ impl<'a> SoongPackage<'a> {
                 path_to_string(strip_prefix(vs, &self.src_path)),
             );
         }
-        module.add_str(
-            "name",
-            if let Some(alias) = project.get_target_alias(&target_name) {
-                alias
-            } else {
-                target_name
-            },
-        );
+        module.add_str("name", module_name);
         Ok(module)
     }
 
