@@ -3,8 +3,7 @@
 
 use std::collections::HashMap;
 
-use crate::ninja_target::*;
-use crate::parser::*;
+use crate::ninja_target;
 use crate::soong_module::*;
 use crate::soong_package::*;
 use crate::utils::*;
@@ -93,9 +92,13 @@ pub type GenDepsMap = HashMap<GenDeps, Vec<PathBuf>>;
 pub type ProjectsMap<'a> = HashMap<ProjectId, &'a dyn Project>;
 
 pub trait Project {
-    fn init(&mut self, android_path: &Path, ndk_path: &Path, temp_path: &Path);
     fn get_id(&self) -> ProjectId;
-    fn generate_package(&mut self, projects_map: &ProjectsMap) -> Result<SoongPackage, String>;
+    fn generate_package(
+        &mut self,
+        android_path: &Path,
+        temp_path: &Path,
+        projects_map: &ProjectsMap,
+    ) -> Result<SoongPackage, String>;
 
     fn get_cmd_output(&self, output: &Path) -> PathBuf {
         output.to_path_buf()
@@ -116,6 +119,12 @@ pub trait Project {
         library.to_path_buf()
     }
     fn get_project_deps(&self) -> Vec<ProjectId> {
+        Vec::new()
+    }
+    fn get_shared_libs(&self, _target: &str) -> Vec<String> {
+        Vec::new()
+    }
+    fn get_static_libs(&self, _target: &str) -> Vec<String> {
         Vec::new()
     }
     fn get_target_header_libs(&self, _target: &str) -> Vec<String> {
@@ -140,6 +149,9 @@ pub trait Project {
         false
     }
     fn ignore_link_flag(&self, _flag: &str) -> bool {
+        false
+    }
+    fn ignore_source(&self, _source: &Path) -> bool {
         false
     }
     fn ignore_target(&self, _target: &Path) -> bool {

@@ -13,23 +13,27 @@ pub struct LlvmProject {
     src_path: PathBuf,
     build_path: PathBuf,
     ndk_path: PathBuf,
-    copy_gen_deps: bool,
 }
 
 impl Project for LlvmProject {
-    fn init(&mut self, android_path: &Path, ndk_path: &Path, temp_path: &Path) {
-        self.src_path = self.get_id().android_path(android_path);
-        self.build_path = temp_path.join(self.get_id().str());
-        self.ndk_path = ndk_path.to_path_buf();
-        self.copy_gen_deps = false;
-    }
-
     fn get_id(&self) -> ProjectId {
         ProjectId::LlvmProject
     }
 
-    fn generate_package(&mut self, projects_map: &ProjectsMap) -> Result<SoongPackage, String> {
-        let configured = cmake_configure(
+    fn generate_package(
+        &mut self,
+        android_path: &Path,
+        temp_path: &Path,
+        projects_map: &ProjectsMap,
+    ) -> Result<SoongPackage, String> {
+        self.src_path = self.get_id().android_path(android_path);
+        self.build_path = temp_path.join(self.get_id().str());
+        self.ndk_path = get_ndk_path(temp_path)?;
+
+        let mut targets_to_build = Vec::new();
+        targets_to_build.extend(GenDeps::TargetsToGen.get(self, ProjectId::Clvk, projects_map));
+        targets_to_build.extend(GenDeps::LibclcBins.get(self, ProjectId::Clspv, projects_map));
+        let (targets, built) = ninja_target::cmake::get_targets(
             &self.src_path.join("llvm"),
             &self.build_path,
             &self.ndk_path,
@@ -39,17 +43,9 @@ impl Project for LlvmProject {
                 "-DLIBCLC_TARGETS_TO_BUILD=clspv--;clspv64--",
                 "-DLLVM_TARGETS_TO_BUILD=",
             ],
+            Some(targets_to_build),
         )?;
-        if configured {
-            let mut targets = Vec::new();
-            targets.extend(GenDeps::TargetsToGen.get(self, ProjectId::Clvk, projects_map));
-            targets.extend(GenDeps::LibclcBins.get(self, ProjectId::Clspv, projects_map));
-            if cmake_build(&self.build_path, &targets)? {
-                self.copy_gen_deps = true;
-            }
-        }
-
-        let targets = parse_build_ninja::<CmakeNinjaTarget>(&self.build_path)?;
+        let copy_gen_deps = if built { true } else { false };
 
         let mut package = SoongPackage::new(
             &self.src_path,
@@ -117,7 +113,7 @@ impl Project for LlvmProject {
         )?;
 
         let cmake_generated_path = Path::new(CMAKE_GENERATED);
-        if self.copy_gen_deps && File::open(cmake_generated_path).is_ok() {
+        if copy_gen_deps && File::open(cmake_generated_path).is_ok() {
             if let Err(err) = std::fs::remove_dir_all(cmake_generated_path) {
                 return error!("remove_dir_all failed: {err}");
             }
@@ -156,7 +152,12 @@ impl Project for LlvmProject {
 
         for clang_header in GenDeps::ClangHeaders.get(self, ProjectId::Clspv, projects_map) {
             package.add_module(SoongModule::new_copy_genrule(
-                dep_name(&clang_header, "clang", GenDeps::ClangHeaders.str()),
+                dep_name(
+                    &clang_header,
+                    "clang",
+                    GenDeps::ClangHeaders.str(),
+                    &self.build_path,
+                ),
                 path_to_string(&clang_header),
                 file_name(&clang_header),
             ));
@@ -164,7 +165,12 @@ impl Project for LlvmProject {
         for file in libclc_deps {
             let file_path = cmake_generated_path.join(file);
             package.add_module(SoongModule::new_copy_genrule(
-                dep_name(&file_path, cmake_generated_path, GenDeps::LibclcBins.str()),
+                dep_name(
+                    &file_path,
+                    cmake_generated_path,
+                    GenDeps::LibclcBins.str(),
+                    &self.build_path,
+                ),
                 path_to_string(&file_path),
                 file_name(&file_path),
             ));

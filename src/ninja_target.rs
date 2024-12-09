@@ -3,12 +3,16 @@
 
 use std::collections::{HashMap, HashSet};
 
+use crate::parser::parse_build_ninja;
 use crate::utils::*;
 
 pub mod cmake;
 pub mod common;
 
-pub use cmake::*;
+pub type NinjaRuleCmd = (String, Option<(String, String)>);
+pub type NinjaRulesMap = HashMap<String, NinjaRuleCmd>;
+
+pub const SKIP_GEN_NINJA: &str = "NINJA_TO_SOONG_SKIP_GEN_NINJA";
 
 pub enum NinjaRule {
     StaticLibrary,
@@ -31,20 +35,20 @@ pub trait NinjaTarget: std::fmt::Debug {
     }
 
     fn set_globals(&mut self, globals: HashMap<String, String>);
-    fn set_rule(&mut self, rules: &HashMap<String, String>);
+    fn set_rule(&mut self, rules: &NinjaRulesMap);
     fn get_rule(&self) -> Option<NinjaRule>;
     fn get_inputs(&self) -> &Vec<PathBuf>;
     fn get_implicit_deps(&self) -> &Vec<PathBuf>;
     fn get_order_only_deps(&self) -> &Vec<PathBuf>;
     fn get_outputs(&self) -> &Vec<PathBuf>;
     fn get_implicit_ouputs(&self) -> &Vec<PathBuf>;
-    fn get_sources(&self) -> Result<Vec<PathBuf>, String>;
+    fn get_sources(&self, build_path: &Path) -> Result<Vec<PathBuf>, String>;
     fn get_link_flags(&self) -> (Option<PathBuf>, Vec<String>);
-    fn get_link_libraries(&self, prefix: &Path) -> Result<(Vec<PathBuf>, Vec<PathBuf>), String>;
+    fn get_link_libraries(&self) -> Result<(Vec<PathBuf>, Vec<PathBuf>), String>;
     fn get_defines(&self) -> Vec<String>;
-    fn get_includes(&self) -> Vec<PathBuf>;
+    fn get_includes(&self, build_path: &Path) -> Vec<PathBuf>;
     fn get_cflags(&self) -> Vec<String>;
-    fn get_cmd(&self) -> Result<Option<String>, String>;
+    fn get_cmd(&self) -> Result<Option<NinjaRuleCmd>, String>;
 }
 
 #[derive(Debug)]

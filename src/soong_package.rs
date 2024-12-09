@@ -151,22 +151,34 @@ impl<'a> SoongPackage<'a> {
                 return error!("unsupported input for library: {input:#?}");
             };
 
-            let sources = target.get_sources()?;
+            let sources = target.get_sources(self.build_path)?;
             for source in sources {
+                if project.ignore_source(&source) {
+                    continue;
+                }
                 srcs.insert(path_to_string(strip_prefix(source, self.src_path)));
             }
 
-            let (static_libraries, shared_libraries) =
-                target.get_link_libraries(self.target_prefix)?;
+            let (static_libraries, shared_libraries) = target.get_link_libraries()?;
             static_libs.extend(static_libraries);
             shared_libs.extend(shared_libraries);
 
-            update_includes(target.get_includes(), project, &mut includes, self.src_path);
+            update_includes(
+                target.get_includes(self.build_path),
+                project,
+                &mut includes,
+                self.src_path,
+            );
             update_cflags_with_defines(target.get_defines(), project, &mut cflags);
             update_cflags(target.get_cflags(), project, &mut cflags);
         }
 
-        update_includes(target.get_includes(), project, &mut includes, self.src_path);
+        update_includes(
+            target.get_includes(self.build_path),
+            project,
+            &mut includes,
+            self.src_path,
+        );
         update_cflags_with_defines(target.get_defines(), project, &mut cflags);
         update_cflags(target.get_cflags(), project, &mut cflags);
 
@@ -177,38 +189,46 @@ impl<'a> SoongPackage<'a> {
             }
             vec
         });
-        let (static_libraries, shared_libraries) = target.get_link_libraries(self.target_prefix)?;
+        let (static_libraries, shared_libraries) = target.get_link_libraries()?;
         static_libs.extend(static_libraries);
         shared_libs.extend(shared_libraries);
 
         let target_name = target.get_name(self.target_prefix);
 
-        let static_libs = static_libs.into_iter().fold(Vec::new(), |mut vec, lib| {
-            let library = path_to_string(&lib);
-            if project.ignore_lib(&library) || library == target_name {
-                return vec;
-            }
-            vec.push(if lib.starts_with(self.ndk_path) {
-                lib.file_stem().unwrap().to_str().unwrap().to_string()
-            } else {
-                self.generated_libraries.insert(lib.clone());
-                path_to_id(project.get_library_name(&lib))
+        let mut static_libs = static_libs
+            .into_iter()
+            .fold(HashSet::new(), |mut vec, lib| {
+                let library = path_to_string(&lib);
+                if project.ignore_lib(&library) {
+                    return vec;
+                }
+                vec.insert(if lib.starts_with(self.ndk_path) {
+                    lib.file_stem().unwrap().to_str().unwrap().to_string()
+                } else {
+                    self.generated_libraries.insert(lib.clone());
+                    let lib_id = path_to_id(project.get_library_name(&lib));
+                    project.get_target_alias(&lib_id).unwrap_or(lib_id)
+                });
+                vec
             });
-            vec
-        });
-        let shared_libs = shared_libs.into_iter().fold(Vec::new(), |mut vec, lib| {
-            let library = path_to_string(&lib);
-            if project.ignore_lib(&library) || library == target_name {
-                return vec;
-            }
-            vec.push(if lib.starts_with(self.ndk_path) {
-                lib.file_stem().unwrap().to_str().unwrap().to_string()
-            } else {
-                self.generated_libraries.insert(lib.clone());
-                path_to_id(project.get_library_name(&lib))
+        static_libs.extend(project.get_static_libs(&target_name));
+        let mut shared_libs = shared_libs
+            .into_iter()
+            .fold(HashSet::new(), |mut vec, lib| {
+                let library = path_to_string(&lib);
+                if project.ignore_lib(&library) {
+                    return vec;
+                }
+                vec.insert(if lib.starts_with(self.ndk_path) {
+                    lib.file_stem().unwrap().to_str().unwrap().to_string()
+                } else {
+                    self.generated_libraries.insert(lib.clone());
+                    let lib_id = path_to_id(project.get_library_name(&lib));
+                    project.get_target_alias(&lib_id).unwrap_or(lib_id)
+                });
+                vec
             });
-            vec
-        });
+        shared_libs.extend(project.get_shared_libs(&target_name));
 
         let headers = targets_map.traverse_from(
             target.get_outputs().clone(),
@@ -245,6 +265,14 @@ impl<'a> SoongPackage<'a> {
         }
         self.gen_deps.extend(gen_deps);
 
+        let module_name = if let Some(alias) = project.get_target_alias(&target_name) {
+            alias
+        } else {
+            target_name.clone()
+        };
+        static_libs.remove(&module_name);
+        shared_libs.remove(&module_name);
+
         let mut module = SoongModule::new(name);
         if project.optimize_target_for_size(&target_name) {
             module.add_bool("optimize_for_size", true);
@@ -254,8 +282,8 @@ impl<'a> SoongPackage<'a> {
         module.add_vec("local_include_dirs", Vec::from_iter(includes));
         module.add_vec("cflags", Vec::from_iter(cflags));
         module.add_vec("ldflags", link_flags);
-        module.add_vec("static_libs", static_libs);
-        module.add_vec("shared_libs", shared_libs);
+        module.add_vec("static_libs", Vec::from_iter(static_libs));
+        module.add_vec("shared_libs", Vec::from_iter(shared_libs));
         module.add_vec("header_libs", project.get_target_header_libs(&target_name));
         module.add_vec("generated_headers", gen_headers);
         if let Some(vs) = version_script {
@@ -264,25 +292,19 @@ impl<'a> SoongPackage<'a> {
                 path_to_string(strip_prefix(vs, &self.src_path)),
             );
         }
-        module.add_str(
-            "name",
-            if let Some(alias) = project.get_target_alias(&target_name) {
-                alias
-            } else {
-                target_name
-            },
-        );
+        module.add_str("name", module_name);
         Ok(module)
     }
 
     fn rework_cmd(
         &self,
-        mut cmd: String,
+        rule_cmd: NinjaRuleCmd,
         inputs: HashSet<PathBuf>,
         outputs: &Vec<PathBuf>,
         deps: HashMap<PathBuf, String>,
         project: &dyn Project,
     ) -> String {
+        let mut cmd = rule_cmd.0;
         while let Some(index) = cmd.find("python") {
             let begin = std::str::from_utf8(&cmd.as_bytes()[0..index])
                 .unwrap()
@@ -313,7 +335,10 @@ impl<'a> SoongPackage<'a> {
         }
         for input in inputs {
             let replace_input = String::from("$(location ")
-                + &path_to_string(strip_prefix(&input, self.src_path))
+                + &path_to_string(strip_prefix(
+                    canonicalize_path(&input, self.build_path),
+                    self.src_path,
+                ))
                 + ")";
             cmd = cmd.replace(&path_to_string(&input), &replace_input)
         }
@@ -321,13 +346,32 @@ impl<'a> SoongPackage<'a> {
             let replace_dep = String::from("$(location :") + &dep_target_name + ")";
             cmd = cmd.replace(&path_to_string(&dep), &replace_dep)
         }
+        if let Some((rsp_file, rsp_content)) = rule_cmd.1 {
+            let rsp = "$(genDir)/".to_string() + &rsp_file;
+            let mut rsp_files = Vec::new();
+            for file in rsp_content.split(" ") {
+                if file.is_empty() {
+                    continue;
+                }
+                rsp_files.push(
+                    String::from("$(location ")
+                        + &path_to_string(strip_prefix(
+                            canonicalize_path(file, self.build_path),
+                            self.src_path,
+                        ))
+                        + ")",
+                );
+            }
+            cmd = "echo \\\"".to_string() + &rsp_files.join(" ") + "\\\" > " + &rsp + " && " + &cmd;
+            cmd = cmd.replace("${rspfile}", &rsp);
+        }
         cmd
     }
 
     fn generate_custom_command<T>(
         &mut self,
         target: &T,
-        mut cmd: String,
+        rule_cmd: NinjaRuleCmd,
         project: &dyn Project,
     ) -> Result<SoongModule, String>
     where
@@ -340,22 +384,33 @@ impl<'a> SoongPackage<'a> {
         'target_inputs: for input in all_inputs {
             for (prefix, dep) in project.get_deps_info() {
                 if input.starts_with(&prefix) {
-                    deps.insert(input.clone(), dep_name(&input, &prefix, dep.str()));
+                    deps.insert(
+                        input.clone(),
+                        dep_name(&input, &prefix, dep.str(), self.build_path),
+                    );
                     continue 'target_inputs;
                 }
             }
-            if !input.starts_with(self.src_path) {
+            if !canonicalize_path(&input, self.build_path).starts_with(self.src_path) {
                 deps.insert(
                     input.clone(),
-                    dep_name(&input, self.build_path, project.get_id().str()),
+                    dep_name(
+                        &input,
+                        self.build_path,
+                        project.get_id().str(),
+                        self.build_path,
+                    ),
                 );
             } else {
-                inputs.insert(input.clone());
+                inputs.insert(input);
             }
         }
         let mut srcs_set: HashSet<String> = HashSet::new();
         for input in &inputs {
-            srcs_set.insert(path_to_string(strip_prefix(input, self.src_path)));
+            srcs_set.insert(path_to_string(strip_prefix(
+                canonicalize_path(input, self.build_path),
+                self.src_path,
+            )));
         }
         for (dep, dep_target_name) in &deps {
             srcs_set.insert(String::from(":") + dep_target_name);
@@ -366,7 +421,7 @@ impl<'a> SoongPackage<'a> {
         for output in target_outputs {
             out_set.insert(path_to_string(project.get_cmd_output(output)));
         }
-        cmd = self.rework_cmd(cmd, inputs, target_outputs, deps, project);
+        let cmd = self.rework_cmd(rule_cmd, inputs, target_outputs, deps, project);
 
         let mut module = SoongModule::new("cc_genrule");
         module.add_str("name", target.get_name(self.target_prefix));

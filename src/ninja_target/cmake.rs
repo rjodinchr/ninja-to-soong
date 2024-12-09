@@ -39,7 +39,7 @@ impl NinjaTarget for CmakeNinjaTarget {
 
     fn set_globals(&mut self, _globals: HashMap<String, String>) {}
 
-    fn set_rule(&mut self, _rules: &HashMap<String, String>) {}
+    fn set_rule(&mut self, _rules: &NinjaRulesMap) {}
 
     fn get_rule(&self) -> Option<NinjaRule> {
         Some(if self.rule.starts_with("CXX_SHARED_LIBRARY") {
@@ -73,11 +73,11 @@ impl NinjaTarget for CmakeNinjaTarget {
         &self.implicit_outputs
     }
 
-    fn get_sources(&self) -> Result<Vec<PathBuf>, String> {
+    fn get_sources(&self, build_path: &Path) -> Result<Vec<PathBuf>, String> {
         if self.inputs.len() != 1 {
             return error!("Too many inputs in: {self:#?}");
         }
-        Ok(self.inputs.clone())
+        Ok(common::get_sources(&self.inputs, build_path))
     }
 
     fn get_link_flags(&self) -> (Option<PathBuf>, Vec<String>) {
@@ -87,7 +87,7 @@ impl NinjaTarget for CmakeNinjaTarget {
         common::get_link_flags(flags)
     }
 
-    fn get_link_libraries(&self, _prefix: &Path) -> Result<(Vec<PathBuf>, Vec<PathBuf>), String> {
+    fn get_link_libraries(&self) -> Result<(Vec<PathBuf>, Vec<PathBuf>), String> {
         let Some(libs) = self.variables.get("LINK_LIBRARIES") else {
             return Ok((Vec::new(), Vec::new()));
         };
@@ -101,11 +101,11 @@ impl NinjaTarget for CmakeNinjaTarget {
         common::get_defines(defs)
     }
 
-    fn get_includes(&self) -> Vec<PathBuf> {
+    fn get_includes(&self, build_path: &Path) -> Vec<PathBuf> {
         let Some(incs) = self.variables.get("INCLUDES") else {
             return Vec::new();
         };
-        common::get_includes(incs)
+        common::get_includes(incs, build_path)
     }
 
     fn get_cflags(&self) -> Vec<String> {
@@ -115,7 +115,7 @@ impl NinjaTarget for CmakeNinjaTarget {
         common::get_cflags(flags)
     }
 
-    fn get_cmd(&self) -> Result<Option<String>, String> {
+    fn get_cmd(&self) -> Result<Option<NinjaRuleCmd>, String> {
         let Some(command) = self.variables.get("COMMAND") else {
             return error!("No command in: {self:#?}");
         };
@@ -130,18 +130,18 @@ impl NinjaTarget for CmakeNinjaTarget {
         Ok(if command.contains("bin/cmake ") {
             None
         } else {
-            Some(command.to_string())
+            Some((command.to_string(), None))
         })
     }
 }
 
-pub fn cmake_configure(
+fn cmake_configure(
     src_path: &Path,
     build_path: &Path,
     ndk_path: &Path,
-    args: Vec<&str>,
+    cmake_args: Vec<&str>,
 ) -> Result<bool, String> {
-    if std::env::var("NINJA_TO_SOONG_SKIP_CMAKE_CONFIGURE").is_ok() {
+    if std::env::var(SKIP_GEN_NINJA).is_ok() {
         return Ok(false);
     }
     let mut command = std::process::Command::new("cmake");
@@ -155,11 +155,11 @@ pub fn cmake_configure(
             "Ninja",
             "-DCMAKE_BUILD_TYPE=Release",
             &("-DCMAKE_TOOLCHAIN_FILE=".to_string()
-                + &path_to_string(ndk_path.join("build/cmake/android.toolchain.cmake"))),
+                + &path_to_string(ndk_path.join(NDK_CMAKE_TOOLCHAIN_PATH))),
             &("-DANDROID_ABI=".to_string() + ANDROID_ABI),
             &("-DANDROID_PLATFORM=".to_string() + ANDROID_PLATFORM),
         ])
-        .args(args);
+        .args(cmake_args);
     println!("{command:#?}");
     if let Err(err) = command.status() {
         return error!("cmake_configure({src_path:#?}) failed: {err}");
@@ -167,7 +167,7 @@ pub fn cmake_configure(
     Ok(true)
 }
 
-pub fn cmake_build(build_path: &Path, targets: &Vec<PathBuf>) -> Result<bool, String> {
+fn cmake_build(build_path: &Path, targets: &Vec<PathBuf>) -> Result<bool, String> {
     if std::env::var("NINJA_TO_SOONG_SKIP_CMAKE_BUILD").is_ok() {
         return Ok(false);
     }
@@ -185,4 +185,25 @@ pub fn cmake_build(build_path: &Path, targets: &Vec<PathBuf>) -> Result<bool, St
         return error!("cmake_build({build_path:#?}) failed: {err}");
     }
     Ok(true)
+}
+
+pub fn get_targets(
+    src_path: &Path,
+    build_path: &Path,
+    ndk_path: &Path,
+    cmake_args: Vec<&str>,
+    targets_to_build: Option<Vec<PathBuf>>,
+) -> Result<(Vec<CmakeNinjaTarget>, bool), String> {
+    let configured = cmake_configure(src_path, build_path, ndk_path, cmake_args)?;
+    let built = if configured {
+        if let Some(targets) = targets_to_build {
+            cmake_build(build_path, &targets)?
+        } else {
+            false
+        }
+    } else {
+        false
+    };
+
+    Ok((parse_build_ninja(build_path)?, built))
 }

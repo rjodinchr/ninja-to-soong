@@ -145,26 +145,45 @@ where
     ))
 }
 
-fn parse_ninja_rule(line: &str, mut lines: std::str::Lines) -> Result<(String, String), String> {
+fn parse_ninja_rule(
+    line: &str,
+    mut lines: std::str::Lines,
+) -> Result<(String, NinjaRuleCmd), String> {
     let Some(rule) = line.strip_prefix("rule ") else {
         return error!("parse_ninja_rule failed: '{line}'");
     };
+    let mut command = None;
+    let mut rspfile = None;
+    let mut rspfile_content = None;
     while let Some(next_line) = lines.next() {
         if !next_line.starts_with(INDENT) {
-            return error!("parse_ninja_rule failed");
+            break;
         }
         let (key, value) = parse_key_value(next_line)?;
-        if key == "command" {
-            return Ok((rule.to_string(), value));
+        match key.as_str() {
+            "command" => command = Some(value),
+            "rspfile" => rspfile = Some(value),
+            "rspfile_content" => rspfile_content = Some(value),
+            _ => (),
         }
     }
-    error!("parse_ninja_rule failed")
+    if command.is_none() {
+        return error!("parse_ninja_rule failed");
+    }
+    return Ok((
+        rule.to_string(),
+        (
+            command.unwrap(),
+            if rspfile.is_some() && rspfile_content.is_some() {
+                Some((rspfile.unwrap(), rspfile_content.unwrap()))
+            } else {
+                None
+            },
+        ),
+    ));
 }
 
-fn parse_subninja_file<T>(
-    line: &str,
-    dir_path: &Path,
-) -> Result<(Vec<T>, HashMap<String, String>), String>
+fn parse_subninja_file<T>(line: &str, dir_path: &Path) -> Result<(Vec<T>, NinjaRulesMap), String>
 where
     T: NinjaTarget,
 {
@@ -178,8 +197,8 @@ where
 
 fn parse_ninja_file<'a, T>(
     file_path: PathBuf,
-    dir_path: &Path,
-) -> Result<(Vec<T>, HashMap<String, String>), String>
+    build_path: &Path,
+) -> Result<(Vec<T>, NinjaRulesMap), String>
 where
     T: NinjaTarget,
 {
@@ -200,12 +219,12 @@ where
         {
             continue;
         } else if line.starts_with("rule ") {
-            let (rule, command) = parse_ninja_rule(line, lines.clone())?;
-            all_rules.insert(rule, command);
+            let (rule, rule_command) = parse_ninja_rule(line, lines.clone())?;
+            all_rules.insert(rule, rule_command);
         } else if line.starts_with("build ") {
             targets.push(parse_build_target(line, lines.clone())?);
         } else if line.starts_with("subninja ") || line.starts_with("include ") {
-            let (subtargets, rules) = parse_subninja_file(line, dir_path)?;
+            let (subtargets, rules) = parse_subninja_file(line, build_path)?;
             all_targets.extend(subtargets);
             all_rules.extend(rules);
         } else {
@@ -221,12 +240,12 @@ where
     Ok((all_targets, all_rules))
 }
 
-pub fn parse_build_ninja<T>(ninja_file_dir_path: &Path) -> Result<Vec<T>, String>
+pub fn parse_build_ninja<T>(build_path: &Path) -> Result<Vec<T>, String>
 where
     T: NinjaTarget,
 {
-    let file_path = ninja_file_dir_path.join("build.ninja");
-    let (mut targets, rules) = parse_ninja_file::<T>(file_path, ninja_file_dir_path)?;
+    let file_path = build_path.join("build.ninja");
+    let (mut targets, rules) = parse_ninja_file::<T>(file_path, build_path)?;
     for target in &mut targets {
         target.set_rule(&rules);
     }

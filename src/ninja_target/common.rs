@@ -34,19 +34,19 @@ pub fn get_defines(defs: &str) -> Vec<String> {
         if define.is_empty() {
             continue;
         }
-        defines.push(define.trim().to_string());
+        defines.push(define.trim().replace("\\(", "(").replace("\\)", ")"));
     }
     defines
 }
 
-pub fn get_includes(incs: &str) -> Vec<PathBuf> {
+pub fn get_includes(incs: &str, build_path: &Path) -> Vec<PathBuf> {
     let mut includes = Vec::new();
     for inc in incs.split(" ") {
         let include = inc.strip_prefix("-I").unwrap_or(inc);
         if include.is_empty() || include == "isystem" {
             continue;
         }
-        includes.push(PathBuf::from(include));
+        includes.push(canonicalize_path(include, build_path));
     }
     includes
 }
@@ -72,4 +72,12 @@ pub fn get_cflags(flags: &str) -> Vec<String> {
         cflags.push(flag.to_string());
     }
     cflags
+}
+
+pub fn get_sources(ins: &Vec<PathBuf>, build_path: &Path) -> Vec<PathBuf> {
+    let mut inputs = Vec::new();
+    for input in ins {
+        inputs.push(canonicalize_path(input, build_path));
+    }
+    inputs
 }

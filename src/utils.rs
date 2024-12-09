@@ -6,11 +6,12 @@ use std::io::{Read, Write};
 
 pub use std::path::{Path, PathBuf};
 
+pub const LLVM_DISABLE_ZLIB: &str = "-DLLVM_ENABLE_ZLIB=OFF";
+
 pub const TAB: &str = "   ";
 pub const COLOR_RED: &str = "\x1b[00;31m";
 pub const COLOR_GREEN: &str = "\x1b[00;32m";
 pub const COLOR_GREEN_BOLD: &str = "\x1b[01;32m";
-pub const COLOR_YELLOW_BOLD: &str = "\x1b[01;33m";
 pub const COLOR_NONE: &str = "\x1b[0m";
 
 #[macro_export]
@@ -47,12 +48,6 @@ macro_rules! print_info {
     };
 }
 #[macro_export]
-macro_rules! print_warn {
-    ($($arg:tt)*) => {
-        print_internal!(COLOR_YELLOW_BOLD, "", COLOR_NONE, $($arg)*);
-    };
-}
-#[macro_export]
 macro_rules! print_error {
     ($($arg:tt)*) => {
         print_internal!(COLOR_RED, "", COLOR_NONE, $($arg)*);
@@ -67,12 +62,52 @@ macro_rules! error {
 }
 pub use {error, print_internal, print_verbose};
 
+const ARM: bool = true;
 pub const ANDROID_NDK: &str = "android-ndk-r27c";
-pub const ANDROID_ISA: &str = "aarch64"; // "x86_64"
-pub const ANDROID_ABI: &str = "arm64-v8a"; // "x86_64"
 pub const ANDROID_PLATFORM: &str = "35";
+pub const ANDROID_ISA: &str = if ARM { "aarch64" } else { "x86_64" };
+pub const ANDROID_ABI: &str = if ARM { "arm64-v8a" } else { "x86_64" };
+pub const ANDROID_CPU: &str = if ARM { "arm64" } else { "x64" };
 
-pub const LLVM_DISABLE_ZLIB: &str = "-DLLVM_ENABLE_ZLIB=OFF";
+pub const NDK_CMAKE_TOOLCHAIN_PATH: &str = "build/cmake/android.toolchain.cmake";
+
+pub fn get_ndk_path(temp_path: &Path) -> Result<PathBuf, String> {
+    let ndk_path = temp_path.join(ANDROID_NDK);
+    if File::open(ndk_path.join(NDK_CMAKE_TOOLCHAIN_PATH)).is_ok() {
+        return Ok(ndk_path);
+    }
+
+    let ndk_zip = path_to_string(temp_path.join("android-ndk.zip"));
+    let mut wget = std::process::Command::new("wget");
+    let ndk_url =
+        "https://dl.google.com/android/repository/".to_string() + ANDROID_NDK + "-linux.zip";
+    wget.args([&ndk_url, "-q", "-O", &ndk_zip]);
+    println!("{wget:#?}");
+    if let Err(err) = wget.status() {
+        return error!("wget {ndk_url} failed: {err}");
+    }
+
+    let mut unzip = std::process::Command::new("unzip");
+    unzip.args(["-q", &ndk_zip, "-d", &path_to_string(temp_path)]);
+    println!("{unzip:#?}");
+    if let Err(err) = unzip.status() {
+        return error!("unzip {ndk_zip} failed: {err}");
+    }
+
+    Ok(ndk_path)
+}
+
+pub fn canonicalize_path<P: AsRef<Path>>(path: P, build_path: &Path) -> PathBuf {
+    let path_buf = path.as_ref().to_path_buf();
+    if path_buf.has_root() {
+        path_buf
+    } else {
+        build_path
+            .join(&path_buf)
+            .canonicalize()
+            .unwrap_or(path_buf)
+    }
+}
 
 pub fn path_to_string<P: AsRef<Path>>(path: P) -> String {
     path.as_ref().to_str().unwrap_or_default().to_string()
@@ -108,8 +143,8 @@ pub fn split_path(path: &Path, delimiter: &str) -> Option<(PathBuf, PathBuf)> {
     None
 }
 
-pub fn dep_name<P: AsRef<Path>>(from: &Path, prefix: P, path: &str) -> String {
-    path_to_id(Path::new(path).join(strip_prefix(from, prefix)))
+pub fn dep_name<P: AsRef<Path>>(from: &Path, prefix: P, path: &str, build_path: &Path) -> String {
+    path_to_id(Path::new(path).join(strip_prefix(canonicalize_path(from, build_path), prefix)))
 }
 
 pub fn copy_file(from: &Path, to: &Path) -> Result<(), String> {

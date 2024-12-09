@@ -20,7 +20,6 @@ jobs:
         run: |
           set -x
           echo "android=${{ github.workspace }}/android" >> $GITHUB_ENV
-          echo "ndk=android-ndk-r27c" >> $GITHUB_ENV
       - name: Checkout repositories
         shell: bash
         run: |
@@ -34,20 +33,13 @@ jobs:
             git -C ${{ env.android }}/external/${name} fetch --depth 1 origin $(cat ${repo}/VERSION)
             git -C ${{ env.android }}/external/${name} checkout $(cat ${repo}/VERSION)
           done
-      - name: Download NDK
-        shell: bash
-        run: |
-          set -x
-          ndk_zip=${{ env.ndk }}-linux.zip
-          wget -q https://dl.google.com/android/repository/${ndk_zip}
-          unzip -q ${ndk_zip}
       - name: Run ninja-to-soong
         shell: bash
         env:
           NINJA_TO_SOONG_SKIP_CMAKE_BUILD: 1
         run: |
           set -x
-          cargo run --release -- $(realpath ${{ env.android }}) $(realpath ${{ env.ndk }})
+          cargo run --release -- $(realpath ${{ env.android }})
       - name: Check generated files
         shell: bash
         run: |

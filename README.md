@@ -13,20 +13,23 @@
 
 # Supported projects
 
-* [clvk](https://github.com/kpet/clvk) and all its submodules (within the of limit of clvk's requirement)
-  * [clspv](https://github.com/google/clspv)
-    * [llvm-project](https://github.com/llvm/llvm-project)
-  * [SPIRV-Tools](https://github.com/KhronosGroup/SPIRV-Tools)
-  * [SPIRV-Headers](https://github.com/KhronosGroup/SPIRV-Headers)
+| Project | Ninja Generator | Targets |
+|-|-|-|
+| [clvk](https://github.com/kpet/clvk) | `CMake` | `libclvk.so` |
+| [clspv](https://github.com/google/clspv) | `CMake` | `clvk` dependencies |
+| [llvm-project](https://github.com/llvm/llvm-project) | `CMake` | `clvk` & `clspv` dependencies |
+| [SPIRV-Tools](https://github.com/KhronosGroup/SPIRV-Tools) | `CMake` | `clvk` dependencies |
+| [SPIRV-Headers](https://github.com/KhronosGroup/SPIRV-Headers) | `CMake` | `clspv` & `SPIRV-Tools` dependencies |
 
 # Dependencies
 
 `ninja-to-soong` depends on the following:
 
 * [Rust](https://www.rust-lang.org/)
-* [Android NDK](https://developer.android.com/ndk)
 * [Ninja](https://ninja-build.org/)
 * [CMake](https://cmake.org/)
+* [wget](https://www.gnu.org/software/wget/)
+* `unzip`
 
 # Using `ninja-to-soong`
 
@@ -49,7 +52,7 @@ If you want more information take a look at the [github action script](.github/w
 
 # Developement tips
 
-After a **full** first run of `ninja-to-soong`, it is possible to run with the environment variable `NINJA_TO_SOONG_SKIP_CMAKE_CONFIGURE` set to skip the cmake configure step for every project.
+After a **full** first run of `ninja-to-soong`, it is possible to run with the environment variable `NINJA_TO_SOONG_SKIP_GEN_NINJA` set to skip the generation of `Ninja` file for every project.
 
 It is possible to run a specific set of projects by adding them after the required arguments:
 ```
