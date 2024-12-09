@@ -211,6 +211,7 @@ impl<'a> SoongPackage<'a> {
                 });
                 vec
             });
+        static_libs.extend(project.get_static_libs(&target_name));
         let mut shared_libs = shared_libs
             .into_iter()
             .fold(HashSet::new(), |mut vec, lib| {
@@ -227,6 +228,7 @@ impl<'a> SoongPackage<'a> {
                 });
                 vec
             });
+        shared_libs.extend(project.get_shared_libs(&target_name));
 
         let headers = targets_map.traverse_from(
             target.get_outputs().clone(),

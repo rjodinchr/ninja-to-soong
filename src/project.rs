@@ -121,6 +121,12 @@ pub trait Project {
     fn get_project_deps(&self) -> Vec<ProjectId> {
         Vec::new()
     }
+    fn get_shared_libs(&self, _target: &str) -> Vec<String> {
+        Vec::new()
+    }
+    fn get_static_libs(&self, _target: &str) -> Vec<String> {
+        Vec::new()
+    }
     fn get_target_header_libs(&self, _target: &str) -> Vec<String> {
         Vec::new()
     }
