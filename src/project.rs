@@ -8,6 +8,7 @@ use crate::soong_module::*;
 use crate::soong_package::*;
 use crate::utils::*;
 
+pub mod angle;
 pub mod clspv;
 pub mod clvk;
 pub mod llvm_project;
@@ -16,6 +17,7 @@ pub mod spirv_tools;
 
 #[derive(Eq, PartialEq, Hash, Clone)]
 pub enum ProjectId {
+    Angle,
     Clvk,
     Clspv,
     LlvmProject,
@@ -23,6 +25,7 @@ pub enum ProjectId {
     SpirvTools,
 }
 
+const ANGLE_NAME: &str = "angle";
 const CLVK_NAME: &str = "clvk";
 const CLSPV_NAME: &str = "clspv";
 const LLVM_PROJECT_NAME: &str = "llvm-project";
@@ -32,6 +35,7 @@ const SPIRV_TOOLS_NAME: &str = "SPIRV-Tools";
 impl ProjectId {
     pub fn from(project: &str) -> Result<Self, String> {
         Ok(match project {
+            ANGLE_NAME => Self::Angle,
             CLVK_NAME => Self::Clvk,
             CLSPV_NAME => Self::Clspv,
             LLVM_PROJECT_NAME => Self::LlvmProject,
@@ -42,6 +46,7 @@ impl ProjectId {
     }
     pub const fn str(self) -> &'static str {
         match self {
+            Self::Angle => ANGLE_NAME,
             Self::Clvk => CLVK_NAME,
             Self::Clspv => CLSPV_NAME,
             Self::LlvmProject => LLVM_PROJECT_NAME,

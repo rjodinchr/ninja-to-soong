@@ -115,6 +115,7 @@ fn main() -> Result<(), String> {
         return error!("Could not create temporary directory {temp_path:#?}: {err}");
     }
 
+    let mut angle = angle::Angle::default();
     let mut clvk = clvk::Clvk::default();
     let mut clspv = clspv::Clspv::default();
     let mut llvm_project = llvm_project::LlvmProject::default();
@@ -122,6 +123,7 @@ fn main() -> Result<(), String> {
     let mut spirv_headers = spirv_headers::SpirvHeaders::default();
 
     let all_projects: Vec<&mut dyn Project> = vec![
+        &mut angle,
         &mut clvk,
         &mut clspv,
         &mut llvm_project,

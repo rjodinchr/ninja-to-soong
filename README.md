@@ -20,6 +20,7 @@
 | [llvm-project](https://github.com/llvm/llvm-project) | `CMake` | `clvk` & `clspv` dependencies |
 | [SPIRV-Tools](https://github.com/KhronosGroup/SPIRV-Tools) | `CMake` | `clvk` dependencies |
 | [SPIRV-Headers](https://github.com/KhronosGroup/SPIRV-Headers) | `CMake` | `clspv` & `SPIRV-Tools` dependencies |
+| [angle](https://github.com/google/angle) (WIP) | `GN` | `libEGL_angle.so`, `libGLESv2_angle.so`, `libGLESv1_CM_angle.so` |
 
 # Dependencies
 
@@ -28,6 +29,7 @@
 * [Rust](https://www.rust-lang.org/)
 * [Ninja](https://ninja-build.org/)
 * [CMake](https://cmake.org/)
+* [GN](https://github.com/o-lim/generate-ninja)
 * [wget](https://www.gnu.org/software/wget/)
 * `unzip`
 
