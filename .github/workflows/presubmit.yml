@@ -20,7 +20,6 @@ jobs:
         run: |
           set -x
           echo "android=${{ github.workspace }}/android" >> $GITHUB_ENV
-          echo "ndk=android-ndk-r27c" >> $GITHUB_ENV
       - name: Checkout repositories
         shell: bash
         run: |
@@ -40,7 +39,7 @@ jobs:
           NINJA_TO_SOONG_SKIP_CMAKE_BUILD: 1
         run: |
           set -x
-          cargo run --release -- $(realpath ${{ env.android }}) $(realpath ${{ env.ndk }})
+          cargo run --release -- $(realpath ${{ env.android }})
       - name: Check generated files
         shell: bash
         run: |
