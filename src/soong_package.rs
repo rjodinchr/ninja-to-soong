@@ -351,13 +351,21 @@ impl<'a> SoongPackage<'a> {
         }
         if let Some((rsp_file, rsp_content)) = rule_cmd.1 {
             let rsp = "$(genDir)/".to_string() + &rsp_file;
-            let src_path = path_to_string(self.src_path) + &std::path::MAIN_SEPARATOR.to_string();
-            cmd = "echo \\\"".to_string()
-                + &rsp_content.replace(&src_path, "")
-                + "\\\" > "
-                + &rsp
-                + " && "
-                + &cmd;
+            let mut rsp_files = Vec::new();
+            for file in rsp_content.split(" ") {
+                if file.is_empty() {
+                    continue;
+                }
+                rsp_files.push(
+                    String::from("$(location ")
+                        + &path_to_string(strip_prefix(
+                            canonicalize_path(file, self.build_path),
+                            self.src_path,
+                        ))
+                        + ")",
+                );
+            }
+            cmd = "echo \\\"".to_string() + &rsp_files.join(" ") + "\\\" > " + &rsp + " && " + &cmd;
             cmd = cmd.replace("${rspfile}", &rsp);
         }
         cmd
