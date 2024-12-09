@@ -3,9 +3,8 @@
 
 use std::collections::{HashMap, HashSet};
 
+use crate::parser::parse_build_ninja;
 use crate::utils::*;
-
-pub use crate::parser::parse_build_ninja;
 
 pub mod cmake;
 pub mod common;

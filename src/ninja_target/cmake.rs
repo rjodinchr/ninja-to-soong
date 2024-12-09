@@ -139,7 +139,7 @@ fn cmake_configure(
     src_path: &Path,
     build_path: &Path,
     ndk_path: &Path,
-    args: Vec<&str>,
+    cmake_args: Vec<&str>,
 ) -> Result<bool, String> {
     if std::env::var(SKIP_GEN_NINJA).is_ok() {
         return Ok(false);
@@ -159,7 +159,7 @@ fn cmake_configure(
             &("-DANDROID_ABI=".to_string() + ANDROID_ABI),
             &("-DANDROID_PLATFORM=".to_string() + ANDROID_PLATFORM),
         ])
-        .args(args);
+        .args(cmake_args);
     println!("{command:#?}");
     if let Err(err) = command.status() {
         return error!("cmake_configure({src_path:#?}) failed: {err}");
@@ -191,10 +191,10 @@ pub fn get_targets(
     src_path: &Path,
     build_path: &Path,
     ndk_path: &Path,
-    args: Vec<&str>,
+    cmake_args: Vec<&str>,
     targets_to_build: Option<Vec<PathBuf>>,
 ) -> Result<(Vec<CmakeNinjaTarget>, bool), String> {
-    let configured = cmake_configure(src_path, build_path, ndk_path, args)?;
+    let configured = cmake_configure(src_path, build_path, ndk_path, cmake_args)?;
     let built = if configured {
         if let Some(targets) = targets_to_build {
             cmake_build(build_path, &targets)?
@@ -205,5 +205,5 @@ pub fn get_targets(
         false
     };
 
-    Ok((parse_build_ninja::<CmakeNinjaTarget>(build_path)?, built))
+    Ok((parse_build_ninja(build_path)?, built))
 }

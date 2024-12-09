@@ -13,7 +13,6 @@ pub struct LlvmProject {
     src_path: PathBuf,
     build_path: PathBuf,
     ndk_path: PathBuf,
-    copy_gen_deps: bool,
 }
 
 impl Project for LlvmProject {
@@ -30,12 +29,11 @@ impl Project for LlvmProject {
         self.src_path = self.get_id().android_path(android_path);
         self.build_path = temp_path.join(self.get_id().str());
         self.ndk_path = get_ndk_path(temp_path)?;
-        self.copy_gen_deps = false;
 
         let mut targets_to_build = Vec::new();
         targets_to_build.extend(GenDeps::TargetsToGen.get(self, ProjectId::Clvk, projects_map));
         targets_to_build.extend(GenDeps::LibclcBins.get(self, ProjectId::Clspv, projects_map));
-        let (targets, built) = cmake::get_targets(
+        let (targets, built) = ninja_target::cmake::get_targets(
             &self.src_path.join("llvm"),
             &self.build_path,
             &self.ndk_path,
@@ -47,9 +45,7 @@ impl Project for LlvmProject {
             ],
             Some(targets_to_build),
         )?;
-        if built {
-            self.copy_gen_deps = true;
-        }
+        let copy_gen_deps = if built { true } else { false };
 
         let mut package = SoongPackage::new(
             &self.src_path,
@@ -117,7 +113,7 @@ impl Project for LlvmProject {
         )?;
 
         let cmake_generated_path = Path::new(CMAKE_GENERATED);
-        if self.copy_gen_deps && File::open(cmake_generated_path).is_ok() {
+        if copy_gen_deps && File::open(cmake_generated_path).is_ok() {
             if let Err(err) = std::fs::remove_dir_all(cmake_generated_path) {
                 return error!("remove_dir_all failed: {err}");
             }

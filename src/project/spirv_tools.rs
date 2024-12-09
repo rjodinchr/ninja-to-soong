@@ -28,7 +28,7 @@ impl Project for SpirvTools {
         self.ndk_path = get_ndk_path(temp_path)?;
         self.spirv_headers_path = ProjectId::SpirvHeaders.android_path(android_path);
 
-        let (targets, _) = cmake::get_targets(
+        let (targets, _) = ninja_target::cmake::get_targets(
             &self.src_path,
             &self.build_path,
             &self.ndk_path,
