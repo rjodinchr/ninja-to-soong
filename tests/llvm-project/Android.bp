@@ -254,6 +254,7 @@ cc_library_static {
         "clang/lib/Serialization/ModuleManager.cpp",
         "clang/lib/Serialization/ObjectFilePCHContainerReader.cpp",
         "clang/lib/Serialization/PCHContainerOperations.cpp",
+        "clang/lib/Serialization/TemplateArgumentHasher.cpp",
     ],
     cflags: [
         "-Wno-error",
@@ -1734,6 +1735,7 @@ cc_library_static {
         "clang/lib/AST/AttrDocTable.cpp",
         "clang/lib/AST/AttrImpl.cpp",
         "clang/lib/AST/Availability.cpp",
+        "clang/lib/AST/ByteCode/BitcastBuffer.cpp",
         "clang/lib/AST/ByteCode/ByteCodeEmitter.cpp",
         "clang/lib/AST/ByteCode/Compiler.cpp",
         "clang/lib/AST/ByteCode/Context.cpp",
