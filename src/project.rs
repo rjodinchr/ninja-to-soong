@@ -141,6 +141,9 @@ pub trait Project {
     fn ignore_cflag(&self, _cflag: &str) -> bool {
         false
     }
+    fn ignore_custom_cmd_input(&self, _input: &Path) -> bool {
+        false
+    }
     fn ignore_define(&self, _define: &str) -> bool {
         false
     }

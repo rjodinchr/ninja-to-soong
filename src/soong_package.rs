@@ -382,6 +382,9 @@ impl<'a> SoongPackage<'a> {
         let mut all_inputs = target.get_inputs().clone();
         all_inputs.extend(target.get_implicit_deps().clone());
         'target_inputs: for input in all_inputs {
+            if project.ignore_custom_cmd_input(&input) {
+                continue;
+            }
             for (prefix, dep) in project.get_deps_info() {
                 if input.starts_with(&prefix) {
                     deps.insert(
