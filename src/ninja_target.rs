@@ -9,6 +9,7 @@ use crate::utils::*;
 pub mod cmake;
 pub mod common;
 pub mod gn;
+pub mod meson;
 
 pub type NinjaRuleCmd = (String, Option<(String, String)>);
 pub type NinjaRulesMap = HashMap<String, NinjaRuleCmd>;

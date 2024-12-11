@@ -121,6 +121,7 @@ fn main() -> Result<(), String> {
     let mut clvk = clvk::Clvk::default();
     let mut clspv = clspv::Clspv::default();
     let mut llvm_project = llvm_project::LlvmProject::default();
+    let mut mesa = mesa::Mesa::default();
     let mut spirv_tools = spirv_tools::SpirvTools::default();
     let mut spirv_headers = spirv_headers::SpirvHeaders::default();
 
@@ -129,6 +130,7 @@ fn main() -> Result<(), String> {
         &mut clvk,
         &mut clspv,
         &mut llvm_project,
+        &mut mesa,
         &mut spirv_tools,
         &mut spirv_headers,
     ];
