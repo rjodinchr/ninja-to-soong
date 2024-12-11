@@ -48,7 +48,6 @@ cc_library_shared {
         "-D_GNU_SOURCE",
         "-D_LIBCPP_HARDENING_MODE=_LIBCPP_HARDENING_MODE_NONE",
         "-D__ANDROID_UNAVAILABLE_SYMBOLS_ARE_WEAK__",
-        "-D__ARM_NEON__=1",
         "-D__STDC_CONSTANT_MACROS",
         "-D__STDC_FORMAT_MACROS",
         "-Wno-nullability-completeness",
@@ -69,6 +68,13 @@ cc_library_shared {
         "angle_gen_angle_angle_commit_h",
     ],
     use_clang_lld: true,
+    sdk_version: "current",
+    stl: "libc++_static",
+    arch: {
+        arm64: {
+            cflags: ["-D__ARM_NEON__=1"],
+        },
+    },
 }
 
 cc_library_shared {
@@ -404,7 +410,6 @@ cc_library_shared {
         "-D_GNU_SOURCE",
         "-D_LIBCPP_HARDENING_MODE=_LIBCPP_HARDENING_MODE_NONE",
         "-D__ANDROID_UNAVAILABLE_SYMBOLS_ARE_WEAK__",
-        "-D__ARM_NEON__=1",
         "-D__STDC_CONSTANT_MACROS",
         "-D__STDC_FORMAT_MACROS",
         "-Wno-nullability-completeness",
@@ -446,6 +451,13 @@ cc_library_shared {
         "angle_gen_angle_angle_commit_h",
     ],
     use_clang_lld: true,
+    sdk_version: "current",
+    stl: "libc++_static",
+    arch: {
+        arm64: {
+            cflags: ["-D__ARM_NEON__=1"],
+        },
+    },
 }
 
 cc_library_static {
@@ -501,7 +513,6 @@ cc_library_static {
         "-D_GNU_SOURCE",
         "-D_LIBCPP_HARDENING_MODE=_LIBCPP_HARDENING_MODE_NONE",
         "-D__ANDROID_UNAVAILABLE_SYMBOLS_ARE_WEAK__",
-        "-D__ARM_NEON__=1",
         "-D__STDC_CONSTANT_MACROS",
         "-D__STDC_FORMAT_MACROS",
         "-Wno-nullability-completeness",
@@ -521,6 +532,13 @@ cc_library_static {
         "SPIRV-Tools-includes",
     ],
     use_clang_lld: true,
+    sdk_version: "current",
+    stl: "libc++_static",
+    arch: {
+        arm64: {
+            cflags: ["-D__ARM_NEON__=1"],
+        },
+    },
 }
 
 cc_library_static {
@@ -559,7 +577,6 @@ cc_library_static {
         "-D_GNU_SOURCE",
         "-D_LIBCPP_HARDENING_MODE=_LIBCPP_HARDENING_MODE_NONE",
         "-D__ANDROID_UNAVAILABLE_SYMBOLS_ARE_WEAK__",
-        "-D__ARM_NEON__=1",
         "-D__STDC_CONSTANT_MACROS",
         "-D__STDC_FORMAT_MACROS",
         "-Wno-nullability-completeness",
@@ -579,6 +596,13 @@ cc_library_static {
         "SPIRV-Tools-includes",
     ],
     use_clang_lld: true,
+    sdk_version: "current",
+    stl: "libc++_static",
+    arch: {
+        arm64: {
+            cflags: ["-D__ARM_NEON__=1"],
+        },
+    },
 }
 
 cc_genrule {
@@ -1835,7 +1859,6 @@ cc_library_static {
         "-D_GNU_SOURCE",
         "-D_LIBCPP_HARDENING_MODE=_LIBCPP_HARDENING_MODE_NONE",
         "-D__ANDROID_UNAVAILABLE_SYMBOLS_ARE_WEAK__",
-        "-D__ARM_NEON__=1",
         "-D__STDC_CONSTANT_MACROS",
         "-D__STDC_FORMAT_MACROS",
         "-Wno-nullability-completeness",
@@ -1859,6 +1882,13 @@ cc_library_static {
         "angle_gen_angle_angle_commit_h",
     ],
     use_clang_lld: true,
+    sdk_version: "current",
+    stl: "libc++_static",
+    arch: {
+        arm64: {
+            cflags: ["-D__ARM_NEON__=1"],
+        },
+    },
 }
 
 cc_library_static {
@@ -1886,7 +1916,6 @@ cc_library_static {
         "-D_GNU_SOURCE",
         "-D_LIBCPP_HARDENING_MODE=_LIBCPP_HARDENING_MODE_NONE",
         "-D__ANDROID_UNAVAILABLE_SYMBOLS_ARE_WEAK__",
-        "-D__ARM_NEON__=1",
         "-D__STDC_CONSTANT_MACROS",
         "-D__STDC_FORMAT_MACROS",
         "-Wno-nullability-completeness",
@@ -1906,6 +1935,13 @@ cc_library_static {
         "SPIRV-Tools-includes",
     ],
     use_clang_lld: true,
+    sdk_version: "current",
+    stl: "libc++_static",
+    arch: {
+        arm64: {
+            cflags: ["-D__ARM_NEON__=1"],
+        },
+    },
 }
 
 cc_library_static {
@@ -1941,7 +1977,6 @@ cc_library_static {
         "-D_GNU_SOURCE",
         "-D_LIBCPP_HARDENING_MODE=_LIBCPP_HARDENING_MODE_NONE",
         "-D__ANDROID_UNAVAILABLE_SYMBOLS_ARE_WEAK__",
-        "-D__ARM_NEON__=1",
         "-D__STDC_CONSTANT_MACROS",
         "-D__STDC_FORMAT_MACROS",
         "-Wno-nullability-completeness",
@@ -1961,6 +1996,13 @@ cc_library_static {
         "SPIRV-Tools-includes",
     ],
     use_clang_lld: true,
+    sdk_version: "current",
+    stl: "libc++_static",
+    arch: {
+        arm64: {
+            cflags: ["-D__ARM_NEON__=1"],
+        },
+    },
 }
 
 cc_library_static {
@@ -1997,7 +2039,6 @@ cc_library_static {
         "-D_GNU_SOURCE",
         "-D_LIBCPP_HARDENING_MODE=_LIBCPP_HARDENING_MODE_NONE",
         "-D__ANDROID_UNAVAILABLE_SYMBOLS_ARE_WEAK__",
-        "-D__ARM_NEON__=1",
         "-D__STDC_CONSTANT_MACROS",
         "-D__STDC_FORMAT_MACROS",
         "-Wno-nullability-completeness",
@@ -2019,6 +2060,13 @@ cc_library_static {
         "SPIRV-Tools-includes",
     ],
     use_clang_lld: true,
+    sdk_version: "current",
+    stl: "libc++_static",
+    arch: {
+        arm64: {
+            cflags: ["-D__ARM_NEON__=1"],
+        },
+    },
 }
 
 cc_library_shared {
@@ -2167,7 +2215,6 @@ cc_library_shared {
         "-D_GNU_SOURCE",
         "-D_LIBCPP_HARDENING_MODE=_LIBCPP_HARDENING_MODE_NONE",
         "-D__ANDROID_UNAVAILABLE_SYMBOLS_ARE_WEAK__",
-        "-D__ARM_NEON__=1",
         "-D__STDC_CONSTANT_MACROS",
         "-D__STDC_FORMAT_MACROS",
         "-Wno-nullability-completeness",
@@ -2196,4 +2243,11 @@ cc_library_shared {
         "angle_gen_angle_angle_commit_h",
     ],
     use_clang_lld: true,
+    sdk_version: "current",
+    stl: "libc++_static",
+    arch: {
+        arm64: {
+            cflags: ["-D__ARM_NEON__=1"],
+        },
+    },
 }

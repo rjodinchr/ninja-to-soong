@@ -5,7 +5,7 @@ use std::collections::{HashMap, HashSet};
 
 use crate::ninja_target::*;
 use crate::project::Project;
-use crate::soong_module::SoongModule;
+use crate::soong_module::*;
 use crate::utils::*;
 
 fn update_cflags_with_defines(
@@ -80,18 +80,30 @@ impl<'a> SoongPackage<'a> {
         let license_name = path_to_id(target_prefix.join(license_text.to_lowercase()));
 
         let mut package_module = SoongModule::new("package");
-        package_module.add_vec("default_applicable_licenses", [license_name.clone()].into());
-        package_module.add_vec(
+        package_module.add_prop(
             "default_visibility",
-            [default_visibility.to_string()].into(),
+            SoongProp::VecStr([default_visibility.to_string()].into()),
+        );
+        package_module.add_prop(
+            "default_applicable_licenses",
+            SoongProp::VecStr([license_name.clone()].into()),
         );
         package.add_module(package_module);
 
         let mut license_module = SoongModule::new("license");
-        license_module.add_str("name", license_name.clone());
-        license_module.add_vec("visibility", [":__subpackages__".to_string()].into());
-        license_module.add_vec("license_kinds", [license_kinds.to_string()].into());
-        license_module.add_vec("license_text", [license_text.to_string()].into());
+        license_module.add_prop("name", SoongProp::Str(license_name.clone()));
+        license_module.add_prop(
+            "visibility",
+            SoongProp::VecStr([":__subpackages__".to_string()].into()),
+        );
+        license_module.add_prop(
+            "license_kinds",
+            SoongProp::VecStr([license_kinds.to_string()].into()),
+        );
+        license_module.add_prop(
+            "license_text",
+            SoongProp::VecStr([license_text.to_string()].into()),
+        );
         package.add_module(license_module);
 
         package
@@ -277,25 +289,40 @@ impl<'a> SoongPackage<'a> {
         shared_libs.remove(&module_name);
 
         let mut module = SoongModule::new(name);
-        if project.optimize_target_for_size(&target_name) {
-            module.add_bool("optimize_for_size", true);
-        }
-        module.add_bool("use_clang_lld", true);
-        module.add_vec("srcs", Vec::from_iter(srcs));
-        module.add_vec("local_include_dirs", Vec::from_iter(includes));
-        module.add_vec("cflags", Vec::from_iter(cflags));
-        module.add_vec("ldflags", link_flags);
-        module.add_vec("static_libs", Vec::from_iter(static_libs));
-        module.add_vec("shared_libs", Vec::from_iter(shared_libs));
-        module.add_vec("header_libs", project.get_target_header_libs(&target_name));
-        module.add_vec("generated_headers", gen_headers);
+        module.add_prop("name", SoongProp::Str(module_name));
         if let Some(vs) = version_script {
-            module.add_str(
+            module.add_prop(
                 "version_script",
-                path_to_string(strip_prefix(vs, &self.src_path)),
+                SoongProp::Str(path_to_string(strip_prefix(vs, &self.src_path))),
             );
         }
-        module.add_str("name", module_name);
+        module.add_prop("srcs", SoongProp::VecStr(Vec::from_iter(srcs)));
+        module.add_prop("cflags", SoongProp::VecStr(Vec::from_iter(cflags)));
+        module.add_prop("ldflags", SoongProp::VecStr(link_flags));
+        module.add_prop(
+            "shared_libs",
+            SoongProp::VecStr(Vec::from_iter(shared_libs)),
+        );
+        module.add_prop(
+            "static_libs",
+            SoongProp::VecStr(Vec::from_iter(static_libs)),
+        );
+        module.add_prop(
+            "local_include_dirs",
+            SoongProp::VecStr(Vec::from_iter(includes)),
+        );
+        module.add_prop(
+            "header_libs",
+            SoongProp::VecStr(project.get_target_header_libs(&target_name)),
+        );
+        module.add_prop("generated_headers", SoongProp::VecStr(gen_headers));
+        if project.optimize_target_for_size(&target_name) {
+            module.add_prop("optimize_for_size", SoongProp::Bool(true));
+        }
+        module.add_prop("use_clang_lld", SoongProp::Bool(true));
+
+        project.get_library_module(&mut module);
+
         Ok(module)
     }
 
@@ -430,10 +457,11 @@ impl<'a> SoongPackage<'a> {
         let cmd = self.rework_cmd(rule_cmd, inputs, target_outputs, deps, project);
 
         let mut module = SoongModule::new("cc_genrule");
-        module.add_str("name", target.get_name(self.target_prefix));
-        module.add_vec("srcs", Vec::from_iter(srcs_set));
-        module.add_vec("out", Vec::from_iter(out_set));
-        module.add_str("cmd", cmd.to_string());
+        module.add_prop("name", SoongProp::Str(target.get_name(self.target_prefix)));
+        module.add_prop("cmd", SoongProp::Str(cmd.to_string()));
+        module.add_prop("srcs", SoongProp::VecStr(Vec::from_iter(srcs_set)));
+        module.add_prop("out", SoongProp::VecStr(Vec::from_iter(out_set)));
+
         Ok(module)
     }
 
