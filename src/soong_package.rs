@@ -156,7 +156,10 @@ impl<'a> SoongPackage<'a> {
                 if project.ignore_source(&source) {
                     continue;
                 }
-                srcs.insert(path_to_string(strip_prefix(source, self.src_path)));
+                srcs.insert(path_to_string(strip_prefix(
+                    project.get_source(&source),
+                    self.src_path,
+                )));
             }
 
             let (static_libraries, shared_libraries) = target.get_link_libraries()?;

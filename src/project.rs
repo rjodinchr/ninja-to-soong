@@ -129,6 +129,9 @@ pub trait Project {
     fn get_shared_libs(&self, _target: &str) -> Vec<String> {
         Vec::new()
     }
+    fn get_source(&self, source: &Path) -> PathBuf {
+        source.to_path_buf()
+    }
     fn get_static_libs(&self, _target: &str) -> Vec<String> {
         Vec::new()
     }
