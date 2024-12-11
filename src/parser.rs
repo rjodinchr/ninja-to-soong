@@ -6,8 +6,6 @@ use std::collections::HashMap;
 use crate::ninja_target::*;
 use crate::utils::*;
 
-const INDENT: &str = "  ";
-
 fn parse_output_section(section: &str) -> Result<(Vec<PathBuf>, Vec<PathBuf>), String> {
     let mut split = section.split("|");
     if split.clone().count() < 1 {
@@ -127,7 +125,7 @@ where
 
     let mut variables: HashMap<String, String> = HashMap::new();
     while let Some(next_line) = lines.next() {
-        if !next_line.starts_with(INDENT) {
+        if !next_line.starts_with(T::get_indent()) {
             break;
         }
         let (key, value) = parse_key_value(next_line)?;
@@ -145,10 +143,13 @@ where
     ))
 }
 
-fn parse_ninja_rule(
+fn parse_ninja_rule<T>(
     line: &str,
     mut lines: std::str::Lines,
-) -> Result<(String, NinjaRuleCmd), String> {
+) -> Result<(String, NinjaRuleCmd), String>
+where
+    T: NinjaTarget,
+{
     let Some(rule) = line.strip_prefix("rule ") else {
         return error!("parse_ninja_rule failed: '{line}'");
     };
@@ -156,7 +157,7 @@ fn parse_ninja_rule(
     let mut rspfile = None;
     let mut rspfile_content = None;
     while let Some(next_line) = lines.next() {
-        if !next_line.starts_with(INDENT) {
+        if !next_line.starts_with(T::get_indent()) {
             break;
         }
         let (key, value) = parse_key_value(next_line)?;
@@ -215,11 +216,11 @@ where
             || line.starts_with("default ")
             || line.starts_with("pool ")
             || line.starts_with("#")
-            || line.starts_with(INDENT)
+            || line.starts_with(T::get_indent())
         {
             continue;
         } else if line.starts_with("rule ") {
-            let (rule, rule_command) = parse_ninja_rule(line, lines.clone())?;
+            let (rule, rule_command) = parse_ninja_rule::<T>(line, lines.clone())?;
             all_rules.insert(rule, rule_command);
         } else if line.starts_with("build ") {
             targets.push(parse_build_target(line, lines.clone())?);
