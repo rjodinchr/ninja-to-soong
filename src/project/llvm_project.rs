@@ -112,12 +112,15 @@ impl Project for LlvmProject {
             &format!("{0:#?}", &gen_deps_sorted),
         )?;
 
-        let cmake_generated_path = Path::new(CMAKE_GENERATED);
-        if copy_gen_deps && File::open(cmake_generated_path).is_ok() {
-            if let Err(err) = std::fs::remove_dir_all(cmake_generated_path) {
-                return error!("remove_dir_all failed: {err}");
+        if copy_gen_deps {
+            let cmake_generated_path = self.src_path.join(CMAKE_GENERATED);
+            if File::open(&cmake_generated_path).is_ok() {
+                if let Err(err) = std::fs::remove_dir_all(&cmake_generated_path) {
+                    return error!("remove_dir_all failed: {err}");
+                }
+
+                print_verbose!("{cmake_generated_path:#?} removed");
             }
-            print_verbose!("{cmake_generated_path:#?} removed");
             for file in gen_deps_sorted {
                 let from = self.build_path.join(&file);
                 let to = cmake_generated_path.join(file);
@@ -133,6 +136,7 @@ impl Project for LlvmProject {
             );
         }
 
+        let cmake_generated_path = Path::new(CMAKE_GENERATED);
         package.add_module(SoongModule::new_cc_library_headers(
             CcLibraryHeaders::Llvm,
             [
