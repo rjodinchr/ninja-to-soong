@@ -8,8 +8,10 @@
 
 # How does it work?
 
-1. `ninja-to-soong` generates `Ninja` files using `CMake` and the Android NDK.
-2. `ninja-to-soong` generates `Soong` files using `Ninja` files.
+1. `ninja-to-soong` generates [Ninja](https://ninja-build.org/) files using either:
+    - [CMake](https://cmake.org/) and the Android NDK
+    - [GN](https://github.com/o-lim/generate-ninja) cross-compiling for [Android](https://gn.googlesource.com/gn/+/HEAD/docs/quick_start.md#cross_compiling-to-a-target-os-or-architecture)
+2. `ninja-to-soong` generates `Soong` files using [Ninja](https://ninja-build.org/) files.
 
 # Supported projects
 
