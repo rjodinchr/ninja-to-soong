@@ -120,6 +120,7 @@ pub trait Project {
     fn get_include(&self, include: &Path) -> PathBuf {
         include.to_path_buf()
     }
+    fn get_library_module(&self, _module: &mut SoongModule) {}
     fn get_library_name(&self, library: &Path) -> PathBuf {
         library.to_path_buf()
     }

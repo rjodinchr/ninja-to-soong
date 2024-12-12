@@ -121,6 +121,21 @@ impl Project for Angle {
         vec!["-Wno-nullability-completeness".to_string()]
     }
 
+    fn get_library_module(&self, module: &mut SoongModule) {
+        module.add_prop("sdk_version", SoongProp::Str("current".to_string()));
+        module.add_prop("stl", SoongProp::Str("libc++_static".to_string()));
+        module.add_prop(
+            "arch",
+            SoongNamedProp::new_prop(
+                "arm64",
+                SoongNamedProp::new_prop(
+                    "cflags",
+                    SoongProp::VecStr(vec!["-D__ARM_NEON__=1".to_string()]),
+                ),
+            ),
+        );
+    }
+
     fn get_library_name(&self, library: &Path) -> PathBuf {
         if library.starts_with("obj/third_party/spirv-tools") {
             Path::new(ProjectId::SpirvTools.str()).join("source/libSPIRV-Tools.a")
@@ -167,6 +182,10 @@ impl Project for Angle {
 
     fn ignore_cflag(&self, _cflag: &str) -> bool {
         !(_cflag.starts_with("-fvisibility"))
+    }
+
+    fn ignore_define(&self, define: &str) -> bool {
+        define.contains("__ARM_NEON__")
     }
 
     fn ignore_gen_header(&self, header: &Path) -> bool {

@@ -1,7 +1,7 @@
 // Copyright 2024 ninja-to-soong authors
 // SPDX-License-Identifier: Apache-2.0
 
-use std::collections::HashMap;
+use crate::utils::error;
 
 pub enum CcLibraryHeaders {
     SpirvTools,
@@ -22,126 +22,137 @@ impl CcLibraryHeaders {
     }
 }
 
+fn print_indent(level: u8) -> String {
+    let mut indent = String::new();
+    for _ in 0..level {
+        indent += "    ";
+    }
+    indent
+}
+
+#[derive(Debug)]
+pub enum SoongProp {
+    Str(String),
+    VecStr(Vec<String>),
+    Bool(bool),
+    Prop(Box<SoongNamedProp>),
+}
+
+#[derive(Debug)]
+pub struct SoongNamedProp {
+    name: String,
+    prop: SoongProp,
+}
+
+impl SoongNamedProp {
+    pub fn new_prop(name: &str, prop: SoongProp) -> SoongProp {
+        SoongProp::Prop(Box::new(Self::new(name, prop)))
+    }
+
+    fn new(name: &str, prop: SoongProp) -> Self {
+        Self {
+            name: name.to_string(),
+            prop,
+        }
+    }
+
+    fn print(self, indent_level: u8) -> String {
+        let mut output = String::new();
+        output += &format!("{0}{1}: ", print_indent(indent_level), self.name);
+        output += &(match self.prop {
+            SoongProp::Str(str) => format!("\"{str}\""),
+            SoongProp::VecStr(mut vec_str) => {
+                vec_str.sort();
+                let mut output = String::new();
+                if vec_str.len() == 0 {
+                    return output;
+                }
+                if vec_str.len() == 1 {
+                    output = format!("[\"{0}\"]", vec_str[0]);
+                } else {
+                    output += "[\n";
+                    for str in vec_str {
+                        output +=
+                            format!("{0}\"{str}\",\n", print_indent(indent_level + 1)).as_str();
+                    }
+                    output += &format!("{0}]", print_indent(indent_level));
+                }
+                output
+            }
+            SoongProp::Bool(bool) => {
+                if bool {
+                    String::from("true")
+                } else {
+                    String::from("false")
+                }
+            }
+            SoongProp::Prop(prop) => format!(
+                "{{\n{0}{1}}}",
+                prop.print(indent_level + 1),
+                print_indent(indent_level)
+            ),
+        });
+        output += ",\n";
+        output
+    }
+}
+
 #[derive(Debug)]
 pub struct SoongModule {
     name: String,
-    str_map: HashMap<String, String>,
-    vec_map: HashMap<String, Vec<String>>,
-    bool_map: HashMap<String, bool>,
+    props: Vec<SoongNamedProp>,
 }
 
 impl SoongModule {
-    const INDENT: &'static str = "    ";
-
     pub fn new(name: &str) -> Self {
         Self {
             name: name.to_string(),
-            str_map: HashMap::new(),
-            vec_map: HashMap::new(),
-            bool_map: HashMap::new(),
+            props: Vec::new(),
         }
     }
 
     pub fn new_cc_library_headers(name: CcLibraryHeaders, include_dirs: Vec<String>) -> Self {
         let mut module = Self::new("cc_library_headers");
-        module.add_str("name", name.str());
-        module.add_vec("export_include_dirs", include_dirs);
+        module.add_prop("name", SoongProp::Str(name.str()));
+        module.add_prop("export_include_dirs", SoongProp::VecStr(include_dirs));
         module
     }
 
     pub fn new_copy_genrule(name: String, src: String, out: String) -> Self {
         let mut module = Self::new("genrule");
-        module.add_str("name", name);
-        module.add_vec("srcs", vec![src]);
-        module.add_vec("out", vec![out]);
-        module.add_str("cmd", "cp $(in) $(out)".to_string());
+        module.add_prop("name", SoongProp::Str(name));
+        module.add_prop("cmd", SoongProp::Str("cp $(in) $(out)".to_string()));
+        module.add_prop("srcs", SoongProp::VecStr(vec![src]));
+        module.add_prop("out", SoongProp::VecStr(vec![out]));
         module
     }
 
-    pub fn add_str(&mut self, key: &str, str: String) {
-        self.str_map.insert(key.to_string(), str);
+    pub fn add_prop(&mut self, name: &str, prop: SoongProp) {
+        self.props.push(SoongNamedProp::new(name, prop));
     }
 
-    pub fn add_vec(&mut self, key: &str, vec: Vec<String>) {
-        self.vec_map.insert(key.to_string(), vec);
-    }
-
-    pub fn add_bool(&mut self, key: &str, bool: bool) {
-        self.bool_map.insert(key.to_string(), bool);
-    }
-
-    pub fn filter_vec<F>(&mut self, key: &str, f: F)
+    pub fn update_prop<F>(&mut self, name: &str, f: F) -> Result<(), String>
     where
-        F: FnMut(&String) -> bool + Clone,
+        F: Fn(SoongProp) -> Result<SoongProp, String>,
     {
-        let Some(vec) = self.vec_map.remove(key) else {
-            return;
-        };
-        self.add_vec(key, vec.into_iter().filter(f.clone()).collect())
+        for index in 0..self.props.len() {
+            if self.props[index].name == name {
+                let prop = self.props.remove(index).prop;
+                let updated_prop = f(prop)?;
+                self.props
+                    .insert(index, SoongNamedProp::new(name, updated_prop));
+                return Ok(());
+            }
+        }
+        error!("'{name}' property not found in {self:#?}")
     }
 
-    fn print_key_value(key: &str, value: &str) -> String {
-        Self::INDENT.to_string() + key + ": " + value + ",\n"
-    }
-
-    pub fn print(mut self) -> String {
-        let mut module = String::new();
-        module += "\n";
-        module += &self.name;
-        module += " {\n";
-
-        for key in ["name", "stem", "version_script", "cmd"] {
-            if let Some(value) = self.str_map.remove(key) {
-                module += &Self::print_key_value(&key, &("\"".to_string() + &value + "\""))
-            }
+    pub fn print(self) -> String {
+        let mut output = format!("\n{0} {{\n", self.name);
+        for prop in self.props {
+            output += &prop.print(1);
         }
-        for key in [
-            "srcs",
-            "out",
-            "tools",
-            "cflags",
-            "ldflags",
-            "shared_libs",
-            "static_libs",
-            "local_include_dirs",
-            "export_include_dirs",
-            "header_libs",
-            "generated_headers",
-            "visibility",
-            "default_visibility",
-            "default_applicable_licenses",
-            "license_kinds",
-            "license_text",
-        ] {
-            let Some(mut vec) = self.vec_map.remove(key) else {
-                continue;
-            };
-            if vec.len() == 0 {
-                continue;
-            }
-
-            module += &Self::print_key_value(
-                &key,
-                &(if vec.len() == 1 {
-                    "[\"".to_string() + &(vec[0]) + "\"]"
-                } else {
-                    vec.sort();
-                    let mut values = String::from("[\n");
-                    for value in vec {
-                        values = values + Self::INDENT + Self::INDENT + "\"" + &value + "\",\n";
-                    }
-                    values = values + Self::INDENT + "]";
-                    values
-                }),
-            );
-        }
-        for key in ["optimize_for_size", "use_clang_lld"] {
-            if let Some(value) = self.bool_map.remove(key) {
-                module += &Self::print_key_value(&key, if value { "true" } else { "false" });
-            }
-        }
-
-        module += "}\n";
-        module
+        output += "}\n";
+        output
     }
 }
