@@ -319,9 +319,6 @@ impl<'a> SoongPackage<'a> {
             SoongProp::VecStr(project.get_target_header_libs(&target_name)),
         );
         module.add_prop("generated_headers", SoongProp::VecStr(gen_headers));
-        if project.optimize_target_for_size(&target_name) {
-            module.add_prop("optimize_for_size", SoongProp::Bool(true));
-        }
         module.add_prop("use_clang_lld", SoongProp::Bool(true));
 
         project.get_library_module(&mut module);

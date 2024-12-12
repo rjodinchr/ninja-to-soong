@@ -122,7 +122,6 @@ impl Project for Angle {
     }
 
     fn get_library_module(&self, module: &mut SoongModule) {
-        module.add_prop("sdk_version", SoongProp::Str("current".to_string()));
         module.add_prop("stl", SoongProp::Str("libc++_static".to_string()));
         module.add_prop(
             "arch",

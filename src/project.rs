@@ -169,7 +169,4 @@ pub trait Project {
     fn ignore_target(&self, _target: &Path) -> bool {
         false
     }
-    fn optimize_target_for_size(&self, _target: &str) -> bool {
-        false
-    }
 }

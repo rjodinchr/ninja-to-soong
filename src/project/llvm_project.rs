@@ -202,6 +202,10 @@ impl Project for LlvmProject {
         Path::new(CMAKE_GENERATED).join(strip_prefix(include, &self.build_path))
     }
 
+    fn get_library_module(&self, module: &mut SoongModule) {
+        module.add_prop("optimize_for_size", SoongProp::Bool(true));
+    }
+
     fn get_project_deps(&self) -> Vec<ProjectId> {
         vec![ProjectId::Clvk, ProjectId::Clspv]
     }
@@ -220,9 +224,5 @@ impl Project for LlvmProject {
 
     fn ignore_target(&self, input: &Path) -> bool {
         !input.starts_with("lib")
-    }
-
-    fn optimize_target_for_size(&self, _target: &str) -> bool {
-        true
     }
 }
