@@ -108,7 +108,7 @@ pub trait Project {
     fn get_cmd_output(&self, output: &Path) -> PathBuf {
         output.to_path_buf()
     }
-    fn get_default_cflags(&self) -> Vec<String> {
+    fn get_default_cflags(&self, _target: &str) -> Vec<String> {
         Vec::new()
     }
     fn get_deps_info(&self) -> Vec<(PathBuf, GenDeps)> {

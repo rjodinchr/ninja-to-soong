@@ -63,7 +63,7 @@ impl Project for SpirvTools {
         Ok(package)
     }
 
-    fn get_default_cflags(&self) -> Vec<String> {
+    fn get_default_cflags(&self, _target: &str) -> Vec<String> {
         vec!["-Wno-implicit-fallthrough".to_string()]
     }
 

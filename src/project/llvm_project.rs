@@ -191,11 +191,20 @@ impl Project for LlvmProject {
         Ok(package)
     }
 
-    fn get_default_cflags(&self) -> Vec<String> {
-        vec![
-            "-Wno-error".to_string(),
-            "-Wno-unreachable-code-loop-increment".to_string(),
-        ]
+    fn get_default_cflags(&self, _target: &str) -> Vec<String> {
+        let mut cflags = vec!["-Wno-error", "-Wno-unreachable-code-loop-increment"];
+        if _target == "llvm-project_lib_libLLVMSupport_a" {
+            cflags.append(&mut vec![
+                "-DBLAKE3_NO_AVX512",
+                "-DBLAKE3_NO_AVX2",
+                "-DBLAKE3_NO_SSE41",
+                "-DBLAKE3_NO_SSE2",
+            ]);
+        }
+        cflags.iter().fold(Vec::new(), |mut vec, flag| {
+            vec.push(flag.to_string());
+            vec
+        })
     }
 
     fn get_include(&self, include: &Path) -> PathBuf {

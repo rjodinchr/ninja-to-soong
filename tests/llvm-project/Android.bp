@@ -200,6 +200,10 @@ cc_library_static {
         "llvm/lib/Support/xxhash.cpp",
     ],
     cflags: [
+        "-DBLAKE3_NO_AVX2",
+        "-DBLAKE3_NO_AVX512",
+        "-DBLAKE3_NO_SSE2",
+        "-DBLAKE3_NO_SSE41",
         "-Wno-error",
         "-Wno-unreachable-code-loop-increment",
     ],

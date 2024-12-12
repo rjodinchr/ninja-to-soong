@@ -117,7 +117,7 @@ impl Project for Angle {
         PathBuf::from(file_name(output))
     }
 
-    fn get_default_cflags(&self) -> Vec<String> {
+    fn get_default_cflags(&self, _target: &str) -> Vec<String> {
         vec!["-Wno-nullability-completeness".to_string()]
     }
 
