@@ -153,7 +153,9 @@ impl<'a> SoongPackage<'a> {
     where
         T: NinjaTarget,
     {
-        let mut cflags: HashSet<String> = HashSet::from_iter(project.get_default_cflags());
+        let target_name = target.get_name(self.target_prefix);
+        let mut cflags: HashSet<String> =
+            HashSet::from_iter(project.get_default_cflags(&target_name));
         let mut includes = HashSet::new();
         let mut srcs = HashSet::new();
         let mut static_libs = HashSet::new();
@@ -211,8 +213,6 @@ impl<'a> SoongPackage<'a> {
         let (static_libraries, shared_libraries) = target.get_link_libraries()?;
         static_libs.extend(static_libraries);
         shared_libs.extend(shared_libraries);
-
-        let target_name = target.get_name(self.target_prefix);
 
         let mut static_libs = static_libs
             .into_iter()
