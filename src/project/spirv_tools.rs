@@ -77,6 +77,17 @@ impl Project for SpirvTools {
         deps
     }
 
+    fn get_library_module(&self, _module: &mut SoongModule) {
+        _module.add_prop(
+            "export_include_dirs",
+            SoongProp::VecStr(vec!["include".to_string()]),
+        );
+        _module.add_prop(
+            "export_header_lib_headers",
+            SoongProp::VecStr(vec![CcLibraryHeaders::SpirvHeaders.str()]),
+        )
+    }
+
     fn get_project_deps(&self) -> Vec<ProjectId> {
         vec![ProjectId::Clvk]
     }

@@ -172,11 +172,15 @@ impl Project for Angle {
         None
     }
 
-    fn get_target_header_libs(&self, _target: &str) -> Vec<String> {
-        vec![
-            CcLibraryHeaders::SpirvTools.str(),
-            CcLibraryHeaders::SpirvHeaders.str(),
-        ]
+    fn get_target_header_libs(&self, target: &str) -> Vec<String> {
+        if target == "angle_obj_libtranslator_a" {
+            vec![
+                CcLibraryHeaders::SpirvHeaders.str(),
+                CcLibraryHeaders::SpirvTools.str(),
+            ]
+        } else {
+            Vec::new()
+        }
     }
 
     fn ignore_cflag(&self, _cflag: &str) -> bool {
