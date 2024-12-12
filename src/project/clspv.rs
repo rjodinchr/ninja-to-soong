@@ -95,6 +95,10 @@ impl Project for Clspv {
         ]
     }
 
+    fn get_library_module(&self, module: &mut SoongModule) {
+        module.add_prop("optimize_for_size", SoongProp::Bool(true));
+    }
+
     fn get_gen_deps(&self, project: ProjectId) -> GenDepsMap {
         let mut deps: GenDepsMap = HashMap::new();
         match project {
@@ -157,9 +161,5 @@ impl Project for Clspv {
 
     fn ignore_target(&self, target: &Path) -> bool {
         target.starts_with("third_party/")
-    }
-
-    fn optimize_target_for_size(&self, _target: &str) -> bool {
-        true
     }
 }

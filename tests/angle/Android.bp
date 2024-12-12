@@ -68,7 +68,6 @@ cc_library_shared {
         "angle_gen_angle_angle_commit_h",
     ],
     use_clang_lld: true,
-    sdk_version: "current",
     stl: "libc++_static",
     arch: {
         arm64: {
@@ -451,7 +450,6 @@ cc_library_shared {
         "angle_gen_angle_angle_commit_h",
     ],
     use_clang_lld: true,
-    sdk_version: "current",
     stl: "libc++_static",
     arch: {
         arm64: {
@@ -532,7 +530,6 @@ cc_library_static {
         "SPIRV-Tools-includes",
     ],
     use_clang_lld: true,
-    sdk_version: "current",
     stl: "libc++_static",
     arch: {
         arm64: {
@@ -596,7 +593,6 @@ cc_library_static {
         "SPIRV-Tools-includes",
     ],
     use_clang_lld: true,
-    sdk_version: "current",
     stl: "libc++_static",
     arch: {
         arm64: {
@@ -1882,7 +1878,6 @@ cc_library_static {
         "angle_gen_angle_angle_commit_h",
     ],
     use_clang_lld: true,
-    sdk_version: "current",
     stl: "libc++_static",
     arch: {
         arm64: {
@@ -1935,7 +1930,6 @@ cc_library_static {
         "SPIRV-Tools-includes",
     ],
     use_clang_lld: true,
-    sdk_version: "current",
     stl: "libc++_static",
     arch: {
         arm64: {
@@ -1996,7 +1990,6 @@ cc_library_static {
         "SPIRV-Tools-includes",
     ],
     use_clang_lld: true,
-    sdk_version: "current",
     stl: "libc++_static",
     arch: {
         arm64: {
@@ -2060,7 +2053,6 @@ cc_library_static {
         "SPIRV-Tools-includes",
     ],
     use_clang_lld: true,
-    sdk_version: "current",
     stl: "libc++_static",
     arch: {
         arm64: {
@@ -2243,7 +2235,6 @@ cc_library_shared {
         "angle_gen_angle_angle_commit_h",
     ],
     use_clang_lld: true,
-    sdk_version: "current",
     stl: "libc++_static",
     arch: {
         arm64: {
