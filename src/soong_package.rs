@@ -158,6 +158,7 @@ impl<'a> SoongPackage<'a> {
         let mut srcs = HashSet::new();
         let mut static_libs = HashSet::new();
         let mut shared_libs = HashSet::new();
+        let mut gen_deps = Vec::new();
         for input in target.get_inputs() {
             let Some(target) = targets_map.get(input) else {
                 return error!("unsupported input for library: {input:#?}");
@@ -167,6 +168,9 @@ impl<'a> SoongPackage<'a> {
             for source in sources {
                 if project.ignore_source(&source) {
                     continue;
+                }
+                if source.starts_with(self.build_path) {
+                    gen_deps.push(strip_prefix(&source, self.build_path));
                 }
                 srcs.insert(path_to_string(strip_prefix(
                     project.get_source(&source),
@@ -265,9 +269,8 @@ impl<'a> SoongPackage<'a> {
             },
             |_target_name| false,
         )?;
-        let mut gen_headers = Vec::new();
-        let mut gen_deps = Vec::new();
 
+        let mut gen_headers = Vec::new();
         for header in headers {
             if project.ignore_gen_header(&header) {
                 gen_deps.push(header);
