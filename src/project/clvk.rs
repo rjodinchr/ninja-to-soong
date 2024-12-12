@@ -108,12 +108,7 @@ impl Project for Clvk {
     }
 
     fn get_target_header_libs(&self, _target: &str) -> Vec<String> {
-        vec![
-            CcLibraryHeaders::SpirvTools.str(),
-            CcLibraryHeaders::SpirvHeaders.str(),
-            CcLibraryHeaders::Clspv.str(),
-            "OpenCL-Headers".to_string(),
-        ]
+        vec!["OpenCL-Headers".to_string()]
     }
 
     fn get_target_alias(&self, target: &str) -> Option<String> {

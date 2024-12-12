@@ -8,7 +8,6 @@ pub enum CcLibraryHeaders {
     SpirvHeaders,
     Llvm,
     Clang,
-    Clspv,
 }
 impl CcLibraryHeaders {
     pub fn str(self) -> String {
@@ -17,7 +16,6 @@ impl CcLibraryHeaders {
             Self::SpirvHeaders => "SPIRV-Headers-includes",
             Self::Llvm => "llvm-includes",
             Self::Clang => "clang-includes",
-            Self::Clspv => "clspv-includes",
         })
     }
 }

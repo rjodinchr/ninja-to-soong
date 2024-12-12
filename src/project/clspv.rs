@@ -69,10 +69,6 @@ impl Project for Clspv {
             targets,
             self,
         )?;
-        package.add_module(SoongModule::new_cc_library_headers(
-            CcLibraryHeaders::Clspv,
-            ["include".to_string()].into(),
-        ));
 
         self.gen_deps = Vec::from_iter(package.get_gen_deps());
 
@@ -96,6 +92,10 @@ impl Project for Clspv {
     }
 
     fn get_library_module(&self, module: &mut SoongModule) {
+        module.add_prop(
+            "export_include_dirs",
+            SoongProp::VecStr(vec!["include".to_string()]),
+        );
         module.add_prop("optimize_for_size", SoongProp::Bool(true));
     }
 

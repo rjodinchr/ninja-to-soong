@@ -118,6 +118,7 @@ cc_library_static {
         "clspv_include_clspv_spirv_reflection_hpp",
     ],
     use_clang_lld: true,
+    export_include_dirs: ["include"],
     optimize_for_size: true,
 }
 
@@ -187,9 +188,4 @@ cc_genrule {
         "cmake/bake_file.py",
     ],
     out: ["clspv/clspv64_builtin_library.h"],
-}
-
-cc_library_headers {
-    name: "clspv-includes",
-    export_include_dirs: ["include"],
 }

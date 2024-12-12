@@ -166,6 +166,8 @@ cc_library_static {
         "SPIRV-Tools_spv-amd-shader-trinary-minmax_insts_inc",
     ],
     use_clang_lld: true,
+    export_include_dirs: ["include"],
+    export_header_lib_headers: ["SPIRV-Headers-includes"],
 }
 
 cc_library_static {
@@ -272,6 +274,8 @@ cc_library_static {
         "SPIRV-Tools_spv-amd-shader-trinary-minmax_insts_inc",
     ],
     use_clang_lld: true,
+    export_include_dirs: ["include"],
+    export_header_lib_headers: ["SPIRV-Headers-includes"],
 }
 
 cc_genrule {
@@ -496,6 +500,8 @@ cc_library_static {
         "SPIRV-Tools_spv-amd-shader-trinary-minmax_insts_inc",
     ],
     use_clang_lld: true,
+    export_include_dirs: ["include"],
+    export_header_lib_headers: ["SPIRV-Headers-includes"],
 }
 
 cc_library_headers {

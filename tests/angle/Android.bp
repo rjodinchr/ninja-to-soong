@@ -59,10 +59,6 @@ cc_library_shared {
         "include",
         "src",
     ],
-    header_libs: [
-        "SPIRV-Headers-includes",
-        "SPIRV-Tools-includes",
-    ],
     generated_headers: [
         "angle_gen_angle_ANGLEShaderProgramVersion_h",
         "angle_gen_angle_angle_commit_h",
@@ -441,10 +437,6 @@ cc_library_shared {
         "third_party/vulkan-headers/src/include",
         "third_party/vulkan_memory_allocator/include",
     ],
-    header_libs: [
-        "SPIRV-Headers-includes",
-        "SPIRV-Tools-includes",
-    ],
     generated_headers: [
         "angle_gen_angle_ANGLEShaderProgramVersion_h",
         "angle_gen_angle_angle_commit_h",
@@ -525,10 +517,6 @@ cc_library_static {
         "src/common/third_party/xxhash",
         "third_party/abseil-cpp",
     ],
-    header_libs: [
-        "SPIRV-Headers-includes",
-        "SPIRV-Tools-includes",
-    ],
     use_clang_lld: true,
     stl: "libc++_static",
     arch: {
@@ -587,10 +575,6 @@ cc_library_static {
         "src/common/base",
         "src/common/third_party/xxhash",
         "third_party/abseil-cpp",
-    ],
-    header_libs: [
-        "SPIRV-Headers-includes",
-        "SPIRV-Tools-includes",
     ],
     use_clang_lld: true,
     stl: "libc++_static",
@@ -1925,10 +1909,6 @@ cc_library_static {
         "src/common/third_party/xxhash",
         "third_party/abseil-cpp",
     ],
-    header_libs: [
-        "SPIRV-Headers-includes",
-        "SPIRV-Tools-includes",
-    ],
     use_clang_lld: true,
     stl: "libc++_static",
     arch: {
@@ -1984,10 +1964,6 @@ cc_library_static {
         "src/common/base",
         "src/common/third_party/xxhash",
         "third_party/abseil-cpp",
-    ],
-    header_libs: [
-        "SPIRV-Headers-includes",
-        "SPIRV-Tools-includes",
     ],
     use_clang_lld: true,
     stl: "libc++_static",
@@ -2047,10 +2023,6 @@ cc_library_static {
         "src/third_party/volk",
         "third_party/abseil-cpp",
         "third_party/vulkan-headers/src/include",
-    ],
-    header_libs: [
-        "SPIRV-Headers-includes",
-        "SPIRV-Tools-includes",
     ],
     use_clang_lld: true,
     stl: "libc++_static",
@@ -2225,10 +2197,6 @@ cc_library_shared {
         "src/common/base",
         "src/common/third_party/xxhash",
         "third_party/abseil-cpp",
-    ],
-    header_libs: [
-        "SPIRV-Headers-includes",
-        "SPIRV-Tools-includes",
     ],
     generated_headers: [
         "angle_gen_angle_ANGLEShaderProgramVersion_h",
