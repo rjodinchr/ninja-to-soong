@@ -168,7 +168,7 @@ fn cmake_configure(
 }
 
 fn cmake_build(build_path: &Path, targets: &Vec<PathBuf>) -> Result<bool, String> {
-    if std::env::var("NINJA_TO_SOONG_SKIP_CMAKE_BUILD").is_ok() {
+    if std::env::var("N2S_SKIP_CMAKE_BUILD").is_ok() {
         return Ok(false);
     }
     let targets_args = targets.into_iter().fold(Vec::new(), |mut vec, target| {

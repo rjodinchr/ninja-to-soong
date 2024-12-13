@@ -33,13 +33,15 @@ fn generate_project(
         print_debug!("Writing soong file...");
 
         const ANDROID_BP: &str = "Android.bp";
-        let file_path = project_path.join(ANDROID_BP);
+        let file_path = get_tests_folder()?.join(project_name).join(ANDROID_BP);
         write_file(file_path.as_path(), &package.print())?;
         print_verbose!("{file_path:#?} created");
 
-        let copy_dst = get_tests_folder()?.join(project_name).join(ANDROID_BP);
-        copy_file(&file_path, &copy_dst)?;
-        print_verbose!("{file_path:#?} copied to {copy_dst:#?}");
+        if std::env::var("N2S_COPY_TO_AOSP").is_ok() {
+            let copy_dst = project_path.join(ANDROID_BP);
+            copy_file(&file_path, &copy_dst)?;
+            print_verbose!("{file_path:#?} copied to {copy_dst:#?}");
+        }
     }
     Ok(())
 }

@@ -50,15 +50,17 @@ Each project in the `tests` folder contains the following files:
  * `REPO`: a file containing the git URL of the project
  * `VERSION`: a file containing the `sha1` to use to checkout the project
 
- To reduce CI time, the environment variable `NINJA_TO_SOONG_SKIP_CMAKE_BUILD` is set to avoid building projects. While it is correct to do for test purpose, it means that things will be missing when trying to update certain project (e.g. `llvm-project`).
+ To reduce CI time, the environment variable `N2S_SKIP_CMAKE_BUILD` is set to avoid building projects. While it is correct to do for test purpose, it means that things will be missing when trying to update certain project (e.g. `llvm-project`).
 
 If you want more information take a look at the [github action script](.github/workflows/presubmit.yml)
 
 # Developement tips
 
-After a **full** first run of `ninja-to-soong`, it is possible to run with the environment variable `NINJA_TO_SOONG_SKIP_GEN_NINJA` set to skip the generation of `Ninja` file for every project.
+- After a **full** first run of `ninja-to-soong`, it is possible to run with the environment variable `N2S_SKIP_GEN_NINJA` set to skip the generation of `Ninja` file for every project.
 
-It is possible to run a specific set of projects by adding them after the required arguments:
+- It is possible to run a specific set of projects by adding them after the required arguments:
 ```
 <ninja-to-soong> $ cargo run -- <android_tree_root> <android_ndk_path> <project1> <project2>
 ```
+
+- `Android.bp` files can be automatically copied to the Android tree by setting `NS2_COPY_TO_AOSP`.

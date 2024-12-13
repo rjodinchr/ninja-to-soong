@@ -13,7 +13,7 @@ pub mod gn;
 pub type NinjaRuleCmd = (String, Option<(String, String)>);
 pub type NinjaRulesMap = HashMap<String, NinjaRuleCmd>;
 
-pub const SKIP_GEN_NINJA: &str = "NINJA_TO_SOONG_SKIP_GEN_NINJA";
+pub const SKIP_GEN_NINJA: &str = "N2S_SKIP_GEN_NINJA";
 
 pub enum NinjaRule {
     StaticLibrary,
