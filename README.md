@@ -38,7 +38,7 @@
 # Using `ninja-to-soong`
 
 ```
-<ninja-to-soong> $ cargo run --release -- <android_repository_path> <android_ndk_path>
+<ninja-to-soong> $ cargo run --release -- <android_tree_path>
 ```
 
 # Tests
@@ -60,7 +60,7 @@ If you want more information take a look at the [github action script](.github/w
 
 - It is possible to run a specific set of projects by adding them after the required arguments:
 ```
-<ninja-to-soong> $ cargo run -- <android_tree_root> <android_ndk_path> <project1> <project2>
+<ninja-to-soong> $ cargo run -- <android_tree_path> <project1> <project2>
 ```
 
 - `Android.bp` files can be automatically copied to the Android tree by setting `NS2_COPY_TO_AOSP`.
