@@ -16,6 +16,7 @@ pub type NinjaRulesMap = HashMap<String, NinjaRuleCmd>;
 pub const SKIP_GEN_NINJA: &str = "N2S_SKIP_GEN_NINJA";
 
 pub enum NinjaRule {
+    Binary,
     StaticLibrary,
     SharedLibrary,
     CustomCommand,
