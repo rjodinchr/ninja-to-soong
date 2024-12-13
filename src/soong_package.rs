@@ -252,30 +252,25 @@ impl<'a> SoongPackage<'a> {
         let headers = targets_map.traverse_from(
             target.get_outputs().clone(),
             HashSet::new(),
-            |gen_headers, rule, name, target| {
-                if rule.is_none() {
-                    return Ok(());
-                }
-                match rule.unwrap() {
-                    NinjaRule::CustomCommand => {
-                        if target.get_cmd()?.is_none() {
-                            return Ok(());
-                        }
-                        gen_headers.insert(name.to_path_buf());
+            |gen_headers, rule, target| match rule {
+                NinjaRule::CustomCommand => {
+                    if target.get_cmd()?.is_none() {
                         return Ok(());
                     }
-                    _ => return Ok(()),
+                    gen_headers.extend(target.get_outputs().clone());
+                    return Ok(());
                 }
+                _ => return Ok(()),
             },
             |_target_name| false,
         )?;
 
-        let mut gen_headers = Vec::new();
+        let mut gen_headers = HashSet::new();
         for header in headers {
             if project.ignore_gen_header(&header) {
-                gen_deps.push(header);
+                gen_deps.push(header.clone());
             } else {
-                gen_headers.push(match targets_map.get(&header) {
+                gen_headers.insert(match targets_map.get(&header) {
                     Some(target_header) => target_header.get_name(self.target_prefix),
                     None => return error!("Could not find target for {name:#?}"),
                 });
@@ -318,7 +313,10 @@ impl<'a> SoongPackage<'a> {
             "header_libs",
             SoongProp::VecStr(project.get_target_header_libs(&target_name)),
         );
-        module.add_prop("generated_headers", SoongProp::VecStr(gen_headers));
+        module.add_prop(
+            "generated_headers",
+            SoongProp::VecStr(Vec::from_iter(gen_headers)),
+        );
         module.add_prop("use_clang_lld", SoongProp::Bool(true));
 
         project.get_library_module(&mut module);
@@ -478,11 +476,8 @@ impl<'a> SoongPackage<'a> {
         targets_map.traverse_from(
             targets_to_generate,
             (),
-            |_, rule, _name, target| {
-                let Some(ninja_rule) = rule else {
-                    return Ok(());
-                };
-                let module = match ninja_rule {
+            |_, rule, target| {
+                let module = match rule {
                     NinjaRule::SharedLibrary => {
                         self.generate_library("cc_library_shared", target, &targets_map, project)?
                     }
