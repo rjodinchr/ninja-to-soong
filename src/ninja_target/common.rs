@@ -16,9 +16,9 @@ pub fn get_link_libraries(libs: &str) -> Result<(Vec<PathBuf>, Vec<PathBuf>), St
             shared_libraries.push(PathBuf::from("lib".to_string() + library));
         } else {
             let lib_path = PathBuf::from(lib);
-            if lib.ends_with(".a") {
+            if lib.contains(".a") {
                 static_libraries.push(lib_path);
-            } else if lib.ends_with(".so") {
+            } else if lib.contains(".so") {
                 shared_libraries.push(lib_path);
             } else {
                 return error!("unsupported library '{lib}'");
