@@ -47,7 +47,7 @@ impl Project for Angle {
         temp_path: &Path,
         _projects_map: &ProjectsMap,
     ) -> Result<SoongPackage, String> {
-        const ANGLE_PATH: &str = "NINJA_TO_SOONG_ANGLE_PATH";
+        const ANGLE_PATH: &str = "N2S_ANGLE_PATH";
         let Ok(angle_path) = std::env::var(ANGLE_PATH) else {
             return error!("{ANGLE_PATH} required but not defined");
         };

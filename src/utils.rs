@@ -18,7 +18,7 @@ pub const COLOR_NONE: &str = "\x1b[0m";
 macro_rules! print_internal {
     ($print_prefix:expr, $message_prefix:expr, $print_suffix:expr, $($arg:tt)*) => {
         println!(
-            "{0}[NINJA-TO-SOONG]{1} {2}{3}",
+            "{0}[N2S]{1} {2}{3}",
             $print_prefix, $message_prefix, format!($($arg)*), $print_suffix
         );
     };

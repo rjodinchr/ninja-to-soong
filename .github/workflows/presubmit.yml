@@ -54,8 +54,8 @@ jobs:
       - name: Run ninja-to-soong
         shell: bash
         env:
-          NINJA_TO_SOONG_SKIP_CMAKE_BUILD: 1
-          NINJA_TO_SOONG_ANGLE_PATH: ${{ env.angle }}
+          N2S_SKIP_CMAKE_BUILD: 1
+          N2S_ANGLE_PATH: ${{ env.angle }}
         run: |
           set -x
           PATH=${{ env.depot_tools }}:$PATH cargo run --release -- $(realpath ${{ env.android }})
