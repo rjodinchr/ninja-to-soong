@@ -87,7 +87,7 @@ where
         ignore_target: G,
     ) -> Result<Iterator, String>
     where
-        F: FnMut(&mut Iterator, Option<NinjaRule>, PathBuf, &T) -> Result<(), String>,
+        F: FnMut(&mut Iterator, NinjaRule, &T) -> Result<(), String>,
         G: Fn(&Path) -> bool,
     {
         let mut targets_seen = HashSet::new();
@@ -103,7 +103,9 @@ where
             targets.extend(target.get_order_only_deps().clone());
             targets_seen.extend(target.get_outputs().clone());
             targets_seen.extend(target.get_implicit_ouputs().clone());
-            f(&mut iterator, target.get_rule(), target_name, target)?;
+            if let Some(rule) = target.get_rule() {
+                f(&mut iterator, rule, target)?;
+            }
         }
         Ok(iterator)
     }
