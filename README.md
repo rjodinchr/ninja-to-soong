@@ -51,7 +51,7 @@ Each project in the `tests` folder contains the following files:
  * `REPO`: a file containing the git URL of the project
  * `VERSION`: a file containing the `sha1` to use to checkout the project
 
- To reduce CI time, the environment variable `N2S_SKIP_CMAKE_BUILD` is set to avoid building projects. While it is correct to do for test purpose, it means that things will be missing when trying to update certain project (e.g. `llvm-project`).
+ To reduce CI time, the environment variable `N2S_SKIP_BUILD` is set to avoid building projects. While it is correct to do for test purpose, it means that things will be missing when trying to update certain project (e.g. `llvm-project`).
 
 If you want more information take a look at the [github action script](.github/workflows/presubmit.yml)
 

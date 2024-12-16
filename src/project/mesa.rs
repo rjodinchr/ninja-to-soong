@@ -14,6 +14,95 @@ pub struct Mesa {
     ndk_path: PathBuf,
 }
 
+impl Mesa {
+    fn ninja_install(&self) -> Result<bool, String> {
+        if std::env::var(SKIP_BUILD).is_ok() {
+            return Ok(false);
+        }
+        execute_cmd(
+            "ninja",
+            vec!["-C", &path_to_string(&self.build_path), "install"],
+            None,
+            "ninja_install",
+        )?;
+        Ok(true)
+    }
+
+    fn clone_aosp_mesa_build(&self, temp_path: &Path) -> Result<PathBuf, String> {
+        let aosp_mesa_build_path = temp_path.join("aosp-mesa-build");
+        let build_mesa3d_sh_path = aosp_mesa_build_path.join("build-mesa3d.sh");
+        if std::fs::File::open(&build_mesa3d_sh_path).is_ok() {
+            return Ok(build_mesa3d_sh_path);
+        }
+
+        execute_cmd(
+            "git",
+            vec![
+                "clone",
+                "sso://user/msturner/aluminium/aosp-mesa-build",
+                &path_to_string(aosp_mesa_build_path),
+            ],
+            None,
+            "clone_aosp_mesa_build",
+        )?;
+
+        let script = read_file(&build_mesa3d_sh_path)?;
+        let intel_clc_build_path = temp_path.join("intel_clc");
+        let modified_script = script
+            .replace(
+                "#!/bin/bash",
+                "#!/bin/bash
+set -x",
+            )
+            .replace("ninja -C build install", "# ninja -C build install")
+            .replace("build ", &(path_to_string(&self.build_path) + " "))
+            .replace(
+                "${MESA_DIR}/build-intel_clc",
+                &path_to_string(&intel_clc_build_path),
+            )
+            .replace("build-intel_clc", &path_to_string(&intel_clc_build_path));
+        write_file(&build_mesa3d_sh_path, &modified_script)?;
+
+        Ok(build_mesa3d_sh_path)
+    }
+
+    fn setup_mesa(&self, temp_path: &Path) -> Result<bool, String> {
+        if std::env::var(SKIP_GEN_NINJA).is_ok() {
+            return Ok(false);
+        }
+
+        let build_mesa3d_sh_path = self.clone_aosp_mesa_build(temp_path)?;
+        let mut test_folder = path_to_string(get_tests_folder()?.join(self.get_id().str()));
+        let skip_build = std::env::var(SKIP_BUILD).is_ok();
+        let env_vars = if skip_build {
+            let path = match std::env::var("PATH") {
+                Ok(env) => env,
+                Err(err) => return error!("Could not get PATH env: {err}"),
+            };
+            test_folder += ":";
+            test_folder += &path;
+            Some(vec![("PATH", test_folder.as_str())])
+        } else {
+            None
+        };
+        execute_cmd(
+            "bash",
+            vec![
+                &path_to_string(build_mesa3d_sh_path),
+                &path_to_string(&self.ndk_path),
+                &path_to_string(&self.src_path),
+            ],
+            env_vars,
+            "setup_mesa",
+        )?;
+        if skip_build {
+            Ok(false)
+        } else {
+            Ok(self.ninja_install()?)
+        }
+    }
+}
+
 impl Project for Mesa {
     fn get_id(&self) -> ProjectId {
         ProjectId::Mesa
@@ -25,15 +114,11 @@ impl Project for Mesa {
         temp_path: &Path,
         _projects_map: &ProjectsMap,
     ) -> Result<SoongPackage, String> {
-        const MESA_PATH: &str = "N2S_MESA_PATH";
-        let Ok(mesa_path) = std::env::var(MESA_PATH) else {
-            return error!("{MESA_PATH} required but not defined");
-        };
-
-        self.src_path = PathBuf::from(mesa_path);
-        self.build_path = self.src_path.join("build");
+        self.src_path = self.get_id().android_path(android_path);
         self.ndk_path = get_ndk_path(temp_path)?;
+        self.build_path = temp_path.join(self.get_id().str());
 
+        let copy_gen_deps = self.setup_mesa(temp_path)?;
         let targets = ninja_target::meson::get_targets(&self.build_path)?;
 
         let mut package = SoongPackage::new(
@@ -95,23 +180,25 @@ impl Project for Mesa {
             &format!("{0:#?}", &gen_deps_sorted),
         )?;
 
-        let meson_generated_path = self
-            .get_id()
-            .android_path(android_path)
-            .join(MESON_GENERATED);
-        for dep in gen_deps_sorted {
-            let from = self.build_path.join(&dep);
-            let to = meson_generated_path.join(&dep);
-            let to_path = to.parent().unwrap();
-            if let Err(err) = std::fs::create_dir_all(to_path) {
-                return error!("create_dir_all({to_path:#?}) failed: {err}");
+        if copy_gen_deps {
+            let meson_generated_path = self
+                .get_id()
+                .android_path(android_path)
+                .join(MESON_GENERATED);
+            for dep in gen_deps_sorted {
+                let from = self.build_path.join(&dep);
+                let to = meson_generated_path.join(&dep);
+                let to_path = to.parent().unwrap();
+                if let Err(err) = std::fs::create_dir_all(to_path) {
+                    return error!("create_dir_all({to_path:#?}) failed: {err}");
+                }
+                copy_file(&from, &to)?;
             }
-            copy_file(&from, &to)?;
+            print_verbose!(
+                "Files copied from {0:#?} to {meson_generated_path:#?}",
+                &self.build_path
+            );
         }
-        print_verbose!(
-            "Files copied from {0:#?} to {meson_generated_path:#?}",
-            &self.build_path
-        );
 
         Ok(package)
     }
@@ -126,6 +213,13 @@ impl Project for Mesa {
         }
 
         cflags
+    }
+
+    fn get_define(&self, define: &str) -> String {
+        let src_path = path_to_string(&self.src_path) + &std::path::MAIN_SEPARATOR.to_string();
+        define
+            .replace(&path_to_string(&self.build_path), MESON_GENERATED)
+            .replace(&src_path, "")
     }
 
     fn get_include(&self, include: &Path) -> PathBuf {
@@ -180,7 +274,7 @@ impl Project for Mesa {
     }
 
     fn get_source(&self, source: &Path) -> PathBuf {
-        if source.starts_with(&self.build_path) {
+        if std::fs::File::open(source).is_err() {
             self.src_path
                 .join(MESON_GENERATED)
                 .join(strip_prefix(source, &self.build_path))

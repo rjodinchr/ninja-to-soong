@@ -17,7 +17,7 @@ fn update_cflags_with_defines(
         if project.ignore_define(&define) {
             continue;
         }
-        cflags.insert("-D".to_string() + &define);
+        cflags.insert("-D".to_string() + &project.get_define(&define));
     }
 }
 
