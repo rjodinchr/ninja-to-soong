@@ -222,7 +222,7 @@ impl<'a> SoongPackage<'a> {
                     return vec;
                 }
                 vec.insert(if lib.starts_with(self.ndk_path) {
-                    lib.file_stem().unwrap().to_str().unwrap().to_string()
+                    file_stem(&lib)
                 } else {
                     self.generated_libraries.insert(lib.clone());
                     let lib_id = path_to_id(project.get_library_name(&lib));
@@ -239,7 +239,7 @@ impl<'a> SoongPackage<'a> {
                     return vec;
                 }
                 vec.insert(if lib.starts_with(self.ndk_path) {
-                    lib.file_stem().unwrap().to_str().unwrap().to_string()
+                    file_stem(&lib)
                 } else {
                     self.generated_libraries.insert(lib.clone());
                     let lib_id = path_to_id(project.get_library_name(&lib));

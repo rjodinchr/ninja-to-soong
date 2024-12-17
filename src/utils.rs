@@ -112,6 +112,15 @@ pub fn path_to_id(path: PathBuf) -> String {
         .replace(".", "_")
 }
 
+pub fn file_stem(path: &Path) -> String {
+    let file_name = file_name(path);
+    file_name
+        .split_once(".")
+        .unwrap_or((&file_name, ""))
+        .0
+        .to_string()
+}
+
 pub fn file_name(path: &Path) -> String {
     path.file_name()
         .unwrap_or_default()
