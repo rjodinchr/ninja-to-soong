@@ -140,10 +140,7 @@ fn cmake_configure(
     build_path: &Path,
     ndk_path: &Path,
     cmake_args: Vec<&str>,
-) -> Result<bool, String> {
-    if std::env::var(SKIP_GEN_NINJA).is_ok() {
-        return Ok(false);
-    }
+) -> Result<(), String> {
     let build_path_string = path_to_string(build_path);
     let src_path_string = path_to_string(src_path);
     let cmake_toolchain = String::from("-DCMAKE_TOOLCHAIN_FILE=")
@@ -164,13 +161,10 @@ fn cmake_configure(
     ];
     args.extend(cmake_args);
     execute_cmd!("cmake", args, None)?;
-    Ok(true)
+    Ok(())
 }
 
-fn cmake_build(build_path: &Path, targets: &Vec<PathBuf>) -> Result<bool, String> {
-    if std::env::var(SKIP_BUILD).is_ok() {
-        return Ok(false);
-    }
+fn cmake_build(build_path: &Path, targets: &Vec<PathBuf>) -> Result<(), String> {
     let build_path_string = path_to_string(build_path);
     let args: Vec<&str> =
         targets
@@ -181,7 +175,7 @@ fn cmake_build(build_path: &Path, targets: &Vec<PathBuf>) -> Result<bool, String
                 vec
             });
     execute_cmd!("cmake", args, None)?;
-    Ok(true)
+    Ok(())
 }
 
 pub fn get_targets(
@@ -190,17 +184,18 @@ pub fn get_targets(
     ndk_path: &Path,
     cmake_args: Vec<&str>,
     targets_to_build: Option<Vec<PathBuf>>,
+    ctx: &Context,
 ) -> Result<(Vec<CmakeNinjaTarget>, bool), String> {
-    let configured = cmake_configure(src_path, build_path, ndk_path, cmake_args)?;
-    let built = if configured {
-        if let Some(targets) = targets_to_build {
-            cmake_build(build_path, &targets)?
-        } else {
-            false
+    let mut built = false;
+    if !ctx.skip_gen_ninja {
+        cmake_configure(src_path, build_path, ndk_path, cmake_args)?;
+        if !ctx.skip_build {
+            if let Some(targets) = targets_to_build {
+                cmake_build(build_path, &targets)?;
+                built = true;
+            }
         }
-    } else {
-        false
-    };
+    }
 
     Ok((parse_build_ninja(build_path)?, built))
 }

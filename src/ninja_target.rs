@@ -3,6 +3,7 @@
 
 use std::collections::{HashMap, HashSet};
 
+use crate::context::*;
 use crate::parser::parse_build_ninja;
 use crate::utils::*;
 

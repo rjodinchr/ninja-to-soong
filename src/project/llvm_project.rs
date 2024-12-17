@@ -22,13 +22,12 @@ impl Project for LlvmProject {
 
     fn generate_package(
         &mut self,
-        android_path: &Path,
-        temp_path: &Path,
+        ctx: &Context,
         projects_map: &ProjectsMap,
     ) -> Result<SoongPackage, String> {
-        self.src_path = self.get_id().android_path(android_path);
-        self.build_path = temp_path.join(self.get_id().str());
-        self.ndk_path = get_ndk_path(temp_path)?;
+        self.src_path = self.get_id().android_path(&ctx.android_path);
+        self.build_path = ctx.temp_path.join(self.get_id().str());
+        self.ndk_path = get_ndk_path(&ctx.temp_path)?;
 
         let mut targets_to_build = Vec::new();
         targets_to_build.extend(GenDeps::TargetsToGen.get(self, ProjectId::Clvk, projects_map));
@@ -44,6 +43,7 @@ impl Project for LlvmProject {
                 "-DLLVM_TARGETS_TO_BUILD=",
             ],
             Some(targets_to_build),
+            ctx,
         )?;
         let copy_gen_deps = if built { true } else { false };
 
@@ -114,7 +114,7 @@ impl Project for LlvmProject {
         let mut gen_deps_sorted = Vec::from_iter(gen_deps);
         gen_deps_sorted.sort();
         write_file(
-            &get_tests_folder()?
+            &ctx.test_path
                 .join(self.get_id().str())
                 .join("generated_deps.txt"),
             &format!("{0:#?}", &gen_deps_sorted),

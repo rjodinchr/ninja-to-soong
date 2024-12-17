@@ -194,8 +194,9 @@ pub fn get_targets(
     src_path: &Path,
     build_path: &Path,
     gn_args: Vec<&str>,
+    ctx: &Context,
 ) -> Result<Vec<GnNinjaTarget>, String> {
-    if !std::env::var(SKIP_GEN_NINJA).is_ok() {
+    if !ctx.skip_gen_ninja {
         gn_gen(src_path, build_path, gn_args)?;
     }
 

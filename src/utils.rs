@@ -6,9 +6,6 @@ use std::io::{Read, Write};
 
 pub use std::path::{Path, PathBuf};
 
-pub const SKIP_GEN_NINJA: &str = "N2S_SKIP_GEN_NINJA";
-pub const SKIP_BUILD: &str = "N2S_SKIP_BUILD";
-
 pub const LLVM_DISABLE_ZLIB: &str = "-DLLVM_ENABLE_ZLIB=OFF";
 
 pub const TAB: &str = "   ";
@@ -174,28 +171,6 @@ pub fn read_file(file_path: &Path) -> Result<String, String> {
         }
         Err(err) => return error!("Could not open {file_path:#?}: '{err}'"),
     }
-}
-
-pub fn get_n2s_folder() -> Result<PathBuf, String> {
-    match std::env::current_exe() {
-        Ok(exe_path) => {
-            Ok(
-                exe_path // <ninja-to-soong>/target/<build-mode>/ninja-to-soong
-                    .parent() // <ninja-to-soong>/target/<build-mode>
-                    .unwrap()
-                    .parent() // <ninja-to-soong>/target
-                    .unwrap()
-                    .parent() // <ninja-to-soong>
-                    .unwrap()
-                    .to_path_buf(),
-            )
-        }
-        Err(err) => return error!("Could not get current executable path: {err}"),
-    }
-}
-
-pub fn get_tests_folder() -> Result<PathBuf, String> {
-    Ok(get_n2s_folder()?.join("tests"))
 }
 
 pub fn execute_command(

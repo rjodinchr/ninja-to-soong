@@ -3,6 +3,7 @@
 
 use std::collections::HashMap;
 
+use crate::context::*;
 use crate::ninja_target;
 use crate::soong_module::*;
 use crate::soong_package::*;
@@ -100,8 +101,7 @@ pub trait Project {
     fn get_id(&self) -> ProjectId;
     fn generate_package(
         &mut self,
-        android_path: &Path,
-        temp_path: &Path,
+        ctx: &Context,
         projects_map: &ProjectsMap,
     ) -> Result<SoongPackage, String>;
 

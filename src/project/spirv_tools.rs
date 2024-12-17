@@ -19,14 +19,13 @@ impl Project for SpirvTools {
 
     fn generate_package(
         &mut self,
-        android_path: &Path,
-        temp_path: &Path,
+        ctx: &Context,
         projects_map: &ProjectsMap,
     ) -> Result<SoongPackage, String> {
-        self.src_path = self.get_id().android_path(android_path);
-        self.build_path = temp_path.join(self.get_id().str());
-        self.ndk_path = get_ndk_path(temp_path)?;
-        self.spirv_headers_path = ProjectId::SpirvHeaders.android_path(android_path);
+        self.src_path = self.get_id().android_path(&ctx.android_path);
+        self.build_path = ctx.temp_path.join(self.get_id().str());
+        self.ndk_path = get_ndk_path(&ctx.temp_path)?;
+        self.spirv_headers_path = ProjectId::SpirvHeaders.android_path(&ctx.android_path);
 
         let (targets, _) = ninja_target::cmake::get_targets(
             &self.src_path,
@@ -37,6 +36,7 @@ impl Project for SpirvTools {
                     + &path_to_string(&self.spirv_headers_path)),
             ],
             None,
+            ctx,
         )?;
 
         let mut package = SoongPackage::new(

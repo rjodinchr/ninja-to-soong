@@ -17,11 +17,10 @@ impl Project for SpirvHeaders {
 
     fn generate_package(
         &mut self,
-        android_path: &Path,
-        _temp_path: &Path,
+        ctx: &Context,
         projects_map: &ProjectsMap,
     ) -> Result<SoongPackage, String> {
-        self.src_path = self.get_id().android_path(android_path);
+        self.src_path = self.get_id().android_path(&ctx.android_path);
         let mut package = SoongPackage::new(
             &self.src_path,
             Path::new(""),
