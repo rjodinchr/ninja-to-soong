@@ -15,50 +15,22 @@ jobs:
           fetch-depth: 0
       - name: Setup Ninja
         uses: ./.github/actions/setup-ninja
-      - name: Setup environement variables
-        shell: bash
-        run: |
-          set -x
-          echo "android=$(realpath ${{ github.workspace }}/../android)" >> $GITHUB_ENV
-          echo "depot_tools=$(realpath ${{ github.workspace }}/../depot_tools)" >> $GITHUB_ENV
       - name: Checkout repositories
         shell: bash
         run: |
           set -x
-          mkdir -p ${{ env.android }}/external
+          android="$(realpath ${{ github.workspace }}/../android)"
+          mkdir -p "${android}"
           for repo in tests/*
           do
-            if [ ! -f ${repo}/REPO ]
-            then
-              continue
-            fi
-            name=$(basename ${repo})
-            git init ${{ env.android }}/external/${name}
-            git -C ${{ env.android }}/external/${name} remote add origin $(cat ${repo}/REPO)
-            git -C ${{ env.android }}/external/${name} fetch --depth 1 origin $(cat ${repo}/VERSION)
-            git -C ${{ env.android }}/external/${name} checkout $(cat ${repo}/VERSION)
+            bash "${repo}/checkout.sh" "${android}"
           done
-      - name: Checkout angle
-        shell: bash
-        run: |
-          set -x
-          git clone --depth 1 https://chromium.googlesource.com/chromium/tools/depot_tools.git ${{ env.depot_tools }}
-          export PATH=${{ env.depot_tools }}:$PATH
-          echo "angle=${{ env.android }}/external/angle" >> $GITHUB_ENV
-          mkdir -p ${{ env.android }}/external/angle
-          cd  ${{ env.android }}/external/angle
-          fetch --nohistory angle
-          echo "target_os = [\"android\"]" >> .gclient
-          gclient sync --shallow --revision=$(cat tests/angle/VERSION)
-          sudo ./build/install-build-deps.sh
       - name: Run ninja-to-soong
         shell: bash
-        env:
-          N2S_SKIP_BUILD: 1
-          N2S_ANGLE_PATH: ${{ env.angle }}
         run: |
           set -x
-          PATH=${{ env.depot_tools }}:$PATH cargo run --release -- $(realpath ${{ env.android }})
+          android="$(realpath ${{ github.workspace }}/../android)"
+          PATH="${android}/depot_tools:${PATH}" cargo run --release -- --skip-build --angle-path "${android}/external/angle" "${android}"
       - name: Check generated files
         shell: bash
         run: |

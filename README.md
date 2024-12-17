@@ -49,8 +49,7 @@
 
 Each project in the `tests` folder contains the following files:
  * `Android.bp`: the reference file to generate
- * `REPO`: a file containing the git URL of the project
- * `VERSION`: a file containing the `sha1` to use to checkout the project
+ * `checkout.sh`: a script to checkout the repository in the CI
 
  To reduce CI time, `--skip-build` is used to avoid building projects. While it is correct to do for test purpose, it means that things will be missing when trying to update certain project (e.g. `llvm-project`).
 
