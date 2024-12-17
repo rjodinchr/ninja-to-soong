@@ -20,7 +20,7 @@ impl Project for SpirvHeaders {
         ctx: &Context,
         projects_map: &ProjectsMap,
     ) -> Result<SoongPackage, String> {
-        self.src_path = self.get_id().android_path(&ctx.android_path);
+        self.src_path = self.get_id().android_path(ctx)?;
         let mut package = SoongPackage::new(
             &self.src_path,
             Path::new(""),

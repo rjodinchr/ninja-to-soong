@@ -46,10 +46,7 @@ impl Project for Angle {
         ctx: &Context,
         _projects_map: &ProjectsMap,
     ) -> Result<SoongPackage, String> {
-        let Some(angle_path) = ctx.angle_path.to_owned() else {
-            return error!("'{ANGLE_PATH}' required but not defined");
-        };
-        self.src_path = PathBuf::from(angle_path);
+        self.src_path = ctx.get_path(ANGLE_PATH, self.get_id().str())?;
         self.build_path = ctx.temp_path.join(self.get_id().str());
         self.ndk_path = self.src_path.join("third_party/android_toolchain/ndk");
 

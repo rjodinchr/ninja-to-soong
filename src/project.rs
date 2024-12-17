@@ -55,8 +55,9 @@ impl ProjectId {
             Self::SpirvTools => SPIRV_TOOLS_NAME,
         }
     }
-    pub fn android_path(self, android_path: &Path) -> PathBuf {
-        android_path.join("external").join(self.str())
+    pub fn android_path(self, ctx: &Context) -> Result<PathBuf, String> {
+        let str = self.str();
+        Ok(ctx.get_android_path(str)?.join("external").join(str))
     }
 }
 
