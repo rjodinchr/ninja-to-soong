@@ -161,17 +161,11 @@ impl NinjaTarget for GnNinjaTarget {
 }
 
 fn bash_c(path: &Path, cmd: &Vec<&str>) -> Result<(), String> {
-    let mut bash = std::process::Command::new("bash");
     let path_str = path_to_string(path);
     let mut command = vec!["cd", &path_str, ";"];
     command.append(&mut cmd.clone());
     let bash_arg = command.join(" ");
-    bash.args(["-c", &bash_arg]);
-    println!("{bash:#?}");
-    if let Err(err) = bash.status() {
-        return error!("bash_c({path:#?}, \"{bash_arg}\") failed: {err}");
-    }
-    Ok(())
+    execute_cmd!("bash", vec!["-c", &bash_arg], None)
 }
 
 fn gn_gen(src_path: &Path, build_path: &Path, gn_args: Vec<&str>) -> Result<(), String> {

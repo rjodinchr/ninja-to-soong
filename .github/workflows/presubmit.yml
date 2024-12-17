@@ -42,7 +42,7 @@ jobs:
         shell: bash
         run: |
           set -x
-          git clone https://chromium.googlesource.com/chromium/tools/depot_tools.git ${{ env.depot_tools }}
+          git clone --depth 1 https://chromium.googlesource.com/chromium/tools/depot_tools.git ${{ env.depot_tools }}
           export PATH=${{ env.depot_tools }}:$PATH
           echo "angle=${{ env.android }}/external/angle" >> $GITHUB_ENV
           mkdir -p ${{ env.android }}/external/angle
@@ -54,7 +54,7 @@ jobs:
       - name: Run ninja-to-soong
         shell: bash
         env:
-          N2S_SKIP_CMAKE_BUILD: 1
+          N2S_SKIP_BUILD: 1
           N2S_ANGLE_PATH: ${{ env.angle }}
         run: |
           set -x
