@@ -48,6 +48,8 @@ impl NinjaTarget for CmakeNinjaTarget {
             NinjaRule::StaticLibrary
         } else if self.rule.starts_with("CUSTOM_COMMAND") {
             NinjaRule::CustomCommand
+        } else if self.rule.starts_with("CXX_EXECUTABLE") {
+            NinjaRule::Binary
         } else {
             return None;
         })
