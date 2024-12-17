@@ -15,22 +15,33 @@ jobs:
           fetch-depth: 0
       - name: Setup Ninja
         uses: ./.github/actions/setup-ninja
-      - name: Checkout repositories
+      - name: Setup environement variables
         shell: bash
         run: |
           set -x
-          android="$(realpath ${{ github.workspace }}/../android)"
-          mkdir -p "${android}"
+          echo "android=$(realpath ${{ github.workspace }}/../android)" >> $GITHUB_ENV
+          echo "key=$(git log -1 --format='%h' tests)" >> $GITHUB_ENV
+      - name: Get repositories from cache
+        id: checkout-repositories
+        uses: actions/cache@v4
+        with:
+          path: ${{ env.android }}
+          key: ${{ env.key }}
+      - name: Checkout repositories
+        if: steps.checkout-repositories.outputs.cache-hit != 'true' 
+        shell: bash
+        run: |
+          set -x
+          mkdir -p "${{ env.android }}"
           for repo in tests/*
           do
-            bash "${repo}/checkout.sh" "${android}"
+            bash "${repo}/checkout.sh" "${{ env.android }}"
           done
       - name: Run ninja-to-soong
         shell: bash
         run: |
           set -x
-          android="$(realpath ${{ github.workspace }}/../android)"
-          PATH="${android}/depot_tools:${PATH}" cargo run --release -- --skip-build --angle-path "${android}/external/angle" "${android}"
+          PATH="${{ env.android }}/depot_tools:${PATH}" cargo run --release -- --skip-build --angle-path "${{ env.android }}/external/angle" "${{ env.android }}"
       - name: Check generated files
         shell: bash
         run: |
