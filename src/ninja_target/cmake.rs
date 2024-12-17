@@ -140,51 +140,42 @@ fn cmake_configure(
     build_path: &Path,
     ndk_path: &Path,
     cmake_args: Vec<&str>,
-) -> Result<bool, String> {
-    if std::env::var(SKIP_GEN_NINJA).is_ok() {
-        return Ok(false);
-    }
-    let mut command = std::process::Command::new("cmake");
-    command
-        .args([
-            "-B",
-            &path_to_string(build_path),
-            "-S",
-            &path_to_string(src_path),
-            "-G",
-            "Ninja",
-            "-DCMAKE_BUILD_TYPE=Release",
-            &("-DCMAKE_TOOLCHAIN_FILE=".to_string()
-                + &path_to_string(ndk_path.join(NDK_CMAKE_TOOLCHAIN_PATH))),
-            &("-DANDROID_ABI=".to_string() + ANDROID_ABI),
-            &("-DANDROID_PLATFORM=".to_string() + ANDROID_PLATFORM),
-        ])
-        .args(cmake_args);
-    println!("{command:#?}");
-    if let Err(err) = command.status() {
-        return error!("cmake_configure({src_path:#?}) failed: {err}");
-    }
-    Ok(true)
+) -> Result<(), String> {
+    let build_path_string = path_to_string(build_path);
+    let src_path_string = path_to_string(src_path);
+    let cmake_toolchain = String::from("-DCMAKE_TOOLCHAIN_FILE=")
+        + &path_to_string(ndk_path.join(NDK_CMAKE_TOOLCHAIN_PATH));
+    let android_abi = String::from("-DANDROID_ABI=") + ANDROID_ABI;
+    let android_platform = String::from("-DANDROID_PLATFORM=") + ANDROID_PLATFORM;
+    let mut args = vec![
+        "-B",
+        &build_path_string,
+        "-S",
+        &src_path_string,
+        "-G",
+        "Ninja",
+        "-DCMAKE_BUILD_TYPE=Release",
+        &cmake_toolchain,
+        &android_abi,
+        &android_platform,
+    ];
+    args.extend(cmake_args);
+    execute_cmd!("cmake", args, None)?;
+    Ok(())
 }
 
-fn cmake_build(build_path: &Path, targets: &Vec<PathBuf>) -> Result<bool, String> {
-    if std::env::var("N2S_SKIP_CMAKE_BUILD").is_ok() {
-        return Ok(false);
-    }
-    let targets_args = targets.into_iter().fold(Vec::new(), |mut vec, target| {
-        vec.push("--target");
-        vec.push(target.to_str().unwrap_or_default());
-        vec
-    });
-    let mut command = std::process::Command::new("cmake");
-    command
-        .args(["--build", &path_to_string(build_path)])
-        .args(targets_args);
-    println!("{command:#?}");
-    if let Err(err) = command.status() {
-        return error!("cmake_build({build_path:#?}) failed: {err}");
-    }
-    Ok(true)
+fn cmake_build(build_path: &Path, targets: &Vec<PathBuf>) -> Result<(), String> {
+    let build_path_string = path_to_string(build_path);
+    let args: Vec<&str> =
+        targets
+            .into_iter()
+            .fold(vec!["--build", &build_path_string], |mut vec, target| {
+                vec.push("--target");
+                vec.push(target.to_str().unwrap_or_default());
+                vec
+            });
+    execute_cmd!("cmake", args, None)?;
+    Ok(())
 }
 
 pub fn get_targets(
@@ -193,17 +184,18 @@ pub fn get_targets(
     ndk_path: &Path,
     cmake_args: Vec<&str>,
     targets_to_build: Option<Vec<PathBuf>>,
+    ctx: &Context,
 ) -> Result<(Vec<CmakeNinjaTarget>, bool), String> {
-    let configured = cmake_configure(src_path, build_path, ndk_path, cmake_args)?;
-    let built = if configured {
-        if let Some(targets) = targets_to_build {
-            cmake_build(build_path, &targets)?
-        } else {
-            false
+    let mut built = false;
+    if !ctx.skip_gen_ninja {
+        cmake_configure(src_path, build_path, ndk_path, cmake_args)?;
+        if !ctx.skip_build {
+            if let Some(targets) = targets_to_build {
+                cmake_build(build_path, &targets)?;
+                built = true;
+            }
         }
-    } else {
-        false
-    };
+    }
 
     Ok((parse_build_ninja(build_path)?, built))
 }

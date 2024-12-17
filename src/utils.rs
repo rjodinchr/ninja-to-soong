@@ -78,22 +78,14 @@ pub fn get_ndk_path(temp_path: &Path) -> Result<PathBuf, String> {
     }
 
     let ndk_zip = path_to_string(temp_path.join("android-ndk.zip"));
-    let mut wget = std::process::Command::new("wget");
     let ndk_url =
         "https://dl.google.com/android/repository/".to_string() + ANDROID_NDK + "-linux.zip";
-    wget.args([&ndk_url, "-q", "-O", &ndk_zip]);
-    println!("{wget:#?}");
-    if let Err(err) = wget.status() {
-        return error!("wget {ndk_url} failed: {err}");
-    }
-
-    let mut unzip = std::process::Command::new("unzip");
-    unzip.args(["-q", &ndk_zip, "-d", &path_to_string(temp_path)]);
-    println!("{unzip:#?}");
-    if let Err(err) = unzip.status() {
-        return error!("unzip {ndk_zip} failed: {err}");
-    }
-
+    execute_cmd!("wget", vec![&ndk_url, "-q", "-O", &ndk_zip], None)?;
+    execute_cmd!(
+        "unzip",
+        vec!["-q", &ndk_zip, "-d", &path_to_string(temp_path)],
+        None
+    )?;
     Ok(ndk_path)
 }
 
@@ -181,19 +173,40 @@ pub fn read_file(file_path: &Path) -> Result<String, String> {
     }
 }
 
-pub fn get_tests_folder() -> Result<PathBuf, String> {
-    match std::env::current_exe() {
-        Ok(exe_path) => {
-            let tests_path = exe_path // <ninja-to-soong>/target/debug/ninja-to-soong
-                .parent() // <ninja-to-soong>/target/debug
-                .unwrap()
-                .parent() // <ninja-to-soong>/target
-                .unwrap()
-                .parent() // <ninja-to-soong>
-                .unwrap()
-                .join("tests"); // <ninja-to-soong>/tests
-            Ok(tests_path)
+pub fn execute_command(
+    program: &str,
+    args: Vec<&str>,
+    env_vars: Option<Vec<(&str, &str)>>,
+    description: String,
+) -> Result<(), String> {
+    let mut command = std::process::Command::new(program);
+    command.args(args);
+    if let Some(vec_env_vars) = env_vars {
+        for (key, val) in vec_env_vars {
+            command.env(key, val);
         }
-        Err(err) => return error!("Could not get current executable path: {err}"),
     }
+    println!("{command:#?}");
+    match command.status() {
+        Ok(status) => {
+            if !status.success() {
+                return error!("{description} failed");
+            }
+        }
+        Err(err) => return error!("{description} failed: {err}"),
+    }
+    Ok(())
 }
+
+#[macro_export]
+macro_rules! execute_cmd {
+    ($program:expr, $args:expr, $env_vars:expr) => {
+        execute_command(
+            $program,
+            $args,
+            $env_vars,
+            format!("{0}:{1}: {2}", file!(), line!(), $program),
+        )
+    };
+}
+pub use execute_cmd;

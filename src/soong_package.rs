@@ -17,7 +17,7 @@ fn update_cflags_with_defines(
         if project.ignore_define(&define) {
             continue;
         }
-        cflags.insert("-D".to_string() + &define);
+        cflags.insert("-D".to_string() + &project.get_define(&define));
     }
 }
 
@@ -143,7 +143,7 @@ impl<'a> SoongPackage<'a> {
         self.generated_libraries.to_owned()
     }
 
-    fn generate_library<T>(
+    fn generate_object<T>(
         &mut self,
         name: &str,
         target: &T,
@@ -478,11 +478,14 @@ impl<'a> SoongPackage<'a> {
             (),
             |_, rule, target| {
                 let module = match rule {
+                    NinjaRule::Binary => {
+                        self.generate_object("cc_binary", target, &targets_map, project)?
+                    }
                     NinjaRule::SharedLibrary => {
-                        self.generate_library("cc_library_shared", target, &targets_map, project)?
+                        self.generate_object("cc_library_shared", target, &targets_map, project)?
                     }
                     NinjaRule::StaticLibrary => {
-                        self.generate_library("cc_library_static", target, &targets_map, project)?
+                        self.generate_object("cc_library_static", target, &targets_map, project)?
                     }
                     NinjaRule::CustomCommand => match target.get_cmd()? {
                         Some(cmd) => self.generate_custom_command(target, cmd, project)?,

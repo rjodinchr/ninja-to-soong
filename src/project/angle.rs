@@ -43,16 +43,14 @@ impl Project for Angle {
 
     fn generate_package(
         &mut self,
-        _android_path: &Path,
-        temp_path: &Path,
+        ctx: &Context,
         _projects_map: &ProjectsMap,
     ) -> Result<SoongPackage, String> {
-        const ANGLE_PATH: &str = "N2S_ANGLE_PATH";
-        let Ok(angle_path) = std::env::var(ANGLE_PATH) else {
-            return error!("{ANGLE_PATH} required but not defined");
+        let Some(angle_path) = ctx.angle_path.to_owned() else {
+            return error!("'{ANGLE_PATH}' required but not defined");
         };
         self.src_path = PathBuf::from(angle_path);
-        self.build_path = temp_path.join(self.get_id().str());
+        self.build_path = ctx.temp_path.join(self.get_id().str());
         self.ndk_path = self.src_path.join("third_party/android_toolchain/ndk");
 
         let gn_args = vec![
@@ -93,7 +91,8 @@ impl Project for Angle {
             "angle_test_enable_system_egl=true",
         ];
 
-        let targets = ninja_target::gn::get_targets(&self.src_path, &self.build_path, gn_args)?;
+        let targets =
+            ninja_target::gn::get_targets(&self.src_path, &self.build_path, gn_args, ctx)?;
 
         let mut package = SoongPackage::new(
             &self.src_path,
