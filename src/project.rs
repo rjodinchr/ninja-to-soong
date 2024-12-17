@@ -111,6 +111,9 @@ pub trait Project {
     fn get_default_cflags(&self, _target: &str) -> Vec<String> {
         Vec::new()
     }
+    fn get_define(&self, define: &str) -> String {
+        define.to_string()
+    }
     fn get_deps_info(&self) -> Vec<(PathBuf, GenDeps)> {
         Vec::new()
     }

@@ -14,6 +14,7 @@ pub type NinjaRuleCmd = (String, Option<(String, String)>);
 pub type NinjaRulesMap = HashMap<String, NinjaRuleCmd>;
 
 pub enum NinjaRule {
+    Binary,
     StaticLibrary,
     SharedLibrary,
     CustomCommand,
