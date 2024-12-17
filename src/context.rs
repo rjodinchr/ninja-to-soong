@@ -82,7 +82,10 @@ OPTIONS:
                 AOSP_PATH => {
                     ctx.android_path = ctx.next(&mut iter, projects)?;
                 }
-                SKIP_GEN_NINJA => ctx.skip_gen_ninja = true,
+                SKIP_GEN_NINJA => {
+                    ctx.skip_gen_ninja = true;
+                    ctx.skip_build = true
+                }
                 SKIP_BUILD => ctx.skip_build = true,
                 COPY_TO_AOSP => ctx.copy_to_aosp = true,
                 CLEAN_TMP => clean_tmp = true,
