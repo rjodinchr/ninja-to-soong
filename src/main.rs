@@ -22,7 +22,6 @@ fn generate_project(
     ctx: &Context,
 ) -> Result<(), String> {
     let project_name = project.get_id().str();
-    let project_path = project.get_id().android_path(&ctx.android_path);
     if !is_dependency {
         print_info!("Generating '{project_name}'");
     } else {
@@ -39,7 +38,10 @@ fn generate_project(
         print_verbose!("{file_path:#?} created");
 
         if ctx.copy_to_aosp {
-            let copy_dst = project_path.join(ANDROID_BP);
+            let Ok(android_path) = project.get_id().android_path(ctx) else {
+                return error!("missing '{AOSP_PATH}' required for '{COPY_TO_AOSP}'");
+            };
+            let copy_dst = android_path.join(ANDROID_BP);
             copy_file(&file_path, &copy_dst)?;
             print_verbose!("{file_path:#?} copied to {copy_dst:#?}");
         }

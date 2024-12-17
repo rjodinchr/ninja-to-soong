@@ -38,10 +38,8 @@
 # Using `ninja-to-soong`
 
 ```
-<ninja-to-soong> $ cargo run --release -- <android_path>
+<ninja-to-soong> $ cargo run --release -- --help
 ```
-
-`--help` for more information on the different options.
 
 # Tests
 

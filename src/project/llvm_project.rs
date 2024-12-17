@@ -25,7 +25,7 @@ impl Project for LlvmProject {
         ctx: &Context,
         projects_map: &ProjectsMap,
     ) -> Result<SoongPackage, String> {
-        self.src_path = self.get_id().android_path(&ctx.android_path);
+        self.src_path = self.get_id().android_path(ctx)?;
         self.build_path = ctx.temp_path.join(self.get_id().str());
         self.ndk_path = get_ndk_path(&ctx.temp_path)?;
 
