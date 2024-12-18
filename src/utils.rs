@@ -72,21 +72,31 @@ pub const ANDROID_CPU: &str = if ARM { "arm64" } else { "x64" };
 pub const NDK_CMAKE_TOOLCHAIN_PATH: &str = "build/cmake/android.toolchain.cmake";
 
 pub fn get_ndk_path(temp_path: &Path) -> Result<PathBuf, String> {
-    let ndk_path = temp_path.join(ANDROID_NDK);
-    if File::open(ndk_path.join(NDK_CMAKE_TOOLCHAIN_PATH)).is_ok() {
-        return Ok(ndk_path);
+    let android_ndk = if let Ok(android_ndk) = std::env::var("N2S_NDK") {
+        android_ndk
+    } else {
+        ANDROID_NDK.to_string()
+    };
+    let ndk_path = if let Ok(ndk_path) = std::env::var("N2S_NDK_PATH") {
+        PathBuf::from(ndk_path)
+    } else {
+        temp_path.to_path_buf()
+    };
+    let android_ndk_path = ndk_path.join(&android_ndk);
+    if File::open(android_ndk_path.join(NDK_CMAKE_TOOLCHAIN_PATH)).is_ok() {
+        return Ok(android_ndk_path);
     }
 
-    let ndk_zip = path_to_string(temp_path.join("android-ndk.zip"));
+    let ndk_zip = path_to_string(ndk_path.join("android-ndk.zip"));
     let ndk_url =
-        "https://dl.google.com/android/repository/".to_string() + ANDROID_NDK + "-linux.zip";
+        "https://dl.google.com/android/repository/".to_string() + &android_ndk + "-linux.zip";
     execute_cmd!("wget", vec![&ndk_url, "-q", "-O", &ndk_zip], None)?;
     execute_cmd!(
         "unzip",
-        vec!["-q", &ndk_zip, "-d", &path_to_string(temp_path)],
+        vec!["-q", &ndk_zip, "-d", &path_to_string(ndk_path)],
         None
     )?;
-    Ok(ndk_path)
+    Ok(android_ndk_path)
 }
 
 pub fn canonicalize_path<P: AsRef<Path>>(path: P, build_path: &Path) -> PathBuf {
