@@ -80,9 +80,7 @@ impl Project for LlvmProject {
             "tools/clang/include/clang/Basic/Version.inc",
             "tools/clang/include/clang/Config/config.h",
         ];
-        for header in missing_gen_deps {
-            gen_deps.insert(PathBuf::from(header));
-        }
+        gen_deps.extend(missing_gen_deps.iter().map(|dep| PathBuf::from(dep)));
 
         let mut gen_deps_folders: HashSet<PathBuf> = HashSet::new();
         for gen_dep in &gen_deps {
@@ -201,10 +199,7 @@ impl Project for LlvmProject {
                 "-DBLAKE3_NO_SSE2",
             ]);
         }
-        cflags.iter().fold(Vec::new(), |mut vec, flag| {
-            vec.push(flag.to_string());
-            vec
-        })
+        cflags.iter().map(|flag| flag.to_string()).collect()
     }
 
     fn get_include(&self, include: &Path) -> PathBuf {

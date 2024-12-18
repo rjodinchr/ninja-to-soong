@@ -20,12 +20,8 @@ impl CcLibraryHeaders {
     }
 }
 
-fn print_indent(level: u8) -> String {
-    let mut indent = String::new();
-    for _ in 0..level {
-        indent += "    ";
-    }
-    indent
+fn print_indent(level: usize) -> String {
+    "    ".repeat(level)
 }
 
 #[derive(Debug)]
@@ -54,7 +50,7 @@ impl SoongNamedProp {
         }
     }
 
-    fn print(self, indent_level: u8) -> String {
+    fn print(self, indent_level: usize) -> String {
         let mut output = String::new();
         output += &format!("{0}{1}: ", print_indent(indent_level), self.name);
         output += &(match self.prop {

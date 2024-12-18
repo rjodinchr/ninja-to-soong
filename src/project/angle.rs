@@ -100,10 +100,10 @@ impl Project for Angle {
             "SPDX-license-identifier-Apache-2.0",
             "LICENSE",
         );
-        let mut targets_to_generate = Vec::new();
-        for target in TARGETS {
-            targets_to_generate.push(PathBuf::from(target));
-        }
+        let targets_to_generate = TARGETS
+            .into_iter()
+            .map(|target| PathBuf::from(target))
+            .collect();
         package.generate(targets_to_generate, targets, self)?;
 
         Ok(package)

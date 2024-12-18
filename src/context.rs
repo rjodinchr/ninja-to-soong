@@ -26,18 +26,18 @@ pub struct Context {
 
 impl Context {
     fn help(&self, projects: &Vec<&mut dyn Project>) -> String {
-        let mut projects_help = String::new();
-        for project in projects {
-            projects_help += "  ";
-            projects_help += project.get_id().str();
-            projects_help += "\n";
-        }
+        let projects_help = projects
+            .iter()
+            .map(|project| project.get_id().str())
+            .collect::<Vec<&str>>()
+            .join("\n  ");
         format!(
             "
 USAGE: {0} [OPTIONS] [PROJECTS]
 
 PROJECTS:
-{projects_help}
+  {projects_help}
+
 OPTIONS:
   {ANGLE_PATH} <path>  Path to angle source repository (required only for the `angle` project)
   {AOSP_PATH} <path>   Path to Android tree (required for most project)

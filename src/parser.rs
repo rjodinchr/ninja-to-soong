@@ -11,10 +11,10 @@ fn parse_output_section(section: &str) -> Result<(Vec<PathBuf>, Vec<PathBuf>), S
     if split.clone().count() < 1 {
         return error!("parse_output_section failed: '{section}'");
     }
-    let mut outputs = Vec::new();
-    for output in split.nth(0).unwrap().trim().split(" ") {
-        outputs.push(PathBuf::from(output.trim()));
-    }
+    let split_outputs = split.nth(0).unwrap().trim().split(" ");
+    let outputs = split_outputs
+        .map(|output| PathBuf::from(output.trim()))
+        .collect();
     let mut implicit_outputs = Vec::new();
     if let Some(implicit_outs) = split.next() {
         for implicit_output in implicit_outs.trim().split(" ") {
@@ -30,10 +30,9 @@ fn parse_input_and_rule_section(section: &str) -> Result<(String, Vec<PathBuf>),
         return error!("parse_input_and_rule_section failed: '{section}'");
     }
     let rule = String::from(split.nth(0).unwrap());
-    let mut inputs = Vec::new();
-    for input in split {
-        inputs.push(PathBuf::from(input.trim()));
-    }
+    let inputs = split
+        .map(|input| PathBuf::from(input.trim()))
+        .collect::<Vec<PathBuf>>();
     Ok((rule, inputs))
 }
 
