@@ -34,9 +34,6 @@ pub trait NinjaTarget: std::fmt::Debug {
     fn get_name(&self, prefix: &Path) -> String {
         path_to_id(prefix.join(&self.get_outputs()[0]))
     }
-    fn get_indent() -> &'static str {
-        "  "
-    }
 
     fn set_globals(&mut self, globals: HashMap<String, String>);
     fn set_rule(&mut self, rules: &NinjaRulesMap);
