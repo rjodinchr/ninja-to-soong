@@ -103,12 +103,12 @@ impl Project for Clspv {
         let mut deps: GenDepsMap = HashMap::new();
         match project {
             ProjectId::SpirvHeaders => {
-                let mut files = Vec::new();
-                for dep in &self.gen_deps {
-                    if dep.starts_with(&self.spirv_headers_path) {
-                        files.push(dep.clone());
-                    }
-                }
+                let files = self
+                    .gen_deps
+                    .iter()
+                    .filter(|dep| dep.starts_with(&self.spirv_headers_path))
+                    .map(|dep| dep.clone())
+                    .collect();
                 deps.insert(GenDeps::SpirvHeaders, files);
             }
             ProjectId::LlvmProject => {

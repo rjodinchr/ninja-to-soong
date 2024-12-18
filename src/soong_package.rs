@@ -8,43 +8,27 @@ use crate::project::Project;
 use crate::soong_module::*;
 use crate::utils::*;
 
-fn update_cflags_with_defines(
-    defines: Vec<String>,
-    project: &dyn Project,
-    cflags: &mut HashSet<String>,
-) {
-    for define in defines {
-        if project.ignore_define(&define) {
-            continue;
-        }
-        cflags.insert("-D".to_string() + &project.get_define(&define));
-    }
+fn update_cflags_with_defines(defines: Vec<String>, project: &dyn Project) -> Vec<String> {
+    defines
+        .iter()
+        .filter(|def| !project.ignore_define(def))
+        .map(|def| "-D".to_string() + &project.get_define(def))
+        .collect()
 }
 
-fn update_cflags(cflags: Vec<String>, project: &dyn Project, all_cflags: &mut HashSet<String>) {
-    for cflag in cflags {
-        if project.ignore_cflag(&cflag) {
-            continue;
-        }
-        all_cflags.insert(cflag);
-    }
+fn update_cflags(cflags: Vec<String>, project: &dyn Project) -> Vec<String> {
+    cflags
+        .into_iter()
+        .filter(|cflag| !project.ignore_cflag(cflag))
+        .collect()
 }
 
-fn update_includes(
-    incs: Vec<PathBuf>,
-    project: &dyn Project,
-    includes: &mut HashSet<String>,
-    src_path: &Path,
-) {
-    for include in incs {
-        if project.ignore_include(&include) {
-            continue;
-        }
-        includes.insert(path_to_string(strip_prefix(
-            project.get_include(&include),
-            src_path,
-        )));
-    }
+fn update_includes(includes: Vec<PathBuf>, project: &dyn Project, src_path: &Path) -> Vec<String> {
+    includes
+        .into_iter()
+        .filter(|include| !project.ignore_include(include))
+        .map(|inc| path_to_string(strip_prefix(project.get_include(&inc), src_path)))
+        .collect()
 }
 
 #[derive(Debug)]
@@ -184,32 +168,28 @@ impl<'a> SoongPackage<'a> {
             static_libs.extend(static_libraries);
             shared_libs.extend(shared_libraries);
 
-            update_includes(
+            includes.extend(update_includes(
                 target.get_includes(self.build_path),
                 project,
-                &mut includes,
                 self.src_path,
-            );
-            update_cflags_with_defines(target.get_defines(), project, &mut cflags);
-            update_cflags(target.get_cflags(), project, &mut cflags);
+            ));
+            cflags.extend(update_cflags_with_defines(target.get_defines(), project));
+            cflags.extend(update_cflags(target.get_cflags(), project));
         }
 
-        update_includes(
+        includes.extend(update_includes(
             target.get_includes(self.build_path),
             project,
-            &mut includes,
             self.src_path,
-        );
-        update_cflags_with_defines(target.get_defines(), project, &mut cflags);
-        update_cflags(target.get_cflags(), project, &mut cflags);
+        ));
+        cflags.extend(update_cflags_with_defines(target.get_defines(), project));
+        cflags.extend(update_cflags(target.get_cflags(), project));
 
         let (version_script, link_flags) = target.get_link_flags();
-        let link_flags = link_flags.into_iter().fold(Vec::new(), |mut vec, flag| {
-            if !project.ignore_link_flag(&flag) {
-                vec.push(flag)
-            }
-            vec
-        });
+        let link_flags = link_flags
+            .into_iter()
+            .filter(|flag| !project.ignore_link_flag(flag))
+            .collect::<Vec<String>>();
         let (static_libraries, shared_libraries) = target.get_link_libraries()?;
         static_libs.extend(static_libraries);
         shared_libs.extend(shared_libraries);
@@ -376,20 +356,18 @@ impl<'a> SoongPackage<'a> {
         }
         if let Some((rsp_file, rsp_content)) = rule_cmd.1 {
             let rsp = "$(genDir)/".to_string() + &rsp_file;
-            let mut rsp_files = Vec::new();
-            for file in rsp_content.split(" ") {
-                if file.is_empty() {
-                    continue;
-                }
-                rsp_files.push(
+            let rsp_files = rsp_content
+                .split(" ")
+                .filter(|file| !file.is_empty())
+                .map(|file| {
                     String::from("$(location ")
                         + &path_to_string(strip_prefix(
                             canonicalize_path(file, self.build_path),
                             self.src_path,
                         ))
-                        + ")",
-                );
-            }
+                        + ")"
+                })
+                .collect::<Vec<String>>();
             cmd = "echo \\\"".to_string() + &rsp_files.join(" ") + "\\\" > " + &rsp + " && " + &cmd;
             cmd = cmd.replace("${rspfile}", &rsp);
         }

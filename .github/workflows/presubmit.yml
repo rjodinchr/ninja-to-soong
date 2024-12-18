@@ -50,6 +50,7 @@ jobs:
           N2S_NDK_PATH: ${{ env.android }}
         run: |
           set -x
+          mkdir -p "${{ env.android }}"
           PATH="${{ env.android }}/depot_tools:${PATH}" cargo run --release -- --skip-gen-ninja --angle-path "${{ env.android }}/external/angle" --aosp-path "${{ env.android }}"
       - name: Check generated files
         shell: bash

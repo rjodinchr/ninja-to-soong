@@ -28,27 +28,21 @@ pub fn get_link_libraries(libs: &str) -> Result<(Vec<PathBuf>, Vec<PathBuf>), St
     Ok((static_libraries, shared_libraries))
 }
 
-pub fn get_defines(defs: &str) -> Vec<String> {
-    let mut defines = Vec::new();
-    for define in defs.split("-D") {
-        if define.is_empty() {
-            continue;
-        }
-        defines.push(define.trim().replace("\\(", "(").replace("\\)", ")"));
-    }
+pub fn get_defines(defines: &str) -> Vec<String> {
     defines
+        .split("-D")
+        .filter(|define| !define.is_empty())
+        .map(|define| define.trim().replace("\\(", "(").replace("\\)", ")"))
+        .collect()
 }
 
-pub fn get_includes(incs: &str, build_path: &Path) -> Vec<PathBuf> {
-    let mut includes = Vec::new();
-    for inc in incs.split(" ") {
-        let include = inc.strip_prefix("-I").unwrap_or(inc);
-        if include.is_empty() || include == "isystem" {
-            continue;
-        }
-        includes.push(canonicalize_path(include, build_path));
-    }
+pub fn get_includes(includes: &str, build_path: &Path) -> Vec<PathBuf> {
     includes
+        .split(" ")
+        .map(|include| include.strip_prefix("-I").unwrap_or(include))
+        .filter(|include| !(include.is_empty() || *include == "isystem"))
+        .map(|include| canonicalize_path(include, build_path))
+        .collect()
 }
 
 pub fn get_link_flags(flags: &str) -> (Option<PathBuf>, Vec<String>) {
@@ -64,20 +58,16 @@ pub fn get_link_flags(flags: &str) -> (Option<PathBuf>, Vec<String>) {
 }
 
 pub fn get_cflags(flags: &str) -> Vec<String> {
-    let mut cflags = Vec::new();
-    for flag in flags.split(" ") {
-        if flag.is_empty() {
-            continue;
-        }
-        cflags.push(flag.to_string());
-    }
-    cflags
+    flags
+        .split(" ")
+        .filter(|flag| !flag.is_empty())
+        .map(|flag| flag.to_string())
+        .collect()
 }
 
-pub fn get_sources(ins: &Vec<PathBuf>, build_path: &Path) -> Vec<PathBuf> {
-    let mut inputs = Vec::new();
-    for input in ins {
-        inputs.push(canonicalize_path(input, build_path));
-    }
+pub fn get_sources(inputs: &Vec<PathBuf>, build_path: &Path) -> Vec<PathBuf> {
     inputs
+        .into_iter()
+        .map(|input| canonicalize_path(input, build_path))
+        .collect()
 }

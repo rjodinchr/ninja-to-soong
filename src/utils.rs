@@ -106,8 +106,14 @@ pub fn canonicalize_path<P: AsRef<Path>>(path: P, build_path: &Path) -> PathBuf 
     } else {
         build_path
             .join(&path_buf)
-            .canonicalize()
-            .unwrap_or(path_buf)
+            .components()
+            .fold(PathBuf::new(), |path, component| {
+                if component == std::path::Component::ParentDir {
+                    path.parent().unwrap().to_path_buf()
+                } else {
+                    path.join(component)
+                }
+            })
     }
 }
 
@@ -155,7 +161,10 @@ pub fn split_path(path: &Path, delimiter: &str) -> Option<(PathBuf, PathBuf)> {
 }
 
 pub fn dep_name<P: AsRef<Path>>(from: &Path, prefix: P, path: &str, build_path: &Path) -> String {
-    path_to_id(Path::new(path).join(strip_prefix(canonicalize_path(from, build_path), prefix)))
+    path_to_id(Path::new(path).join(strip_prefix(
+        canonicalize_path(from, build_path),
+        canonicalize_path(prefix, build_path),
+    )))
 }
 
 pub fn copy_file(from: &Path, to: &Path) -> Result<(), String> {
