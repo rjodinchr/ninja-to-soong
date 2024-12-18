@@ -124,7 +124,7 @@ where
 
     let mut variables: HashMap<String, String> = HashMap::new();
     while let Some(next_line) = lines.next() {
-        if !next_line.starts_with(T::get_indent()) {
+        if !next_line.starts_with(" ") {
             break;
         }
         let (key, value) = parse_key_value(next_line)?;
@@ -142,13 +142,10 @@ where
     ))
 }
 
-fn parse_ninja_rule<T>(
+fn parse_ninja_rule(
     line: &str,
     mut lines: std::str::Lines,
-) -> Result<(String, NinjaRuleCmd), String>
-where
-    T: NinjaTarget,
-{
+) -> Result<(String, NinjaRuleCmd), String> {
     let Some(rule) = line.strip_prefix("rule ") else {
         return error!("parse_ninja_rule failed: '{line}'");
     };
@@ -156,7 +153,7 @@ where
     let mut rspfile = None;
     let mut rspfile_content = None;
     while let Some(next_line) = lines.next() {
-        if !next_line.starts_with(T::get_indent()) {
+        if !next_line.starts_with(" ") {
             break;
         }
         let (key, value) = parse_key_value(next_line)?;
@@ -215,11 +212,11 @@ where
             || line.starts_with("default ")
             || line.starts_with("pool ")
             || line.starts_with("#")
-            || line.starts_with(T::get_indent())
+            || line.starts_with(" ")
         {
             continue;
         } else if line.starts_with("rule ") {
-            let (rule, rule_command) = parse_ninja_rule::<T>(line, lines.clone())?;
+            let (rule, rule_command) = parse_ninja_rule(line, lines.clone())?;
             all_rules.insert(rule, rule_command);
         } else if line.starts_with("build ") {
             targets.push(parse_build_target(line, lines.clone())?);
