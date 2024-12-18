@@ -39,10 +39,10 @@ USAGE: {0} [OPTIONS] [PROJECTS]
 PROJECTS:
 {projects_help}
 OPTIONS:
-  {ANGLE_PATH} <path>  Path to angle source repository
-  {AOSP_PATH} <path>   Path to android tree
+  {ANGLE_PATH} <path>  Path to angle source repository (required only for the `angle` project)
+  {AOSP_PATH} <path>   Path to Android tree (required for most project)
   {CLEAN_TMP}          Remove temporary directory before running
-  {COPY_TO_AOSP}       Copy generated Soong file into <android_path> tree
+  {COPY_TO_AOSP}       Copy generated Soong files into the Android tree
   {SKIP_BUILD}         Skip build step
   {SKIP_GEN_NINJA}     Skip generation of Ninja files
   -h, --help           Display the help and exit
@@ -63,7 +63,12 @@ OPTIONS:
     pub fn new(args: Vec<String>, projects: &Vec<&mut dyn Project>) -> Result<Self, String> {
         let mut ctx = Self::default();
         ctx.executable = file_name(&Path::new(&args[0]));
-        ctx.temp_path = std::env::temp_dir().join(&ctx.executable);
+        ctx.temp_path = if let Ok(dir) = std::env::var("N2S_TMP_PATH") {
+            PathBuf::from(dir)
+        } else {
+            std::env::temp_dir()
+        }
+        .join(&ctx.executable);
 
         let mut clean_tmp = false;
         let mut iter = args[1..].iter();

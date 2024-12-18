@@ -38,8 +38,24 @@
 # Using `ninja-to-soong`
 
 ```
-<ninja-to-soong> $ cargo run --release -- --help
+<ninja-to-soong> $ cargo run --release -- --aosp-path <android_tree_path> <project1> <project2>
 ```
+
+## Options
+
+* `--angle-path`: Path to angle source repository (required only for `angle` project)
+* `--aosp-path`: Path to Android tree (required for most project)
+* `--clean-tmp`: Remove the temporary directory before running
+* `--copy-to-aosp`: Copy generated Soong files into the Android tree
+* `--skip-build`: Skip build step
+* `--skip-gen-ninja`: Skip generation of Ninja files
+* `-h`, `--help`: Display the help and exit
+
+## Environment variables
+
+* `N2S_NDK`: Android NDK (default: `android-ndk-r27c`)
+* `N2S_NDK_PATH`: Path to Android NDK (default: temporary directory)
+* `N2S_TMP_PATH`: Path used by `ninja-to-soong` to store its temporary directories (default: `std::env::temp_dir()`)
 
 # Tests
 
@@ -49,17 +65,4 @@ Each project in the `tests` folder contains the following files:
  * `Android.bp`: the reference file to generate
  * `checkout.sh`: a script to checkout the repository in the CI
 
- To reduce CI time, `--skip-build` is used to avoid building projects. While it is correct to do for test purpose, it means that things will be missing when trying to update certain project (e.g. `llvm-project`).
-
 If you want more information take a look at the [github action script](.github/workflows/presubmit.yml)
-
-# Developement tips
-
-- After a **full** first run of `ninja-to-soong`, it is possible to run with `--skip-gen-ninja` to skip the generation of `Ninja` file for every project.
-
-- It is possible to run a specific set of projects by adding them after the required arguments:
-```
-<ninja-to-soong> $ cargo run -- <android_tree_path> <project1> <project2>
-```
-
-- `Android.bp` files can be automatically copied to the Android tree with `--copy-to-aosp`.
