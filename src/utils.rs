@@ -60,7 +60,7 @@ macro_rules! error {
         Err(format!("{0}:{1}: {2}", file!(), line!(), format!($($arg)*)))
     };
 }
-pub use {error, print_internal, print_verbose};
+pub use {error, print_info, print_internal, print_verbose};
 
 const ARM: bool = true;
 pub const ANDROID_NDK: &str = "android-ndk-r27c";

@@ -1,4 +1,6 @@
-use crate::print_info;
+// Copyright 2024 ninja-to-soong authors
+// SPDX-License-Identifier: Apache-2.0
+
 use crate::project::*;
 use crate::utils::*;
 
