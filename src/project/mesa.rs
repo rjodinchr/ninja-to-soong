@@ -159,14 +159,7 @@ impl Project for Mesa {
     fn get_define(&self, define: &str) -> String {
         define
             .replace(&path_to_string(&self.build_path), MESON_GENERATED)
-            .replace(
-                &format!(
-                    "{0}{1}",
-                    path_to_string(&self.src_path),
-                    std::path::MAIN_SEPARATOR
-                ),
-                "",
-            )
+            .replace(&path_to_string_with_separator(&self.src_path), "")
     }
 
     fn get_include(&self, include: &Path) -> PathBuf {

@@ -309,14 +309,7 @@ impl<'a> SoongPackage<'a> {
                 None => cmd.replace(std::str::from_utf8(&cmd.as_bytes()[begin..]).unwrap(), ""),
             };
         }
-        cmd = cmd.replace(
-            &format!(
-                "{0}{1}",
-                path_to_string(self.build_path),
-                std::path::MAIN_SEPARATOR
-            ),
-            "",
-        );
+        cmd = cmd.replace(&path_to_string_with_separator(self.build_path), "");
         for output in outputs {
             let marker = "<output>";
             let replace_output = path_to_string(project.get_cmd_output(output));
