@@ -22,20 +22,6 @@ jobs:
           echo "android=$(realpath ${{ github.workspace }}/../android)" >> $GITHUB_ENV
           echo "key=$(git log -1 --format='%h' tests/*/checkout.sh)" >> $GITHUB_ENV
           echo "tmp_dir=$(realpath ${{ github.workspace }}/../tmp)" >> $GITHUB_ENV
-      - name: Install mesa dependencies
-        shell: bash
-        run: |
-          set -x
-          MAJOR_VERSION=17
-          sudo apt install \
-            meson \
-            libclang-${MAJOR_VERSION}-dev \
-            libclang-cpp${MAJOR_VERSION}{,-dev} \
-            libclc-${MAJOR_VERSION}{,-dev} \
-            libllvmspirvlib-${MAJOR_VERSION}-dev \
-            llvm-${MAJOR_VERSION}-{dev,tools} \
-            glslang-tools \
-            python3-{mako,ply}
       - name: Get repositories from cache
         id: checkout-repositories
         uses: actions/cache@v4
