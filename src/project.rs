@@ -13,6 +13,7 @@ pub mod angle;
 pub mod clspv;
 pub mod clvk;
 pub mod llvm_project;
+pub mod mesa;
 pub mod spirv_headers;
 pub mod spirv_tools;
 
@@ -22,6 +23,7 @@ pub enum ProjectId {
     Clvk,
     Clspv,
     LlvmProject,
+    Mesa,
     SpirvHeaders,
     SpirvTools,
 }
@@ -30,6 +32,7 @@ const ANGLE_NAME: &str = "angle";
 const CLVK_NAME: &str = "clvk";
 const CLSPV_NAME: &str = "clspv";
 const LLVM_PROJECT_NAME: &str = "llvm-project";
+const MESA_NAME: &str = "mesa";
 const SPIRV_HEADERS_NAME: &str = "SPIRV-Headers";
 const SPIRV_TOOLS_NAME: &str = "SPIRV-Tools";
 
@@ -40,6 +43,7 @@ impl ProjectId {
             CLVK_NAME => Self::Clvk,
             CLSPV_NAME => Self::Clspv,
             LLVM_PROJECT_NAME => Self::LlvmProject,
+            MESA_NAME => Self::Mesa,
             SPIRV_HEADERS_NAME => Self::SpirvHeaders,
             SPIRV_TOOLS_NAME => Self::SpirvTools,
             _ => return error!("Unknown project '{project}'"),
@@ -51,6 +55,7 @@ impl ProjectId {
             Self::Clvk => CLVK_NAME,
             Self::Clspv => CLSPV_NAME,
             Self::LlvmProject => LLVM_PROJECT_NAME,
+            Self::Mesa => MESA_NAME,
             Self::SpirvHeaders => SPIRV_HEADERS_NAME,
             Self::SpirvTools => SPIRV_TOOLS_NAME,
         }

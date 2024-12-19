@@ -11,6 +11,7 @@
 1. `ninja-to-soong` generates [Ninja](https://ninja-build.org/) files using either:
     - [CMake](https://cmake.org/) and the Android NDK
     - [GN](https://github.com/o-lim/generate-ninja) cross-compiling for [Android](https://gn.googlesource.com/gn/+/HEAD/docs/quick_start.md#cross_compiling-to-a-target-os-or-architecture)
+    - [Meson](https://mesonbuild.com/) and the Android NDK
 2. `ninja-to-soong` generates `Soong` files using [Ninja](https://ninja-build.org/) files.
 
 # Supported projects
@@ -23,6 +24,7 @@
 | [SPIRV-Tools](https://github.com/KhronosGroup/SPIRV-Tools) | `CMake` | `clvk` dependencies |
 | [SPIRV-Headers](https://github.com/KhronosGroup/SPIRV-Headers) | `CMake` | `clspv` & `SPIRV-Tools` dependencies |
 | [angle](https://github.com/google/angle) (WIP) | `GN` | `libEGL_angle.so`, `libGLESv2_angle.so`, `libGLESv1_CM_angle.so` |
+| [mesa](https://www.mesa3d.org/) (WIP) | `meson` | `libEGL_mesa.so`, `libGLESv2_mesa.so`, `libGLESv1_CM_mesa.so`, `libintel_mesa.so`, `libgallium_dri.so`, `libglapi.so`, `pps-producer` |
 
 # Dependencies
 
@@ -32,8 +34,8 @@
 * [Ninja](https://ninja-build.org/)
 * [CMake](https://cmake.org/)
 * [GN](https://github.com/o-lim/generate-ninja)
-* [wget](https://www.gnu.org/software/wget/)
-* `unzip`
+* [Meson](https://mesonbuild.com/)
+* Linux commands (`wget`, `unzip`, ...)
 
 # Using `ninja-to-soong`
 
