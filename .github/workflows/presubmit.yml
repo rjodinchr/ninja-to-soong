@@ -23,7 +23,7 @@ jobs:
         run: |
           set -x
           echo "android=$(realpath ${{ github.workspace }}/../android)" >> $GITHUB_ENV
-          echo "key=$(git log -1 --format='%h' tests/*/checkout.sh)" >> $GITHUB_ENV
+          echo "key=$(git log -1 --format='%h' tests/*/checkout.sh tests/*/gen-ninja.sh)" >> $GITHUB_ENV
           echo "tmp_dir=$(realpath ${{ github.workspace }}/../tmp)" >> $GITHUB_ENV
       - name: Get repositories from cache
         id: checkout-repositories

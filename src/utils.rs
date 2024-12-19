@@ -6,8 +6,6 @@ use std::io::{Read, Write};
 
 pub use std::path::{Path, PathBuf};
 
-pub const LLVM_DISABLE_ZLIB: &str = "-DLLVM_ENABLE_ZLIB=OFF";
-
 pub const TAB: &str = "   ";
 pub const COLOR_RED: &str = "\x1b[00;31m";
 pub const COLOR_GREEN: &str = "\x1b[00;32m";
@@ -89,11 +87,10 @@ pub fn get_ndk_path(temp_path: &Path) -> Result<PathBuf, String> {
 
     let ndk_zip = path_to_string(ndk_path.join("android-ndk.zip"));
     let ndk_url = format!("https://dl.google.com/android/repository/{android_ndk}-linux.zip");
-    execute_cmd!("wget", vec![&ndk_url, "-q", "-O", &ndk_zip], None)?;
+    execute_cmd!("wget", vec![&ndk_url, "-q", "-O", &ndk_zip])?;
     execute_cmd!(
         "unzip",
-        vec!["-q", &ndk_zip, "-d", &path_to_string(ndk_path)],
-        None
+        vec!["-q", &ndk_zip, "-d", &path_to_string(ndk_path)]
     )?;
     Ok(android_ndk_path)
 }
@@ -197,19 +194,9 @@ pub fn read_file(file_path: &Path) -> Result<String, String> {
     }
 }
 
-pub fn execute_command(
-    program: &str,
-    args: Vec<&str>,
-    env_vars: Option<Vec<(&str, &str)>>,
-    description: String,
-) -> Result<(), String> {
+pub fn execute_command(program: &str, args: Vec<&str>, description: String) -> Result<(), String> {
     let mut command = std::process::Command::new(program);
     command.args(args);
-    if let Some(vec_env_vars) = env_vars {
-        for (key, val) in vec_env_vars {
-            command.env(key, val);
-        }
-    }
     println!("{command:#?}");
     match command.status() {
         Ok(status) => {
@@ -224,11 +211,10 @@ pub fn execute_command(
 
 #[macro_export]
 macro_rules! execute_cmd {
-    ($program:expr, $args:expr, $env_vars:expr) => {
+    ($program:expr, $args:expr) => {
         execute_command(
             $program,
             $args,
-            $env_vars,
             format!("{0}:{1}: {2}", file!(), line!(), $program),
         )
     };

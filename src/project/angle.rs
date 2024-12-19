@@ -54,46 +54,18 @@ impl Project for Angle {
         self.build_path = ctx.temp_path.join(self.get_id().str());
         self.ndk_path = self.src_path.join("third_party/android_toolchain/ndk");
 
-        let gn_args = vec![
-            "is_component_build=false",
-            "is_debug=false",
-            "dcheck_always_on=false",
-            "symbol_level=0",
-            "angle_standalone=false",
-            "angle_build_all=false",
-            "angle_expose_non_conformant_extensions_and_versions=true",
-            // Target ndk API 26 to make sure ANGLE can use the Vulkan backend on Android
-            "android32_ndk_api_level=26",
-            "android64_ndk_api_level=26",
-            // Disable all backends except Vulkan
-            "angle_enable_vulkan=true",
-            "angle_enable_gl=false",
-            "angle_enable_d3d9=false",
-            "angle_enable_d3d11=false",
-            "angle_enable_null=false",
-            "angle_enable_metal=false",
-            "angle_enable_wgpu=false",
-            // SwiftShader is loaded as the system Vulkan driver on Android, not compiled by ANGLE
-            "angle_enable_swiftshader=false",
-            // Disable all shader translator targets except desktop GL (for Vulkan)
-            "angle_enable_essl=false",
-            "angle_enable_glsl=false",
-            "angle_enable_hlsl=false",
-            "angle_enable_commit_id=false",
-            // Disable histogram/protobuf support
-            "angle_has_histograms=false",
-            // Use system lib(std)c++, since the Chromium library breaks std::string
-            "use_custom_libcxx=false",
-            // rapidJSON is used for ANGLE's frame capture (among other things), which is unnecessary for AOSP builds.
-            "angle_has_rapidjson=false",
-            // TODO(b/279980674): re-enable end2end tests
-            "build_angle_end2end_tests_aosp=true",
-            "build_angle_trace_tests=false",
-            "angle_test_enable_system_egl=true",
-        ];
-
-        let targets =
-            ninja_target::gn::get_targets(&self.src_path, &self.build_path, gn_args, ctx)?;
+        if !ctx.skip_gen_ninja {
+            execute_cmd!(
+                "bash",
+                vec![
+                    &path_to_string(ctx.test_path.join(self.get_id().str()).join("gen-ninja.sh")),
+                    &path_to_string(&self.src_path),
+                    &path_to_string(&self.build_path),
+                    ANDROID_CPU,
+                ]
+            )?;
+        }
+        let targets = parse_build_ninja::<ninja_target::gn::GnNinjaTarget>(&self.build_path)?;
 
         let mut package = SoongPackage::new(
             &self.src_path,

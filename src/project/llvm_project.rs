@@ -29,22 +29,32 @@ impl Project for LlvmProject {
         self.build_path = ctx.temp_path.join(self.get_id().str());
         self.ndk_path = get_ndk_path(&ctx.temp_path)?;
 
-        let mut targets_to_build = Vec::new();
-        targets_to_build.extend(GenDeps::TargetsToGen.get(self, ProjectId::Clvk, projects_map));
-        targets_to_build.extend(GenDeps::LibclcBins.get(self, ProjectId::Clspv, projects_map));
-        let targets = ninja_target::cmake::get_targets(
-            &self.src_path.join("llvm"),
-            &self.build_path,
-            &self.ndk_path,
-            vec![
-                LLVM_DISABLE_ZLIB,
-                "-DLLVM_ENABLE_PROJECTS=clang;libclc",
-                "-DLIBCLC_TARGETS_TO_BUILD=clspv--;clspv64--",
-                "-DLLVM_TARGETS_TO_BUILD=",
-            ],
-            Some(targets_to_build),
-            ctx,
-        )?;
+        if !ctx.skip_gen_ninja {
+            execute_cmd!(
+                "bash",
+                vec![
+                    &path_to_string(ctx.test_path.join(self.get_id().str()).join("gen-ninja.sh")),
+                    &path_to_string(self.src_path.join("llvm")),
+                    &path_to_string(&self.build_path),
+                    &path_to_string(&self.ndk_path),
+                    ANDROID_ABI,
+                    ANDROID_PLATFORM,
+                ]
+            )?;
+        }
+        if !ctx.skip_build {
+            let mut targets_to_build = Vec::new();
+            targets_to_build.extend(GenDeps::TargetsToGen.get(self, ProjectId::Clvk, projects_map));
+            targets_to_build.extend(GenDeps::LibclcBins.get(self, ProjectId::Clspv, projects_map));
+            let mut args = vec![String::from("--build"), path_to_string(&self.build_path)];
+            for target in targets_to_build {
+                args.push(String::from("--target"));
+                args.push(path_to_string(target));
+            }
+            execute_cmd!("cmake", args.iter().map(|target| target.as_str()).collect())?;
+        }
+
+        let targets = parse_build_ninja::<ninja_target::cmake::CmakeNinjaTarget>(&self.build_path)?;
 
         let mut package = SoongPackage::new(
             &self.src_path,
@@ -117,8 +127,8 @@ impl Project for LlvmProject {
             &format!("{0:#?}", &gen_deps_sorted),
         )?;
 
-        if !ctx.skip_build {
-            let cmake_generated_path = self.src_path.join(CMAKE_GENERATED);
+        if ctx.copy_to_aosp {
+            let cmake_generated_path = self.get_id().android_path(ctx).join(CMAKE_GENERATED);
             if File::open(&cmake_generated_path).is_ok() {
                 if let Err(err) = std::fs::remove_dir_all(&cmake_generated_path) {
                     return error!("remove_dir_all failed: {err}");

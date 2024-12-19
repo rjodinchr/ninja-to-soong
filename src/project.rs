@@ -5,6 +5,7 @@ use std::collections::HashMap;
 
 use crate::context::*;
 use crate::ninja_target;
+use crate::parser::parse_build_ninja;
 use crate::soong_module::*;
 use crate::soong_package::*;
 use crate::utils::*;
