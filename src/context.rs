@@ -4,11 +4,9 @@
 use crate::project::*;
 use crate::utils::*;
 
-pub const AOSP_PATH: &str = "--aosp-path";
-pub const ANGLE_PATH: &str = "--angle-path";
-pub const COPY_TO_AOSP: &str = "--copy-to-aosp";
-
+const AOSP_PATH: &str = "--aosp-path";
 const CLEAN_TMP: &str = "--clean-tmp";
+const COPY_TO_AOSP: &str = "--copy-to-aosp";
 const SKIP_BUILD: &str = "--skip-build";
 const SKIP_GEN_NINJA: &str = "--skip-gen-ninja";
 
@@ -18,8 +16,7 @@ pub struct Context {
     pub temp_path: PathBuf,
     pub n2s_path: PathBuf,
     pub test_path: PathBuf,
-    android_path: Option<PathBuf>,
-    angle_path: Option<PathBuf>,
+    pub android_path: PathBuf,
     pub project_ids: Vec<ProjectId>,
     pub skip_gen_ninja: bool,
     pub skip_build: bool,
@@ -41,7 +38,6 @@ PROJECTS:
   {projects_help}
 
 OPTIONS:
-  {ANGLE_PATH} <path>  Path to angle source repository (required only for the `angle` project)
   {AOSP_PATH} <path>   Path to Android tree (required for most project)
   {CLEAN_TMP}          Remove temporary directory before running
   {COPY_TO_AOSP}       Copy generated Soong files into the Android tree
@@ -51,16 +47,6 @@ OPTIONS:
  ",
             self.executable
         )
-    }
-    fn next(
-        &self,
-        iter: &mut std::slice::Iter<'_, String>,
-        projects: &Vec<&mut dyn Project>,
-    ) -> Result<Option<PathBuf>, String> {
-        let Some(path) = iter.next() else {
-            return Err(self.help(projects));
-        };
-        Ok(Some(PathBuf::from(path)))
     }
     pub fn new(args: Vec<String>, projects: &Vec<&mut dyn Project>) -> Result<Self, String> {
         let mut ctx = Self::default();
@@ -76,11 +62,11 @@ OPTIONS:
         let mut iter = args[1..].iter();
         while let Some(arg) = iter.next() {
             match arg.as_str() {
-                ANGLE_PATH => {
-                    ctx.angle_path = ctx.next(&mut iter, projects)?;
-                }
                 AOSP_PATH => {
-                    ctx.android_path = ctx.next(&mut iter, projects)?;
+                    let Some(path) = iter.next() else {
+                        return Err(ctx.help(projects));
+                    };
+                    ctx.android_path = PathBuf::from(path);
                 }
                 SKIP_GEN_NINJA => {
                     ctx.skip_gen_ninja = true;
@@ -132,19 +118,5 @@ OPTIONS:
         ctx.test_path = ctx.n2s_path.join("tests");
 
         Ok(ctx)
-    }
-    pub fn get_path(&self, arg: &str, dep: &str) -> Result<PathBuf, String> {
-        let optional_path = match arg {
-            AOSP_PATH => self.android_path.as_ref(),
-            ANGLE_PATH => self.angle_path.as_ref(),
-            _ => return error!("'{arg}' not supported for get_path"),
-        };
-        let Some(path) = optional_path else {
-            return error!("missing '{arg}' required for '{dep}'");
-        };
-        Ok(PathBuf::from(path))
-    }
-    pub fn get_android_path(&self, dep: &str) -> Result<PathBuf, String> {
-        self.get_path(AOSP_PATH, dep)
     }
 }

@@ -33,7 +33,7 @@ impl Project for Mesa {
         ctx: &Context,
         _projects_map: &ProjectsMap,
     ) -> Result<SoongPackage, String> {
-        self.src_path = self.get_id().android_path(ctx)?;
+        self.src_path = self.get_id().android_path(ctx);
         self.ndk_path = get_ndk_path(&ctx.temp_path)?;
         self.build_path = ctx.temp_path.join(self.get_id().str());
 

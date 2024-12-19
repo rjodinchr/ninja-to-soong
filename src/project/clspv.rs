@@ -23,11 +23,11 @@ impl Project for Clspv {
         ctx: &Context,
         projects_map: &ProjectsMap,
     ) -> Result<SoongPackage, String> {
-        self.src_path = self.get_id().android_path(ctx)?;
+        self.src_path = self.get_id().android_path(ctx);
         self.build_path = ctx.temp_path.join(self.get_id().str());
         self.ndk_path = get_ndk_path(&ctx.temp_path)?;
-        self.spirv_headers_path = ProjectId::SpirvHeaders.android_path(ctx)?;
-        self.llvm_project_path = ProjectId::LlvmProject.android_path(ctx)?;
+        self.spirv_headers_path = ProjectId::SpirvHeaders.android_path(ctx);
+        self.llvm_project_path = ProjectId::LlvmProject.android_path(ctx);
 
         let targets = ninja_target::cmake::get_targets(
             &self.src_path,
@@ -40,7 +40,7 @@ impl Project for Clspv {
                 ),
                 &format!(
                     "-DSPIRV_TOOLS_SOURCE_DIR={0}",
-                    path_to_string(ProjectId::SpirvTools.android_path(ctx)?)
+                    path_to_string(ProjectId::SpirvTools.android_path(ctx))
                 ),
                 &format!(
                     "-DCLSPV_LLVM_SOURCE_DIR={0}",

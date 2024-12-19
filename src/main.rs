@@ -38,10 +38,7 @@ fn generate_project(
         print_verbose!("{file_path:#?} created");
 
         if ctx.copy_to_aosp {
-            let Ok(android_path) = project.get_id().android_path(ctx) else {
-                return error!("missing '{AOSP_PATH}' required for '{COPY_TO_AOSP}'");
-            };
-            let copy_dst = android_path.join(ANDROID_BP);
+            let copy_dst = ctx.android_path.join(ANDROID_BP);
             copy_file(&file_path, &copy_dst)?;
             print_verbose!("{file_path:#?} copied to {copy_dst:#?}");
         }
