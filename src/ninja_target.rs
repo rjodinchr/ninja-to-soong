@@ -80,7 +80,7 @@ where
         mut targets: Vec<PathBuf>,
         mut iterator: Iterator,
         mut f: F,
-        ignore_target: G,
+        filter_target: G,
     ) -> Result<Iterator, String>
     where
         F: FnMut(&mut Iterator, NinjaRule, &T) -> Result<(), String>,
@@ -88,7 +88,7 @@ where
     {
         let mut targets_seen = HashSet::new();
         while let Some(target_name) = targets.pop() {
-            if targets_seen.contains(&target_name) || ignore_target(&target_name) {
+            if targets_seen.contains(&target_name) || !filter_target(&target_name) {
                 continue;
             }
             let Some(target) = self.get(&target_name) else {

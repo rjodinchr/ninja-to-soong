@@ -259,38 +259,38 @@ impl Project for Mesa {
         libs.into_iter().map(|lib| String::from(lib)).collect()
     }
 
-    fn ignore_cflag(&self, cflag: &str) -> bool {
-        cflag != "-mclflushopt"
+    fn filter_cflag(&self, cflag: &str) -> bool {
+        cflag == "-mclflushopt"
     }
 
-    fn ignore_define(&self, define: &str) -> bool {
-        define == "WITH_LIBBACKTRACE" // b/120606663
+    fn filter_define(&self, define: &str) -> bool {
+        define != "WITH_LIBBACKTRACE" // b/120606663
     }
 
-    fn ignore_include(&self, include: &Path) -> bool {
-        path_to_string(include)
+    fn filter_include(&self, include: &Path) -> bool {
+        !(path_to_string(include)
             .starts_with(&path_to_string(self.src_path.join("subprojects/libdrm")))
-            || include.ends_with("android_stub")
+            || include.ends_with("android_stub"))
     }
 
-    fn ignore_link_flag(&self, _flag: &str) -> bool {
-        true
+    fn filter_link_flag(&self, _flag: &str) -> bool {
+        false
     }
 
-    fn ignore_gen_header(&self, _header: &Path) -> bool {
-        true
+    fn filter_gen_header(&self, _header: &Path) -> bool {
+        false
     }
 
-    fn ignore_lib(&self, lib: &str) -> bool {
-        lib.contains("libbacktrace")
+    fn filter_lib(&self, lib: &str) -> bool {
+        !lib.contains("libbacktrace")
     }
 
-    fn ignore_target(&self, target: &Path) -> bool {
+    fn filter_target(&self, target: &Path) -> bool {
         let file_name = file_name(target);
-        !(file_name.contains(".so")
+        (file_name.contains(".so")
             || file_name.contains(".a")
             || file_name.contains("pps-producer"))
-            || file_name.contains("libdrm")
-            || target.starts_with("src/android_stub")
+            && !file_name.contains("libdrm")
+            && !target.starts_with("src/android_stub")
     }
 }
