@@ -46,7 +46,11 @@ impl Project for Angle {
         ctx: &Context,
         _projects_map: &ProjectsMap,
     ) -> Result<SoongPackage, String> {
-        self.src_path = ctx.get_path(ANGLE_PATH, self.get_id().str())?;
+        self.src_path = if let Ok(path) = std::env::var("N2S_ANGLE_PATH") {
+            PathBuf::from(path)
+        } else {
+            self.get_id().android_path(ctx)
+        };
         self.build_path = ctx.temp_path.join(self.get_id().str());
         self.ndk_path = self.src_path.join("third_party/android_toolchain/ndk");
 

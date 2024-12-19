@@ -21,11 +21,11 @@ impl Project for Clvk {
         ctx: &Context,
         _projects_map: &ProjectsMap,
     ) -> Result<SoongPackage, String> {
-        self.src_path = self.get_id().android_path(ctx)?;
+        self.src_path = self.get_id().android_path(ctx);
         self.build_path = ctx.temp_path.join(self.get_id().str());
         self.ndk_path = get_ndk_path(&ctx.temp_path)?;
 
-        let llvm_project_path = ProjectId::LlvmProject.android_path(ctx)?;
+        let llvm_project_path = ProjectId::LlvmProject.android_path(ctx);
         let targets = ninja_target::cmake::get_targets(
             &self.src_path,
             &self.build_path,
@@ -37,15 +37,15 @@ impl Project for Clvk {
                 "-DCLVK_BUILD_TESTS=OFF",
                 &format!(
                     "-DSPIRV_HEADERS_SOURCE_DIR={0}",
-                    path_to_string(ProjectId::SpirvHeaders.android_path(ctx)?)
+                    path_to_string(ProjectId::SpirvHeaders.android_path(ctx))
                 ),
                 &format!(
                     "-DSPIRV_TOOLS_SOURCE_DIR={0}",
-                    path_to_string(ProjectId::SpirvTools.android_path(ctx)?)
+                    path_to_string(ProjectId::SpirvTools.android_path(ctx))
                 ),
                 &format!(
                     "-DCLSPV_SOURCE_DIR={0}",
-                    path_to_string(ProjectId::Clspv.android_path(ctx)?)
+                    path_to_string(ProjectId::Clspv.android_path(ctx))
                 ),
                 &format!(
                     "-DCLSPV_LLVM_SOURCE_DIR={0}",

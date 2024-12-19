@@ -40,13 +40,12 @@
 # Using `ninja-to-soong`
 
 ```
-<ninja-to-soong> $ cargo run --release -- --aosp-path <android_tree_path> <project1> <project2>
+<ninja-to-soong> $ cargo run --release -- --aosp-path <path> <project1> <project2>
 ```
 
 ## Options
 
-* `--angle-path`: Path to angle source repository (required only for `angle` project)
-* `--aosp-path`: Path to Android tree (required for most project)
+* `--aosp-path <path>`: Path to Android tree (required for most project)
 * `--clean-tmp`: Remove the temporary directory before running
 * `--copy-to-aosp`: Copy generated Soong files into the Android tree
 * `--skip-build`: Skip build step
@@ -55,6 +54,7 @@
 
 ## Environment variables
 
+* `N2S_ANGLE_PATH`: Path to angle source (default: `<aosp-path>/external/angle`)
 * `N2S_NDK`: Android NDK (default: `android-ndk-r27c`)
 * `N2S_NDK_PATH`: Path to Android NDK (default: temporary directory)
 * `N2S_TMP_PATH`: Path used by `ninja-to-soong` to store its temporary directories (default: `std::env::temp_dir()`)
