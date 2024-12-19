@@ -1,7 +1,0 @@
-name: 'setup-ninja'
-description: 'Setup Ninja'
-runs:
-  using: "composite"
-  steps:
-    - name: Setup Ninja
-      uses: seanmiddleditch/gha-setup-ninja@master
