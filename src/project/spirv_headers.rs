@@ -33,7 +33,7 @@ impl Project for SpirvHeaders {
 
         package.add_module(SoongModule::new_cc_library_headers(
             CcLibraryHeaders::SpirvHeaders,
-            ["include".to_string()].into(),
+            vec![String::from("include")],
         ));
 
         let mut set: HashSet<PathBuf> = HashSet::new();

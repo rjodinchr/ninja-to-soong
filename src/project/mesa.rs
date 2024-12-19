@@ -151,7 +151,7 @@ impl Project for Mesa {
         for gen_dep in &gen_deps {
             let mut path = gen_dep.clone();
             while let Some(parent) = path.parent() {
-                path = parent.to_path_buf();
+                path = PathBuf::from(parent);
                 gen_deps_folders.insert(path.clone());
             }
         }
@@ -161,7 +161,7 @@ impl Project for Mesa {
                     let mut new_dirs = Vec::new();
                     for dir in dirs {
                         if let Ok(strip) = Path::new(&dir).strip_prefix(MESON_GENERATED) {
-                            if !gen_deps_folders.contains(&strip.to_path_buf()) {
+                            if !gen_deps_folders.contains(strip) {
                                 continue;
                             }
                         }
@@ -203,22 +203,24 @@ impl Project for Mesa {
     }
 
     fn get_default_cflags(&self, target: &str) -> Vec<String> {
-        let mut cflags = vec![
-            "-Wno-non-virtual-dtor".to_string(),
-            "-Wno-error".to_string(),
-        ];
+        let mut cflags = vec!["-Wno-non-virtual-dtor", "-Wno-error"];
         if target.ends_with("libvulkan_lite_runtime_a") {
-            cflags.push("-Wno-unreachable-code-loop-increment".to_string());
+            cflags.push("-Wno-unreachable-code-loop-increment");
         }
-
-        cflags
+        cflags.into_iter().map(|flag| String::from(flag)).collect()
     }
 
     fn get_define(&self, define: &str) -> String {
-        let src_path = path_to_string(&self.src_path) + &std::path::MAIN_SEPARATOR.to_string();
         define
             .replace(&path_to_string(&self.build_path), MESON_GENERATED)
-            .replace(&src_path, "")
+            .replace(
+                &format!(
+                    "{0}{1}",
+                    path_to_string(&self.src_path),
+                    std::path::MAIN_SEPARATOR
+                ),
+                "",
+            )
     }
 
     fn get_include(&self, include: &Path) -> PathBuf {
@@ -248,7 +250,7 @@ impl Project for Mesa {
         } else if library.starts_with("src") || library.starts_with("subprojects") {
             Path::new(self.get_id().str()).join(library)
         } else {
-            library.to_path_buf()
+            PathBuf::from(library)
         }
     }
 
@@ -259,24 +261,24 @@ impl Project for Mesa {
             || target.ends_with("libvulkan_wsi_a")
             || target.ends_with("libvulkan_lite_runtime_a")
         {
-            libs.push("libsync".to_string());
+            libs.push("libsync");
         }
         if target.ends_with("libmesa_util_a") {
-            libs.push("libz".to_string());
+            libs.push("libz");
         }
         if target.starts_with("mesa_src_intel_vulkan_")
             || target == "mesa_src_vulkan_runtime_libvulkan_lite_runtime_a"
         {
-            libs.push("libnativewindow".to_string());
+            libs.push("libnativewindow");
         }
-        libs
+        libs.into_iter().map(|lib| String::from(lib)).collect()
     }
 
     fn get_source(&self, source: &Path) -> PathBuf {
         if let Ok(strip) = source.strip_prefix(&self.build_path) {
             self.src_path.join(MESON_GENERATED).join(strip)
         } else {
-            source.to_path_buf()
+            PathBuf::from(source)
         }
     }
 
@@ -308,22 +310,18 @@ impl Project for Mesa {
             "libvulkan_wsi_a",
         ] {
             if target.ends_with(lib) {
-                libs.push("libdrm_headers".to_string());
+                libs.push("libdrm_headers");
                 break;
             }
         }
         if target.ends_with("libanv_common_a") {
-            libs.push("hwvulkan_headers".to_string());
+            libs.push("hwvulkan_headers");
         }
-        libs
+        libs.into_iter().map(|lib| String::from(lib)).collect()
     }
 
     fn ignore_cflag(&self, cflag: &str) -> bool {
-        if cflag == "-mclflushopt" {
-            false
-        } else {
-            true
-        }
+        cflag != "-mclflushopt"
     }
 
     fn ignore_define(&self, define: &str) -> bool {

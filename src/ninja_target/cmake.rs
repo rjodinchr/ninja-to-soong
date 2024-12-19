@@ -132,7 +132,7 @@ impl NinjaTarget for CmakeNinjaTarget {
         Ok(if command.contains("bin/cmake ") {
             None
         } else {
-            Some((command.to_string(), None))
+            Some((String::from(command), None))
         })
     }
 }
@@ -187,17 +187,14 @@ pub fn get_targets(
     cmake_args: Vec<&str>,
     targets_to_build: Option<Vec<PathBuf>>,
     ctx: &Context,
-) -> Result<(Vec<CmakeNinjaTarget>, bool), String> {
-    let mut built = false;
+) -> Result<Vec<CmakeNinjaTarget>, String> {
     if !ctx.skip_gen_ninja {
         cmake_configure(src_path, build_path, ndk_path, cmake_args)?;
         if !ctx.skip_build {
             if let Some(targets) = targets_to_build {
                 cmake_build(build_path, &targets)?;
-                built = true;
             }
         }
     }
-
-    Ok((parse_build_ninja(build_path)?, built))
+    parse_build_ninja(build_path)
 }

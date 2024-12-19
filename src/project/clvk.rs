@@ -26,28 +26,7 @@ impl Project for Clvk {
         self.ndk_path = get_ndk_path(&ctx.temp_path)?;
 
         let llvm_project_path = ProjectId::LlvmProject.android_path(ctx)?;
-        let spirv_headers_path = "-DSPIRV_HEADERS_SOURCE_DIR=".to_string()
-            + &path_to_string(ProjectId::SpirvHeaders.android_path(ctx)?);
-        let spirv_tools_path = "-DSPIRV_TOOLS_SOURCE_DIR=".to_string()
-            + &path_to_string(ProjectId::SpirvTools.android_path(ctx)?);
-        let clspv_path = "-DCLSPV_SOURCE_DIR=".to_string()
-            + &path_to_string(ProjectId::Clspv.android_path(ctx)?);
-        let llvm_path = "-DCLSPV_LLVM_SOURCE_DIR=".to_string()
-            + &path_to_string(llvm_project_path.join("llvm"));
-        let clang_path = "-DCLSPV_CLANG_SOURCE_DIR=".to_string()
-            + &path_to_string(llvm_project_path.join("clang"));
-        let libclc_path = "-DCLSPV_LIBCLC_SOURCE_DIR=".to_string()
-            + &path_to_string(llvm_project_path.join("libclc"));
-        let vulkan_library = "-DVulkan_LIBRARY=".to_string()
-            + &path_to_string(
-                self.ndk_path
-                    .join("toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/lib")
-                    .join(ANDROID_ISA.to_string() + "-linux-android")
-                    .join(ANDROID_PLATFORM)
-                    .join("libvulkan.so"),
-            );
-
-        let (targets, _) = ninja_target::cmake::get_targets(
+        let targets = ninja_target::cmake::get_targets(
             &self.src_path,
             &self.build_path,
             &self.ndk_path,
@@ -56,13 +35,40 @@ impl Project for Clvk {
                 "-DCLVK_CLSPV_ONLINE_COMPILER=1",
                 "-DCLVK_ENABLE_SPIRV_IL=OFF",
                 "-DCLVK_BUILD_TESTS=OFF",
-                &spirv_headers_path,
-                &spirv_tools_path,
-                &clspv_path,
-                &llvm_path,
-                &clang_path,
-                &libclc_path,
-                &vulkan_library,
+                &format!(
+                    "-DSPIRV_HEADERS_SOURCE_DIR={0}",
+                    path_to_string(ProjectId::SpirvHeaders.android_path(ctx)?)
+                ),
+                &format!(
+                    "-DSPIRV_TOOLS_SOURCE_DIR={0}",
+                    path_to_string(ProjectId::SpirvTools.android_path(ctx)?)
+                ),
+                &format!(
+                    "-DCLSPV_SOURCE_DIR={0}",
+                    path_to_string(ProjectId::Clspv.android_path(ctx)?)
+                ),
+                &format!(
+                    "-DCLSPV_LLVM_SOURCE_DIR={0}",
+                    path_to_string(llvm_project_path.join("llvm"))
+                ),
+                &format!(
+                    "-DCLSPV_CLANG_SOURCE_DIR={0}",
+                    path_to_string(llvm_project_path.join("clang"))
+                ),
+                &format!(
+                    "-DCLSPV_LIBCLC_SOURCE_DIR={0}",
+                    path_to_string(llvm_project_path.join("libclc"))
+                ),
+                &format!(
+                    "-DVulkan_LIBRARY={0}",
+                    path_to_string(
+                        self.ndk_path
+                            .join("toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/lib")
+                            .join(format!("{ANDROID_ISA}-linux-android"))
+                            .join(ANDROID_PLATFORM)
+                            .join("libvulkan.so")
+                    )
+                ),
             ],
             None,
             ctx,
@@ -90,7 +96,7 @@ impl Project for Clvk {
         for library in &self.generated_libraries {
             let library_path = PathBuf::from(library);
             if let Ok(lib) = self.get_library_name(&library_path).strip_prefix(prefix) {
-                libs.push(lib.to_path_buf());
+                libs.push(PathBuf::from(lib));
             }
         }
         deps.insert(GenDeps::TargetsToGen, libs);
@@ -98,22 +104,23 @@ impl Project for Clvk {
     }
 
     fn get_library_name(&self, library: &Path) -> PathBuf {
-        let strip =
+        strip_prefix(
             if let Ok(strip) = library.strip_prefix(Path::new("external/clspv/third_party/llvm")) {
                 Path::new(ProjectId::LlvmProject.str()).join(strip)
             } else {
-                library.to_path_buf()
-            };
-        strip_prefix(&strip, "external")
+                PathBuf::from(library)
+            },
+            "external",
+        )
     }
 
     fn get_target_header_libs(&self, _target: &str) -> Vec<String> {
-        vec!["OpenCL-Headers".to_string()]
+        vec![String::from("OpenCL-Headers")]
     }
 
     fn get_target_alias(&self, target: &str) -> Option<String> {
-        if target == "clvk_libOpenCL_so" {
-            Some("libclvk".to_string())
+        if target.ends_with("libOpenCL_so") {
+            Some(String::from("libclvk"))
         } else {
             None
         }

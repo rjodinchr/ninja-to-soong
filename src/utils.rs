@@ -75,12 +75,12 @@ pub fn get_ndk_path(temp_path: &Path) -> Result<PathBuf, String> {
     let android_ndk = if let Ok(android_ndk) = std::env::var("N2S_NDK") {
         android_ndk
     } else {
-        ANDROID_NDK.to_string()
+        String::from(ANDROID_NDK)
     };
     let ndk_path = if let Ok(ndk_path) = std::env::var("N2S_NDK_PATH") {
         PathBuf::from(ndk_path)
     } else {
-        temp_path.to_path_buf()
+        PathBuf::from(temp_path)
     };
     let android_ndk_path = ndk_path.join(&android_ndk);
     if File::open(android_ndk_path.join(NDK_CMAKE_TOOLCHAIN_PATH)).is_ok() {
@@ -88,8 +88,7 @@ pub fn get_ndk_path(temp_path: &Path) -> Result<PathBuf, String> {
     }
 
     let ndk_zip = path_to_string(ndk_path.join("android-ndk.zip"));
-    let ndk_url =
-        "https://dl.google.com/android/repository/".to_string() + &android_ndk + "-linux.zip";
+    let ndk_url = format!("https://dl.google.com/android/repository/{android_ndk}-linux.zip");
     execute_cmd!("wget", vec![&ndk_url, "-q", "-O", &ndk_zip], None)?;
     execute_cmd!(
         "unzip",
@@ -100,7 +99,7 @@ pub fn get_ndk_path(temp_path: &Path) -> Result<PathBuf, String> {
 }
 
 pub fn canonicalize_path<P: AsRef<Path>>(path: P, build_path: &Path) -> PathBuf {
-    let path_buf = path.as_ref().to_path_buf();
+    let path_buf = PathBuf::from(path.as_ref());
     if path_buf.has_root() {
         path_buf
     } else {
@@ -109,7 +108,7 @@ pub fn canonicalize_path<P: AsRef<Path>>(path: P, build_path: &Path) -> PathBuf 
             .components()
             .fold(PathBuf::new(), |path, component| {
                 if component == std::path::Component::ParentDir {
-                    path.parent().unwrap().to_path_buf()
+                    PathBuf::from(path.parent().unwrap())
                 } else {
                     path.join(component)
                 }
@@ -118,7 +117,7 @@ pub fn canonicalize_path<P: AsRef<Path>>(path: P, build_path: &Path) -> PathBuf 
 }
 
 pub fn path_to_string<P: AsRef<Path>>(path: P) -> String {
-    path.as_ref().to_str().unwrap_or_default().to_string()
+    String::from(path.as_ref().to_str().unwrap_or_default())
 }
 
 pub fn path_to_id(path: PathBuf) -> String {
@@ -130,19 +129,16 @@ pub fn path_to_id(path: PathBuf) -> String {
 
 pub fn file_stem(path: &Path) -> String {
     let file_name = file_name(path);
-    file_name
-        .split_once(".")
-        .unwrap_or((&file_name, ""))
-        .0
-        .to_string()
+    String::from(file_name.split_once(".").unwrap_or((&file_name, "")).0)
 }
 
 pub fn file_name(path: &Path) -> String {
-    path.file_name()
-        .unwrap_or_default()
-        .to_str()
-        .unwrap_or_default()
-        .to_string()
+    String::from(
+        path.file_name()
+            .unwrap_or_default()
+            .to_str()
+            .unwrap_or_default(),
+    )
 }
 
 pub fn strip_prefix<F: AsRef<Path>, P: AsRef<Path>>(from: F, prefix: P) -> PathBuf {
@@ -154,7 +150,7 @@ pub fn split_path(path: &Path, delimiter: &str) -> Option<(PathBuf, PathBuf)> {
     while sub_path.parent().is_some() {
         sub_path = sub_path.parent().unwrap();
         if file_name(sub_path) == delimiter {
-            return Some((sub_path.to_path_buf(), strip_prefix(path, sub_path)));
+            return Some((PathBuf::from(sub_path), strip_prefix(path, sub_path)));
         }
     }
     None

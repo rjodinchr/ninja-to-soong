@@ -94,11 +94,10 @@ impl NinjaTarget for GnNinjaTarget {
     }
 
     fn get_link_flags(&self) -> (Option<PathBuf>, Vec<String>) {
-        if let Some(libs) = self.variables.get("ldflags") {
-            common::get_link_flags(libs)
-        } else {
-            (None, Vec::new())
-        }
+        let Some(libs) = self.variables.get("ldflags") else {
+            return (None, Vec::new());
+        };
+        common::get_link_flags(libs)
     }
 
     fn get_link_libraries(&self) -> Result<(Vec<PathBuf>, Vec<PathBuf>), String> {
@@ -173,10 +172,10 @@ fn gn_gen(src_path: &Path, build_path: &Path, gn_args: Vec<&str>) -> Result<(), 
     let gn_gen = vec!["gn", "gen", &build_dir];
     bash_c(src_path, &gn_gen)?;
 
-    let target_cpu = "target_cpu=\\\"".to_string() + ANDROID_CPU + "\\\"";
+    let target_cpu = format!("target_cpu=\\\"{ANDROID_CPU}\\\"");
     let mut args_list = vec!["target_os=\\\"android\\\"", &target_cpu];
     args_list.extend(gn_args);
-    let args = "--args=\"".to_string() + &args_list.join(" ") + "\"";
+    let args = format!("--args=\"{0}\"", args_list.join(" "));
     let gn_args = vec![
         "gn",
         "args",

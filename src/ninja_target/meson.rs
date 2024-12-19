@@ -44,7 +44,7 @@ impl NinjaTarget for MesonNinjaTarget {
     fn get_rule(&self) -> Option<NinjaRule> {
         Some(if self.rule == "c_LINKER" || self.rule == "cpp_LINKER" {
             let (_, link_flags) = self.get_link_flags();
-            if link_flags.contains(&"-fPIC".to_string()) {
+            if link_flags.contains(&String::from("-fPIC")) {
                 NinjaRule::SharedLibrary
             } else {
                 NinjaRule::Binary
@@ -153,11 +153,7 @@ impl NinjaTarget for MesonNinjaTarget {
             return error!("No command in: {self:#?}");
         };
         Ok(Some((
-            command
-                .split_once(" -- ")
-                .unwrap_or(("", command))
-                .1
-                .to_string(),
+            String::from(command.split_once(" -- ").unwrap_or(("", command)).1),
             None,
         )))
     }

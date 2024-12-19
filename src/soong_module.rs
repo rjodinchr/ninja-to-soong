@@ -3,6 +3,8 @@
 
 use crate::utils::error;
 
+const INDENT: &str = "    ";
+
 pub enum CcLibraryHeaders {
     SpirvTools,
     SpirvHeaders,
@@ -18,10 +20,6 @@ impl CcLibraryHeaders {
             Self::Clang => "clang-includes",
         })
     }
-}
-
-fn print_indent(level: usize) -> String {
-    "    ".repeat(level)
 }
 
 #[derive(Debug)]
@@ -45,49 +43,44 @@ impl SoongNamedProp {
 
     fn new(name: &str, prop: SoongProp) -> Self {
         Self {
-            name: name.to_string(),
+            name: String::from(name),
             prop,
         }
     }
 
     fn print(self, indent_level: usize) -> String {
-        let mut output = String::new();
-        output += &format!("{0}{1}: ", print_indent(indent_level), self.name);
-        output += &(match self.prop {
-            SoongProp::Str(str) => format!("\"{str}\""),
-            SoongProp::VecStr(mut vec_str) => {
-                vec_str.sort();
-                let mut output = String::new();
-                if vec_str.len() == 0 {
-                    return output;
-                }
-                if vec_str.len() == 1 {
-                    output = format!("[\"{0}\"]", vec_str[0]);
-                } else {
-                    output += "[\n";
-                    for str in vec_str {
-                        output +=
-                            format!("{0}\"{str}\",\n", print_indent(indent_level + 1)).as_str();
+        let indent = INDENT.repeat(indent_level);
+        format!(
+            "{indent}{0}: {1},\n",
+            self.name,
+            match self.prop {
+                SoongProp::Str(str) => format!("\"{str}\""),
+                SoongProp::VecStr(mut vec_str) => {
+                    vec_str.sort();
+                    if vec_str.len() == 0 {
+                        return String::new();
                     }
-                    output += &format!("{0}]", print_indent(indent_level));
+                    if vec_str.len() == 1 {
+                        format!("[\"{0}\"]", vec_str[0])
+                    } else {
+                        let indent_next = INDENT.repeat(indent_level + 1);
+                        format!(
+                            "[\n{0}{indent}]",
+                            vec_str
+                                .iter()
+                                .map(|str| format!("{indent_next}\"{str}\",\n",))
+                                .collect::<Vec<String>>()
+                                .concat()
+                        )
+                    }
                 }
-                output
-            }
-            SoongProp::Bool(bool) => {
-                if bool {
-                    String::from("true")
-                } else {
-                    String::from("false")
+                SoongProp::Bool(bool) => {
+                    format!("{bool}")
                 }
+                SoongProp::Prop(prop) =>
+                    format!("{{\n{0}{indent}}}", prop.print(indent_level + 1),),
             }
-            SoongProp::Prop(prop) => format!(
-                "{{\n{0}{1}}}",
-                prop.print(indent_level + 1),
-                print_indent(indent_level)
-            ),
-        });
-        output += ",\n";
-        output
+        )
     }
 }
 
@@ -100,7 +93,7 @@ pub struct SoongModule {
 impl SoongModule {
     pub fn new(name: &str) -> Self {
         Self {
-            name: name.to_string(),
+            name: String::from(name),
             props: Vec::new(),
         }
     }
@@ -115,7 +108,7 @@ impl SoongModule {
     pub fn new_copy_genrule(name: String, src: String, out: String) -> Self {
         let mut module = Self::new("genrule");
         module.add_prop("name", SoongProp::Str(name));
-        module.add_prop("cmd", SoongProp::Str("cp $(in) $(out)".to_string()));
+        module.add_prop("cmd", SoongProp::Str(String::from("cp $(in) $(out)")));
         module.add_prop("srcs", SoongProp::VecStr(vec![src]));
         module.add_prop("out", SoongProp::VecStr(vec![out]));
         module
@@ -142,11 +135,14 @@ impl SoongModule {
     }
 
     pub fn print(self) -> String {
-        let mut output = format!("\n{0} {{\n", self.name);
-        for prop in self.props {
-            output += &prop.print(1);
-        }
-        output += "}\n";
-        output
+        format!(
+            "\n{0} {{\n{1}}}\n",
+            self.name,
+            self.props
+                .into_iter()
+                .map(|prop| prop.print(1))
+                .collect::<Vec<String>>()
+                .concat()
+        )
     }
 }

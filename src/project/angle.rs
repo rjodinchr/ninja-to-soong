@@ -114,18 +114,18 @@ impl Project for Angle {
     }
 
     fn get_default_cflags(&self, _target: &str) -> Vec<String> {
-        vec!["-Wno-nullability-completeness".to_string()]
+        vec![String::from("-Wno-nullability-completeness")]
     }
 
     fn get_library_module(&self, module: &mut SoongModule) {
-        module.add_prop("stl", SoongProp::Str("libc++_static".to_string()));
+        module.add_prop("stl", SoongProp::Str(String::from("libc++_static")));
         module.add_prop(
             "arch",
             SoongNamedProp::new_prop(
                 "arm64",
                 SoongNamedProp::new_prop(
                     "cflags",
-                    SoongProp::VecStr(vec!["-D__ARM_NEON__=1".to_string()]),
+                    SoongProp::VecStr(vec![String::from("-D__ARM_NEON__=1")]),
                 ),
             ),
         );
@@ -142,34 +142,35 @@ impl Project for Angle {
             Path::new(self.get_id().str()).join(library)
         } else {
             for str in TARGETS {
-                if "./".to_string() + str + "_angle.so" == path_to_string(library) {
-                    return PathBuf::from("angle/./".to_string() + str + "_angle.so");
+                if format!("./{str}_angle.so") == path_to_string(library) {
+                    return PathBuf::from(format!("angle/./{str}_angle.so"));
                 }
             }
-            library.to_path_buf()
+            PathBuf::from(library)
         }
     }
 
     fn get_shared_libs(&self, target: &str) -> Vec<String> {
         if target.starts_with("angle_obj_lib") {
-            return vec!["libnativewindow".to_string()];
-        } else if target.starts_with("angle___libGLESv2_angle_so") {
-            return vec!["libz".to_string()];
+            vec![String::from("libnativewindow")]
+        } else if target.ends_with("libGLESv2_angle_so") {
+            vec![String::from("libz")]
+        } else {
+            Vec::new()
         }
-        Vec::new()
     }
 
     fn get_target_alias(&self, target: &str) -> Option<String> {
         for str in TARGETS {
-            if "angle___".to_string() + str + "_angle_so" == target {
-                return Some(str.to_string() + "_angle");
+            if format!("angle___{str}_angle_so") == target {
+                return Some(format!("{str}_angle"));
             }
         }
         None
     }
 
     fn get_target_header_libs(&self, target: &str) -> Vec<String> {
-        if target == "angle_obj_libtranslator_a" {
+        if target.ends_with("libtranslator_a") {
             vec![
                 CcLibraryHeaders::SpirvHeaders.str(),
                 CcLibraryHeaders::SpirvTools.str(),
@@ -208,11 +209,6 @@ impl Project for Angle {
     }
 
     fn ignore_target(&self, target: &Path) -> bool {
-        if target.starts_with("obj/third_party")
-            || target.starts_with("gen/third_party/spirv-tools")
-        {
-            return true;
-        }
-        false
+        target.starts_with("obj/third_party") || target.starts_with("gen/third_party/spirv-tools")
     }
 }

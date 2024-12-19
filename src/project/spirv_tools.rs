@@ -27,14 +27,14 @@ impl Project for SpirvTools {
         self.ndk_path = get_ndk_path(&ctx.temp_path)?;
         self.spirv_headers_path = ProjectId::SpirvHeaders.android_path(ctx)?;
 
-        let (targets, _) = ninja_target::cmake::get_targets(
+        let targets = ninja_target::cmake::get_targets(
             &self.src_path,
             &self.build_path,
             &self.ndk_path,
-            vec![
-                &("-DSPIRV-Headers_SOURCE_DIR=".to_string()
-                    + &path_to_string(&self.spirv_headers_path)),
-            ],
+            vec![&format!(
+                "-DSPIRV-Headers_SOURCE_DIR={0}",
+                path_to_string(&self.spirv_headers_path)
+            )],
             None,
             ctx,
         )?;
@@ -55,7 +55,7 @@ impl Project for SpirvTools {
         )?;
         package.add_module(SoongModule::new_cc_library_headers(
             CcLibraryHeaders::SpirvTools,
-            ["include".to_string()].into(),
+            vec![String::from("include")],
         ));
 
         self.gen_deps = Vec::from_iter(package.get_gen_deps());
@@ -64,7 +64,7 @@ impl Project for SpirvTools {
     }
 
     fn get_default_cflags(&self, _target: &str) -> Vec<String> {
-        vec!["-Wno-implicit-fallthrough".to_string()]
+        vec![String::from("-Wno-implicit-fallthrough")]
     }
 
     fn get_deps_info(&self) -> Vec<(PathBuf, GenDeps)> {
@@ -80,7 +80,7 @@ impl Project for SpirvTools {
     fn get_library_module(&self, _module: &mut SoongModule) {
         _module.add_prop(
             "export_include_dirs",
-            SoongProp::VecStr(vec!["include".to_string()]),
+            SoongProp::VecStr(vec![String::from("include")]),
         );
         _module.add_prop(
             "export_header_lib_headers",

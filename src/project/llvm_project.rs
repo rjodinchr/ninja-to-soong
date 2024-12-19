@@ -32,7 +32,7 @@ impl Project for LlvmProject {
         let mut targets_to_build = Vec::new();
         targets_to_build.extend(GenDeps::TargetsToGen.get(self, ProjectId::Clvk, projects_map));
         targets_to_build.extend(GenDeps::LibclcBins.get(self, ProjectId::Clspv, projects_map));
-        let (targets, built) = ninja_target::cmake::get_targets(
+        let targets = ninja_target::cmake::get_targets(
             &self.src_path.join("llvm"),
             &self.build_path,
             &self.ndk_path,
@@ -45,7 +45,6 @@ impl Project for LlvmProject {
             Some(targets_to_build),
             ctx,
         )?;
-        let copy_gen_deps = if built { true } else { false };
 
         let mut package = SoongPackage::new(
             &self.src_path,
@@ -88,7 +87,7 @@ impl Project for LlvmProject {
             if let Some((include_folder, _)) = split_path(folder, "include") {
                 gen_deps_folders.insert(include_folder);
             } else {
-                gen_deps_folders.insert(folder.to_path_buf());
+                gen_deps_folders.insert(PathBuf::from(folder));
             }
         }
         for module in package.get_modules() {
@@ -118,7 +117,7 @@ impl Project for LlvmProject {
             &format!("{0:#?}", &gen_deps_sorted),
         )?;
 
-        if copy_gen_deps {
+        if !ctx.skip_build {
             let cmake_generated_path = self.src_path.join(CMAKE_GENERATED);
             if File::open(&cmake_generated_path).is_ok() {
                 if let Err(err) = std::fs::remove_dir_all(&cmake_generated_path) {
@@ -145,19 +144,17 @@ impl Project for LlvmProject {
         let cmake_generated_path = Path::new(CMAKE_GENERATED);
         package.add_module(SoongModule::new_cc_library_headers(
             CcLibraryHeaders::Llvm,
-            [
-                "llvm/include".to_string(),
+            vec![
+                String::from("llvm/include"),
                 path_to_string(cmake_generated_path.join("include")),
-            ]
-            .into(),
+            ],
         ));
         package.add_module(SoongModule::new_cc_library_headers(
             CcLibraryHeaders::Clang,
-            [
-                "clang/include".to_string(),
+            vec![
+                String::from("clang/include"),
                 path_to_string(cmake_generated_path.join("tools/clang/include")),
-            ]
-            .into(),
+            ],
         ));
 
         for clang_header in GenDeps::ClangHeaders.get(self, ProjectId::Clspv, projects_map) {
@@ -189,9 +186,9 @@ impl Project for LlvmProject {
         Ok(package)
     }
 
-    fn get_default_cflags(&self, _target: &str) -> Vec<String> {
+    fn get_default_cflags(&self, target: &str) -> Vec<String> {
         let mut cflags = vec!["-Wno-error", "-Wno-unreachable-code-loop-increment"];
-        if _target == "llvm-project_lib_libLLVMSupport_a" {
+        if target.ends_with("libLLVMSupport_a") {
             cflags.append(&mut vec![
                 "-DBLAKE3_NO_AVX512",
                 "-DBLAKE3_NO_AVX2",
@@ -199,7 +196,7 @@ impl Project for LlvmProject {
                 "-DBLAKE3_NO_SSE2",
             ]);
         }
-        cflags.iter().map(|flag| flag.to_string()).collect()
+        cflags.into_iter().map(|flag| String::from(flag)).collect()
     }
 
     fn get_include(&self, include: &Path) -> PathBuf {
