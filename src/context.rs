@@ -117,14 +117,15 @@ OPTIONS:
         }
         ctx.n2s_path = match std::env::current_exe() {
             Ok(exe_path) => {
-                exe_path // <ninja-to-soong>/target/<build-mode>/ninja-to-soong
-                    .parent() // <ninja-to-soong>/target/<build-mode>
-                    .unwrap()
-                    .parent() // <ninja-to-soong>/target
-                    .unwrap()
-                    .parent() // <ninja-to-soong>
-                    .unwrap()
-                    .to_path_buf()
+                PathBuf::from(
+                    exe_path // <ninja-to-soong>/target/<build-mode>/ninja-to-soong
+                        .parent() // <ninja-to-soong>/target/<build-mode>
+                        .unwrap()
+                        .parent() // <ninja-to-soong>/target
+                        .unwrap()
+                        .parent() // <ninja-to-soong>
+                        .unwrap(),
+                )
             }
             Err(err) => return error!("Could not get current executable path: {err}"),
         };
@@ -141,7 +142,7 @@ OPTIONS:
         let Some(path) = optional_path else {
             return error!("missing '{arg}' required for '{dep}'");
         };
-        Ok(path.to_path_buf())
+        Ok(PathBuf::from(path))
     }
     pub fn get_android_path(&self, dep: &str) -> Result<PathBuf, String> {
         self.get_path(AOSP_PATH, dep)

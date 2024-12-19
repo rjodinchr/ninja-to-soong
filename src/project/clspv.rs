@@ -29,27 +29,31 @@ impl Project for Clspv {
         self.spirv_headers_path = ProjectId::SpirvHeaders.android_path(ctx)?;
         self.llvm_project_path = ProjectId::LlvmProject.android_path(ctx)?;
 
-        let spirv_headers_path =
-            "-DSPIRV_HEADERS_SOURCE_DIR=".to_string() + &path_to_string(&self.spirv_headers_path);
-        let spirv_tools_path = "-DSPIRV_TOOLS_SOURCE_DIR=".to_string()
-            + &path_to_string(ProjectId::SpirvTools.android_path(ctx)?);
-        let llvm_project_path = "-DCLSPV_LLVM_SOURCE_DIR=".to_string()
-            + &path_to_string(self.llvm_project_path.join("llvm"));
-        let clang_path = "-DCLSPV_CLANG_SOURCE_DIR=".to_string()
-            + &path_to_string(self.llvm_project_path.join("clang"));
-        let libclc_path = "-DCLSPV_LIBCLC_SOURCE_DIR=".to_string()
-            + &path_to_string(self.llvm_project_path.join("libclc"));
-
-        let (targets, _) = ninja_target::cmake::get_targets(
+        let targets = ninja_target::cmake::get_targets(
             &self.src_path,
             &self.build_path,
             &self.ndk_path,
             vec![
-                &spirv_headers_path,
-                &spirv_tools_path,
-                &llvm_project_path,
-                &clang_path,
-                &libclc_path,
+                &format!(
+                    "-DSPIRV_HEADERS_SOURCE_DIR={0}",
+                    path_to_string(&self.spirv_headers_path)
+                ),
+                &format!(
+                    "-DSPIRV_TOOLS_SOURCE_DIR={0}",
+                    path_to_string(ProjectId::SpirvTools.android_path(ctx)?)
+                ),
+                &format!(
+                    "-DCLSPV_LLVM_SOURCE_DIR={0}",
+                    path_to_string(self.llvm_project_path.join("llvm"))
+                ),
+                &format!(
+                    "-DCLSPV_CLANG_SOURCE_DIR={0}",
+                    path_to_string(self.llvm_project_path.join("clang"))
+                ),
+                &format!(
+                    "-DCLSPV_LIBCLC_SOURCE_DIR={0}",
+                    path_to_string(self.llvm_project_path.join("libclc"))
+                ),
             ],
             None,
             ctx,
@@ -79,7 +83,7 @@ impl Project for Clspv {
         if let Some((_, header)) = split_path(output, "include") {
             header
         } else {
-            output.to_path_buf()
+            PathBuf::from(output)
         }
     }
 
@@ -94,7 +98,7 @@ impl Project for Clspv {
     fn get_library_module(&self, module: &mut SoongModule) {
         module.add_prop(
             "export_include_dirs",
-            SoongProp::VecStr(vec!["include".to_string()]),
+            SoongProp::VecStr(vec![String::from("include")]),
         );
         module.add_prop("optimize_for_size", SoongProp::Bool(true));
     }
@@ -116,7 +120,7 @@ impl Project for Clspv {
                 let mut libclc_binaries = Vec::new();
                 for dep in &self.gen_deps {
                     if let Ok(strip) = dep.strip_prefix(&self.llvm_project_path) {
-                        clang_headers.push(strip.to_path_buf());
+                        clang_headers.push(PathBuf::from(strip));
                     } else if file_name(dep) == "clspv--.bc" || file_name(dep) == "clspv64--.bc" {
                         libclc_binaries.push(strip_prefix(dep, "third_party/llvm"));
                     }

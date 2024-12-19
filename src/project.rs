@@ -112,13 +112,13 @@ pub trait Project {
     ) -> Result<SoongPackage, String>;
 
     fn get_cmd_output(&self, output: &Path) -> PathBuf {
-        output.to_path_buf()
+        PathBuf::from(output)
     }
     fn get_default_cflags(&self, _target: &str) -> Vec<String> {
         Vec::new()
     }
     fn get_define(&self, define: &str) -> String {
-        define.to_string()
+        String::from(define)
     }
     fn get_deps_info(&self) -> Vec<(PathBuf, GenDeps)> {
         Vec::new()
@@ -127,11 +127,11 @@ pub trait Project {
         HashMap::new()
     }
     fn get_include(&self, include: &Path) -> PathBuf {
-        include.to_path_buf()
+        PathBuf::from(include)
     }
     fn get_library_module(&self, _module: &mut SoongModule) {}
     fn get_library_name(&self, library: &Path) -> PathBuf {
-        library.to_path_buf()
+        PathBuf::from(library)
     }
     fn get_project_deps(&self) -> Vec<ProjectId> {
         Vec::new()
@@ -140,7 +140,7 @@ pub trait Project {
         Vec::new()
     }
     fn get_source(&self, source: &Path) -> PathBuf {
-        source.to_path_buf()
+        PathBuf::from(source)
     }
     fn get_static_libs(&self, _target: &str) -> Vec<String> {
         Vec::new()

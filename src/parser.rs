@@ -168,7 +168,7 @@ fn parse_ninja_rule(
         return error!("parse_ninja_rule failed");
     }
     return Ok((
-        rule.to_string(),
+        String::from(rule),
         (
             command.unwrap(),
             if rspfile.is_some() && rspfile_content.is_some() {

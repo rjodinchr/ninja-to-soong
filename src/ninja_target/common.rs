@@ -13,7 +13,7 @@ pub fn get_link_libraries(libs: &str) -> Result<(Vec<PathBuf>, Vec<PathBuf>), St
             if library == "dl" || library == "m" || library == "c" {
                 continue;
             }
-            shared_libraries.push(PathBuf::from("lib".to_string() + library));
+            shared_libraries.push(PathBuf::from(format!("lib{library}")));
         } else {
             let lib_path = PathBuf::from(lib);
             if lib.contains(".a") {
@@ -52,7 +52,7 @@ pub fn get_link_flags(flags: &str) -> (Option<PathBuf>, Vec<String>) {
         if let Some(vs) = flag.strip_prefix("-Wl,--version-script=") {
             version_script = Some(PathBuf::from(vs));
         }
-        link_flags.push(flag.to_string());
+        link_flags.push(String::from(flag));
     }
     (version_script, link_flags)
 }
@@ -61,7 +61,7 @@ pub fn get_cflags(flags: &str) -> Vec<String> {
     flags
         .split(" ")
         .filter(|flag| !flag.is_empty())
-        .map(|flag| flag.to_string())
+        .map(|flag| String::from(flag))
         .collect()
 }
 
