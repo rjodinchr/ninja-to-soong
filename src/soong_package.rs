@@ -107,7 +107,7 @@ impl<'a> SoongPackage<'a> {
     fn get_defines(&self, defines: Vec<String>, project: &dyn Project) -> Vec<String> {
         defines
             .iter()
-            .filter(|def| !project.ignore_define(def))
+            .filter(|def| project.filter_define(def))
             .map(|def| format!("-D{0}", project.get_define(def)))
             .collect()
     }
@@ -115,21 +115,21 @@ impl<'a> SoongPackage<'a> {
     fn get_cflags(&self, cflags: Vec<String>, project: &dyn Project) -> Vec<String> {
         cflags
             .into_iter()
-            .filter(|cflag| !project.ignore_cflag(cflag))
+            .filter(|cflag| project.filter_cflag(cflag))
             .collect()
     }
 
     fn get_includes(&self, includes: Vec<PathBuf>, project: &dyn Project) -> Vec<String> {
         includes
             .iter()
-            .filter(|include| !project.ignore_include(include))
+            .filter(|include| project.filter_include(include))
             .map(|inc| path_to_string(strip_prefix(project.get_include(&inc), self.src_path)))
             .collect()
     }
 
     fn get_libs(&mut self, libs: Vec<PathBuf>, project: &dyn Project) -> Vec<String> {
         libs.iter()
-            .filter(|lib| !project.ignore_lib(&path_to_string(lib)))
+            .filter(|lib| project.filter_lib(&path_to_string(lib)))
             .map(|lib| {
                 if lib.starts_with(&self.ndk_path) {
                     file_stem(lib)
@@ -168,7 +168,7 @@ impl<'a> SoongPackage<'a> {
                 target
                     .get_sources(self.build_path)?
                     .iter()
-                    .filter(|source| !project.ignore_source(source))
+                    .filter(|source| project.filter_source(source))
                     .map(|source| {
                         if source.starts_with(self.build_path) {
                             gen_deps.push(strip_prefix(&source, self.build_path));
@@ -194,7 +194,7 @@ impl<'a> SoongPackage<'a> {
         let (version_script, link_flags) = target.get_link_flags();
         let link_flags = link_flags
             .into_iter()
-            .filter(|flag| !project.ignore_link_flag(flag))
+            .filter(|flag| project.filter_link_flag(flag))
             .collect::<Vec<String>>();
         let (static_libraries, shared_libraries) = target.get_link_libraries()?;
         static_libs.extend(self.get_libs(static_libraries, project));
@@ -217,11 +217,11 @@ impl<'a> SoongPackage<'a> {
                     }
                     _ => return Ok(()),
                 },
-                |_target_name| false,
+                |_target_name| true,
             )?
             .iter()
             .filter(|header| {
-                if project.ignore_gen_header(header) {
+                if !project.filter_gen_header(header) {
                     gen_deps.push(PathBuf::from(header));
                     false
                 } else {
@@ -365,7 +365,7 @@ impl<'a> SoongPackage<'a> {
         inputs
             .iter()
             .filter(|input| {
-                if project.ignore_custom_cmd_input(input) {
+                if !project.filter_custom_cmd_input(input) {
                     return false;
                 }
                 for (prefix, dep) in project.get_deps_info() {
@@ -471,7 +471,7 @@ impl<'a> SoongPackage<'a> {
 
                 Ok(())
             },
-            |target_name| project.ignore_target(target_name),
+            |target_name| project.filter_target(target_name),
         )
     }
 }

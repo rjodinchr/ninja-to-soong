@@ -229,19 +229,19 @@ impl Project for LlvmProject {
         }
     }
 
-    fn ignore_cflag(&self, _cflag: &str) -> bool {
-        true
+    fn filter_cflag(&self, _cflag: &str) -> bool {
+        false
     }
 
-    fn ignore_define(&self, _define: &str) -> bool {
-        true
+    fn filter_define(&self, _define: &str) -> bool {
+        false
     }
 
-    fn ignore_gen_header(&self, _header: &Path) -> bool {
-        true
+    fn filter_gen_header(&self, _header: &Path) -> bool {
+        false
     }
 
-    fn ignore_target(&self, input: &Path) -> bool {
-        !input.starts_with("lib")
+    fn filter_target(&self, input: &Path) -> bool {
+        input.starts_with("lib")
     }
 }

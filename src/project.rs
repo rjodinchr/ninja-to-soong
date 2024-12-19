@@ -151,31 +151,31 @@ pub trait Project {
     fn get_target_alias(&self, _target: &str) -> Option<String> {
         None
     }
-    fn ignore_cflag(&self, _cflag: &str) -> bool {
-        false
+    fn filter_cflag(&self, _cflag: &str) -> bool {
+        true
     }
-    fn ignore_custom_cmd_input(&self, _input: &Path) -> bool {
-        false
+    fn filter_custom_cmd_input(&self, _input: &Path) -> bool {
+        true
     }
-    fn ignore_define(&self, _define: &str) -> bool {
-        false
+    fn filter_define(&self, _define: &str) -> bool {
+        true
     }
-    fn ignore_gen_header(&self, _header: &Path) -> bool {
-        false
+    fn filter_gen_header(&self, _header: &Path) -> bool {
+        true
     }
-    fn ignore_include(&self, _include: &Path) -> bool {
-        false
+    fn filter_include(&self, _include: &Path) -> bool {
+        true
     }
-    fn ignore_lib(&self, _lib: &str) -> bool {
-        false
+    fn filter_lib(&self, _lib: &str) -> bool {
+        true
     }
-    fn ignore_link_flag(&self, _flag: &str) -> bool {
-        false
+    fn filter_link_flag(&self, _flag: &str) -> bool {
+        true
     }
-    fn ignore_source(&self, _source: &Path) -> bool {
-        false
+    fn filter_source(&self, _source: &Path) -> bool {
+        true
     }
-    fn ignore_target(&self, _target: &Path) -> bool {
-        false
+    fn filter_target(&self, _target: &Path) -> bool {
+        true
     }
 }

@@ -134,25 +134,25 @@ impl Project for Clspv {
         ]
     }
 
-    fn ignore_cflag(&self, _cflag: &str) -> bool {
-        true
+    fn filter_cflag(&self, _cflag: &str) -> bool {
+        false
     }
 
-    fn ignore_define(&self, _define: &str) -> bool {
-        true
+    fn filter_define(&self, _define: &str) -> bool {
+        false
     }
 
-    fn ignore_gen_header(&self, header: &Path) -> bool {
-        header.starts_with("third_party/llvm")
+    fn filter_gen_header(&self, header: &Path) -> bool {
+        !header.starts_with("third_party/llvm")
     }
 
-    fn ignore_include(&self, include: &Path) -> bool {
-        include.starts_with(&self.build_path)
+    fn filter_include(&self, include: &Path) -> bool {
+        !(include.starts_with(&self.build_path)
             || include.starts_with(&self.spirv_headers_path)
-            || include.starts_with(&self.llvm_project_path)
+            || include.starts_with(&self.llvm_project_path))
     }
 
-    fn ignore_target(&self, target: &Path) -> bool {
-        target.starts_with("third_party/")
+    fn filter_target(&self, target: &Path) -> bool {
+        !target.starts_with("third_party/")
     }
 }

@@ -98,27 +98,27 @@ impl Project for Clvk {
         }
     }
 
-    fn ignore_cflag(&self, _cflag: &str) -> bool {
-        true
+    fn filter_cflag(&self, _cflag: &str) -> bool {
+        false
     }
 
-    fn ignore_gen_header(&self, _header: &Path) -> bool {
-        true
+    fn filter_gen_header(&self, _header: &Path) -> bool {
+        false
     }
 
-    fn ignore_include(&self, _include: &Path) -> bool {
-        true
+    fn filter_include(&self, _include: &Path) -> bool {
+        false
     }
 
-    fn ignore_lib(&self, lib: &str) -> bool {
-        lib == "libatomic"
+    fn filter_lib(&self, lib: &str) -> bool {
+        lib != "libatomic"
     }
 
-    fn ignore_link_flag(&self, flag: &str) -> bool {
-        flag != "-Wl,-Bsymbolic"
+    fn filter_link_flag(&self, flag: &str) -> bool {
+        flag == "-Wl,-Bsymbolic"
     }
 
-    fn ignore_target(&self, target: &Path) -> bool {
-        target.starts_with("external")
+    fn filter_target(&self, target: &Path) -> bool {
+        !target.starts_with("external")
     }
 }

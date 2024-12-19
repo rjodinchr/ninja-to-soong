@@ -13,7 +13,7 @@ pub struct Angle {
 }
 
 impl Angle {
-    fn ignore_path(&self, src: &Path) -> bool {
+    fn filter_path(&self, src: &Path) -> bool {
         for ignore_path in [
             "buildtools",
             "third_party/cpu_features",
@@ -26,13 +26,13 @@ impl Angle {
             "third_party/zlib",
         ] {
             if src.starts_with(self.src_path.join(ignore_path)) {
-                return true;
+                return false;
             }
         }
         if src.starts_with(self.build_path.join("gen")) || src.starts_with("gen") {
-            return true;
+            return false;
         }
-        false
+        true
     }
 }
 
@@ -156,35 +156,36 @@ impl Project for Angle {
         }
     }
 
-    fn ignore_cflag(&self, _cflag: &str) -> bool {
-        !(_cflag.starts_with("-fvisibility"))
+    fn filter_cflag(&self, cflag: &str) -> bool {
+        cflag.starts_with("-fvisibility")
     }
 
-    fn ignore_define(&self, define: &str) -> bool {
-        define.contains("__ARM_NEON__")
+    fn filter_define(&self, define: &str) -> bool {
+        !define.contains("__ARM_NEON__")
     }
 
-    fn ignore_gen_header(&self, header: &Path) -> bool {
-        !header.starts_with("gen/angle")
+    fn filter_gen_header(&self, header: &Path) -> bool {
+        header.starts_with("gen/angle")
     }
 
-    fn ignore_include(&self, include: &Path) -> bool {
-        self.ignore_path(include)
+    fn filter_include(&self, include: &Path) -> bool {
+        self.filter_path(include)
     }
 
-    fn ignore_lib(&self, lib: &str) -> bool {
-        lib.contains("llvm-build/Release+Asserts")
+    fn filter_lib(&self, lib: &str) -> bool {
+        !lib.contains("llvm-build/Release+Asserts")
     }
 
-    fn ignore_link_flag(&self, _flag: &str) -> bool {
-        true
+    fn filter_link_flag(&self, _flag: &str) -> bool {
+        false
     }
 
-    fn ignore_source(&self, source: &Path) -> bool {
-        self.ignore_path(source)
+    fn filter_source(&self, source: &Path) -> bool {
+        self.filter_path(source)
     }
 
-    fn ignore_target(&self, target: &Path) -> bool {
-        target.starts_with("obj/third_party") || target.starts_with("gen/third_party/spirv-tools")
+    fn filter_target(&self, target: &Path) -> bool {
+        !(target.starts_with("obj/third_party")
+            || target.starts_with("gen/third_party/spirv-tools"))
     }
 }
