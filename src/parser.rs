@@ -169,14 +169,14 @@ fn parse_ninja_rule(
     }
     return Ok((
         String::from(rule),
-        (
-            command.unwrap(),
-            if rspfile.is_some() && rspfile_content.is_some() {
+        NinjaRuleCmd {
+            command: command.unwrap(),
+            rsp_info: if rspfile.is_some() && rspfile_content.is_some() {
                 Some((rspfile.unwrap(), rspfile_content.unwrap()))
             } else {
                 None
             },
-        ),
+        },
     ));
 }
 

@@ -10,7 +10,11 @@ pub mod common;
 pub mod gn;
 pub mod meson;
 
-pub type NinjaRuleCmd = (String, Option<(String, String)>);
+#[derive(Debug, Clone)]
+pub struct NinjaRuleCmd {
+    pub command: String,
+    pub rsp_info: Option<(String, String)>,
+}
 pub type NinjaRulesMap = HashMap<String, NinjaRuleCmd>;
 
 pub enum NinjaRule {
