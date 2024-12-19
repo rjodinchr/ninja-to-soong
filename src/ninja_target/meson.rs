@@ -152,9 +152,9 @@ impl NinjaTarget for MesonNinjaTarget {
         let Some(command) = self.variables.get("COMMAND") else {
             return error!("No command in: {self:#?}");
         };
-        Ok(Some((
-            String::from(command.split_once(" -- ").unwrap_or(("", command)).1),
-            None,
-        )))
+        Ok(Some(NinjaRuleCmd {
+            command: String::from(command.split_once(" -- ").unwrap_or(("", command)).1),
+            rsp_info: None,
+        }))
     }
 }

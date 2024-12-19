@@ -292,7 +292,7 @@ impl<'a> SoongPackage<'a> {
         deps: HashMap<PathBuf, String>,
         project: &dyn Project,
     ) -> String {
-        let mut cmd = rule_cmd.0;
+        let mut cmd = rule_cmd.command;
         while let Some(index) = cmd.find("python") {
             let begin = std::str::from_utf8(&cmd.as_bytes()[0..index])
                 .unwrap()
@@ -334,7 +334,7 @@ impl<'a> SoongPackage<'a> {
                 &format!("$(location :{dep_target_name})"),
             )
         }
-        if let Some((rsp_file, rsp_content)) = rule_cmd.1 {
+        if let Some((rsp_file, rsp_content)) = rule_cmd.rsp_info {
             let rsp = format!("$(genDir)/{rsp_file}");
             cmd = format!(
                 "echo \\\"{0}\\\" > {rsp} && {cmd}",

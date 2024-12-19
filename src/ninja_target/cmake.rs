@@ -132,7 +132,10 @@ impl NinjaTarget for CmakeNinjaTarget {
         Ok(if command.contains("bin/cmake ") {
             None
         } else {
-            Some((String::from(command), None))
+            Some(NinjaRuleCmd {
+                command: String::from(command),
+                rsp_info: None,
+            })
         })
     }
 }
