@@ -25,54 +25,26 @@ impl Project for Clvk {
         self.build_path = ctx.temp_path.join(self.get_id().str());
         self.ndk_path = get_ndk_path(&ctx.temp_path)?;
 
-        let llvm_project_path = ProjectId::LlvmProject.android_path(ctx);
-        let targets = ninja_target::cmake::get_targets(
-            &self.src_path,
-            &self.build_path,
-            &self.ndk_path,
-            vec![
-                LLVM_DISABLE_ZLIB,
-                "-DCLVK_CLSPV_ONLINE_COMPILER=1",
-                "-DCLVK_ENABLE_SPIRV_IL=OFF",
-                "-DCLVK_BUILD_TESTS=OFF",
-                &format!(
-                    "-DSPIRV_HEADERS_SOURCE_DIR={0}",
-                    path_to_string(ProjectId::SpirvHeaders.android_path(ctx))
-                ),
-                &format!(
-                    "-DSPIRV_TOOLS_SOURCE_DIR={0}",
-                    path_to_string(ProjectId::SpirvTools.android_path(ctx))
-                ),
-                &format!(
-                    "-DCLSPV_SOURCE_DIR={0}",
-                    path_to_string(ProjectId::Clspv.android_path(ctx))
-                ),
-                &format!(
-                    "-DCLSPV_LLVM_SOURCE_DIR={0}",
-                    path_to_string(llvm_project_path.join("llvm"))
-                ),
-                &format!(
-                    "-DCLSPV_CLANG_SOURCE_DIR={0}",
-                    path_to_string(llvm_project_path.join("clang"))
-                ),
-                &format!(
-                    "-DCLSPV_LIBCLC_SOURCE_DIR={0}",
-                    path_to_string(llvm_project_path.join("libclc"))
-                ),
-                &format!(
-                    "-DVulkan_LIBRARY={0}",
-                    path_to_string(
-                        self.ndk_path
-                            .join("toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/lib")
-                            .join(format!("{ANDROID_ISA}-linux-android"))
-                            .join(ANDROID_PLATFORM)
-                            .join("libvulkan.so")
-                    )
-                ),
-            ],
-            None,
-            ctx,
-        )?;
+        if !ctx.skip_gen_ninja {
+            execute_cmd!(
+                "bash",
+                vec![
+                    &path_to_string(ctx.test_path.join(self.get_id().str()).join("gen-ninja.sh")),
+                    &path_to_string(&self.src_path),
+                    &path_to_string(&self.build_path),
+                    &path_to_string(&self.ndk_path),
+                    ANDROID_ABI,
+                    ANDROID_ISA,
+                    ANDROID_PLATFORM,
+                    &path_to_string(ProjectId::SpirvHeaders.android_path(ctx)),
+                    &path_to_string(ProjectId::SpirvTools.android_path(ctx)),
+                    &path_to_string(ProjectId::LlvmProject.android_path(ctx)),
+                    &path_to_string(ProjectId::Clspv.android_path(ctx)),
+                ]
+            )?;
+        }
+
+        let targets = parse_build_ninja::<ninja_target::cmake::CmakeNinjaTarget>(&self.build_path)?;
 
         let mut package = SoongPackage::new(
             &self.src_path,

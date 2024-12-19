@@ -54,7 +54,8 @@
 
 ## Environment variables
 
-* `N2S_ANGLE_PATH`: Path to angle source (default: `<aosp-path>/external/angle`)
+* `N2S_ANGLE_PATH`: Path to angle sources (default: `<aosp-path>/external/angle`)
+* `N2S_MESA_PATH`: Path to mesa sources (default: `<aosp-path>/external/mesa`)
 * `N2S_NDK`: Android NDK (default: `android-ndk-r27c`)
 * `N2S_NDK_PATH`: Path to Android NDK (default: temporary directory)
 * `N2S_TMP_PATH`: Path used by `ninja-to-soong` to store its temporary directories (default: `std::env::temp_dir()`)
@@ -66,5 +67,8 @@
 Each project in the `tests` folder contains the following files:
  * `Android.bp`: the reference file to generate
  * `checkout.sh`: a script to checkout the repository in the CI
+ * `gen-ninja.sh`: a script to generate `Ninja` files
+
+ Modification to `checkout.sh` & `gen-ninja.sh` trigger the generation of `Ninja` files in the CI, otherwise it uses the cached files from a previous CI run.
 
 If you want more information take a look at the [github action script](.github/workflows/presubmit.yml)

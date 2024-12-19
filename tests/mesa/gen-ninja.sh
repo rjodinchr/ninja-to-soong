@@ -1,0 +1,51 @@
+#!/usr/bin/env bash
+
+set -xe
+
+[ $# -eq 5 ]
+
+SRC_PATH="$1"
+BUILD_PATH="$2"
+INTEL_CLC_PATH="$3"
+ANDROID_PLATFORM="$4"
+NDK_PATH="$5"
+
+SCRIPT_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
+MESON_LOCAL_PATH="${HOME}/.local/share/meson/cross"
+AOSP_X86_64="aosp-x86_64"
+mkdir -p "${MESON_LOCAL_PATH}"
+ANDROID_PLATFORM="${ANDROID_PLATFORM}" NDK_PATH="${NDK_PATH}" \
+envsubst < "${SCRIPT_DIR}/${AOSP_X86_64}.template" > "${MESON_LOCAL_PATH}/${AOSP_X86_64}"
+
+PATH="${INTEL_CLC_PATH}:${PATH}" \
+meson setup \
+    --cross-file "${AOSP_X86_64}" \
+    --libdir lib64 \
+    --sysconfdir=/system/vendor/etc \
+    -Ddri-search-path=/system/lib64/dri:/system/vendor/lib64/dri \
+    -Dllvm=disabled \
+    -Ddri3=disabled \
+    -Dglx=disabled \
+    -Dgbm=disabled \
+    -Degl=enabled \
+    -Dplatform-sdk-version=${ANDROID_PLATFORM} \
+    -Dandroid-stub=true \
+    -Dplatforms=android \
+    -Dperfetto=true \
+    -Degl-lib-suffix=_mesa \
+    -Dgles-lib-suffix=_mesa \
+    -Dcpp_rtti=false \
+    -Dtools= \
+    -Dvulkan-drivers=intel \
+    -Dgallium-drivers=iris \
+    -Dgallium-rusticl=false \
+    -Dgallium-va=disabled \
+    -Dgallium-xa=disabled \
+    -Dbuildtype=release \
+    -Dintel-clc=system \
+    -Dintel-rt=enabled \
+    -Dstrip=true \
+    --reconfigure \
+    --wipe \
+    "${BUILD_PATH}" \
+    "${SRC_PATH}"

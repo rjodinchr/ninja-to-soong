@@ -33,106 +33,52 @@ impl Project for Mesa {
         ctx: &Context,
         _projects_map: &ProjectsMap,
     ) -> Result<SoongPackage, String> {
-        self.src_path = self.get_id().android_path(ctx);
+        self.src_path = if let Ok(path) = std::env::var("N2S_MESA_PATH") {
+            PathBuf::from(path)
+        } else {
+            self.get_id().android_path(ctx)
+        };
         self.ndk_path = get_ndk_path(&ctx.temp_path)?;
         self.build_path = ctx.temp_path.join(self.get_id().str());
 
-        let meson_local_path = match std::env::var("HOME") {
-            Ok(home) => Path::new(&home).join(".local/share/meson/cross"),
-            Err(err) => return error!("Could not get HOME env: {err}"),
+        let mesa_test_path = ctx.test_path.join(self.get_id().str());
+        let intel_clc_path = if !ctx.skip_build {
+            let intel_clc_build_path = ctx.temp_path.join("intel_clc");
+            execute_cmd!(
+                "bash",
+                vec![
+                    &path_to_string(mesa_test_path.join("build_intel_clc.sh")),
+                    &path_to_string(&self.src_path),
+                    &path_to_string(&intel_clc_build_path)
+                ]
+            )?;
+            intel_clc_build_path.join("src/intel/compiler")
+        } else {
+            mesa_test_path.clone()
         };
-        if let Err(err) = std::fs::create_dir_all(&meson_local_path) {
-            return error!("Could not create {meson_local_path:#?}: {err:#?}");
+
+        if !ctx.skip_gen_ninja {
+            execute_cmd!(
+                "bash",
+                vec![
+                    &path_to_string(&mesa_test_path.join("gen-ninja.sh")),
+                    &path_to_string(&self.src_path),
+                    &path_to_string(&self.build_path),
+                    &path_to_string(intel_clc_path),
+                    ANDROID_PLATFORM,
+                    &path_to_string(&self.ndk_path)
+                ]
+            )?;
         }
-        const AOSP_X86_64_TEMPLATE: &str = "aosp-x86_64";
-        let aosp_x86_64_template_path = meson_local_path.join(AOSP_X86_64_TEMPLATE);
-        write_file(
-            &aosp_x86_64_template_path,
-            &read_file(
-                &ctx.test_path
-                    .join(self.get_id().str())
-                    .join("aosp-x86_64.template"),
-            )?
-            .replace("${NDK_PATH}", &path_to_string(&self.ndk_path))
-            .replace("${ANDROID_PLATFORM}", ANDROID_PLATFORM),
-        )?;
-        print_verbose!("{aosp_x86_64_template_path:#?} created");
 
-        let new_path = format!(
-            "{0}:{1}",
-            if !ctx.skip_build {
-                print_verbose!("Building intel_clc...");
-                let intel_clc_path = ctx.temp_path.join("intel_clc");
-                ninja_target::meson::meson_setup(
-                    &self.src_path,
-                    &intel_clc_path,
-                    vec![
-                        "-Dplatforms=",
-                        "-Dglx=disabled",
-                        "-Dtools=",
-                        "-Dbuild-tests=false",
-                        "-Dvulkan-drivers=",
-                        "-Dgallium-drivers=",
-                        "-Dgallium-rusticl=false",
-                        "-Dgallium-va=auto",
-                        "-Dgallium-xa=disabled",
-                        "-Dbuildtype=release",
-                        "-Dintel-clc=enabled",
-                        "-Dstrip=true",
-                        "--reconfigure",
-                        "--wipe",
-                    ],
-                    None,
-                )?;
-                ninja_target::meson::meson_compile(&intel_clc_path)?;
-                path_to_string(intel_clc_path.join("src/intel/compiler"))
-            } else {
-                path_to_string(&ctx.test_path.join(self.get_id().str()))
-            },
-            match std::env::var("PATH") {
-                Ok(env) => env,
-                Err(err) => return error!("Could not get PATH env: {err}"),
-            }
-        );
+        if !ctx.skip_build {
+            execute_cmd!(
+                "meson",
+                vec!["compile", "-C", &path_to_string(&self.build_path)]
+            )?;
+        }
 
-        let targets = ninja_target::meson::get_targets(
-            &self.src_path,
-            &self.build_path,
-            vec![
-                "--cross-file",
-                AOSP_X86_64_TEMPLATE,
-                "--libdir",
-                "lib64",
-                "--sysconfdir=/system/vendor/etc",
-                "-Ddri-search-path=/system/lib64/dri:/system/vendor/lib64/dri",
-                "-Dllvm=disabled",
-                "-Ddri3=disabled",
-                "-Dglx=disabled",
-                "-Dgbm=disabled",
-                "-Degl=enabled",
-                &format!("-Dplatform-sdk-version={ANDROID_PLATFORM}"),
-                "-Dandroid-stub=true",
-                "-Dplatforms=android",
-                "-Dperfetto=true",
-                "-Degl-lib-suffix=_mesa",
-                "-Dgles-lib-suffix=_mesa",
-                "-Dcpp_rtti=false",
-                "-Dtools=",
-                "-Dvulkan-drivers=intel",
-                "-Dgallium-drivers=iris",
-                "-Dgallium-rusticl=false",
-                "-Dgallium-va=disabled",
-                "-Dgallium-xa=disabled",
-                "-Dbuildtype=release",
-                "-Dintel-clc=system",
-                "-Dintel-rt=enabled",
-                "-Dstrip=true",
-                "--reconfigure",
-                "--wipe",
-            ],
-            Some(vec![("PATH", new_path.as_str())]),
-            ctx,
-        )?;
+        let targets = parse_build_ninja::<ninja_target::meson::MesonNinjaTarget>(&self.build_path)?;
 
         let mut package = SoongPackage::new(
             &self.src_path,
@@ -182,8 +128,8 @@ impl Project for Mesa {
             &format!("{0:#?}", &gen_deps_sorted),
         )?;
 
-        if !ctx.skip_build {
-            let meson_generated_path = self.src_path.join(MESON_GENERATED);
+        if ctx.copy_to_aosp {
+            let meson_generated_path = self.get_id().android_path(ctx).join(MESON_GENERATED);
             for dep in gen_deps_sorted {
                 let from = self.build_path.join(&dep);
                 let to = meson_generated_path.join(&dep);

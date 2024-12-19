@@ -27,17 +27,22 @@ impl Project for SpirvTools {
         self.ndk_path = get_ndk_path(&ctx.temp_path)?;
         self.spirv_headers_path = ProjectId::SpirvHeaders.android_path(ctx);
 
-        let targets = ninja_target::cmake::get_targets(
-            &self.src_path,
-            &self.build_path,
-            &self.ndk_path,
-            vec![&format!(
-                "-DSPIRV-Headers_SOURCE_DIR={0}",
-                path_to_string(&self.spirv_headers_path)
-            )],
-            None,
-            ctx,
-        )?;
+        if !ctx.skip_gen_ninja {
+            execute_cmd!(
+                "bash",
+                vec![
+                    &path_to_string(ctx.test_path.join(self.get_id().str()).join("gen-ninja.sh")),
+                    &path_to_string(&self.src_path),
+                    &path_to_string(&self.build_path),
+                    &path_to_string(&self.ndk_path),
+                    ANDROID_ABI,
+                    ANDROID_PLATFORM,
+                    &path_to_string(&self.spirv_headers_path),
+                ]
+            )?;
+        }
+
+        let targets = parse_build_ninja::<ninja_target::cmake::CmakeNinjaTarget>(&self.build_path)?;
 
         let mut package = SoongPackage::new(
             &self.src_path,

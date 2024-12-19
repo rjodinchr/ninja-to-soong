@@ -29,35 +29,24 @@ impl Project for Clspv {
         self.spirv_headers_path = ProjectId::SpirvHeaders.android_path(ctx);
         self.llvm_project_path = ProjectId::LlvmProject.android_path(ctx);
 
-        let targets = ninja_target::cmake::get_targets(
-            &self.src_path,
-            &self.build_path,
-            &self.ndk_path,
-            vec![
-                &format!(
-                    "-DSPIRV_HEADERS_SOURCE_DIR={0}",
-                    path_to_string(&self.spirv_headers_path)
-                ),
-                &format!(
-                    "-DSPIRV_TOOLS_SOURCE_DIR={0}",
-                    path_to_string(ProjectId::SpirvTools.android_path(ctx))
-                ),
-                &format!(
-                    "-DCLSPV_LLVM_SOURCE_DIR={0}",
-                    path_to_string(self.llvm_project_path.join("llvm"))
-                ),
-                &format!(
-                    "-DCLSPV_CLANG_SOURCE_DIR={0}",
-                    path_to_string(self.llvm_project_path.join("clang"))
-                ),
-                &format!(
-                    "-DCLSPV_LIBCLC_SOURCE_DIR={0}",
-                    path_to_string(self.llvm_project_path.join("libclc"))
-                ),
-            ],
-            None,
-            ctx,
-        )?;
+        if !ctx.skip_gen_ninja {
+            execute_cmd!(
+                "bash",
+                vec![
+                    &path_to_string(ctx.test_path.join(self.get_id().str()).join("gen-ninja.sh")),
+                    &path_to_string(&self.src_path),
+                    &path_to_string(&self.build_path),
+                    &path_to_string(&self.ndk_path),
+                    ANDROID_ABI,
+                    ANDROID_PLATFORM,
+                    &path_to_string(&self.spirv_headers_path),
+                    &path_to_string(ProjectId::SpirvTools.android_path(ctx)),
+                    &path_to_string(&self.llvm_project_path),
+                ]
+            )?;
+        }
+
+        let targets = parse_build_ninja::<ninja_target::cmake::CmakeNinjaTarget>(&self.build_path)?;
 
         let mut package = SoongPackage::new(
             &self.src_path,
