@@ -207,6 +207,7 @@ cc_library_static {
         "-Wno-error",
         "-Wno-unreachable-code-loop-increment",
     ],
+    shared_libs: ["libz"],
     local_include_dirs: [
         "cmake_generated/include",
         "llvm/include",

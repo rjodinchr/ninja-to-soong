@@ -91,7 +91,7 @@ impl Project for LlvmProject {
         ];
         gen_deps.extend(missing_gen_deps.iter().map(|dep| PathBuf::from(dep)));
 
-        let mut gen_deps_folders: HashSet<PathBuf> = HashSet::new();
+        let mut gen_deps_folders = HashSet::new();
         for gen_dep in &gen_deps {
             let folder = gen_dep.parent().unwrap();
             if let Some((include_folder, _)) = split_path(folder, "include") {
@@ -219,6 +219,14 @@ impl Project for LlvmProject {
 
     fn get_project_deps(&self) -> Vec<ProjectId> {
         vec![ProjectId::Clvk, ProjectId::Clspv]
+    }
+
+    fn get_shared_libs(&self, target: &str) -> Vec<String> {
+        if target.ends_with("libLLVMSupport_a") {
+            vec![String::from("libz")]
+        } else {
+            Vec::new()
+        }
     }
 
     fn ignore_cflag(&self, _cflag: &str) -> bool {
