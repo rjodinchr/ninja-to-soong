@@ -117,10 +117,18 @@ pub fn path_to_string<P: AsRef<Path>>(path: P) -> String {
     String::from(path.as_ref().to_str().unwrap_or_default())
 }
 
+pub fn path_to_string_with_separator<P: AsRef<Path>>(path: P) -> String {
+    format!(
+        "{0}{1}",
+        path_to_string(path),
+        std::path::MAIN_SEPARATOR_STR
+    )
+}
+
 pub fn path_to_id(path: PathBuf) -> String {
     path.to_str()
         .unwrap_or_default()
-        .replace(std::path::MAIN_SEPARATOR, "_")
+        .replace(std::path::MAIN_SEPARATOR_STR, "_")
         .replace(".", "_")
 }
 
