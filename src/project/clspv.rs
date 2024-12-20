@@ -62,7 +62,7 @@ impl Project for Clspv {
             self,
         )?;
 
-        self.gen_deps = Vec::from_iter(package.get_gen_deps());
+        self.gen_deps = package.get_gen_deps();
 
         Ok(package)
     }

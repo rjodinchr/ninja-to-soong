@@ -62,7 +62,7 @@ impl Project for SpirvTools {
             vec![String::from("include")],
         ));
 
-        self.gen_deps = Vec::from_iter(package.get_gen_deps());
+        self.gen_deps = package.get_gen_deps();
 
         Ok(package)
     }
