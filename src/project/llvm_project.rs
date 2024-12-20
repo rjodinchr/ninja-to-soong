@@ -19,7 +19,6 @@ impl Project for LlvmProject {
     fn get_id(&self) -> ProjectId {
         ProjectId::LlvmProject
     }
-
     fn generate_package(
         &mut self,
         ctx: &Context,
@@ -196,7 +195,15 @@ impl Project for LlvmProject {
         Ok(package)
     }
 
-    fn get_default_cflags(&self, target: &str) -> Vec<String> {
+    fn get_project_deps(&self) -> Vec<ProjectId> {
+        vec![ProjectId::Clvk, ProjectId::Clspv]
+    }
+
+    fn get_target_object_module(&self, _target: &str, mut module: SoongModule) -> SoongModule {
+        module.add_prop("optimize_for_size", SoongProp::Bool(true));
+        module
+    }
+    fn get_target_cflags(&self, target: &str) -> Vec<String> {
         let mut cflags = vec!["-Wno-error", "-Wno-unreachable-code-loop-increment"];
         if target.ends_with("libLLVMSupport_a") {
             cflags.append(&mut vec![
@@ -208,20 +215,7 @@ impl Project for LlvmProject {
         }
         cflags.into_iter().map(|flag| String::from(flag)).collect()
     }
-
-    fn get_include(&self, include: &Path) -> PathBuf {
-        Path::new(CMAKE_GENERATED).join(strip_prefix(include, &self.build_path))
-    }
-
-    fn get_library_module(&self, module: &mut SoongModule) {
-        module.add_prop("optimize_for_size", SoongProp::Bool(true));
-    }
-
-    fn get_project_deps(&self) -> Vec<ProjectId> {
-        vec![ProjectId::Clvk, ProjectId::Clspv]
-    }
-
-    fn get_shared_libs(&self, target: &str) -> Vec<String> {
+    fn get_target_shared_libs(&self, target: &str) -> Vec<String> {
         if target.ends_with("libLLVMSupport_a") {
             vec![String::from("libz")]
         } else {
@@ -229,18 +223,19 @@ impl Project for LlvmProject {
         }
     }
 
+    fn get_include(&self, include: &Path) -> PathBuf {
+        Path::new(CMAKE_GENERATED).join(strip_prefix(include, &self.build_path))
+    }
+
     fn filter_cflag(&self, _cflag: &str) -> bool {
         false
     }
-
     fn filter_define(&self, _define: &str) -> bool {
         false
     }
-
     fn filter_gen_header(&self, _header: &Path) -> bool {
         false
     }
-
     fn filter_target(&self, input: &Path) -> bool {
         input.starts_with("lib")
     }

@@ -83,7 +83,7 @@ impl GenDeps {
         let mut vec = projects_map
             .get(&from)
             .unwrap()
-            .get_gen_deps(project.get_id())
+            .get_deps_map(project.get_id())
             .get(&self)
             .unwrap()
             .clone();
@@ -104,57 +104,57 @@ pub type GenDepsMap = HashMap<GenDeps, Vec<PathBuf>>;
 pub type ProjectsMap<'a> = HashMap<ProjectId, &'a dyn Project>;
 
 pub trait Project {
+    // MANDATORY FUNCTIONS
     fn get_id(&self) -> ProjectId;
     fn generate_package(
         &mut self,
         ctx: &Context,
         projects_map: &ProjectsMap,
     ) -> Result<SoongPackage, String>;
-
-    fn get_cmd_output(&self, output: &Path) -> PathBuf {
-        PathBuf::from(output)
-    }
-    fn get_default_cflags(&self, _target: &str) -> Vec<String> {
+    // DEPENDENCIES FUNCTIONS
+    fn get_project_deps(&self) -> Vec<ProjectId> {
         Vec::new()
-    }
-    fn get_define(&self, define: &str) -> String {
-        String::from(define)
     }
     fn get_deps_info(&self) -> Vec<(PathBuf, GenDeps)> {
         Vec::new()
     }
-    fn get_gen_deps(&self, _project: ProjectId) -> GenDepsMap {
-        HashMap::new()
+    fn get_deps_map(&self, _project: ProjectId) -> GenDepsMap {
+        GenDepsMap::new()
     }
-    fn get_include(&self, include: &Path) -> PathBuf {
-        PathBuf::from(include)
+    // TARGET FUNCTIONS
+    fn get_target_alias(&self, _target: &str) -> Option<String> {
+        None
     }
-    fn get_library_module(&self, _module: &mut SoongModule) {}
-    fn get_library_name(&self, library: &Path) -> PathBuf {
-        PathBuf::from(library)
+    fn get_target_object_module(&self, _target: &str, module: SoongModule) -> SoongModule {
+        module
     }
-    fn get_project_deps(&self) -> Vec<ProjectId> {
+    fn get_target_cflags(&self, _target: &str) -> Vec<String> {
         Vec::new()
     }
-    fn get_shared_libs(&self, _target: &str) -> Vec<String> {
-        Vec::new()
-    }
-    fn get_source(&self, source: &Path) -> PathBuf {
-        PathBuf::from(source)
-    }
-    fn get_static_libs(&self, _target: &str) -> Vec<String> {
+    fn get_target_shared_libs(&self, _target: &str) -> Vec<String> {
         Vec::new()
     }
     fn get_target_header_libs(&self, _target: &str) -> Vec<String> {
         Vec::new()
     }
-    fn get_target_alias(&self, _target: &str) -> Option<String> {
-        None
+    // REWORK FUNCTIONS
+    fn get_cmd_output(&self, output: &Path) -> PathBuf {
+        PathBuf::from(output)
     }
+    fn get_define(&self, define: &str) -> String {
+        String::from(define)
+    }
+    fn get_include(&self, include: &Path) -> PathBuf {
+        PathBuf::from(include)
+    }
+    fn get_lib(&self, lib: &Path) -> PathBuf {
+        PathBuf::from(lib)
+    }
+    fn get_source(&self, source: &Path) -> PathBuf {
+        PathBuf::from(source)
+    }
+    // FILTER FUNCTIONS
     fn filter_cflag(&self, _cflag: &str) -> bool {
-        true
-    }
-    fn filter_custom_cmd_input(&self, _input: &Path) -> bool {
         true
     }
     fn filter_define(&self, _define: &str) -> bool {

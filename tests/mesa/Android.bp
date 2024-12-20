@@ -174,7 +174,6 @@ cc_binary {
         "src/tool/pps",
         "subprojects/perfetto/sdk",
     ],
-    use_clang_lld: true,
     arch: {
         x86: {
             enabled: false,
@@ -192,7 +191,6 @@ cc_library_static {
         "-Wno-non-virtual-dtor",
     ],
     local_include_dirs: ["subprojects/perfetto"],
-    use_clang_lld: true,
     arch: {
         x86: {
             enabled: false,
@@ -315,7 +313,6 @@ cc_library_static {
         "src",
         "src/util",
     ],
-    use_clang_lld: true,
     arch: {
         x86: {
             enabled: false,
@@ -525,7 +522,6 @@ cc_library_static {
         "subprojects/perfetto/sdk",
     ],
     header_libs: ["libdrm_headers"],
-    use_clang_lld: true,
     arch: {
         x86: {
             enabled: false,
@@ -650,7 +646,6 @@ cc_library_static {
         "-Wno-non-virtual-dtor",
     ],
     local_include_dirs: ["src/util/blake3"],
-    use_clang_lld: true,
     arch: {
         x86: {
             enabled: false,
@@ -782,7 +777,6 @@ cc_library_static {
         "subprojects/perfetto/sdk",
     ],
     header_libs: ["libdrm_headers"],
-    use_clang_lld: true,
     arch: {
         x86: {
             enabled: false,
@@ -918,7 +912,6 @@ cc_library_static {
         "src/intel/perf",
         "subprojects/perfetto/sdk",
     ],
-    use_clang_lld: true,
     arch: {
         x86: {
             enabled: false,
@@ -1046,7 +1039,6 @@ cc_library_static {
         "src/intel/isl",
         "subprojects/perfetto/sdk",
     ],
-    use_clang_lld: true,
     arch: {
         x86: {
             enabled: false,
@@ -1174,7 +1166,6 @@ cc_library_static {
         "src/intel/isl",
         "subprojects/perfetto/sdk",
     ],
-    use_clang_lld: true,
     arch: {
         x86: {
             enabled: false,
@@ -1310,7 +1301,6 @@ cc_library_static {
         "src/intel/isl",
         "subprojects/perfetto/sdk",
     ],
-    use_clang_lld: true,
     arch: {
         x86: {
             enabled: false,
@@ -1446,7 +1436,6 @@ cc_library_static {
         "src/intel/isl",
         "subprojects/perfetto/sdk",
     ],
-    use_clang_lld: true,
     arch: {
         x86: {
             enabled: false,
@@ -1581,7 +1570,6 @@ cc_library_static {
         "src/intel/isl",
         "subprojects/perfetto/sdk",
     ],
-    use_clang_lld: true,
     arch: {
         x86: {
             enabled: false,
@@ -1717,7 +1705,6 @@ cc_library_static {
         "src/intel/isl",
         "subprojects/perfetto/sdk",
     ],
-    use_clang_lld: true,
     arch: {
         x86: {
             enabled: false,
@@ -1853,7 +1840,6 @@ cc_library_static {
         "src/intel/isl",
         "subprojects/perfetto/sdk",
     ],
-    use_clang_lld: true,
     arch: {
         x86: {
             enabled: false,
@@ -1988,7 +1974,6 @@ cc_library_static {
         "src/intel/isl",
         "subprojects/perfetto/sdk",
     ],
-    use_clang_lld: true,
     arch: {
         x86: {
             enabled: false,
@@ -2124,7 +2109,6 @@ cc_library_static {
         "src/intel/isl",
         "subprojects/perfetto/sdk",
     ],
-    use_clang_lld: true,
     arch: {
         x86: {
             enabled: false,
@@ -2260,7 +2244,6 @@ cc_library_static {
         "src/intel/isl",
         "subprojects/perfetto/sdk",
     ],
-    use_clang_lld: true,
     arch: {
         x86: {
             enabled: false,
@@ -2396,7 +2379,6 @@ cc_library_static {
         "src/intel/isl",
         "subprojects/perfetto/sdk",
     ],
-    use_clang_lld: true,
     arch: {
         x86: {
             enabled: false,
@@ -2532,7 +2514,6 @@ cc_library_static {
         "src/intel/isl",
         "subprojects/perfetto/sdk",
     ],
-    use_clang_lld: true,
     arch: {
         x86: {
             enabled: false,
@@ -2667,7 +2648,6 @@ cc_library_static {
         "src/intel/isl",
         "subprojects/perfetto/sdk",
     ],
-    use_clang_lld: true,
     arch: {
         x86: {
             enabled: false,
@@ -2803,7 +2783,6 @@ cc_library_static {
         "src/intel/isl",
         "subprojects/perfetto/sdk",
     ],
-    use_clang_lld: true,
     arch: {
         x86: {
             enabled: false,
@@ -2936,7 +2915,6 @@ cc_library_static {
         "src/tool",
         "subprojects/perfetto/sdk",
     ],
-    use_clang_lld: true,
     arch: {
         x86: {
             enabled: false,
@@ -3073,7 +3051,6 @@ cc_library_static {
         "subprojects/perfetto/sdk",
     ],
     header_libs: ["libdrm_headers"],
-    use_clang_lld: true,
     arch: {
         x86: {
             enabled: false,
@@ -3222,7 +3199,6 @@ cc_library_static {
         "src/intel/genxml",
         "subprojects/perfetto/sdk",
     ],
-    use_clang_lld: true,
     arch: {
         x86: {
             enabled: false,
@@ -3345,7 +3321,6 @@ cc_library_static {
         "src",
         "src/intel/common",
     ],
-    use_clang_lld: true,
     arch: {
         x86: {
             enabled: false,
@@ -3466,7 +3441,6 @@ cc_library_static {
         "src",
         "src/c11/impl",
     ],
-    use_clang_lld: true,
     arch: {
         x86: {
             enabled: false,
@@ -3668,7 +3642,6 @@ cc_library_shared {
         "src/vulkan/wsi",
         "subprojects/perfetto/sdk",
     ],
-    use_clang_lld: true,
     arch: {
         x86: {
             enabled: false,
@@ -3807,7 +3780,6 @@ cc_library_static {
         "subprojects/perfetto/sdk",
     ],
     header_libs: ["libdrm_headers"],
-    use_clang_lld: true,
     arch: {
         x86: {
             enabled: false,
@@ -3944,7 +3916,6 @@ cc_library_static {
         "src/vulkan/util",
         "subprojects/perfetto/sdk",
     ],
-    use_clang_lld: true,
     arch: {
         x86: {
             enabled: false,
@@ -4091,7 +4062,6 @@ cc_library_static {
         "src/vulkan/util",
         "subprojects/perfetto/sdk",
     ],
-    use_clang_lld: true,
     arch: {
         x86: {
             enabled: false,
@@ -4282,7 +4252,6 @@ cc_library_static {
         "subprojects/perfetto/sdk",
     ],
     header_libs: ["libdrm_headers"],
-    use_clang_lld: true,
     arch: {
         x86: {
             enabled: false,
@@ -4418,7 +4387,6 @@ cc_library_static {
         "subprojects/perfetto/sdk",
     ],
     header_libs: ["libdrm_headers"],
-    use_clang_lld: true,
     arch: {
         x86: {
             enabled: false,
@@ -4547,7 +4515,6 @@ cc_library_static {
         "src",
         "src/util/u_gralloc",
     ],
-    use_clang_lld: true,
     arch: {
         x86: {
             enabled: false,
@@ -4675,7 +4642,6 @@ cc_library_static {
         "src/util",
         "subprojects/perfetto/sdk",
     ],
-    use_clang_lld: true,
     arch: {
         x86: {
             enabled: false,
@@ -4841,7 +4807,6 @@ cc_library_static {
         "src/vulkan/wsi",
         "subprojects/perfetto/sdk",
     ],
-    use_clang_lld: true,
     arch: {
         x86: {
             enabled: false,
@@ -5007,7 +4972,6 @@ cc_library_static {
         "src/vulkan/wsi",
         "subprojects/perfetto/sdk",
     ],
-    use_clang_lld: true,
     arch: {
         x86: {
             enabled: false,
@@ -5173,7 +5137,6 @@ cc_library_static {
         "src/vulkan/wsi",
         "subprojects/perfetto/sdk",
     ],
-    use_clang_lld: true,
     arch: {
         x86: {
             enabled: false,
@@ -5339,7 +5302,6 @@ cc_library_static {
         "src/vulkan/wsi",
         "subprojects/perfetto/sdk",
     ],
-    use_clang_lld: true,
     arch: {
         x86: {
             enabled: false,
@@ -5505,7 +5467,6 @@ cc_library_static {
         "src/vulkan/wsi",
         "subprojects/perfetto/sdk",
     ],
-    use_clang_lld: true,
     arch: {
         x86: {
             enabled: false,
@@ -5708,7 +5669,6 @@ cc_library_static {
         "hwvulkan_headers",
         "libdrm_headers",
     ],
-    use_clang_lld: true,
     arch: {
         x86: {
             enabled: false,
@@ -5865,7 +5825,6 @@ cc_library_static {
         "src/vulkan/wsi",
         "subprojects/perfetto/sdk",
     ],
-    use_clang_lld: true,
     arch: {
         x86: {
             enabled: false,
@@ -6000,7 +5959,6 @@ cc_library_static {
         "src/intel/ds",
         "subprojects/perfetto/sdk",
     ],
-    use_clang_lld: true,
     arch: {
         x86: {
             enabled: false,
@@ -6131,7 +6089,6 @@ cc_library_static {
         "src/intel/decoder",
         "subprojects/perfetto/sdk",
     ],
-    use_clang_lld: true,
     arch: {
         x86: {
             enabled: false,
@@ -6344,7 +6301,6 @@ cc_library_static {
         "src/intel/compiler",
         "subprojects/perfetto/sdk",
     ],
-    use_clang_lld: true,
     arch: {
         x86: {
             enabled: false,
@@ -6482,7 +6438,6 @@ cc_library_static {
         "src/intel/genxml",
         "subprojects/perfetto/sdk",
     ],
-    use_clang_lld: true,
     arch: {
         x86: {
             enabled: false,
@@ -6629,7 +6584,6 @@ cc_library_static {
         "src/mesa",
         "subprojects/perfetto/sdk",
     ],
-    use_clang_lld: true,
     arch: {
         x86: {
             enabled: false,
@@ -6956,7 +6910,6 @@ cc_library_static {
         "src/compiler/nir",
         "subprojects/perfetto/sdk",
     ],
-    use_clang_lld: true,
     arch: {
         x86: {
             enabled: false,
@@ -7083,7 +7036,6 @@ cc_library_static {
         "src",
         "src/compiler",
     ],
-    use_clang_lld: true,
     arch: {
         x86: {
             enabled: false,
@@ -7286,7 +7238,6 @@ cc_library_shared {
         "src/mesa",
         "subprojects/perfetto/sdk",
     ],
-    use_clang_lld: true,
     arch: {
         x86: {
             enabled: false,
@@ -7414,7 +7365,6 @@ cc_library_static {
         "src/mapi",
         "src/mesa",
     ],
-    use_clang_lld: true,
     arch: {
         x86: {
             enabled: false,
@@ -7772,7 +7722,6 @@ cc_library_static {
         "src/mesa/main",
         "subprojects/perfetto/sdk",
     ],
-    use_clang_lld: true,
     arch: {
         x86: {
             enabled: false,
@@ -7922,7 +7871,6 @@ cc_library_shared {
         "src/mapi/shared-glapi",
         "subprojects/perfetto/sdk",
     ],
-    use_clang_lld: true,
     arch: {
         x86: {
             enabled: false,
@@ -8054,7 +8002,6 @@ cc_library_static {
         "subprojects/perfetto/sdk",
     ],
     header_libs: ["libdrm_headers"],
-    use_clang_lld: true,
     arch: {
         x86: {
             enabled: false,
@@ -8185,7 +8132,6 @@ cc_library_static {
         "src/intel/decoder",
         "subprojects/perfetto/sdk",
     ],
-    use_clang_lld: true,
     arch: {
         x86: {
             enabled: false,
@@ -8406,7 +8352,6 @@ cc_library_static {
         "src/intel/compiler/elk",
         "subprojects/perfetto/sdk",
     ],
-    use_clang_lld: true,
     arch: {
         x86: {
             enabled: false,
@@ -8544,7 +8489,6 @@ cc_library_static {
         "src/intel/genxml",
         "subprojects/perfetto/sdk",
     ],
-    use_clang_lld: true,
     arch: {
         x86: {
             enabled: false,
@@ -8671,7 +8615,6 @@ cc_library_static {
         "src/gallium/winsys/sw/wrapper",
         "subprojects/perfetto/sdk",
     ],
-    use_clang_lld: true,
     arch: {
         x86: {
             enabled: false,
@@ -8798,7 +8741,6 @@ cc_library_static {
         "src/gallium/winsys/sw/null",
         "subprojects/perfetto/sdk",
     ],
-    use_clang_lld: true,
     arch: {
         x86: {
             enabled: false,
@@ -8927,7 +8869,6 @@ cc_library_static {
         "subprojects/perfetto/sdk",
     ],
     header_libs: ["libdrm_headers"],
-    use_clang_lld: true,
     arch: {
         x86: {
             enabled: false,
@@ -9054,7 +8995,6 @@ cc_library_static {
         "src/gallium/winsys/sw/dri",
         "subprojects/perfetto/sdk",
     ],
-    use_clang_lld: true,
     arch: {
         x86: {
             enabled: false,
@@ -9182,7 +9122,6 @@ cc_library_static {
         "src/gallium/winsys/iris/drm",
         "subprojects/perfetto/sdk",
     ],
-    use_clang_lld: true,
     arch: {
         x86: {
             enabled: false,
@@ -9327,7 +9266,6 @@ cc_library_static {
         "subprojects/perfetto/sdk",
     ],
     header_libs: ["libdrm_headers"],
-    use_clang_lld: true,
     arch: {
         x86: {
             enabled: false,
@@ -9477,7 +9415,6 @@ cc_library_static {
         "src/mesa",
         "subprojects/perfetto/sdk",
     ],
-    use_clang_lld: true,
     arch: {
         x86: {
             enabled: false,
@@ -9627,7 +9564,6 @@ cc_library_static {
         "src/mesa",
         "subprojects/perfetto/sdk",
     ],
-    use_clang_lld: true,
     arch: {
         x86: {
             enabled: false,
@@ -9777,7 +9713,6 @@ cc_library_static {
         "src/mesa",
         "subprojects/perfetto/sdk",
     ],
-    use_clang_lld: true,
     arch: {
         x86: {
             enabled: false,
@@ -9927,7 +9862,6 @@ cc_library_static {
         "src/mesa",
         "subprojects/perfetto/sdk",
     ],
-    use_clang_lld: true,
     arch: {
         x86: {
             enabled: false,
@@ -10077,7 +10011,6 @@ cc_library_static {
         "src/mesa",
         "subprojects/perfetto/sdk",
     ],
-    use_clang_lld: true,
     arch: {
         x86: {
             enabled: false,
@@ -10227,7 +10160,6 @@ cc_library_static {
         "src/mesa",
         "subprojects/perfetto/sdk",
     ],
-    use_clang_lld: true,
     arch: {
         x86: {
             enabled: false,
@@ -10402,7 +10334,6 @@ cc_library_static {
         "subprojects/perfetto/sdk",
     ],
     header_libs: ["libdrm_headers"],
-    use_clang_lld: true,
     arch: {
         x86: {
             enabled: false,
@@ -10539,7 +10470,6 @@ cc_library_static {
         "subprojects/perfetto/sdk",
     ],
     header_libs: ["libdrm_headers"],
-    use_clang_lld: true,
     arch: {
         x86: {
             enabled: false,
@@ -10687,7 +10617,6 @@ cc_library_static {
         "src/gallium/include",
         "subprojects/perfetto/sdk",
     ],
-    use_clang_lld: true,
     arch: {
         x86: {
             enabled: false,
@@ -10974,7 +10903,6 @@ cc_library_static {
         "subprojects/perfetto/sdk",
     ],
     header_libs: ["libdrm_headers"],
-    use_clang_lld: true,
     arch: {
         x86: {
             enabled: false,
@@ -11191,7 +11119,6 @@ cc_library_static {
         "src/mesa",
         "subprojects/perfetto/sdk",
     ],
-    use_clang_lld: true,
     arch: {
         x86: {
             enabled: false,
@@ -11327,7 +11254,6 @@ cc_library_static {
         "src/mesa",
         "subprojects/perfetto/sdk",
     ],
-    use_clang_lld: true,
     arch: {
         x86: {
             enabled: false,
@@ -11460,7 +11386,6 @@ cc_library_shared {
         "src/mapi",
         "src/mapi/es1api",
     ],
-    use_clang_lld: true,
     arch: {
         x86: {
             enabled: false,
@@ -11593,7 +11518,6 @@ cc_library_shared {
         "src/mapi",
         "src/mapi/es2api",
     ],
-    use_clang_lld: true,
     arch: {
         x86: {
             enabled: false,
@@ -11769,7 +11693,6 @@ cc_library_shared {
         "src/mesa",
         "subprojects/perfetto/sdk",
     ],
-    use_clang_lld: true,
     arch: {
         x86: {
             enabled: false,

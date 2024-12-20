@@ -17,7 +17,6 @@ impl Project for Clspv {
     fn get_id(&self) -> ProjectId {
         ProjectId::Clspv
     }
-
     fn generate_package(
         &mut self,
         ctx: &Context,
@@ -68,14 +67,9 @@ impl Project for Clspv {
         Ok(package)
     }
 
-    fn get_cmd_output(&self, output: &Path) -> PathBuf {
-        if let Some((_, header)) = split_path(output, "include") {
-            header
-        } else {
-            PathBuf::from(output)
-        }
+    fn get_project_deps(&self) -> Vec<ProjectId> {
+        vec![ProjectId::Clvk]
     }
-
     fn get_deps_info(&self) -> Vec<(PathBuf, GenDeps)> {
         vec![
             (self.spirv_headers_path.clone(), GenDeps::SpirvHeaders),
@@ -83,16 +77,7 @@ impl Project for Clspv {
             (PathBuf::from("third_party/llvm"), GenDeps::LibclcBins),
         ]
     }
-
-    fn get_library_module(&self, module: &mut SoongModule) {
-        module.add_prop(
-            "export_include_dirs",
-            SoongProp::VecStr(vec![String::from("include")]),
-        );
-        module.add_prop("optimize_for_size", SoongProp::Bool(true));
-    }
-
-    fn get_gen_deps(&self, project: ProjectId) -> GenDepsMap {
+    fn get_deps_map(&self, project: ProjectId) -> GenDepsMap {
         let mut deps: GenDepsMap = HashMap::new();
         match project {
             ProjectId::SpirvHeaders => {
@@ -122,10 +107,14 @@ impl Project for Clspv {
         deps
     }
 
-    fn get_project_deps(&self) -> Vec<ProjectId> {
-        vec![ProjectId::Clvk]
+    fn get_target_object_module(&self, _target: &str, mut module: SoongModule) -> SoongModule {
+        module.add_prop(
+            "export_include_dirs",
+            SoongProp::VecStr(vec![String::from("include")]),
+        );
+        module.add_prop("optimize_for_size", SoongProp::Bool(true));
+        module
     }
-
     fn get_target_header_libs(&self, _target: &str) -> Vec<String> {
         vec![
             CcLibraryHeaders::SpirvHeaders.str(),
@@ -134,24 +123,28 @@ impl Project for Clspv {
         ]
     }
 
+    fn get_cmd_output(&self, output: &Path) -> PathBuf {
+        if let Some((_, header)) = split_path(output, "include") {
+            header
+        } else {
+            PathBuf::from(output)
+        }
+    }
+
     fn filter_cflag(&self, _cflag: &str) -> bool {
         false
     }
-
     fn filter_define(&self, _define: &str) -> bool {
         false
     }
-
     fn filter_gen_header(&self, header: &Path) -> bool {
         !header.starts_with("third_party/llvm")
     }
-
     fn filter_include(&self, include: &Path) -> bool {
         !(include.starts_with(&self.build_path)
             || include.starts_with(&self.spirv_headers_path)
             || include.starts_with(&self.llvm_project_path))
     }
-
     fn filter_target(&self, target: &Path) -> bool {
         !target.starts_with("third_party/")
     }

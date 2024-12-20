@@ -117,7 +117,6 @@ cc_library_static {
         "clspv_include_clspv_spirv_glsl_hpp",
         "clspv_include_clspv_spirv_reflection_hpp",
     ],
-    use_clang_lld: true,
     export_include_dirs: ["include"],
     optimize_for_size: true,
 }

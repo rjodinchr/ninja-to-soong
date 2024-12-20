@@ -40,7 +40,6 @@ impl Project for Angle {
     fn get_id(&self) -> ProjectId {
         ProjectId::Angle
     }
-
     fn generate_package(
         &mut self,
         ctx: &Context,
@@ -85,15 +84,15 @@ impl Project for Angle {
         Ok(package)
     }
 
-    fn get_cmd_output(&self, output: &Path) -> PathBuf {
-        PathBuf::from(file_name(output))
+    fn get_target_alias(&self, target: &str) -> Option<String> {
+        for str in TARGETS {
+            if format!("angle___{str}_angle_so") == target {
+                return Some(format!("{str}_angle"));
+            }
+        }
+        None
     }
-
-    fn get_default_cflags(&self, _target: &str) -> Vec<String> {
-        vec![String::from("-Wno-nullability-completeness")]
-    }
-
-    fn get_library_module(&self, module: &mut SoongModule) {
+    fn get_target_object_module(&self, _target: &str, mut module: SoongModule) -> SoongModule {
         module.add_prop("stl", SoongProp::Str(String::from("libc++_static")));
         module.add_prop(
             "arch",
@@ -105,9 +104,35 @@ impl Project for Angle {
                 ),
             ),
         );
+        module
+    }
+    fn get_target_cflags(&self, _target: &str) -> Vec<String> {
+        vec![String::from("-Wno-nullability-completeness")]
+    }
+    fn get_target_shared_libs(&self, target: &str) -> Vec<String> {
+        if target.starts_with("angle_obj_lib") {
+            vec![String::from("libnativewindow")]
+        } else if target.ends_with("libGLESv2_angle_so") {
+            vec![String::from("libz")]
+        } else {
+            Vec::new()
+        }
+    }
+    fn get_target_header_libs(&self, target: &str) -> Vec<String> {
+        if target.ends_with("libtranslator_a") {
+            vec![
+                CcLibraryHeaders::SpirvHeaders.str(),
+                CcLibraryHeaders::SpirvTools.str(),
+            ]
+        } else {
+            Vec::new()
+        }
     }
 
-    fn get_library_name(&self, library: &Path) -> PathBuf {
+    fn get_cmd_output(&self, output: &Path) -> PathBuf {
+        PathBuf::from(file_name(output))
+    }
+    fn get_lib(&self, library: &Path) -> PathBuf {
         if library.starts_with("obj/third_party/spirv-tools") {
             Path::new(ProjectId::SpirvTools.str()).join("source/libSPIRV-Tools.a")
         } else if library.starts_with("obj/third_party/zlib") {
@@ -126,64 +151,27 @@ impl Project for Angle {
         }
     }
 
-    fn get_shared_libs(&self, target: &str) -> Vec<String> {
-        if target.starts_with("angle_obj_lib") {
-            vec![String::from("libnativewindow")]
-        } else if target.ends_with("libGLESv2_angle_so") {
-            vec![String::from("libz")]
-        } else {
-            Vec::new()
-        }
-    }
-
-    fn get_target_alias(&self, target: &str) -> Option<String> {
-        for str in TARGETS {
-            if format!("angle___{str}_angle_so") == target {
-                return Some(format!("{str}_angle"));
-            }
-        }
-        None
-    }
-
-    fn get_target_header_libs(&self, target: &str) -> Vec<String> {
-        if target.ends_with("libtranslator_a") {
-            vec![
-                CcLibraryHeaders::SpirvHeaders.str(),
-                CcLibraryHeaders::SpirvTools.str(),
-            ]
-        } else {
-            Vec::new()
-        }
-    }
-
     fn filter_cflag(&self, cflag: &str) -> bool {
         cflag.starts_with("-fvisibility")
     }
-
     fn filter_define(&self, define: &str) -> bool {
         !define.contains("__ARM_NEON__")
     }
-
     fn filter_gen_header(&self, header: &Path) -> bool {
         header.starts_with("gen/angle")
     }
-
     fn filter_include(&self, include: &Path) -> bool {
         self.filter_path(include)
     }
-
     fn filter_lib(&self, lib: &str) -> bool {
         !lib.contains("llvm-build/Release+Asserts")
     }
-
     fn filter_link_flag(&self, _flag: &str) -> bool {
         false
     }
-
     fn filter_source(&self, source: &Path) -> bool {
         self.filter_path(source)
     }
-
     fn filter_target(&self, target: &Path) -> bool {
         !(target.starts_with("obj/third_party")
             || target.starts_with("gen/third_party/spirv-tools"))
