@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use std::collections::HashSet;
+use std::fs::File;
 
 use super::*;
 
@@ -130,6 +131,13 @@ impl Project for Mesa {
 
         if ctx.copy_to_aosp {
             let meson_generated_path = self.get_id().android_path(ctx).join(MESON_GENERATED);
+            if File::open(&meson_generated_path).is_ok() {
+                if let Err(err) = std::fs::remove_dir_all(&meson_generated_path) {
+                    return error!("remove_dir_all failed: {err}");
+                }
+
+                print_verbose!("{meson_generated_path:#?} removed");
+            }
             for dep in gen_deps_sorted {
                 let from = self.build_path.join(&dep);
                 let to = meson_generated_path.join(&dep);
