@@ -49,11 +49,11 @@ fn generate_project(
 
 fn generate_projects<'a>(
     all_projects: Vec<&'a mut dyn Project>,
+    project_ids: Vec<ProjectId>,
     ctx: &Context,
 ) -> Result<(), String> {
     let mut projects_not_generated: HashMap<ProjectId, &mut dyn Project> = HashMap::new();
     let mut project_ids_to_generate: VecDeque<ProjectId> = VecDeque::new();
-    let project_ids = ctx.project_ids.to_owned();
     for project in all_projects {
         if project_ids.len() == 0 {
             project_ids_to_generate.push_back(project.get_id());
@@ -111,17 +111,18 @@ fn main() -> Result<(), String> {
         &mut spirv_tools,
     ];
 
-    let ctx = match Context::new(std::env::args().collect(), &all_projects) {
-        Ok(context) => context,
-        Err(err) => {
-            print_error!("{err}");
-            return Err(format!("Could not create context"));
-        }
-    };
+    let (ctx, exec, project_ids) =
+        match Context::parse_args(std::env::args().collect(), &all_projects) {
+            Ok(context) => context,
+            Err(err) => {
+                print_error!("{err}");
+                return Err(format!("Could not create context"));
+            }
+        };
 
-    if let Err(err) = generate_projects(all_projects, &ctx) {
+    if let Err(err) = generate_projects(all_projects, project_ids, &ctx) {
         print_error!("{err}");
-        Err(format!("{0} failed", ctx.executable))
+        Err(format!("{exec} failed"))
     } else {
         Ok(())
     }
