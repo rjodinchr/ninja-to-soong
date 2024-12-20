@@ -37,10 +37,6 @@ impl NinjaTarget for MesonNinjaTarget {
         }
     }
 
-    fn set_globals(&mut self, _globals: HashMap<String, String>) {}
-
-    fn set_rule(&mut self, _rules: &NinjaRulesMap) {}
-
     fn get_rule(&self) -> Option<NinjaRule> {
         Some(if self.rule == "c_LINKER" || self.rule == "cpp_LINKER" {
             let (_, link_flags) = self.get_link_flags();

@@ -37,10 +37,6 @@ impl NinjaTarget for CmakeNinjaTarget {
         }
     }
 
-    fn set_globals(&mut self, _globals: HashMap<String, String>) {}
-
-    fn set_rule(&mut self, _rules: &NinjaRulesMap) {}
-
     fn get_rule(&self) -> Option<NinjaRule> {
         Some(if self.rule.starts_with("CXX_SHARED_LIBRARY") {
             NinjaRule::SharedLibrary
