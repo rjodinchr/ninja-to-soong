@@ -1,8 +1,6 @@
 // Copyright 2024 ninja-to-soong authors
 // SPDX-License-Identifier: Apache-2.0
 
-use crate::utils::error;
-
 const INDENT: &str = "    ";
 
 pub enum CcLibraryHeaders {
@@ -118,20 +116,19 @@ impl SoongModule {
         self.props.push(SoongNamedProp::new(name, prop));
     }
 
-    pub fn update_prop<F>(&mut self, name: &str, f: F) -> Result<(), String>
+    pub fn update_prop<F>(&mut self, name: &str, f: F)
     where
-        F: Fn(SoongProp) -> Result<SoongProp, String>,
+        F: Fn(SoongProp) -> SoongProp,
     {
         for index in 0..self.props.len() {
             if self.props[index].name == name {
                 let prop = self.props.remove(index).prop;
-                let updated_prop = f(prop)?;
+                let updated_prop = f(prop);
                 self.props
                     .insert(index, SoongNamedProp::new(name, updated_prop));
-                return Ok(());
+                return;
             }
         }
-        error!("'{name}' property not found in {self:#?}")
     }
 
     pub fn print(self) -> String {
