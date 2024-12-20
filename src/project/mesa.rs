@@ -1,9 +1,6 @@
 // Copyright 2024 ninja-to-soong authors
 // SPDX-License-Identifier: Apache-2.0
 
-use std::collections::HashSet;
-use std::fs::File;
-
 use super::*;
 
 const MESON_GENERATED: &str = "meson_generated";
@@ -56,7 +53,6 @@ impl Project for Mesa {
         } else {
             mesa_test_path.clone()
         };
-
         if !ctx.skip_gen_ninja {
             execute_cmd!(
                 "bash",
@@ -70,7 +66,6 @@ impl Project for Mesa {
                 ]
             )?;
         }
-
         if !ctx.skip_build {
             execute_cmd!(
                 "meson",
@@ -79,7 +74,6 @@ impl Project for Mesa {
         }
 
         let targets = parse_build_ninja::<ninja_target::meson::MesonNinjaTarget>(&self.build_path)?;
-
         let mut package = SoongPackage::new(
             &self.src_path,
             &self.ndk_path,
@@ -92,64 +86,22 @@ impl Project for Mesa {
         let targets_to_generate = TARGETS.iter().map(|target| PathBuf::from(target)).collect();
         package.generate(targets_to_generate, targets, self)?;
 
-        let gen_deps = package.get_gen_deps();
-        let mut gen_deps_folders = HashSet::new();
-        for gen_dep in &gen_deps {
-            let mut path = gen_dep.clone();
-            while let Some(parent) = path.parent() {
-                path = PathBuf::from(parent);
-                gen_deps_folders.insert(path.clone());
-            }
-        }
-        for module in package.get_modules() {
-            module.update_prop("local_include_dirs", |prop| match prop {
-                SoongProp::VecStr(dirs) => SoongProp::VecStr(
-                    dirs.into_iter()
-                        .filter(|dir| {
-                            if let Ok(strip) = Path::new(&dir).strip_prefix(MESON_GENERATED) {
-                                if !gen_deps_folders.contains(strip) {
-                                    return false;
-                                }
-                            }
-                            return true;
-                        })
-                        .collect(),
-                ),
-                _ => prop,
-            });
-        }
+        let mut gen_deps = package.get_gen_deps();
 
-        let mut gen_deps_sorted = Vec::from_iter(gen_deps);
-        gen_deps_sorted.sort();
+        package.filter_local_include_dirs(MESON_GENERATED, &gen_deps);
+        gen_deps.sort();
         write_file(
             &ctx.test_path
                 .join(self.get_id().str())
                 .join("generated_deps.txt"),
-            &format!("{0:#?}", &gen_deps_sorted),
+            &format!("{0:#?}", &gen_deps),
         )?;
-
         if ctx.copy_to_aosp {
-            let meson_generated_path = self.get_id().android_path(ctx).join(MESON_GENERATED);
-            if File::open(&meson_generated_path).is_ok() {
-                if let Err(err) = std::fs::remove_dir_all(&meson_generated_path) {
-                    return error!("remove_dir_all failed: {err}");
-                }
-
-                print_verbose!("{meson_generated_path:#?} removed");
-            }
-            for dep in gen_deps_sorted {
-                let from = self.build_path.join(&dep);
-                let to = meson_generated_path.join(&dep);
-                let to_path = to.parent().unwrap();
-                if let Err(err) = std::fs::create_dir_all(to_path) {
-                    return error!("create_dir_all({to_path:#?}) failed: {err}");
-                }
-                copy_file(&from, &to)?;
-            }
-            print_verbose!(
-                "Files copied from {0:#?} to {meson_generated_path:#?}",
-                &self.build_path
-            );
+            copy_files(
+                &self.build_path,
+                &self.get_id().android_path(ctx).join(MESON_GENERATED),
+                gen_deps,
+            )?;
         }
 
         Ok(package)

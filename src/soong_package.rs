@@ -69,12 +69,36 @@ impl<'a> SoongPackage<'a> {
         package
     }
 
-    pub fn get_modules(&mut self) -> &mut Vec<SoongModule> {
-        &mut self.modules
-    }
-
     pub fn add_module(&mut self, module: SoongModule) {
         self.modules.push(module);
+    }
+
+    pub fn filter_local_include_dirs(&mut self, prefix: &str, files: &Vec<PathBuf>) {
+        let mut set = HashSet::new();
+        for file in files {
+            let mut path = file.clone();
+            while let Some(parent) = path.parent() {
+                path = PathBuf::from(parent);
+                set.insert(path.clone());
+            }
+        }
+        for module in &mut self.modules {
+            module.update_prop("local_include_dirs", |prop| match prop {
+                SoongProp::VecStr(dirs) => SoongProp::VecStr(
+                    dirs.into_iter()
+                        .filter(|dir| {
+                            if let Ok(strip) = Path::new(&dir).strip_prefix(prefix) {
+                                if !set.contains(strip) {
+                                    return false;
+                                }
+                            }
+                            return true;
+                        })
+                        .collect(),
+                ),
+                _ => prop,
+            });
+        }
     }
 
     pub fn print(self) -> String {
@@ -96,12 +120,12 @@ impl<'a> SoongPackage<'a> {
         package
     }
 
-    pub fn get_gen_deps(&self) -> HashSet<PathBuf> {
-        self.gen_deps.to_owned()
+    pub fn get_gen_deps(&self) -> Vec<PathBuf> {
+        Vec::from_iter(self.gen_deps.to_owned())
     }
 
-    pub fn get_generated_libraries(&self) -> HashSet<PathBuf> {
-        self.generated_libraries.to_owned()
+    pub fn get_generated_libraries(&self) -> Vec<PathBuf> {
+        Vec::from_iter(self.generated_libraries.to_owned())
     }
 
     fn get_defines(&self, defines: Vec<String>, project: &dyn Project) -> Vec<String> {

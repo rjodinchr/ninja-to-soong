@@ -175,6 +175,26 @@ pub fn copy_file(from: &Path, to: &Path) -> Result<(), String> {
     Ok(())
 }
 
+pub fn copy_files(from: &Path, to: &Path, files: Vec<PathBuf>) -> Result<(), String> {
+    if File::open(to).is_ok() {
+        if let Err(err) = std::fs::remove_dir_all(to) {
+            return error!("remove_dir_all failed: {err}");
+        }
+        print_verbose!("{to:#?} removed");
+    }
+    for file in files {
+        let from = from.join(&file);
+        let to = to.join(&file);
+        let to_path = to.parent().unwrap();
+        if let Err(err) = std::fs::create_dir_all(to_path) {
+            return error!("create_dir_all({to_path:#?}) failed: {err}");
+        }
+        copy_file(&from, &to)?;
+    }
+    print_verbose!("Files copied from {from:#?} to {to:#?}");
+    Ok(())
+}
+
 pub fn write_file(file_path: &Path, content: &str) -> Result<(), String> {
     match File::create(file_path) {
         Ok(mut file) => {

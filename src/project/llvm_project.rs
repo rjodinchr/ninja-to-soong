@@ -1,9 +1,6 @@
 // Copyright 2024 ninja-to-soong authors
 // SPDX-License-Identifier: Apache-2.0
 
-use std::collections::HashSet;
-use std::fs::File;
-
 use crate::project::*;
 
 const CMAKE_GENERATED: &str = "cmake_generated";
@@ -90,64 +87,20 @@ impl Project for LlvmProject {
         ];
         gen_deps.extend(missing_gen_deps.iter().map(|dep| PathBuf::from(dep)));
 
-        let mut gen_deps_folders = HashSet::new();
-        for gen_dep in &gen_deps {
-            let folder = gen_dep.parent().unwrap();
-            if let Some((include_folder, _)) = split_path(folder, "include") {
-                gen_deps_folders.insert(include_folder);
-            } else {
-                gen_deps_folders.insert(PathBuf::from(folder));
-            }
-        }
-        for module in package.get_modules() {
-            module.update_prop("local_include_dirs", |prop| match prop {
-                SoongProp::VecStr(dirs) => SoongProp::VecStr(
-                    dirs.into_iter()
-                        .filter(|dir| {
-                            if let Ok(strip) = Path::new(&dir).strip_prefix(CMAKE_GENERATED) {
-                                if !gen_deps_folders.contains(strip) {
-                                    return false;
-                                }
-                            }
-                            return true;
-                        })
-                        .collect(),
-                ),
-                _ => prop,
-            });
-        }
-
-        let mut gen_deps_sorted = Vec::from_iter(gen_deps);
-        gen_deps_sorted.sort();
+        package.filter_local_include_dirs(CMAKE_GENERATED, &gen_deps);
+        gen_deps.sort();
         write_file(
             &ctx.test_path
                 .join(self.get_id().str())
                 .join("generated_deps.txt"),
-            &format!("{0:#?}", &gen_deps_sorted),
+            &format!("{0:#?}", &gen_deps),
         )?;
-
         if ctx.copy_to_aosp {
-            let cmake_generated_path = self.get_id().android_path(ctx).join(CMAKE_GENERATED);
-            if File::open(&cmake_generated_path).is_ok() {
-                if let Err(err) = std::fs::remove_dir_all(&cmake_generated_path) {
-                    return error!("remove_dir_all failed: {err}");
-                }
-
-                print_verbose!("{cmake_generated_path:#?} removed");
-            }
-            for file in gen_deps_sorted {
-                let from = self.build_path.join(&file);
-                let to = cmake_generated_path.join(file);
-                let to_path = to.parent().unwrap();
-                if let Err(err) = std::fs::create_dir_all(to_path) {
-                    return error!("create_dir_all({to_path:#?}) failed: {err}");
-                }
-                copy_file(&from, &to)?;
-            }
-            print_verbose!(
-                "Files copied from {0:#?} to {cmake_generated_path:#?}",
-                &self.build_path
-            );
+            copy_files(
+                &self.build_path,
+                &self.get_id().android_path(ctx).join(CMAKE_GENERATED),
+                gen_deps,
+            )?;
         }
 
         let cmake_generated_path = Path::new(CMAKE_GENERATED);
