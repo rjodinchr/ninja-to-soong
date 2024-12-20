@@ -101,20 +101,20 @@ impl Project for LlvmProject {
             }
         }
         for module in package.get_modules() {
-            let _ = module.update_prop("local_include_dirs", |prop| match prop {
-                SoongProp::VecStr(dirs) => {
-                    let mut new_dirs = Vec::new();
-                    for dir in dirs {
-                        if let Ok(strip) = Path::new(&dir).strip_prefix(CMAKE_GENERATED) {
-                            if !gen_deps_folders.contains(strip) {
-                                continue;
+            module.update_prop("local_include_dirs", |prop| match prop {
+                SoongProp::VecStr(dirs) => SoongProp::VecStr(
+                    dirs.into_iter()
+                        .filter(|dir| {
+                            if let Ok(strip) = Path::new(&dir).strip_prefix(CMAKE_GENERATED) {
+                                if !gen_deps_folders.contains(strip) {
+                                    return false;
+                                }
                             }
-                        }
-                        new_dirs.push(dir);
-                    }
-                    Ok(SoongProp::VecStr(new_dirs))
-                }
-                _ => error!("Expected local_include_dirs to be a VecStr"),
+                            return true;
+                        })
+                        .collect(),
+                ),
+                _ => prop,
             });
         }
 
