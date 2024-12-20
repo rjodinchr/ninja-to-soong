@@ -63,7 +63,6 @@ cc_library_shared {
         "angle_gen_angle_ANGLEShaderProgramVersion_h",
         "angle_gen_angle_angle_commit_h",
     ],
-    use_clang_lld: true,
     stl: "libc++_static",
     arch: {
         arm64: {
@@ -441,7 +440,6 @@ cc_library_shared {
         "angle_gen_angle_ANGLEShaderProgramVersion_h",
         "angle_gen_angle_angle_commit_h",
     ],
-    use_clang_lld: true,
     stl: "libc++_static",
     arch: {
         arm64: {
@@ -517,7 +515,6 @@ cc_library_static {
         "src/common/third_party/xxhash",
         "third_party/abseil-cpp",
     ],
-    use_clang_lld: true,
     stl: "libc++_static",
     arch: {
         arm64: {
@@ -576,7 +573,6 @@ cc_library_static {
         "src/common/third_party/xxhash",
         "third_party/abseil-cpp",
     ],
-    use_clang_lld: true,
     stl: "libc++_static",
     arch: {
         arm64: {
@@ -1861,7 +1857,6 @@ cc_library_static {
         "angle_gen_angle_ANGLEShaderProgramVersion_h",
         "angle_gen_angle_angle_commit_h",
     ],
-    use_clang_lld: true,
     stl: "libc++_static",
     arch: {
         arm64: {
@@ -1909,7 +1904,6 @@ cc_library_static {
         "src/common/third_party/xxhash",
         "third_party/abseil-cpp",
     ],
-    use_clang_lld: true,
     stl: "libc++_static",
     arch: {
         arm64: {
@@ -1965,7 +1959,6 @@ cc_library_static {
         "src/common/third_party/xxhash",
         "third_party/abseil-cpp",
     ],
-    use_clang_lld: true,
     stl: "libc++_static",
     arch: {
         arm64: {
@@ -2024,7 +2017,6 @@ cc_library_static {
         "third_party/abseil-cpp",
         "third_party/vulkan-headers/src/include",
     ],
-    use_clang_lld: true,
     stl: "libc++_static",
     arch: {
         arm64: {
@@ -2202,7 +2194,6 @@ cc_library_shared {
         "angle_gen_angle_ANGLEShaderProgramVersion_h",
         "angle_gen_angle_angle_commit_h",
     ],
-    use_clang_lld: true,
     stl: "libc++_static",
     arch: {
         arm64: {

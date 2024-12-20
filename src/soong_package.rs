@@ -135,7 +135,7 @@ impl<'a> SoongPackage<'a> {
                     file_stem(lib)
                 } else {
                     self.generated_libraries.insert(lib.clone());
-                    let lib_id = path_to_id(project.get_library_name(&lib));
+                    let lib_id = path_to_id(project.get_lib(&lib));
                     project.get_target_alias(&lib_id).unwrap_or(lib_id)
                 }
             })
@@ -160,12 +160,12 @@ impl<'a> SoongPackage<'a> {
         let mut shared_libs = HashSet::new();
         let mut gen_deps = Vec::new();
         for input in target.get_inputs() {
-            let Some(target) = targets_map.get(input) else {
+            let Some(input_target) = targets_map.get(input) else {
                 return error!("unsupported input for library: {input:#?}");
             };
 
             sources.extend(
-                target
+                input_target
                     .get_sources(self.build_path)?
                     .iter()
                     .filter(|source| project.filter_source(source))
@@ -177,19 +177,19 @@ impl<'a> SoongPackage<'a> {
                     }),
             );
 
-            let (static_libraries, shared_libraries) = target.get_link_libraries()?;
+            let (static_libraries, shared_libraries) = input_target.get_link_libraries()?;
             static_libs.extend(self.get_libs(static_libraries, project));
             shared_libs.extend(self.get_libs(shared_libraries, project));
 
-            includes.extend(self.get_includes(target.get_includes(self.build_path), project));
-            cflags.extend(self.get_defines(target.get_defines(), project));
-            cflags.extend(self.get_cflags(target.get_cflags(), project));
+            includes.extend(self.get_includes(input_target.get_includes(self.build_path), project));
+            cflags.extend(self.get_defines(input_target.get_defines(), project));
+            cflags.extend(self.get_cflags(input_target.get_cflags(), project));
         }
 
         includes.extend(self.get_includes(target.get_includes(self.build_path), project));
         cflags.extend(self.get_defines(target.get_defines(), project));
         cflags.extend(self.get_cflags(target.get_cflags(), project));
-        cflags.extend(project.get_default_cflags(&target_name));
+        cflags.extend(project.get_target_cflags(&target_name));
 
         let (version_script, link_flags) = target.get_link_flags();
         let link_flags = link_flags
@@ -199,9 +199,7 @@ impl<'a> SoongPackage<'a> {
         let (static_libraries, shared_libraries) = target.get_link_libraries()?;
         static_libs.extend(self.get_libs(static_libraries, project));
         shared_libs.extend(self.get_libs(shared_libraries, project));
-
-        static_libs.extend(project.get_static_libs(&target_name));
-        shared_libs.extend(project.get_shared_libs(&target_name));
+        shared_libs.extend(project.get_target_shared_libs(&target_name));
 
         let gen_headers = targets_map
             .traverse_from(
@@ -277,14 +275,11 @@ impl<'a> SoongPackage<'a> {
             "generated_headers",
             SoongProp::VecStr(Vec::from_iter(gen_headers)),
         );
-        module.add_prop("use_clang_lld", SoongProp::Bool(true));
 
-        project.get_library_module(&mut module);
-
-        Ok(module)
+        Ok(project.get_target_object_module(&target_name, module))
     }
 
-    fn get_command(
+    fn get_cmd(
         &self,
         rule_cmd: NinjaRuleCmd,
         inputs: HashSet<PathBuf>,
@@ -356,7 +351,7 @@ impl<'a> SoongPackage<'a> {
         cmd
     }
 
-    fn get_command_inputs(
+    fn get_cmd_inputs(
         &self,
         inputs: &Vec<PathBuf>,
         deps: &mut HashMap<PathBuf, String>,
@@ -365,9 +360,6 @@ impl<'a> SoongPackage<'a> {
         inputs
             .iter()
             .filter(|input| {
-                if !project.filter_custom_cmd_input(input) {
-                    return false;
-                }
                 for (prefix, dep) in project.get_deps_info() {
                     if input.starts_with(&prefix) {
                         deps.insert(
@@ -406,8 +398,8 @@ impl<'a> SoongPackage<'a> {
     {
         let mut inputs = HashSet::new();
         let mut deps = HashMap::new();
-        inputs.extend(self.get_command_inputs(target.get_inputs(), &mut deps, project));
-        inputs.extend(self.get_command_inputs(target.get_implicit_deps(), &mut deps, project));
+        inputs.extend(self.get_cmd_inputs(target.get_inputs(), &mut deps, project));
+        inputs.extend(self.get_cmd_inputs(target.get_implicit_deps(), &mut deps, project));
         let mut sources = inputs
             .clone()
             .iter()
@@ -423,7 +415,7 @@ impl<'a> SoongPackage<'a> {
             self.gen_deps.insert(dep.clone());
         }
         let target_outputs = target.get_outputs();
-        let cmd = self.get_command(rule_cmd, inputs, target_outputs, deps, project);
+        let cmd = self.get_cmd(rule_cmd, inputs, target_outputs, deps, project);
         let outputs = target_outputs
             .iter()
             .map(|output| path_to_string(project.get_cmd_output(output)))

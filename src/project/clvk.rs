@@ -15,7 +15,6 @@ impl Project for Clvk {
     fn get_id(&self) -> ProjectId {
         ProjectId::Clvk
     }
-
     fn generate_package(
         &mut self,
         ctx: &Context,
@@ -61,13 +60,12 @@ impl Project for Clvk {
         Ok(package)
     }
 
-    fn get_gen_deps(&self, project: ProjectId) -> GenDepsMap {
+    fn get_deps_map(&self, project: ProjectId) -> GenDepsMap {
         let mut deps = HashMap::new();
         let mut libs = Vec::new();
         let prefix = project.str();
         for library in &self.generated_libraries {
-            let library_path = PathBuf::from(library);
-            if let Ok(lib) = self.get_library_name(&library_path).strip_prefix(prefix) {
+            if let Ok(lib) = self.get_lib(library).strip_prefix(prefix) {
                 libs.push(PathBuf::from(lib));
             }
         }
@@ -75,7 +73,18 @@ impl Project for Clvk {
         deps
     }
 
-    fn get_library_name(&self, library: &Path) -> PathBuf {
+    fn get_target_alias(&self, target: &str) -> Option<String> {
+        if target.ends_with("libOpenCL_so") {
+            Some(String::from("libclvk"))
+        } else {
+            None
+        }
+    }
+    fn get_target_header_libs(&self, _target: &str) -> Vec<String> {
+        vec![String::from("OpenCL-Headers")]
+    }
+
+    fn get_lib(&self, library: &Path) -> PathBuf {
         strip_prefix(
             if let Ok(strip) = library.strip_prefix(Path::new("external/clspv/third_party/llvm")) {
                 Path::new(ProjectId::LlvmProject.str()).join(strip)
@@ -86,38 +95,21 @@ impl Project for Clvk {
         )
     }
 
-    fn get_target_header_libs(&self, _target: &str) -> Vec<String> {
-        vec![String::from("OpenCL-Headers")]
-    }
-
-    fn get_target_alias(&self, target: &str) -> Option<String> {
-        if target.ends_with("libOpenCL_so") {
-            Some(String::from("libclvk"))
-        } else {
-            None
-        }
-    }
-
     fn filter_cflag(&self, _cflag: &str) -> bool {
         false
     }
-
     fn filter_gen_header(&self, _header: &Path) -> bool {
         false
     }
-
     fn filter_include(&self, _include: &Path) -> bool {
         false
     }
-
     fn filter_lib(&self, lib: &str) -> bool {
         lib != "libatomic"
     }
-
     fn filter_link_flag(&self, flag: &str) -> bool {
         flag == "-Wl,-Bsymbolic"
     }
-
     fn filter_target(&self, target: &Path) -> bool {
         !target.starts_with("external")
     }

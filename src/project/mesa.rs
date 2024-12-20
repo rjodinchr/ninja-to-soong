@@ -28,7 +28,6 @@ impl Project for Mesa {
     fn get_id(&self) -> ProjectId {
         ProjectId::Mesa
     }
-
     fn generate_package(
         &mut self,
         ctx: &Context,
@@ -156,25 +155,16 @@ impl Project for Mesa {
         Ok(package)
     }
 
-    fn get_default_cflags(&self, target: &str) -> Vec<String> {
-        let mut cflags = vec!["-Wno-non-virtual-dtor", "-Wno-error"];
-        if target.ends_with("libvulkan_lite_runtime_a") {
-            cflags.push("-Wno-unreachable-code-loop-increment");
+    fn get_target_alias(&self, target: &str) -> Option<String> {
+        for target_str in TARGETS {
+            let target_path = Path::new(target_str);
+            if target == path_to_id(Path::new("mesa").join(target_path)) {
+                return Some(file_stem(target_path));
+            }
         }
-        cflags.into_iter().map(|flag| String::from(flag)).collect()
+        None
     }
-
-    fn get_define(&self, define: &str) -> String {
-        define
-            .replace(&path_to_string(&self.build_path), MESON_GENERATED)
-            .replace(&path_to_string_with_separator(&self.src_path), "")
-    }
-
-    fn get_include(&self, include: &Path) -> PathBuf {
-        Path::new(MESON_GENERATED).join(strip_prefix(include, &self.build_path))
-    }
-
-    fn get_library_module(&self, module: &mut SoongModule) {
+    fn get_target_object_module(&self, _target: &str, mut module: SoongModule) -> SoongModule {
         module.add_prop(
             "arch",
             SoongNamedProp::new_prop(
@@ -182,26 +172,16 @@ impl Project for Mesa {
                 SoongNamedProp::new_prop("enabled", SoongProp::Bool(false)),
             ),
         );
+        module
     }
-
-    fn get_library_name(&self, library: &Path) -> PathBuf {
-        let file_name = file_name(library);
-        if file_name == "libdrm.so" {
-            PathBuf::from("libdrm")
-        } else if file_name == "libglapi.so.0.0.0" {
-            PathBuf::from("libglapi")
-        } else if file_name == "libgallium_dri.so" {
-            PathBuf::from("libgallium_dri")
-        } else if library.starts_with("src/android_stub") {
-            PathBuf::from(file_stem(library))
-        } else if library.starts_with("src") || library.starts_with("subprojects") {
-            Path::new(self.get_id().str()).join(library)
-        } else {
-            PathBuf::from(library)
+    fn get_target_cflags(&self, target: &str) -> Vec<String> {
+        let mut cflags = vec!["-Wno-non-virtual-dtor", "-Wno-error"];
+        if target.ends_with("libvulkan_lite_runtime_a") {
+            cflags.push("-Wno-unreachable-code-loop-increment");
         }
+        cflags.into_iter().map(|flag| String::from(flag)).collect()
     }
-
-    fn get_shared_libs(&self, target: &str) -> Vec<String> {
+    fn get_target_shared_libs(&self, target: &str) -> Vec<String> {
         let mut libs = Vec::new();
         if target.ends_with("libdri_a")
             || target.ends_with("libanv_common_a")
@@ -220,25 +200,6 @@ impl Project for Mesa {
         }
         libs.into_iter().map(|lib| String::from(lib)).collect()
     }
-
-    fn get_source(&self, source: &Path) -> PathBuf {
-        if let Ok(strip) = source.strip_prefix(&self.build_path) {
-            self.src_path.join(MESON_GENERATED).join(strip)
-        } else {
-            PathBuf::from(source)
-        }
-    }
-
-    fn get_target_alias(&self, target: &str) -> Option<String> {
-        for target_str in TARGETS {
-            let target_path = Path::new(target_str);
-            if target == path_to_id(Path::new("mesa").join(target_path)) {
-                return Some(file_stem(target_path));
-            }
-        }
-        None
-    }
-
     fn get_target_header_libs(&self, target: &str) -> Vec<String> {
         let mut libs = Vec::new();
         for lib in [
@@ -267,32 +228,58 @@ impl Project for Mesa {
         libs.into_iter().map(|lib| String::from(lib)).collect()
     }
 
+    fn get_define(&self, define: &str) -> String {
+        define
+            .replace(&path_to_string(&self.build_path), MESON_GENERATED)
+            .replace(&path_to_string_with_separator(&self.src_path), "")
+    }
+    fn get_include(&self, include: &Path) -> PathBuf {
+        Path::new(MESON_GENERATED).join(strip_prefix(include, &self.build_path))
+    }
+    fn get_lib(&self, library: &Path) -> PathBuf {
+        let file_name = file_name(library);
+        if file_name == "libdrm.so" {
+            PathBuf::from("libdrm")
+        } else if file_name == "libglapi.so.0.0.0" {
+            PathBuf::from("libglapi")
+        } else if file_name == "libgallium_dri.so" {
+            PathBuf::from("libgallium_dri")
+        } else if library.starts_with("src/android_stub") {
+            PathBuf::from(file_stem(library))
+        } else if library.starts_with("src") || library.starts_with("subprojects") {
+            Path::new(self.get_id().str()).join(library)
+        } else {
+            PathBuf::from(library)
+        }
+    }
+    fn get_source(&self, source: &Path) -> PathBuf {
+        if let Ok(strip) = source.strip_prefix(&self.build_path) {
+            self.src_path.join(MESON_GENERATED).join(strip)
+        } else {
+            PathBuf::from(source)
+        }
+    }
+
     fn filter_cflag(&self, cflag: &str) -> bool {
         cflag == "-mclflushopt"
     }
-
     fn filter_define(&self, define: &str) -> bool {
         define != "WITH_LIBBACKTRACE" // b/120606663
     }
-
     fn filter_include(&self, include: &Path) -> bool {
         !(path_to_string(include)
             .starts_with(&path_to_string(self.src_path.join("subprojects/libdrm")))
             || include.ends_with("android_stub"))
     }
-
     fn filter_link_flag(&self, _flag: &str) -> bool {
         false
     }
-
     fn filter_gen_header(&self, _header: &Path) -> bool {
         false
     }
-
     fn filter_lib(&self, lib: &str) -> bool {
         !lib.contains("libbacktrace")
     }
-
     fn filter_target(&self, target: &Path) -> bool {
         let file_name = file_name(target);
         (file_name.contains(".so")

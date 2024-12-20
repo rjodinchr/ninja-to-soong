@@ -14,7 +14,6 @@ impl Project for SpirvHeaders {
     fn get_id(&self) -> ProjectId {
         ProjectId::SpirvHeaders
     }
-
     fn generate_package(
         &mut self,
         ctx: &Context,

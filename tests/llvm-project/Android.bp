@@ -34,7 +34,6 @@ cc_library_static {
         "cmake_generated/tools/clang/include",
         "llvm/include",
     ],
-    use_clang_lld: true,
     optimize_for_size: true,
 }
 
@@ -214,7 +213,6 @@ cc_library_static {
         "llvm/lib/Support",
         "llvm/lib/Support/BLAKE3",
     ],
-    use_clang_lld: true,
     optimize_for_size: true,
 }
 
@@ -237,7 +235,6 @@ cc_library_static {
         "llvm/include",
         "llvm/lib/Demangle",
     ],
-    use_clang_lld: true,
     optimize_for_size: true,
 }
 
@@ -272,7 +269,6 @@ cc_library_static {
         "cmake_generated/tools/clang/include",
         "llvm/include",
     ],
-    use_clang_lld: true,
     optimize_for_size: true,
 }
 
@@ -370,7 +366,6 @@ cc_library_static {
         "cmake_generated/tools/clang/lib/Sema",
         "llvm/include",
     ],
-    use_clang_lld: true,
     optimize_for_size: true,
 }
 
@@ -412,7 +407,6 @@ cc_library_static {
         "cmake_generated/tools/clang/include",
         "llvm/include",
     ],
-    use_clang_lld: true,
     optimize_for_size: true,
 }
 
@@ -503,7 +497,6 @@ cc_library_static {
         "cmake_generated/tools/clang/lib/Basic",
         "llvm/include",
     ],
-    use_clang_lld: true,
     optimize_for_size: true,
 }
 
@@ -609,7 +602,6 @@ cc_library_static {
         "llvm/include",
         "llvm/lib/Transforms/Utils",
     ],
-    use_clang_lld: true,
     optimize_for_size: true,
 }
 
@@ -641,7 +633,6 @@ cc_library_static {
         "llvm/include",
         "llvm/lib/TextAPI",
     ],
-    use_clang_lld: true,
     optimize_for_size: true,
 }
 
@@ -671,7 +662,6 @@ cc_library_static {
         "llvm/include",
         "llvm/lib/TargetParser",
     ],
-    use_clang_lld: true,
     optimize_for_size: true,
 }
 
@@ -702,7 +692,6 @@ cc_library_static {
         "llvm/include",
         "llvm/lib/BinaryFormat",
     ],
-    use_clang_lld: true,
     optimize_for_size: true,
 }
 
@@ -724,7 +713,6 @@ cc_library_static {
         "llvm/include",
         "llvm/lib/DebugInfo/Symbolize",
     ],
-    use_clang_lld: true,
     optimize_for_size: true,
 }
 
@@ -752,7 +740,6 @@ cc_library_static {
         "llvm/include",
         "llvm/lib/Remarks",
     ],
-    use_clang_lld: true,
     optimize_for_size: true,
 }
 
@@ -768,7 +755,6 @@ cc_library_static {
         "llvm/include",
         "llvm/lib/Bitstream/Reader",
     ],
-    use_clang_lld: true,
     optimize_for_size: true,
 }
 
@@ -819,7 +805,6 @@ cc_library_static {
         "llvm/include",
         "llvm/lib/Object",
     ],
-    use_clang_lld: true,
     optimize_for_size: true,
 }
 
@@ -850,7 +835,6 @@ cc_library_static {
         "llvm/include",
         "llvm/lib/MC/MCParser",
     ],
-    use_clang_lld: true,
     optimize_for_size: true,
 }
 
@@ -939,7 +923,6 @@ cc_library_static {
         "llvm/include",
         "llvm/lib/MC",
     ],
-    use_clang_lld: true,
     optimize_for_size: true,
 }
 
@@ -955,7 +938,6 @@ cc_library_static {
         "llvm/include",
         "llvm/lib/IRReader",
     ],
-    use_clang_lld: true,
     optimize_for_size: true,
 }
 
@@ -1049,7 +1031,6 @@ cc_library_static {
         "llvm/include",
         "llvm/lib/IR",
     ],
-    use_clang_lld: true,
     optimize_for_size: true,
 }
 
@@ -1071,7 +1052,6 @@ cc_library_static {
         "llvm/include",
         "llvm/lib/Bitcode/Reader",
     ],
-    use_clang_lld: true,
     optimize_for_size: true,
 }
 
@@ -1091,7 +1071,6 @@ cc_library_static {
         "llvm/include",
         "llvm/lib/AsmParser",
     ],
-    use_clang_lld: true,
     optimize_for_size: true,
 }
 
@@ -1201,7 +1180,6 @@ cc_library_static {
         "llvm/include",
         "llvm/lib/DebugInfo/PDB",
     ],
-    use_clang_lld: true,
     optimize_for_size: true,
 }
 
@@ -1222,7 +1200,6 @@ cc_library_static {
         "llvm/include",
         "llvm/lib/DebugInfo/MSF",
     ],
-    use_clang_lld: true,
     optimize_for_size: true,
 }
 
@@ -1279,7 +1256,6 @@ cc_library_static {
         "llvm/include",
         "llvm/lib/DebugInfo/CodeView",
     ],
-    use_clang_lld: true,
     optimize_for_size: true,
 }
 
@@ -1324,7 +1300,6 @@ cc_library_static {
         "llvm/include",
         "llvm/lib/DebugInfo/DWARF",
     ],
-    use_clang_lld: true,
     optimize_for_size: true,
 }
 
@@ -1343,7 +1318,6 @@ cc_library_static {
         "llvm/include",
         "llvm/lib/DebugInfo/BTF",
     ],
-    use_clang_lld: true,
     optimize_for_size: true,
 }
 
@@ -1375,7 +1349,6 @@ cc_library_static {
         "llvm/include",
         "llvm/lib/ProfileData",
     ],
-    use_clang_lld: true,
     optimize_for_size: true,
 }
 
@@ -1511,7 +1484,6 @@ cc_library_static {
         "llvm/include",
         "llvm/lib/Analysis",
     ],
-    use_clang_lld: true,
     optimize_for_size: true,
 }
 
@@ -1608,7 +1580,6 @@ cc_library_static {
         "llvm/include",
         "llvm/lib/Transforms/Scalar",
     ],
-    use_clang_lld: true,
     optimize_for_size: true,
 }
 
@@ -1640,7 +1611,6 @@ cc_library_static {
         "llvm/include",
         "llvm/lib/Transforms/InstCombine",
     ],
-    use_clang_lld: true,
     optimize_for_size: true,
 }
 
@@ -1659,7 +1629,6 @@ cc_library_static {
         "llvm/include",
         "llvm/lib/Transforms/AggressiveInstCombine",
     ],
-    use_clang_lld: true,
     optimize_for_size: true,
 }
 
@@ -1679,7 +1648,6 @@ cc_library_static {
         "llvm/include",
         "llvm/lib/Frontend/OpenMP",
     ],
-    use_clang_lld: true,
     optimize_for_size: true,
 }
 
@@ -1698,7 +1666,6 @@ cc_library_static {
         "llvm/include",
         "llvm/lib/Frontend/Offloading",
     ],
-    use_clang_lld: true,
     optimize_for_size: true,
 }
 
@@ -1720,7 +1687,6 @@ cc_library_static {
         "cmake_generated/tools/clang/include",
         "llvm/include",
     ],
-    use_clang_lld: true,
     optimize_for_size: true,
 }
 
@@ -1852,7 +1818,6 @@ cc_library_static {
         "cmake_generated/tools/clang/lib/AST",
         "llvm/include",
     ],
-    use_clang_lld: true,
     optimize_for_size: true,
 }
 
@@ -1901,7 +1866,6 @@ cc_library_static {
         "cmake_generated/tools/clang/include",
         "llvm/include",
     ],
-    use_clang_lld: true,
     optimize_for_size: true,
 }
 
@@ -1923,7 +1887,6 @@ cc_library_static {
         "cmake_generated/tools/clang/include",
         "llvm/include",
     ],
-    use_clang_lld: true,
     optimize_for_size: true,
 }
 
@@ -1947,7 +1910,6 @@ cc_library_static {
         "cmake_generated/tools/clang/include",
         "llvm/include",
     ],
-    use_clang_lld: true,
     optimize_for_size: true,
 }
 
@@ -1963,7 +1925,6 @@ cc_library_static {
         "llvm/include",
         "llvm/lib/Frontend/HLSL",
     ],
-    use_clang_lld: true,
     optimize_for_size: true,
 }
 
@@ -1999,7 +1960,6 @@ cc_library_static {
         "cmake_generated/tools/clang/include",
         "llvm/include",
     ],
-    use_clang_lld: true,
     optimize_for_size: true,
 }
 
@@ -2050,7 +2010,6 @@ cc_library_static {
         "cmake_generated/tools/clang/include",
         "llvm/include",
     ],
-    use_clang_lld: true,
     optimize_for_size: true,
 }
 
@@ -2142,7 +2101,6 @@ cc_library_static {
         "cmake_generated/tools/clang/include",
         "llvm/include",
     ],
-    use_clang_lld: true,
     optimize_for_size: true,
 }
 
@@ -2158,7 +2116,6 @@ cc_library_static {
         "llvm/include",
         "llvm/lib/WindowsDriver",
     ],
-    use_clang_lld: true,
     optimize_for_size: true,
 }
 
@@ -2179,7 +2136,6 @@ cc_library_static {
         "llvm/include",
         "llvm/lib/Option",
     ],
-    use_clang_lld: true,
     optimize_for_size: true,
 }
 
@@ -2285,7 +2241,6 @@ cc_library_static {
         "cmake_generated/tools/clang/include",
         "llvm/include",
     ],
-    use_clang_lld: true,
     optimize_for_size: true,
 }
 
@@ -2346,7 +2301,6 @@ cc_library_static {
         "llvm/include",
         "llvm/lib/Transforms/IPO",
     ],
-    use_clang_lld: true,
     optimize_for_size: true,
 }
 
@@ -2388,7 +2342,6 @@ cc_library_static {
         "llvm/include",
         "llvm/lib/Transforms/Vectorize",
     ],
-    use_clang_lld: true,
     optimize_for_size: true,
 }
 
@@ -2420,7 +2373,6 @@ cc_library_static {
         "llvm/include",
         "llvm/lib/SandboxIR",
     ],
-    use_clang_lld: true,
     optimize_for_size: true,
 }
 
@@ -2439,7 +2391,6 @@ cc_library_static {
         "llvm/include",
         "llvm/lib/Linker",
     ],
-    use_clang_lld: true,
     optimize_for_size: true,
 }
 
@@ -2483,7 +2434,6 @@ cc_library_static {
         "llvm/include",
         "llvm/lib/Transforms/Instrumentation",
     ],
-    use_clang_lld: true,
     optimize_for_size: true,
 }
 
@@ -2504,7 +2454,6 @@ cc_library_static {
         "llvm/include",
         "llvm/lib/Bitcode/Writer",
     ],
-    use_clang_lld: true,
     optimize_for_size: true,
 }
 
@@ -2526,7 +2475,6 @@ cc_library_static {
         "llvm/include",
         "llvm/lib/Target",
     ],
-    use_clang_lld: true,
     optimize_for_size: true,
 }
 
@@ -2550,7 +2498,6 @@ cc_library_static {
         "llvm/include",
         "llvm/lib/Passes",
     ],
-    use_clang_lld: true,
     optimize_for_size: true,
 }
 
@@ -2576,7 +2523,6 @@ cc_library_static {
         "llvm/include",
         "llvm/lib/Transforms/ObjCARC",
     ],
-    use_clang_lld: true,
     optimize_for_size: true,
 }
 
@@ -2592,7 +2538,6 @@ cc_library_static {
         "llvm/include",
         "llvm/lib/IRPrinter",
     ],
-    use_clang_lld: true,
     optimize_for_size: true,
 }
 
@@ -2608,7 +2553,6 @@ cc_library_static {
         "llvm/include",
         "llvm/lib/Transforms/HipStdPar",
     ],
-    use_clang_lld: true,
     optimize_for_size: true,
 }
 
@@ -2636,7 +2580,6 @@ cc_library_static {
         "llvm/include",
         "llvm/lib/Transforms/Coroutines",
     ],
-    use_clang_lld: true,
     optimize_for_size: true,
 }
 
@@ -2652,7 +2595,6 @@ cc_library_static {
         "llvm/include",
         "llvm/lib/CodeGenTypes",
     ],
-    use_clang_lld: true,
     optimize_for_size: true,
 }
 
@@ -2898,7 +2840,6 @@ cc_library_static {
         "llvm/include",
         "llvm/lib/CodeGen",
     ],
-    use_clang_lld: true,
     optimize_for_size: true,
 }
 
@@ -2922,7 +2863,6 @@ cc_library_static {
         "llvm/include",
         "llvm/lib/CGData",
     ],
-    use_clang_lld: true,
     optimize_for_size: true,
 }
 
@@ -2938,7 +2878,6 @@ cc_library_static {
         "llvm/include",
         "llvm/lib/Transforms/CFGuard",
     ],
-    use_clang_lld: true,
     optimize_for_size: true,
 }
 
@@ -2961,7 +2900,6 @@ cc_library_static {
         "llvm/include",
         "llvm/lib/LTO",
     ],
-    use_clang_lld: true,
     optimize_for_size: true,
 }
 
@@ -2977,7 +2915,6 @@ cc_library_static {
         "llvm/include",
         "llvm/lib/Extensions",
     ],
-    use_clang_lld: true,
     optimize_for_size: true,
 }
 
@@ -2993,7 +2930,6 @@ cc_library_static {
         "llvm/include",
         "llvm/lib/Frontend/Driver",
     ],
-    use_clang_lld: true,
     optimize_for_size: true,
 }
 
@@ -3013,7 +2949,6 @@ cc_library_static {
         "llvm/include",
         "llvm/lib/ProfileData/Coverage",
     ],
-    use_clang_lld: true,
     optimize_for_size: true,
 }
 

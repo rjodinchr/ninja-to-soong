@@ -126,5 +126,4 @@ cc_library_shared {
         "llvm-project_lib_libclangSupport_a",
     ],
     header_libs: ["OpenCL-Headers"],
-    use_clang_lld: true,
 }
