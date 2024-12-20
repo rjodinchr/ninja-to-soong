@@ -23,13 +23,18 @@ fn generate_project(
 ) -> Result<(), String> {
     let project_name = project.get_id().str();
     let android_path = project.get_id().android_path(ctx);
-    if !is_dependency {
+    let project_ctx = if !is_dependency {
         print_info!("Generating '{project_name}'");
+        ctx.clone()
     } else {
         print_info!("Generating dependency '{project_name}'");
-    }
+        let mut dep_ctx = ctx.clone();
+        dep_ctx.copy_to_aosp = false;
+        dep_ctx.skip_build = true;
+        dep_ctx
+    };
     print_debug!("Creating soong package...");
-    let package = project.generate_package(ctx, projects_generated)?;
+    let package = project.generate_package(&project_ctx, projects_generated)?;
     if !is_dependency {
         print_debug!("Writing soong file...");
 

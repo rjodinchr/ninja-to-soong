@@ -34,7 +34,7 @@ OPTIONS:
     )
 }
 
-#[derive(Default)]
+#[derive(Default, Clone)]
 pub struct Context {
     pub temp_path: PathBuf,
     pub test_path: PathBuf,
