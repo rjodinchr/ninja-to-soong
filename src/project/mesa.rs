@@ -25,6 +25,12 @@ impl Project for Mesa {
     fn get_id(&self) -> ProjectId {
         ProjectId::Mesa
     }
+    fn get_name(&self) -> &'static str {
+        "mesa"
+    }
+    fn get_android_path(&self, ctx: &Context) -> PathBuf {
+        ctx.android_path.join("external").join(self.get_name())
+    }
     fn generate_package(
         &mut self,
         ctx: &Context,
@@ -33,12 +39,12 @@ impl Project for Mesa {
         self.src_path = if let Ok(path) = std::env::var("N2S_MESA_PATH") {
             PathBuf::from(path)
         } else {
-            self.get_id().android_path(ctx)
+            self.get_android_path(ctx)
         };
         self.ndk_path = get_ndk_path(&ctx.temp_path)?;
-        self.build_path = ctx.temp_path.join(self.get_id().str());
+        self.build_path = ctx.temp_path.join(self.get_name());
 
-        let mesa_test_path = ctx.test_path.join(self.get_id().str());
+        let mesa_test_path = ctx.test_path.join(self.get_name());
         let intel_clc_path = if !ctx.skip_build {
             let intel_clc_build_path = ctx.temp_path.join("intel_clc");
             execute_cmd!(
@@ -78,7 +84,7 @@ impl Project for Mesa {
             &self.src_path,
             &self.ndk_path,
             &self.build_path,
-            Path::new(self.get_id().str()),
+            Path::new(self.get_name()),
             "//visibility:public",
             "SPDX-license-identifier-Apache-2.0",
             "docs/license.rst",
@@ -92,14 +98,14 @@ impl Project for Mesa {
         gen_deps.sort();
         write_file(
             &ctx.test_path
-                .join(self.get_id().str())
+                .join(self.get_name())
                 .join("generated_deps.txt"),
             &format!("{0:#?}", &gen_deps),
         )?;
         if ctx.copy_to_aosp {
             copy_files(
                 &self.build_path,
-                &self.get_id().android_path(ctx).join(MESON_GENERATED),
+                &self.get_android_path(ctx).join(MESON_GENERATED),
                 gen_deps,
             )?;
         }
@@ -199,7 +205,7 @@ impl Project for Mesa {
         } else if library.starts_with("src/android_stub") {
             PathBuf::from(file_stem(library))
         } else if library.starts_with("src") || library.starts_with("subprojects") {
-            Path::new(self.get_id().str()).join(library)
+            Path::new(self.get_name()).join(library)
         } else {
             PathBuf::from(library)
         }

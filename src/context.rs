@@ -10,10 +10,10 @@ const COPY_TO_AOSP: &str = "--copy-to-aosp";
 const SKIP_BUILD: &str = "--skip-build";
 const SKIP_GEN_NINJA: &str = "--skip-gen-ninja";
 
-fn help(exec: &str, projects: &Vec<&mut dyn Project>) -> String {
+fn help(exec: &str, projects: &ProjectsMap) -> String {
     let projects_help = projects
         .iter()
-        .map(|project| project.get_id().str())
+        .map(|(_, project)| project.get_name())
         .collect::<Vec<&str>>()
         .join("\n  ");
     format!(
@@ -47,11 +47,18 @@ pub struct Context {
 impl Context {
     pub fn parse_args(
         args: Vec<String>,
-        projects: &Vec<&mut dyn Project>,
-    ) -> Result<(Self, String, Vec<ProjectId>), String> {
+        projects: &ProjectsMap,
+    ) -> Result<(Self, Vec<ProjectId>), String> {
         let exec = file_name(&Path::new(&args[0]));
         let mut iter = args[1..].iter();
         let mut clean_tmp = false;
+        let project_name_to_id = projects.iter().fold(
+            std::collections::HashMap::new(),
+            |mut map, (project_id, project)| {
+                map.insert(project.get_name(), project_id.clone());
+                map
+            },
+        );
         let mut project_ids = Vec::new();
         let mut ctx = Self::default();
         while let Some(arg) = iter.next() {
@@ -70,9 +77,14 @@ impl Context {
                 COPY_TO_AOSP => ctx.copy_to_aosp = true,
                 CLEAN_TMP => clean_tmp = true,
                 "-h" | "--help" => return Err(help(&exec, projects)),
-                project => match ProjectId::from(project) {
-                    Ok(project) => project_ids.push(project),
-                    Err(err) => return Err(format!("{0}\n{1}", err, help(&exec, projects))),
+                project => match project_name_to_id.get(project) {
+                    Some(project) => project_ids.push(project.clone()),
+                    None => {
+                        return Err(format!(
+                            "Unknown project '{project}'\n{0}",
+                            help(&exec, projects)
+                        ))
+                    }
                 },
             }
         }
@@ -120,6 +132,6 @@ impl Context {
             Err(err) => return error!("Could not get current executable path: {err}"),
         };
 
-        Ok((ctx, exec, project_ids))
+        Ok((ctx, project_ids))
     }
 }

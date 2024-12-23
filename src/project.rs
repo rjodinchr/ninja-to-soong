@@ -10,15 +10,15 @@ use crate::soong_module::*;
 use crate::soong_package::*;
 use crate::utils::*;
 
-pub mod angle;
-pub mod clspv;
-pub mod clvk;
-pub mod llvm_project;
-pub mod mesa;
-pub mod spirv_headers;
-pub mod spirv_tools;
+mod angle;
+mod clspv;
+mod clvk;
+mod llvm_project;
+mod mesa;
+mod spirv_headers;
+mod spirv_tools;
 
-#[derive(Eq, PartialEq, Hash, Clone)]
+#[derive(Debug, Eq, PartialEq, Hash, Clone)]
 pub enum ProjectId {
     Angle,
     Clvk,
@@ -28,45 +28,68 @@ pub enum ProjectId {
     SpirvHeaders,
     SpirvTools,
 }
-
-const ANGLE_NAME: &str = "angle";
-const CLVK_NAME: &str = "clvk";
-const CLSPV_NAME: &str = "clspv";
-const LLVM_PROJECT_NAME: &str = "llvm-project";
-const MESA_NAME: &str = "mesa";
-const SPIRV_HEADERS_NAME: &str = "SPIRV-Headers";
-const SPIRV_TOOLS_NAME: &str = "SPIRV-Tools";
-
-impl ProjectId {
-    pub fn from(project: &str) -> Result<Self, String> {
-        Ok(match project {
-            ANGLE_NAME => Self::Angle,
-            CLVK_NAME => Self::Clvk,
-            CLSPV_NAME => Self::Clspv,
-            LLVM_PROJECT_NAME => Self::LlvmProject,
-            MESA_NAME => Self::Mesa,
-            SPIRV_HEADERS_NAME => Self::SpirvHeaders,
-            SPIRV_TOOLS_NAME => Self::SpirvTools,
-            _ => return error!("Unknown project '{project}'"),
-        })
+pub struct ProjectsMap(HashMap<ProjectId, Box<dyn Project>>);
+impl ProjectsMap {
+    pub fn new() -> Self {
+        let projects: Vec<Box<dyn Project>> = vec![
+            Box::new(angle::Angle::default()),
+            Box::new(clvk::Clvk::default()),
+            Box::new(clspv::Clspv::default()),
+            Box::new(llvm_project::LlvmProject::default()),
+            Box::new(mesa::Mesa::default()),
+            Box::new(spirv_headers::SpirvHeaders::default()),
+            Box::new(spirv_tools::SpirvTools::default()),
+        ];
+        Self(
+            projects
+                .into_iter()
+                .fold(HashMap::new(), |mut map, project| {
+                    map.insert(project.get_id(), project);
+                    map
+                }),
+        )
     }
-    pub const fn str(self) -> &'static str {
-        match self {
-            Self::Angle => ANGLE_NAME,
-            Self::Clvk => CLVK_NAME,
-            Self::Clspv => CLSPV_NAME,
-            Self::LlvmProject => LLVM_PROJECT_NAME,
-            Self::Mesa => MESA_NAME,
-            Self::SpirvHeaders => SPIRV_HEADERS_NAME,
-            Self::SpirvTools => SPIRV_TOOLS_NAME,
-        }
+    pub fn insert(&mut self, id: ProjectId, project: Box<dyn Project>) {
+        self.0.insert(id, project);
     }
-    pub fn android_path(self, ctx: &Context) -> PathBuf {
-        ctx.android_path.join("external").join(self.str())
+    pub fn remove_entry(
+        &mut self,
+        id: &ProjectId,
+    ) -> Result<(ProjectId, Box<dyn Project>), String> {
+        let Some(entry) = self.0.remove_entry(id) else {
+            return error!("'{id:#?}' not found in projects map");
+        };
+        Ok(entry)
+    }
+    pub fn iter(&self) -> std::collections::hash_map::Iter<'_, ProjectId, Box<dyn Project>> {
+        self.0.iter()
+    }
+    pub fn get_deps(
+        &self,
+        from: ProjectId,
+        to: ProjectId,
+        gen_deps: GenDeps,
+    ) -> Result<Vec<PathBuf>, String> {
+        let Some(project) = self.0.get(&from) else {
+            return error!("'{from:#?}' not found in projects map");
+        };
+        let deps_map = project.get_deps_map(to);
+        let Some(gen_deps) = deps_map.get(&gen_deps) else {
+            return error!("'{gen_deps:#?}' not found in deps map");
+        };
+        let mut gen_deps = gen_deps.clone();
+        gen_deps.sort();
+        Ok(gen_deps)
+    }
+    pub fn get_android_path(&self, id: ProjectId, ctx: &Context) -> Result<PathBuf, String> {
+        let Some(project) = self.0.get(&id) else {
+            return error!("'{id:#?}' not found in projects map");
+        };
+        Ok(project.get_android_path(ctx))
     }
 }
 
-#[derive(Eq, PartialEq, Hash)]
+#[derive(Debug, Eq, PartialEq, Hash)]
 pub enum GenDeps {
     SpirvHeaders,
     TargetsToGen,
@@ -74,22 +97,6 @@ pub enum GenDeps {
     LibclcBins,
 }
 impl GenDeps {
-    fn get(
-        self,
-        project: &dyn Project,
-        from: ProjectId,
-        projects_map: &ProjectsMap,
-    ) -> Vec<PathBuf> {
-        let mut vec = projects_map
-            .get(&from)
-            .unwrap()
-            .get_deps_map(project.get_id())
-            .get(&self)
-            .unwrap()
-            .clone();
-        vec.sort();
-        vec
-    }
     pub const fn str(self) -> &'static str {
         match self {
             Self::SpirvHeaders => "spirv-header-dep",
@@ -99,13 +106,13 @@ impl GenDeps {
         }
     }
 }
-
 pub type GenDepsMap = HashMap<GenDeps, Vec<PathBuf>>;
-pub type ProjectsMap<'a> = HashMap<ProjectId, &'a dyn Project>;
 
 pub trait Project {
     // MANDATORY FUNCTIONS
     fn get_id(&self) -> ProjectId;
+    fn get_name(&self) -> &'static str;
+    fn get_android_path(&self, ctx: &Context) -> PathBuf;
     fn generate_package(
         &mut self,
         ctx: &Context,

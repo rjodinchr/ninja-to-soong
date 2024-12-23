@@ -399,7 +399,7 @@ impl<'a> SoongPackage<'a> {
                         dep_name(
                             &input,
                             self.build_path,
-                            project.get_id().str(),
+                            &project.get_name(),
                             self.build_path,
                         ),
                     );

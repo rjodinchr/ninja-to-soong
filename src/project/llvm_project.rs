@@ -16,20 +16,26 @@ impl Project for LlvmProject {
     fn get_id(&self) -> ProjectId {
         ProjectId::LlvmProject
     }
+    fn get_name(&self) -> &'static str {
+        "llvm-project"
+    }
+    fn get_android_path(&self, ctx: &Context) -> PathBuf {
+        ctx.android_path.join("external").join(self.get_name())
+    }
     fn generate_package(
         &mut self,
         ctx: &Context,
         projects_map: &ProjectsMap,
     ) -> Result<SoongPackage, String> {
-        self.src_path = self.get_id().android_path(ctx);
-        self.build_path = ctx.temp_path.join(self.get_id().str());
+        self.src_path = self.get_android_path(ctx);
+        self.build_path = ctx.temp_path.join(self.get_name());
         self.ndk_path = get_ndk_path(&ctx.temp_path)?;
 
         if !ctx.skip_gen_ninja {
             execute_cmd!(
                 "bash",
                 vec![
-                    &path_to_string(ctx.test_path.join(self.get_id().str()).join("gen-ninja.sh")),
+                    &path_to_string(ctx.test_path.join(self.get_name()).join("gen-ninja.sh")),
                     &path_to_string(self.src_path.join("llvm")),
                     &path_to_string(&self.build_path),
                     &path_to_string(&self.ndk_path),
@@ -38,10 +44,14 @@ impl Project for LlvmProject {
                 ]
             )?;
         }
+        let targets_to_generate =
+            projects_map.get_deps(ProjectId::Clvk, self.get_id(), GenDeps::TargetsToGen)?;
+        let libclc_binaries =
+            projects_map.get_deps(ProjectId::Clspv, self.get_id(), GenDeps::LibclcBins)?;
         if !ctx.skip_build {
             let mut targets_to_build = Vec::new();
-            targets_to_build.extend(GenDeps::TargetsToGen.get(self, ProjectId::Clvk, projects_map));
-            targets_to_build.extend(GenDeps::LibclcBins.get(self, ProjectId::Clspv, projects_map));
+            targets_to_build.extend(targets_to_generate.clone());
+            targets_to_build.extend(libclc_binaries.clone());
             let mut args = vec![String::from("--build"), path_to_string(&self.build_path)];
             for target in targets_to_build {
                 args.push(String::from("--target"));
@@ -56,20 +66,15 @@ impl Project for LlvmProject {
             &self.src_path,
             &self.ndk_path,
             &self.build_path,
-            Path::new(self.get_id().str()),
+            Path::new(self.get_name()),
             "//visibility:public",
             "SPDX-license-identifier-Apache-2.0",
             "LICENSE.TXT",
         );
-        package.generate(
-            GenDeps::TargetsToGen.get(self, ProjectId::Clvk, projects_map),
-            targets,
-            self,
-        )?;
+        package.generate(targets_to_generate, targets, self)?;
 
-        let libclc_deps = GenDeps::LibclcBins.get(self, ProjectId::Clspv, projects_map);
         let mut gen_deps = package.get_gen_deps();
-        gen_deps.extend(libclc_deps.clone());
+        gen_deps.extend(libclc_binaries.clone());
         let missing_gen_deps = vec![
             "include/llvm/Config/llvm-config.h",
             "include/llvm/Config/abi-breaking.h",
@@ -91,14 +96,14 @@ impl Project for LlvmProject {
         gen_deps.sort();
         write_file(
             &ctx.test_path
-                .join(self.get_id().str())
+                .join(self.get_name())
                 .join("generated_deps.txt"),
             &format!("{0:#?}", &gen_deps),
         )?;
         if ctx.copy_to_aosp {
             copy_files(
                 &self.build_path,
-                &self.get_id().android_path(ctx).join(CMAKE_GENERATED),
+                &self.get_android_path(ctx).join(CMAKE_GENERATED),
                 gen_deps,
             )?;
         }
@@ -119,7 +124,9 @@ impl Project for LlvmProject {
             ],
         ));
 
-        for clang_header in GenDeps::ClangHeaders.get(self, ProjectId::Clspv, projects_map) {
+        for clang_header in
+            projects_map.get_deps(ProjectId::Clspv, self.get_id(), GenDeps::ClangHeaders)?
+        {
             package.add_module(SoongModule::new_copy_genrule(
                 dep_name(
                     &clang_header,
@@ -131,8 +138,8 @@ impl Project for LlvmProject {
                 file_name(&clang_header),
             ));
         }
-        for file in libclc_deps {
-            let file_path = cmake_generated_path.join(file);
+        for binary in libclc_binaries {
+            let file_path = cmake_generated_path.join(binary);
             package.add_module(SoongModule::new_copy_genrule(
                 dep_name(
                     &file_path,

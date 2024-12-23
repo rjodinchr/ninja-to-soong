@@ -15,30 +15,36 @@ impl Project for Clvk {
     fn get_id(&self) -> ProjectId {
         ProjectId::Clvk
     }
+    fn get_name(&self) -> &'static str {
+        "clvk"
+    }
+    fn get_android_path(&self, ctx: &Context) -> PathBuf {
+        ctx.android_path.join("external").join(self.get_name())
+    }
     fn generate_package(
         &mut self,
         ctx: &Context,
-        _projects_map: &ProjectsMap,
+        projects_map: &ProjectsMap,
     ) -> Result<SoongPackage, String> {
-        self.src_path = self.get_id().android_path(ctx);
-        self.build_path = ctx.temp_path.join(self.get_id().str());
+        self.src_path = self.get_android_path(ctx);
+        self.build_path = ctx.temp_path.join(self.get_name());
         self.ndk_path = get_ndk_path(&ctx.temp_path)?;
 
         if !ctx.skip_gen_ninja {
             execute_cmd!(
                 "bash",
                 vec![
-                    &path_to_string(ctx.test_path.join(self.get_id().str()).join("gen-ninja.sh")),
+                    &path_to_string(ctx.test_path.join(self.get_name()).join("gen-ninja.sh")),
                     &path_to_string(&self.src_path),
                     &path_to_string(&self.build_path),
                     &path_to_string(&self.ndk_path),
                     ANDROID_ABI,
                     ANDROID_ISA,
                     ANDROID_PLATFORM,
-                    &path_to_string(ProjectId::SpirvHeaders.android_path(ctx)),
-                    &path_to_string(ProjectId::SpirvTools.android_path(ctx)),
-                    &path_to_string(ProjectId::LlvmProject.android_path(ctx)),
-                    &path_to_string(ProjectId::Clspv.android_path(ctx)),
+                    &path_to_string(projects_map.get_android_path(ProjectId::SpirvHeaders, ctx)?),
+                    &path_to_string(projects_map.get_android_path(ProjectId::SpirvTools, ctx)?),
+                    &path_to_string(projects_map.get_android_path(ProjectId::LlvmProject, ctx)?),
+                    &path_to_string(projects_map.get_android_path(ProjectId::Clspv, ctx)?),
                 ]
             )?;
         }
@@ -49,7 +55,7 @@ impl Project for Clvk {
             &self.src_path,
             &self.ndk_path,
             &self.build_path,
-            Path::new(self.get_id().str()),
+            Path::new(self.get_name()),
             "//visibility:public",
             "SPDX-license-identifier-Apache-2.0",
             "LICENSE",
@@ -63,7 +69,12 @@ impl Project for Clvk {
     fn get_deps_map(&self, project: ProjectId) -> GenDepsMap {
         let mut deps = HashMap::new();
         let mut libs = Vec::new();
-        let prefix = project.str();
+        let prefix = match project {
+            ProjectId::Clspv => "clspv",
+            ProjectId::LlvmProject => "llvm-project",
+            ProjectId::SpirvTools => "SPIRV-Tools",
+            _ => "",
+        };
         for library in &self.generated_libraries {
             if let Ok(lib) = self.get_lib(library).strip_prefix(prefix) {
                 libs.push(PathBuf::from(lib));
@@ -87,7 +98,7 @@ impl Project for Clvk {
     fn get_lib(&self, library: &Path) -> PathBuf {
         strip_prefix(
             if let Ok(strip) = library.strip_prefix(Path::new("external/clspv/third_party/llvm")) {
-                Path::new(ProjectId::LlvmProject.str()).join(strip)
+                Path::new("llvm-project").join(strip)
             } else {
                 PathBuf::from(library)
             },
