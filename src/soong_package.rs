@@ -11,11 +11,10 @@ use crate::utils::*;
 pub struct SoongPackage<'a> {
     modules: Vec<SoongModule>,
     gen_deps: HashSet<PathBuf>,
-    generated_libraries: HashSet<PathBuf>,
+    gen_libs: HashSet<PathBuf>,
     src_path: &'a Path,
     ndk_path: &'a Path,
     build_path: &'a Path,
-    target_prefix: &'a Path,
 }
 
 impl<'a> SoongPackage<'a> {
@@ -23,22 +22,19 @@ impl<'a> SoongPackage<'a> {
         src_path: &'a Path,
         ndk_path: &'a Path,
         build_path: &'a Path,
-        target_prefix: &'a Path,
         default_visibility: &str,
-        license_kinds: &str,
-        license_text: &str,
+        license_module_name: &str,
+        license_kinds: Vec<&str>,
+        license_text: Vec<&str>,
     ) -> Self {
         let mut package = Self {
             modules: Vec::new(),
             gen_deps: HashSet::new(),
-            generated_libraries: HashSet::new(),
+            gen_libs: HashSet::new(),
             src_path,
             ndk_path,
             build_path,
-            target_prefix,
         };
-        let license_name = path_to_id(target_prefix.join(license_text.to_lowercase()));
-
         let mut package_module = SoongModule::new("package");
         package_module.add_prop(
             "default_visibility",
@@ -46,23 +42,33 @@ impl<'a> SoongPackage<'a> {
         );
         package_module.add_prop(
             "default_applicable_licenses",
-            SoongProp::VecStr(vec![license_name.clone()]),
+            SoongProp::VecStr(vec![String::from(license_module_name)]),
         );
         package.add_module(package_module);
 
         let mut license_module = SoongModule::new("license");
-        license_module.add_prop("name", SoongProp::Str(license_name.clone()));
+        license_module.add_prop("name", SoongProp::Str(String::from(license_module_name)));
         license_module.add_prop(
             "visibility",
             SoongProp::VecStr(vec![String::from(":__subpackages__")]),
         );
         license_module.add_prop(
             "license_kinds",
-            SoongProp::VecStr(vec![String::from(license_kinds)]),
+            SoongProp::VecStr(
+                license_kinds
+                    .into_iter()
+                    .map(|kind| String::from(kind))
+                    .collect(),
+            ),
         );
         license_module.add_prop(
             "license_text",
-            SoongProp::VecStr(vec![String::from(license_text)]),
+            SoongProp::VecStr(
+                license_text
+                    .into_iter()
+                    .map(|text| String::from(text))
+                    .collect(),
+            ),
         );
         package.add_module(license_module);
 
@@ -124,8 +130,8 @@ impl<'a> SoongPackage<'a> {
         Vec::from_iter(self.gen_deps.to_owned())
     }
 
-    pub fn get_generated_libraries(&self) -> Vec<PathBuf> {
-        Vec::from_iter(self.generated_libraries.to_owned())
+    pub fn get_gen_libs(&self) -> Vec<PathBuf> {
+        Vec::from_iter(self.gen_libs.to_owned())
     }
 
     fn get_defines(&self, defines: Vec<String>, project: &dyn Project) -> Vec<String> {
@@ -158,7 +164,7 @@ impl<'a> SoongPackage<'a> {
                 if lib.starts_with(&self.ndk_path) {
                     file_stem(lib)
                 } else {
-                    self.generated_libraries.insert(lib.clone());
+                    self.gen_libs.insert(lib.clone());
                     let lib_id = path_to_id(project.get_lib(&lib));
                     project.get_target_alias(&lib_id).unwrap_or(lib_id)
                 }
@@ -176,7 +182,7 @@ impl<'a> SoongPackage<'a> {
     where
         T: NinjaTarget,
     {
-        let target_name = target.get_name(self.target_prefix);
+        let target_name = target.get_name(project.get_name());
         let mut cflags = HashSet::new();
         let mut includes = HashSet::new();
         let mut sources = HashSet::new();
@@ -254,7 +260,7 @@ impl<'a> SoongPackage<'a> {
                 targets_map
                     .get(&header)
                     .unwrap()
-                    .get_name(self.target_prefix)
+                    .get_name(project.get_name())
             })
             .collect::<HashSet<String>>();
 
@@ -446,7 +452,7 @@ impl<'a> SoongPackage<'a> {
             .collect::<HashSet<String>>();
 
         let mut module = SoongModule::new("cc_genrule");
-        module.add_prop("name", SoongProp::Str(target.get_name(self.target_prefix)));
+        module.add_prop("name", SoongProp::Str(target.get_name(project.get_name())));
         module.add_prop("cmd", SoongProp::Str(cmd));
         module.add_prop("srcs", SoongProp::VecStr(Vec::from_iter(sources)));
         module.add_prop("out", SoongProp::VecStr(Vec::from_iter(outputs)));

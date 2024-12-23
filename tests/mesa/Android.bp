@@ -10,11 +10,11 @@
 
 package {
     default_visibility: ["//visibility:public"],
-    default_applicable_licenses: ["mesa_docs_license_rst"],
+    default_applicable_licenses: ["mesa_licenses"],
 }
 
 license {
-    name: "mesa_docs_license_rst",
+    name: "mesa_licenses",
     visibility: [":__subpackages__"],
     license_kinds: ["SPDX-license-identifier-Apache-2.0"],
     license_text: ["docs/license.rst"],

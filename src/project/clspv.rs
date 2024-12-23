@@ -57,10 +57,10 @@ impl Project for Clspv {
             &self.src_path,
             &self.ndk_path,
             &self.build_path,
-            Path::new(self.get_name()),
             "//external/clvk",
-            "SPDX-license-identifier-Apache-2.0",
-            "LICENSE",
+            "clspv_license",
+            vec!["SPDX-license-identifier-Apache-2.0"],
+            vec!["LICENSE"],
         );
         package.generate(
             projects_map.get_deps(ProjectId::Clvk, self.get_id(), GenDeps::TargetsToGen)?,

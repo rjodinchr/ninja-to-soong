@@ -30,10 +30,10 @@ impl Project for SpirvHeaders {
             &self.src_path,
             Path::new(""),
             Path::new(""),
-            Path::new(self.get_name()),
             "//visibility:public",
-            "SPDX-license-identifier-MIT",
-            "LICENSE",
+            "SPIRV-Headers_license",
+            vec!["SPDX-license-identifier-MIT"],
+            vec!["LICENSE"],
         );
 
         package.add_module(SoongModule::new_cc_library_headers(
