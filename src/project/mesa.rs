@@ -152,7 +152,7 @@ impl Project for Mesa {
             libs.push("libz");
         }
         if target.starts_with("mesa_src_intel_vulkan_")
-            || target == "mesa_src_vulkan_runtime_libvulkan_lite_runtime_a"
+            || target.ends_with("libvulkan_lite_runtime_a")
         {
             libs.push("libnativewindow");
         }
