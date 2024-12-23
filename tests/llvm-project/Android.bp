@@ -10,11 +10,11 @@
 
 package {
     default_visibility: ["//visibility:public"],
-    default_applicable_licenses: ["llvm-project_license_txt"],
+    default_applicable_licenses: ["llvm-project_license"],
 }
 
 license {
-    name: "llvm-project_license_txt",
+    name: "llvm-project_license",
     visibility: [":__subpackages__"],
     license_kinds: ["SPDX-license-identifier-Apache-2.0"],
     license_text: ["LICENSE.TXT"],

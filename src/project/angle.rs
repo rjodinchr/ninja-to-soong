@@ -76,10 +76,10 @@ impl Project for Angle {
             &self.src_path,
             &self.ndk_path,
             &self.build_path,
-            Path::new(self.get_name()),
             "//visibility:public",
-            "SPDX-license-identifier-Apache-2.0",
-            "LICENSE",
+            "angle_license",
+            vec!["SPDX-license-identifier-Apache-2.0"],
+            vec!["LICENSE"],
         );
         let targets_to_generate = TARGETS
             .into_iter()

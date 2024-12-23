@@ -8,7 +8,7 @@ pub struct Clvk {
     src_path: PathBuf,
     build_path: PathBuf,
     ndk_path: PathBuf,
-    generated_libraries: Vec<PathBuf>,
+    gen_libs: Vec<PathBuf>,
 }
 
 impl Project for Clvk {
@@ -55,14 +55,14 @@ impl Project for Clvk {
             &self.src_path,
             &self.ndk_path,
             &self.build_path,
-            Path::new(self.get_name()),
             "//visibility:public",
-            "SPDX-license-identifier-Apache-2.0",
-            "LICENSE",
+            "clvk_license",
+            vec!["SPDX-license-identifier-Apache-2.0"],
+            vec!["LICENSE"],
         );
         package.generate(vec![PathBuf::from("libOpenCL.so")], targets, self)?;
 
-        self.generated_libraries = Vec::from_iter(package.get_generated_libraries());
+        self.gen_libs = Vec::from_iter(package.get_gen_libs());
         Ok(package)
     }
 
@@ -75,7 +75,7 @@ impl Project for Clvk {
             ProjectId::SpirvTools => "SPIRV-Tools",
             _ => "",
         };
-        for library in &self.generated_libraries {
+        for library in &self.gen_libs {
             if let Ok(lib) = self.get_lib(library).strip_prefix(prefix) {
                 libs.push(PathBuf::from(lib));
             }

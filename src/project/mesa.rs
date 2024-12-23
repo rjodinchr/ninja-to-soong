@@ -84,10 +84,10 @@ impl Project for Mesa {
             &self.src_path,
             &self.ndk_path,
             &self.build_path,
-            Path::new(self.get_name()),
             "//visibility:public",
-            "SPDX-license-identifier-Apache-2.0",
-            "docs/license.rst",
+            "mesa_licenses",
+            vec!["SPDX-license-identifier-Apache-2.0"],
+            vec!["docs/license.rst"],
         );
         let targets_to_generate = TARGETS.iter().map(|target| PathBuf::from(target)).collect();
         package.generate(targets_to_generate, targets, self)?;
