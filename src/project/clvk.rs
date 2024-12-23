@@ -84,11 +84,11 @@ impl Project for Clvk {
         deps
     }
 
-    fn get_target_alias(&self, target: &str) -> Option<String> {
+    fn get_target_name(&self, target: &str) -> String {
         if target.ends_with("libOpenCL_so") {
-            Some(String::from("libclvk"))
+            String::from("libclvk")
         } else {
-            None
+            String::from(target)
         }
     }
     fn get_target_header_libs(&self, _target: &str) -> Vec<String> {

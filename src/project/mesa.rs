@@ -4,14 +4,30 @@
 use super::*;
 
 const MESON_GENERATED: &str = "meson_generated";
-const TARGETS: [&str; 7] = [
-    "src/egl/libEGL_mesa.so.1.0.0",
-    "src/mapi/es2api/libGLESv2_mesa.so.2.0.0",
-    "src/mapi/es1api/libGLESv1_CM_mesa.so.1.1.0",
-    "src/mapi/shared-glapi/libglapi.so.0.0.0",
-    "src/gallium/targets/dri/libgallium_dri.so",
-    "src/intel/vulkan/libvulkan_intel.so",
-    "src/tool/pps/pps-producer",
+const TARGETS: [(&str, Option<&str>, Option<&str>); 7] = [
+    (
+        "src/egl/libEGL_mesa.so.1.0.0",
+        Some("libEGL_mesa"),
+        Some("libEGL_mesa_intel"),
+    ),
+    (
+        "src/mapi/es2api/libGLESv2_mesa.so.2.0.0",
+        Some("libGLESv2_mesa"),
+        Some("libGLESv2_mesa_intel"),
+    ),
+    (
+        "src/mapi/es1api/libGLESv1_CM_mesa.so.1.1.0",
+        Some("libGLESv1_CM_mesa"),
+        Some("libGLESv1_CM_mesa_intel"),
+    ),
+    ("src/mapi/shared-glapi/libglapi.so.0.0.0", None, None),
+    ("src/gallium/targets/dri/libgallium_dri.so", None, None),
+    (
+        "src/intel/vulkan/libvulkan_intel.so",
+        Some("vulkan.intel"),
+        Some("libvulkan_intel"),
+    ),
+    ("src/tool/pps/pps-producer", None, Some("pps-producer")),
 ];
 
 #[derive(Default)]
@@ -89,7 +105,10 @@ impl Project for Mesa {
             vec!["SPDX-license-identifier-Apache-2.0"],
             vec!["docs/license.rst"],
         );
-        let targets_to_generate = TARGETS.iter().map(|target| PathBuf::from(target)).collect();
+        let targets_to_generate = TARGETS
+            .iter()
+            .map(|(target, _, _)| PathBuf::from(target))
+            .collect();
         package.generate(targets_to_generate, targets, self)?;
 
         let mut gen_deps = package.get_gen_deps();
@@ -113,11 +132,22 @@ impl Project for Mesa {
         Ok(package)
     }
 
-    fn get_target_alias(&self, target: &str) -> Option<String> {
-        for target_str in TARGETS {
-            let target_path = Path::new(target_str);
-            if target == path_to_id(Path::new("mesa").join(target_path)) {
-                return Some(file_stem(target_path));
+    fn get_target_name(&self, target: &str) -> String {
+        for (target_str, _, some_alias) in TARGETS {
+            if target == path_to_id(Path::new(self.get_name()).join(target_str)) {
+                if let Some(alias) = some_alias {
+                    return String::from(alias);
+                }
+            }
+        }
+        String::from(target)
+    }
+    fn get_target_stem(&self, target: &str) -> Option<String> {
+        for (target_str, some_stem, _) in TARGETS {
+            if target == path_to_id(Path::new(self.get_name()).join(target_str)) {
+                if let Some(stem) = some_stem {
+                    return Some(String::from(stem));
+                }
             }
         }
         None
@@ -195,13 +225,15 @@ impl Project for Mesa {
         Path::new(MESON_GENERATED).join(strip_prefix(include, &self.build_path))
     }
     fn get_lib(&self, library: &Path) -> PathBuf {
-        let file_name = file_name(library);
-        if file_name == "libdrm.so" {
+        for (target, _, alias) in TARGETS {
+            if let Some(alias) = alias {
+                if library == Path::new(target) {
+                    return PathBuf::from(alias);
+                }
+            }
+        }
+        if file_name(library) == "libdrm.so" {
             PathBuf::from("libdrm")
-        } else if file_name == "libglapi.so.0.0.0" {
-            PathBuf::from("libglapi")
-        } else if file_name == "libgallium_dri.so" {
-            PathBuf::from("libgallium_dri")
         } else if library.starts_with("src/android_stub") {
             PathBuf::from(file_stem(library))
         } else if library.starts_with("src") || library.starts_with("subprojects") {
