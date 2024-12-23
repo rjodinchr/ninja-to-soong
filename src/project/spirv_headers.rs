@@ -14,17 +14,23 @@ impl Project for SpirvHeaders {
     fn get_id(&self) -> ProjectId {
         ProjectId::SpirvHeaders
     }
+    fn get_name(&self) -> &'static str {
+        "SPIRV-Headers"
+    }
+    fn get_android_path(&self, ctx: &Context) -> PathBuf {
+        ctx.android_path.join("external").join(self.get_name())
+    }
     fn generate_package(
         &mut self,
         ctx: &Context,
         projects_map: &ProjectsMap,
     ) -> Result<SoongPackage, String> {
-        self.src_path = self.get_id().android_path(ctx);
+        self.src_path = self.get_android_path(ctx);
         let mut package = SoongPackage::new(
             &self.src_path,
             Path::new(""),
             Path::new(""),
-            Path::new(self.get_id().str()),
+            Path::new(self.get_name()),
             "//visibility:public",
             "SPDX-license-identifier-MIT",
             "LICENSE",
@@ -36,8 +42,16 @@ impl Project for SpirvHeaders {
         ));
 
         let mut set: HashSet<PathBuf> = HashSet::new();
-        set.extend(GenDeps::SpirvHeaders.get(self, ProjectId::SpirvTools, projects_map));
-        set.extend(GenDeps::SpirvHeaders.get(self, ProjectId::Clspv, projects_map));
+        set.extend(projects_map.get_deps(
+            ProjectId::SpirvTools,
+            self.get_id(),
+            GenDeps::SpirvHeaders,
+        )?);
+        set.extend(projects_map.get_deps(
+            ProjectId::Clspv,
+            self.get_id(),
+            GenDeps::SpirvHeaders,
+        )?);
         let mut files = Vec::from_iter(set);
         files.sort();
         for file in files {

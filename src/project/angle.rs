@@ -40,6 +40,12 @@ impl Project for Angle {
     fn get_id(&self) -> ProjectId {
         ProjectId::Angle
     }
+    fn get_name(&self) -> &'static str {
+        "angle"
+    }
+    fn get_android_path(&self, ctx: &Context) -> PathBuf {
+        ctx.android_path.join("external").join(self.get_name())
+    }
     fn generate_package(
         &mut self,
         ctx: &Context,
@@ -48,16 +54,16 @@ impl Project for Angle {
         self.src_path = if let Ok(path) = std::env::var("N2S_ANGLE_PATH") {
             PathBuf::from(path)
         } else {
-            self.get_id().android_path(ctx)
+            self.get_android_path(ctx)
         };
-        self.build_path = ctx.temp_path.join(self.get_id().str());
+        self.build_path = ctx.temp_path.join(self.get_name());
         self.ndk_path = self.src_path.join("third_party/android_toolchain/ndk");
 
         if !ctx.skip_gen_ninja {
             execute_cmd!(
                 "bash",
                 vec![
-                    &path_to_string(ctx.test_path.join(self.get_id().str()).join("gen-ninja.sh")),
+                    &path_to_string(ctx.test_path.join(self.get_name()).join("gen-ninja.sh")),
                     &path_to_string(&self.src_path),
                     &path_to_string(&self.build_path),
                     ANDROID_CPU,
@@ -70,7 +76,7 @@ impl Project for Angle {
             &self.src_path,
             &self.ndk_path,
             &self.build_path,
-            Path::new(self.get_id().str()),
+            Path::new(self.get_name()),
             "//visibility:public",
             "SPDX-license-identifier-Apache-2.0",
             "LICENSE",
@@ -134,13 +140,13 @@ impl Project for Angle {
     }
     fn get_lib(&self, library: &Path) -> PathBuf {
         if library.starts_with("obj/third_party/spirv-tools") {
-            Path::new(ProjectId::SpirvTools.str()).join("source/libSPIRV-Tools.a")
+            PathBuf::from("SPIRV-Tools/source/libSPIRV-Tools.a")
         } else if library.starts_with("obj/third_party/zlib") {
             PathBuf::from("zlib_google_compression_utils_portable")
         } else if library.starts_with("obj/third_party/cpu_features") {
             PathBuf::from("cpufeatures")
         } else if library.starts_with("obj") {
-            Path::new(self.get_id().str()).join(library)
+            Path::new(self.get_name()).join(library)
         } else {
             for str in TARGETS {
                 if format!("./{str}_angle.so") == path_to_string(library) {

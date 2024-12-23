@@ -17,29 +17,35 @@ impl Project for Clspv {
     fn get_id(&self) -> ProjectId {
         ProjectId::Clspv
     }
+    fn get_name(&self) -> &'static str {
+        "clspv"
+    }
+    fn get_android_path(&self, ctx: &Context) -> PathBuf {
+        ctx.android_path.join("external").join(self.get_name())
+    }
     fn generate_package(
         &mut self,
         ctx: &Context,
         projects_map: &ProjectsMap,
     ) -> Result<SoongPackage, String> {
-        self.src_path = self.get_id().android_path(ctx);
-        self.build_path = ctx.temp_path.join(self.get_id().str());
+        self.src_path = self.get_android_path(ctx);
+        self.build_path = ctx.temp_path.join(self.get_name());
         self.ndk_path = get_ndk_path(&ctx.temp_path)?;
-        self.spirv_headers_path = ProjectId::SpirvHeaders.android_path(ctx);
-        self.llvm_project_path = ProjectId::LlvmProject.android_path(ctx);
+        self.spirv_headers_path = projects_map.get_android_path(ProjectId::SpirvHeaders, ctx)?;
+        self.llvm_project_path = projects_map.get_android_path(ProjectId::LlvmProject, ctx)?;
 
         if !ctx.skip_gen_ninja {
             execute_cmd!(
                 "bash",
                 vec![
-                    &path_to_string(ctx.test_path.join(self.get_id().str()).join("gen-ninja.sh")),
+                    &path_to_string(ctx.test_path.join(self.get_name()).join("gen-ninja.sh")),
                     &path_to_string(&self.src_path),
                     &path_to_string(&self.build_path),
                     &path_to_string(&self.ndk_path),
                     ANDROID_ABI,
                     ANDROID_PLATFORM,
                     &path_to_string(&self.spirv_headers_path),
-                    &path_to_string(ProjectId::SpirvTools.android_path(ctx)),
+                    &path_to_string(projects_map.get_android_path(ProjectId::SpirvTools, ctx)?),
                     &path_to_string(&self.llvm_project_path),
                 ]
             )?;
@@ -51,13 +57,13 @@ impl Project for Clspv {
             &self.src_path,
             &self.ndk_path,
             &self.build_path,
-            Path::new(self.get_id().str()),
+            Path::new(self.get_name()),
             "//external/clvk",
             "SPDX-license-identifier-Apache-2.0",
             "LICENSE",
         );
         package.generate(
-            GenDeps::TargetsToGen.get(self, ProjectId::Clvk, projects_map),
+            projects_map.get_deps(ProjectId::Clvk, self.get_id(), GenDeps::TargetsToGen)?,
             targets,
             self,
         )?;

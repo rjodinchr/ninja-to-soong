@@ -1,7 +1,7 @@
 // Copyright 2024 ninja-to-soong authors
 // SPDX-License-Identifier: Apache-2.0
 
-use std::collections::{HashMap, VecDeque};
+use std::collections::{HashSet, VecDeque};
 
 mod context;
 mod ninja_target;
@@ -16,13 +16,13 @@ use crate::project::*;
 use crate::utils::*;
 
 fn generate_project(
-    project: &mut dyn Project,
+    project: &mut Box<dyn Project>,
     is_dependency: bool,
-    projects_generated: &ProjectsMap,
+    projects_map: &ProjectsMap,
     ctx: &Context,
 ) -> Result<(), String> {
-    let project_name = project.get_id().str();
-    let android_path = project.get_id().android_path(ctx);
+    let project_name = project.get_name();
+    let android_path = project.get_android_path(ctx);
     let project_ctx = if !is_dependency {
         print_info!("Generating '{project_name}'");
         ctx.clone()
@@ -34,7 +34,7 @@ fn generate_project(
         dep_ctx
     };
     print_debug!("Creating soong package...");
-    let package = project.generate_package(&project_ctx, projects_generated)?;
+    let package = project.generate_package(&project_ctx, projects_map)?;
     if !is_dependency {
         print_debug!("Writing soong file...");
 
@@ -52,82 +52,60 @@ fn generate_project(
     Ok(())
 }
 
-fn generate_projects<'a>(
-    all_projects: Vec<&'a mut dyn Project>,
+fn generate_projects(
+    mut projects_map: ProjectsMap,
     project_ids: Vec<ProjectId>,
     ctx: &Context,
 ) -> Result<(), String> {
-    let mut projects_not_generated: HashMap<ProjectId, &mut dyn Project> = HashMap::new();
-    let mut project_ids_to_generate: VecDeque<ProjectId> = VecDeque::new();
-    for project in all_projects {
-        if project_ids.len() == 0 {
-            project_ids_to_generate.push_back(project.get_id());
-        }
-        projects_not_generated.insert(project.get_id(), project);
-    }
-    project_ids_to_generate.extend(project_ids);
-    let project_ids_to_write = project_ids_to_generate.clone();
+    let mut projects_to_generate = if project_ids.len() == 0 {
+        VecDeque::from_iter(projects_map.iter().map(|(key, _)| key.clone()))
+    } else {
+        VecDeque::from_iter(project_ids)
+    };
+    let project_to_write: HashSet<ProjectId> = HashSet::from_iter(projects_to_generate.clone());
 
-    let mut projects_generated: ProjectsMap = HashMap::new();
-    while let Some(project_id) = project_ids_to_generate.pop_front().as_ref() {
-        if projects_generated.contains_key(project_id) {
+    let mut projects_generated = HashSet::new();
+    while let Some(project_id) = projects_to_generate.pop_front().as_ref() {
+        if projects_generated.contains(project_id) {
             continue;
         }
-        let project = projects_not_generated.remove(project_id).unwrap();
+        let (project_id, mut project) = projects_map.remove_entry(project_id)?;
         let missing_deps: Vec<ProjectId> = project
             .get_project_deps()
             .into_iter()
-            .filter(|dep| !projects_generated.contains_key(&dep))
+            .filter(|dep| !projects_generated.contains(dep))
             .collect();
         if missing_deps.len() > 0 {
-            project_ids_to_generate.extend(missing_deps);
-            project_ids_to_generate.push_back(project.get_id());
-            projects_not_generated.insert(project.get_id(), project);
-            continue;
+            projects_to_generate.extend(missing_deps);
+            projects_to_generate.push_back(project_id.clone());
+        } else {
+            generate_project(
+                &mut project,
+                !project_to_write.contains(&project_id),
+                &projects_map,
+                ctx,
+            )?;
+            projects_generated.insert(project_id.clone());
         }
-        generate_project(
-            project,
-            !project_ids_to_write.contains(project_id),
-            &projects_generated,
-            ctx,
-        )?;
-        projects_generated.insert(project.get_id(), project);
+        projects_map.insert(project_id, project);
     }
 
     Ok(())
 }
 
 fn main() -> Result<(), String> {
-    let mut angle = angle::Angle::default();
-    let mut clvk = clvk::Clvk::default();
-    let mut clspv = clspv::Clspv::default();
-    let mut llvm_project = llvm_project::LlvmProject::default();
-    let mut mesa = mesa::Mesa::default();
-    let mut spirv_headers = spirv_headers::SpirvHeaders::default();
-    let mut spirv_tools = spirv_tools::SpirvTools::default();
+    let projects_map = ProjectsMap::new();
+    let (ctx, project_ids) = match Context::parse_args(std::env::args().collect(), &projects_map) {
+        Ok(context) => context,
+        Err(err) => {
+            print_error!("{err}");
+            return Err(format!("Could not create context"));
+        }
+    };
 
-    let all_projects: Vec<&mut dyn Project> = vec![
-        &mut angle,
-        &mut clvk,
-        &mut clspv,
-        &mut llvm_project,
-        &mut mesa,
-        &mut spirv_headers,
-        &mut spirv_tools,
-    ];
-
-    let (ctx, exec, project_ids) =
-        match Context::parse_args(std::env::args().collect(), &all_projects) {
-            Ok(context) => context,
-            Err(err) => {
-                print_error!("{err}");
-                return Err(format!("Could not create context"));
-            }
-        };
-
-    if let Err(err) = generate_projects(all_projects, project_ids, &ctx) {
+    if let Err(err) = generate_projects(projects_map, project_ids, &ctx) {
         print_error!("{err}");
-        Err(format!("{exec} failed"))
+        Err(format!("Could not generate projects"))
     } else {
         Ok(())
     }
