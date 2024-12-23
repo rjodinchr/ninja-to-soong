@@ -90,13 +90,13 @@ impl Project for Angle {
         Ok(package)
     }
 
-    fn get_target_alias(&self, target: &str) -> Option<String> {
+    fn get_target_name(&self, target: &str) -> String {
         for str in TARGETS {
             if format!("angle___{str}_angle_so") == target {
-                return Some(format!("{str}_angle"));
+                return format!("{str}_angle");
             }
         }
-        None
+        String::from(target)
     }
     fn get_target_object_module(&self, _target: &str, mut module: SoongModule) -> SoongModule {
         module.add_prop("stl", SoongProp::Str(String::from("libc++_static")));

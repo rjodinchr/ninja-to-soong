@@ -166,7 +166,7 @@ impl<'a> SoongPackage<'a> {
                 } else {
                     self.gen_libs.insert(lib.clone());
                     let lib_id = path_to_id(project.get_lib(&lib));
-                    project.get_target_alias(&lib_id).unwrap_or(lib_id)
+                    project.get_target_name(&lib_id)
                 }
             })
             .collect()
@@ -266,16 +266,15 @@ impl<'a> SoongPackage<'a> {
 
         self.gen_deps.extend(gen_deps);
 
-        let module_name = if let Some(alias) = project.get_target_alias(&target_name) {
-            alias
-        } else {
-            target_name.clone()
-        };
+        let module_name = project.get_target_name(&target_name);
         static_libs.remove(&module_name);
         shared_libs.remove(&module_name);
 
         let mut module = SoongModule::new(name);
         module.add_prop("name", SoongProp::Str(module_name));
+        if let Some(stem) = project.get_target_stem(&target_name) {
+            module.add_prop("stem", SoongProp::Str(stem));
+        }
         if let Some(vs) = version_script {
             module.add_prop(
                 "version_script",

@@ -129,7 +129,10 @@ pub trait Project {
         GenDepsMap::new()
     }
     // TARGET FUNCTIONS
-    fn get_target_alias(&self, _target: &str) -> Option<String> {
+    fn get_target_name(&self, target: &str) -> String {
+        String::from(target)
+    }
+    fn get_target_stem(&self, _target: &str) -> Option<String> {
         None
     }
     fn get_target_object_module(&self, _target: &str, module: SoongModule) -> SoongModule {

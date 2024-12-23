@@ -3450,6 +3450,7 @@ cc_library_static {
 
 cc_library_shared {
     name: "libvulkan_intel",
+    stem: "vulkan.intel",
     srcs: ["src/intel/vulkan/anv_gem.c"],
     cflags: [
         "-DAMD_LLVM_AVAILABLE=0",
@@ -7044,7 +7045,7 @@ cc_library_static {
 }
 
 cc_library_shared {
-    name: "libgallium_dri",
+    name: "mesa_src_gallium_targets_dri_libgallium_dri_so",
     srcs: ["src/gallium/targets/dri/dri_target.c"],
     cflags: [
         "-DAMD_LLVM_AVAILABLE=0",
@@ -7155,12 +7156,12 @@ cc_library_shared {
     shared_libs: [
         "libcutils",
         "libdrm",
-        "libglapi",
         "libhardware",
         "liblog",
         "libnativewindow",
         "libsync",
         "libz",
+        "mesa_src_mapi_shared-glapi_libglapi_so_0_0_0",
     ],
     static_libs: [
         "mesa_src_c11_impl_libmesa_util_c11_a",
@@ -7730,7 +7731,7 @@ cc_library_static {
 }
 
 cc_library_shared {
-    name: "libglapi",
+    name: "mesa_src_mapi_shared-glapi_libglapi_so_0_0_0",
     srcs: [
         "src/mapi/entry.c",
         "src/mapi/shared-glapi/glapi.c",
@@ -11262,7 +11263,8 @@ cc_library_static {
 }
 
 cc_library_shared {
-    name: "libGLESv1_CM_mesa",
+    name: "libGLESv1_CM_mesa_intel",
+    stem: "libGLESv1_CM_mesa",
     srcs: ["src/mapi/entry.c"],
     cflags: [
         "-DAMD_LLVM_AVAILABLE=0",
@@ -11373,7 +11375,7 @@ cc_library_shared {
     ],
     shared_libs: [
         "libdrm",
-        "libglapi",
+        "mesa_src_mapi_shared-glapi_libglapi_so_0_0_0",
     ],
     static_libs: ["mesa_src_c11_impl_libmesa_util_c11_a"],
     local_include_dirs: [
@@ -11394,7 +11396,8 @@ cc_library_shared {
 }
 
 cc_library_shared {
-    name: "libGLESv2_mesa",
+    name: "libGLESv2_mesa_intel",
+    stem: "libGLESv2_mesa",
     srcs: ["src/mapi/entry.c"],
     cflags: [
         "-DAMD_LLVM_AVAILABLE=0",
@@ -11505,7 +11508,7 @@ cc_library_shared {
     ],
     shared_libs: [
         "libdrm",
-        "libglapi",
+        "mesa_src_mapi_shared-glapi_libglapi_so_0_0_0",
     ],
     static_libs: ["mesa_src_c11_impl_libmesa_util_c11_a"],
     local_include_dirs: [
@@ -11526,7 +11529,8 @@ cc_library_shared {
 }
 
 cc_library_shared {
-    name: "libEGL_mesa",
+    name: "libEGL_mesa_intel",
+    stem: "libEGL_mesa",
     srcs: [
         "src/egl/drivers/dri2/egl_dri2.c",
         "src/egl/drivers/dri2/platform_android.c",
@@ -11657,13 +11661,13 @@ cc_library_shared {
     shared_libs: [
         "libcutils",
         "libdrm",
-        "libgallium_dri",
-        "libglapi",
         "libhardware",
         "liblog",
         "libnativewindow",
         "libsync",
         "libz",
+        "mesa_src_gallium_targets_dri_libgallium_dri_so",
+        "mesa_src_mapi_shared-glapi_libglapi_so_0_0_0",
     ],
     static_libs: [
         "mesa_src_c11_impl_libmesa_util_c11_a",
