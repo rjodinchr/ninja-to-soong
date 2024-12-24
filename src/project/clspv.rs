@@ -133,11 +133,14 @@ impl Project for Clspv {
     }
 
     fn get_cmd_output(&self, output: &Path) -> PathBuf {
-        if let Some((_, header)) = split_path(output, "include") {
-            header
-        } else {
-            PathBuf::from(output)
+        let mut prefix = output;
+        while let Some(parent) = prefix.parent() {
+            prefix = parent;
+            if file_name(prefix) == "include" {
+                return strip_prefix(output, prefix);
+            }
         }
+        PathBuf::from(output)
     }
 
     fn filter_cflag(&self, _cflag: &str) -> bool {
