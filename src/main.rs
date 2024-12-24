@@ -23,6 +23,7 @@ fn generate_project(
 ) -> Result<(), String> {
     let project_name = project.get_name();
     let android_path = project.get_android_path(ctx);
+    let test_path = project.get_test_path(ctx);
     let project_ctx = if !is_dependency {
         print_info!("Generating '{project_name}'");
         ctx.clone()
@@ -39,7 +40,7 @@ fn generate_project(
         print_debug!("Writing soong file...");
 
         const ANDROID_BP: &str = "Android.bp";
-        let file_path = ctx.test_path.join(project_name).join(ANDROID_BP);
+        let file_path = test_path.join(ANDROID_BP);
         write_file(file_path.as_path(), &package.print())?;
         print_verbose!("{file_path:#?} created");
 

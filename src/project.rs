@@ -113,6 +113,7 @@ pub trait Project {
     fn get_id(&self) -> ProjectId;
     fn get_name(&self) -> &'static str;
     fn get_android_path(&self, ctx: &Context) -> PathBuf;
+    fn get_test_path(&self, ctx: &Context) -> PathBuf;
     fn generate_package(
         &mut self,
         ctx: &Context,
