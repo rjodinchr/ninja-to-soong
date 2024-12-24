@@ -20,6 +20,9 @@ impl Project for SpirvHeaders {
     fn get_android_path(&self, ctx: &Context) -> PathBuf {
         ctx.android_path.join("external").join(self.get_name())
     }
+    fn get_test_path(&self, ctx: &Context) -> PathBuf {
+        ctx.test_path.join(self.get_name())
+    }
     fn generate_package(
         &mut self,
         ctx: &Context,

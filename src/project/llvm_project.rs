@@ -22,6 +22,9 @@ impl Project for LlvmProject {
     fn get_android_path(&self, ctx: &Context) -> PathBuf {
         ctx.android_path.join("external").join(self.get_name())
     }
+    fn get_test_path(&self, ctx: &Context) -> PathBuf {
+        ctx.test_path.join(self.get_name())
+    }
     fn generate_package(
         &mut self,
         ctx: &Context,
@@ -35,7 +38,7 @@ impl Project for LlvmProject {
             execute_cmd!(
                 "bash",
                 vec![
-                    &path_to_string(ctx.test_path.join(self.get_name()).join("gen-ninja.sh")),
+                    &path_to_string(self.get_test_path(ctx).join("gen-ninja.sh")),
                     &path_to_string(self.src_path.join("llvm")),
                     &path_to_string(&self.build_path),
                     &path_to_string(&self.ndk_path),
@@ -95,9 +98,7 @@ impl Project for LlvmProject {
         package.filter_local_include_dirs(CMAKE_GENERATED, &gen_deps);
         gen_deps.sort();
         write_file(
-            &ctx.test_path
-                .join(self.get_name())
-                .join("generated_deps.txt"),
+            &self.get_test_path(ctx).join("generated_deps.txt"),
             &format!("{0:#?}", &gen_deps),
         )?;
         if ctx.copy_to_aosp {

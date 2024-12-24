@@ -47,6 +47,9 @@ impl Project for Mesa {
     fn get_android_path(&self, ctx: &Context) -> PathBuf {
         ctx.android_path.join("external").join(self.get_name())
     }
+    fn get_test_path(&self, ctx: &Context) -> PathBuf {
+        ctx.test_path.join(self.get_name())
+    }
     fn generate_package(
         &mut self,
         ctx: &Context,
@@ -60,26 +63,25 @@ impl Project for Mesa {
         self.ndk_path = get_ndk_path(&ctx.temp_path)?;
         self.build_path = ctx.temp_path.join(self.get_name());
 
-        let mesa_test_path = ctx.test_path.join(self.get_name());
         let intel_clc_path = if !ctx.skip_build {
             let intel_clc_build_path = ctx.temp_path.join("intel_clc");
             execute_cmd!(
                 "bash",
                 vec![
-                    &path_to_string(mesa_test_path.join("build_intel_clc.sh")),
+                    &path_to_string(self.get_test_path(ctx).join("build_intel_clc.sh")),
                     &path_to_string(&self.src_path),
                     &path_to_string(&intel_clc_build_path)
                 ]
             )?;
             intel_clc_build_path.join("src/intel/compiler")
         } else {
-            mesa_test_path.clone()
+            self.get_test_path(ctx)
         };
         if !ctx.skip_gen_ninja {
             execute_cmd!(
                 "bash",
                 vec![
-                    &path_to_string(&mesa_test_path.join("gen-ninja.sh")),
+                    &path_to_string(&self.get_test_path(ctx).join("gen-ninja.sh")),
                     &path_to_string(&self.src_path),
                     &path_to_string(&self.build_path),
                     &path_to_string(intel_clc_path),
@@ -116,9 +118,7 @@ impl Project for Mesa {
         package.filter_local_include_dirs(MESON_GENERATED, &gen_deps);
         gen_deps.sort();
         write_file(
-            &ctx.test_path
-                .join(self.get_name())
-                .join("generated_deps.txt"),
+            &self.get_test_path(ctx).join("generated_deps.txt"),
             &format!("{0:#?}", &gen_deps),
         )?;
         if ctx.copy_to_aosp {
