@@ -150,17 +150,6 @@ pub fn strip_prefix<F: AsRef<Path>, P: AsRef<Path>>(from: F, prefix: P) -> PathB
     PathBuf::from(from.as_ref().strip_prefix(prefix).unwrap_or(from.as_ref()))
 }
 
-pub fn split_path(path: &Path, delimiter: &str) -> Option<(PathBuf, PathBuf)> {
-    let mut sub_path = path;
-    while sub_path.parent().is_some() {
-        sub_path = sub_path.parent().unwrap();
-        if file_name(sub_path) == delimiter {
-            return Some((PathBuf::from(sub_path), strip_prefix(path, sub_path)));
-        }
-    }
-    None
-}
-
 pub fn dep_name<P: AsRef<Path>>(from: &Path, prefix: P, path: &str, build_path: &Path) -> String {
     path_to_id(Path::new(path).join(strip_prefix(
         canonicalize_path(from, build_path),
