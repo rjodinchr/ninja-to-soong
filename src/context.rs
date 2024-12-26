@@ -98,23 +98,11 @@ impl Context {
             std::env::temp_dir()
         }
         .join(&exec);
-        if clean_tmp && std::fs::read_dir(&ctx.temp_path).is_ok() {
-            print_info!("Removing temporary directory {0:#?}", ctx.temp_path);
-            if let Err(err) = std::fs::remove_dir_all(&ctx.temp_path) {
-                return error!(
-                    "Could not remove temporary directory {0:#?}: {err}",
-                    ctx.temp_path
-                );
-            }
+        if clean_tmp && remove_dir(&ctx.temp_path)? {
+            print_info!("{0:#?} removed", ctx.temp_path);
         }
-        if std::fs::read_dir(&ctx.temp_path).is_err() {
-            print_info!("Creating temporary directory in {0:#?}", ctx.temp_path);
-            if let Err(err) = std::fs::create_dir_all(&ctx.temp_path) {
-                return error!(
-                    "Could not create temporary directory {0:#?}: {err}",
-                    ctx.temp_path
-                );
-            }
+        if create_dir(&ctx.temp_path)? {
+            print_info!("{0:#?} created", ctx.temp_path);
         }
         ctx.test_path = match std::env::current_exe() {
             Ok(exe_path) => {
