@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use std::collections::HashMap;
+use std::str;
 
 use crate::ninja_target::*;
 use crate::utils::*;
@@ -82,7 +83,7 @@ fn find_column_index(line: &str) -> Option<usize> {
     };
     if line.as_bytes()[0..index].ends_with("$".as_bytes()) {
         if let Some(sub_index) =
-            find_column_index(std::str::from_utf8(&line.as_bytes()[index + 1..]).unwrap())
+            find_column_index(str::from_utf8(&line.as_bytes()[index + 1..]).unwrap())
         {
             return Some(index + 1 + sub_index);
         } else {
@@ -97,8 +98,8 @@ fn split_output_and_input_sections(line: &str) -> Result<(&str, &str), String> {
         return error!("split_output_and_input_sections failed: '{line}'");
     };
     Ok((
-        std::str::from_utf8(&line.as_bytes()[0..index]).unwrap(),
-        std::str::from_utf8(&line.as_bytes()[index + 1..]).unwrap(),
+        str::from_utf8(&line.as_bytes()[0..index]).unwrap(),
+        str::from_utf8(&line.as_bytes()[index + 1..]).unwrap(),
     ))
 }
 
@@ -109,7 +110,7 @@ fn parse_key_value(line: &str) -> Result<(String, String), String> {
     Ok((String::from(split.0.trim()), String::from(split.1.trim())))
 }
 
-fn parse_build_target<T>(line: &str, mut lines: std::str::Lines) -> Result<T, String>
+fn parse_build_target<T>(line: &str, mut lines: str::Lines) -> Result<T, String>
 where
     T: NinjaTarget,
 {
@@ -142,10 +143,7 @@ where
     ))
 }
 
-fn parse_ninja_rule(
-    line: &str,
-    mut lines: std::str::Lines,
-) -> Result<(String, NinjaRuleCmd), String> {
+fn parse_ninja_rule(line: &str, mut lines: str::Lines) -> Result<(String, NinjaRuleCmd), String> {
     let Some(rule) = line.strip_prefix("rule ") else {
         return error!("parse_ninja_rule failed: '{line}'");
     };

@@ -1,6 +1,8 @@
 // Copyright 2024 ninja-to-soong authors
 // SPDX-License-Identifier: Apache-2.0
 
+use std::env;
+
 use crate::project::*;
 use crate::utils::*;
 
@@ -45,10 +47,8 @@ pub struct Context {
 }
 
 impl Context {
-    pub fn parse_args(
-        args: Vec<String>,
-        projects: &ProjectsMap,
-    ) -> Result<(Self, Vec<ProjectId>), String> {
+    pub fn parse_args(projects: &ProjectsMap) -> Result<(Self, Vec<ProjectId>), String> {
+        let args = env::args().collect::<Vec<String>>();
         let exec = file_name(&Path::new(&args[0]));
         let mut iter = args[1..].iter();
         let mut clean_tmp = false;
@@ -88,14 +88,14 @@ impl Context {
                 },
             }
         }
-        if ctx.copy_to_aosp && std::fs::File::open(&ctx.android_path).is_err() {
+        if ctx.copy_to_aosp && !exists(&ctx.android_path) {
             return error!("'{COPY_TO_AOSP}' requires a valid '{AOSP_PATH}'");
         }
 
-        ctx.temp_path = if let Ok(dir) = std::env::var("N2S_TMP_PATH") {
+        ctx.temp_path = if let Ok(dir) = env::var("N2S_TMP_PATH") {
             PathBuf::from(dir)
         } else {
-            std::env::temp_dir()
+            env::temp_dir()
         }
         .join(&exec);
         if clean_tmp && remove_dir(&ctx.temp_path)? {
@@ -104,7 +104,7 @@ impl Context {
         if create_dir(&ctx.temp_path)? {
             print_info!("{0:#?} created", ctx.temp_path);
         }
-        ctx.test_path = match std::env::current_exe() {
+        ctx.test_path = match env::current_exe() {
             Ok(exe_path) => {
                 PathBuf::from(
                     exe_path // <ninja-to-soong>/target/<build-mode>/ninja-to-soong

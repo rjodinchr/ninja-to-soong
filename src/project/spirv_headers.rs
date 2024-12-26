@@ -1,9 +1,7 @@
 // Copyright 2024 ninja-to-soong authors
 // SPDX-License-Identifier: Apache-2.0
 
-use std::collections::HashSet;
-
-use crate::project::*;
+use super::*;
 
 #[derive(Default)]
 pub struct SpirvHeaders {
@@ -44,7 +42,7 @@ impl Project for SpirvHeaders {
             vec![String::from("include")],
         ));
 
-        let mut set: HashSet<PathBuf> = HashSet::new();
+        let mut set = std::collections::HashSet::new();
         set.extend(projects_map.get_deps(
             ProjectId::SpirvTools,
             self.get_id(),
