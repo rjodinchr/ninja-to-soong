@@ -16,11 +16,18 @@ pub fn copy_gen_deps(
         &format!("{0:#?}", &gen_deps),
     )?;
     if ctx.copy_to_aosp {
-        copy_files(
-            build_path,
-            &project.get_android_path(ctx).join(from),
-            gen_deps,
-        )?;
+        let dst = project.get_android_path(ctx).join(from);
+        if remove_dir(&dst)? {
+            print_verbose!("{dst:#?} removed");
+        }
+        for file in gen_deps {
+            let from = build_path.join(&file);
+            let to = dst.join(&file);
+            let to_path = to.parent().unwrap();
+            create_dir(to_path)?;
+            copy_file(&from, &to)?;
+        }
+        print_verbose!("Files copied from {build_path:#?} to {dst:#?}");
     }
     Ok(())
 }
