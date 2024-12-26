@@ -97,7 +97,7 @@ impl Project for Mesa {
             )?;
         }
 
-        let targets = parse_build_ninja::<ninja_target::meson::MesonNinjaTarget>(&self.build_path)?;
+        let targets = parse_build_ninja::<MesonNinjaTarget>(&self.build_path)?;
         let mut package = SoongPackage::new(
             &self.src_path,
             &self.ndk_path,
