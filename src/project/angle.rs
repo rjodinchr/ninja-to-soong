@@ -73,7 +73,7 @@ impl Project for Angle {
                 ]
             )?;
         }
-        let targets = parse_build_ninja::<ninja_target::gn::GnNinjaTarget>(&self.build_path)?;
+        let targets = parse_build_ninja::<GnNinjaTarget>(&self.build_path)?;
 
         let mut package = SoongPackage::new(
             &self.src_path,

@@ -10,6 +10,10 @@ pub mod common;
 pub mod gn;
 pub mod meson;
 
+pub use cmake::*;
+pub use gn::*;
+pub use meson::*;
+
 #[derive(Debug, Clone)]
 pub struct NinjaRuleCmd {
     pub command: String,

@@ -63,7 +63,7 @@ impl Project for LlvmProject {
             execute_cmd!("cmake", args.iter().map(|target| target.as_str()).collect())?;
         }
 
-        let targets = parse_build_ninja::<ninja_target::cmake::CmakeNinjaTarget>(&self.build_path)?;
+        let targets = parse_build_ninja::<CmakeNinjaTarget>(&self.build_path)?;
 
         let mut package = SoongPackage::new(
             &self.src_path,

@@ -5,7 +5,7 @@ use std::collections::{HashMap, HashSet};
 use std::str;
 
 use crate::ninja_target::*;
-use crate::project::Project;
+use crate::project::*;
 use crate::soong_module::*;
 use crate::utils::*;
 
