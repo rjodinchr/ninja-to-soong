@@ -13,6 +13,7 @@ use crate::utils::*;
 mod angle;
 mod clspv;
 mod clvk;
+mod common;
 mod llvm_project;
 mod mesa;
 mod spirv_headers;
