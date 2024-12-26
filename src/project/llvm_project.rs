@@ -1,7 +1,7 @@
 // Copyright 2024 ninja-to-soong authors
 // SPDX-License-Identifier: Apache-2.0
 
-use crate::project::*;
+use super::*;
 
 const CMAKE_GENERATED: &str = "cmake_generated";
 
@@ -96,18 +96,7 @@ impl Project for LlvmProject {
         gen_deps.extend(missing_gen_deps.iter().map(|dep| PathBuf::from(dep)));
 
         package.filter_local_include_dirs(CMAKE_GENERATED, &gen_deps);
-        gen_deps.sort();
-        write_file(
-            &self.get_test_path(ctx).join("generated_deps.txt"),
-            &format!("{0:#?}", &gen_deps),
-        )?;
-        if ctx.copy_to_aosp {
-            copy_files(
-                &self.build_path,
-                &self.get_android_path(ctx).join(CMAKE_GENERATED),
-                gen_deps,
-            )?;
-        }
+        common::copy_gen_deps(gen_deps, CMAKE_GENERATED, &self.build_path, ctx, self)?;
 
         let cmake_generated_path = Path::new(CMAKE_GENERATED);
         package.add_module(SoongModule::new_cc_library_headers(
