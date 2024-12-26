@@ -297,10 +297,6 @@ impl<'a> SoongPackage<'a> {
             SoongProp::VecStr(Vec::from_iter(includes)),
         );
         module.add_prop(
-            "header_libs",
-            SoongProp::VecStr(project.get_target_header_libs(&target_name)),
-        );
-        module.add_prop(
             "generated_headers",
             SoongProp::VecStr(Vec::from_iter(gen_headers)),
         );

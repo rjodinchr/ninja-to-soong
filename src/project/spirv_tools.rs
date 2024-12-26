@@ -90,6 +90,10 @@ impl Project for SpirvTools {
 
     fn get_target_object_module(&self, _target: &str, mut module: SoongModule) -> SoongModule {
         module.add_prop(
+            "header_libs",
+            SoongProp::VecStr(vec![CcLibraryHeaders::SpirvHeaders.str()]),
+        );
+        module.add_prop(
             "export_include_dirs",
             SoongProp::VecStr(vec![String::from("include")]),
         );
@@ -101,9 +105,6 @@ impl Project for SpirvTools {
     }
     fn get_target_cflags(&self, _target: &str) -> Vec<String> {
         vec![String::from("-Wno-implicit-fallthrough")]
-    }
-    fn get_target_header_libs(&self, _target: &str) -> Vec<String> {
-        vec![CcLibraryHeaders::SpirvHeaders.str()]
     }
 
     fn filter_cflag(&self, _cflag: &str) -> bool {

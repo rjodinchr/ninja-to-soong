@@ -118,18 +118,19 @@ impl Project for Clspv {
 
     fn get_target_object_module(&self, _target: &str, mut module: SoongModule) -> SoongModule {
         module.add_prop(
+            "header_libs",
+            SoongProp::VecStr(vec![
+                CcLibraryHeaders::SpirvHeaders.str(),
+                CcLibraryHeaders::Llvm.str(),
+                CcLibraryHeaders::Clang.str(),
+            ]),
+        );
+        module.add_prop(
             "export_include_dirs",
             SoongProp::VecStr(vec![String::from("include")]),
         );
         module.add_prop("optimize_for_size", SoongProp::Bool(true));
         module
-    }
-    fn get_target_header_libs(&self, _target: &str) -> Vec<String> {
-        vec![
-            CcLibraryHeaders::SpirvHeaders.str(),
-            CcLibraryHeaders::Llvm.str(),
-            CcLibraryHeaders::Clang.str(),
-        ]
     }
 
     fn get_cmd_output(&self, output: &Path) -> PathBuf {

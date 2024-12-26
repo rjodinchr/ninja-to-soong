@@ -101,7 +101,16 @@ impl Project for Angle {
         }
         String::from(target)
     }
-    fn get_target_object_module(&self, _target: &str, mut module: SoongModule) -> SoongModule {
+    fn get_target_object_module(&self, target: &str, mut module: SoongModule) -> SoongModule {
+        if target.ends_with("libtranslator_a") {
+            module.add_prop(
+                "header_libs",
+                SoongProp::VecStr(vec![
+                    CcLibraryHeaders::SpirvHeaders.str(),
+                    CcLibraryHeaders::SpirvTools.str(),
+                ]),
+            );
+        }
         module.add_prop("stl", SoongProp::Str(String::from("libc++_static")));
         module.add_prop(
             "arch",
@@ -123,16 +132,6 @@ impl Project for Angle {
             vec![String::from("libnativewindow")]
         } else if target.ends_with("libGLESv2_angle_so") {
             vec![String::from("libz")]
-        } else {
-            Vec::new()
-        }
-    }
-    fn get_target_header_libs(&self, target: &str) -> Vec<String> {
-        if target.ends_with("libtranslator_a") {
-            vec![
-                CcLibraryHeaders::SpirvHeaders.str(),
-                CcLibraryHeaders::SpirvTools.str(),
-            ]
         } else {
             Vec::new()
         }
