@@ -144,7 +144,6 @@ cc_library_static {
         "",
         "include",
     ],
-    header_libs: ["SPIRV-Headers-includes"],
     generated_headers: [
         "SPIRV-Tools_DebugInfo_h",
         "SPIRV-Tools_NonSemanticShaderDebugInfo100_h",
@@ -165,6 +164,7 @@ cc_library_static {
         "SPIRV-Tools_spv-amd-shader-explicit-vertex-parameter_insts_inc",
         "SPIRV-Tools_spv-amd-shader-trinary-minmax_insts_inc",
     ],
+    header_libs: ["SPIRV-Headers-includes"],
     export_include_dirs: ["include"],
     export_header_lib_headers: ["SPIRV-Headers-includes"],
 }
@@ -251,7 +251,6 @@ cc_library_static {
         "",
         "include",
     ],
-    header_libs: ["SPIRV-Headers-includes"],
     generated_headers: [
         "SPIRV-Tools_DebugInfo_h",
         "SPIRV-Tools_NonSemanticShaderDebugInfo100_h",
@@ -272,6 +271,7 @@ cc_library_static {
         "SPIRV-Tools_spv-amd-shader-explicit-vertex-parameter_insts_inc",
         "SPIRV-Tools_spv-amd-shader-trinary-minmax_insts_inc",
     ],
+    header_libs: ["SPIRV-Headers-includes"],
     export_include_dirs: ["include"],
     export_header_lib_headers: ["SPIRV-Headers-includes"],
 }
@@ -476,7 +476,6 @@ cc_library_static {
         "",
         "include",
     ],
-    header_libs: ["SPIRV-Headers-includes"],
     generated_headers: [
         "SPIRV-Tools_DebugInfo_h",
         "SPIRV-Tools_NonSemanticShaderDebugInfo100_h",
@@ -497,6 +496,7 @@ cc_library_static {
         "SPIRV-Tools_spv-amd-shader-explicit-vertex-parameter_insts_inc",
         "SPIRV-Tools_spv-amd-shader-trinary-minmax_insts_inc",
     ],
+    header_libs: ["SPIRV-Headers-includes"],
     export_include_dirs: ["include"],
     export_header_lib_headers: ["SPIRV-Headers-includes"],
 }

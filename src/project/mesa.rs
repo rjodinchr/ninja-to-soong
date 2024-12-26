@@ -152,7 +152,36 @@ impl Project for Mesa {
         }
         None
     }
-    fn get_target_object_module(&self, _target: &str, mut module: SoongModule) -> SoongModule {
+    fn get_target_object_module(&self, target: &str, mut module: SoongModule) -> SoongModule {
+        let mut libs = Vec::new();
+        for lib in [
+            "libgallium_a",
+            "libpipe_loader_static_a",
+            "libiris_a",
+            "libdri_a",
+            "libswkmsdri_a",
+            "libintel_dev_a",
+            "libanv_common_a",
+            "libloader_a",
+            "libmesa_util_a",
+            "libpps_a",
+            "libvulkan_instance_a",
+            "libvulkan_lite_runtime_a",
+            "libvulkan_wsi_a",
+        ] {
+            if target.ends_with(lib) {
+                libs.push("libdrm_headers");
+                break;
+            }
+        }
+        if target.ends_with("libanv_common_a") {
+            libs.push("hwvulkan_headers");
+        }
+        module.add_prop(
+            "header_libs",
+            SoongProp::VecStr(libs.into_iter().map(|lib| String::from(lib)).collect()),
+        );
+
         module.add_prop(
             "arch",
             SoongNamedProp::new_prop(
@@ -185,33 +214,6 @@ impl Project for Mesa {
             || target.ends_with("libvulkan_lite_runtime_a")
         {
             libs.push("libnativewindow");
-        }
-        libs.into_iter().map(|lib| String::from(lib)).collect()
-    }
-    fn get_target_header_libs(&self, target: &str) -> Vec<String> {
-        let mut libs = Vec::new();
-        for lib in [
-            "libgallium_a",
-            "libpipe_loader_static_a",
-            "libiris_a",
-            "libdri_a",
-            "libswkmsdri_a",
-            "libintel_dev_a",
-            "libanv_common_a",
-            "libloader_a",
-            "libmesa_util_a",
-            "libpps_a",
-            "libvulkan_instance_a",
-            "libvulkan_lite_runtime_a",
-            "libvulkan_wsi_a",
-        ] {
-            if target.ends_with(lib) {
-                libs.push("libdrm_headers");
-                break;
-            }
-        }
-        if target.ends_with("libanv_common_a") {
-            libs.push("hwvulkan_headers");
         }
         libs.into_iter().map(|lib| String::from(lib)).collect()
     }

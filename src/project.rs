@@ -145,9 +145,6 @@ pub trait Project {
     fn get_target_shared_libs(&self, _target: &str) -> Vec<String> {
         Vec::new()
     }
-    fn get_target_header_libs(&self, _target: &str) -> Vec<String> {
-        Vec::new()
-    }
     // REWORK FUNCTIONS
     fn get_cmd_output(&self, output: &Path) -> PathBuf {
         PathBuf::from(output)

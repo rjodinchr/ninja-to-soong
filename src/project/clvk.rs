@@ -94,8 +94,12 @@ impl Project for Clvk {
             String::from(target)
         }
     }
-    fn get_target_header_libs(&self, _target: &str) -> Vec<String> {
-        vec![String::from("OpenCL-Headers")]
+    fn get_target_object_module(&self, _target: &str, mut module: SoongModule) -> SoongModule {
+        module.add_prop(
+            "header_libs",
+            SoongProp::VecStr(vec![String::from("OpenCL-Headers")]),
+        );
+        module
     }
 
     fn get_lib(&self, library: &Path) -> PathBuf {

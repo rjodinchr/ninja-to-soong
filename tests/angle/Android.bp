@@ -1849,13 +1849,13 @@ cc_library_static {
         "src/common/third_party/xxhash",
         "third_party/abseil-cpp",
     ],
-    header_libs: [
-        "SPIRV-Headers-includes",
-        "SPIRV-Tools-includes",
-    ],
     generated_headers: [
         "angle_gen_angle_ANGLEShaderProgramVersion_h",
         "angle_gen_angle_angle_commit_h",
+    ],
+    header_libs: [
+        "SPIRV-Headers-includes",
+        "SPIRV-Tools-includes",
     ],
     stl: "libc++_static",
     arch: {
