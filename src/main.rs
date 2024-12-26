@@ -96,7 +96,7 @@ fn generate_projects(
 
 fn main() -> Result<(), String> {
     let projects_map = ProjectsMap::new();
-    let (ctx, project_ids) = match Context::parse_args(std::env::args().collect(), &projects_map) {
+    let (ctx, project_ids) = match Context::parse_args(&projects_map) {
         Ok(context) => context,
         Err(err) => {
             print_error!("{err}");

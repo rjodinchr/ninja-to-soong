@@ -1,7 +1,7 @@
 // Copyright 2024 ninja-to-soong authors
 // SPDX-License-Identifier: Apache-2.0
 
-use std::fs::File;
+use std::fs::*;
 use std::io::{Read, Write};
 
 use super::*;
@@ -14,7 +14,7 @@ pub fn remove_dir(dir: &Path) -> Result<bool, String> {
     if !exists(dir) {
         return Ok(false);
     }
-    if let Err(err) = std::fs::remove_dir_all(dir) {
+    if let Err(err) = remove_dir_all(dir) {
         return error!("remove_dir_all({dir:#?}) failed: {err}");
     }
     Ok(true)
@@ -24,14 +24,14 @@ pub fn create_dir(dir: &Path) -> Result<bool, String> {
     if exists(dir) {
         return Ok(false);
     }
-    if let Err(err) = std::fs::create_dir_all(dir) {
+    if let Err(err) = create_dir_all(dir) {
         return error!("create_dir_all({dir:#?}) failed: '{err}'");
     }
     Ok(true)
 }
 
 pub fn copy_file(from: &Path, to: &Path) -> Result<(), String> {
-    if let Err(err) = std::fs::copy(from, to) {
+    if let Err(err) = copy(from, to) {
         return error!("copy({from:#?}, {to:#?}) failed: '{err}'");
     }
     Ok(())

@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use std::collections::{HashMap, HashSet};
+use std::str;
 
 use crate::ninja_target::*;
 use crate::project::Project;
@@ -314,19 +315,16 @@ impl<'a> SoongPackage<'a> {
     ) -> String {
         let mut cmd = rule_cmd.command;
         while let Some(index) = cmd.find("python") {
-            let begin = std::str::from_utf8(&cmd.as_bytes()[0..index])
+            let begin = str::from_utf8(&cmd.as_bytes()[0..index])
                 .unwrap()
                 .rfind(" ")
                 .unwrap_or_default();
-            cmd = match std::str::from_utf8(&cmd.as_bytes()[index..])
-                .unwrap()
-                .find(" ")
-            {
+            cmd = match str::from_utf8(&cmd.as_bytes()[index..]).unwrap().find(" ") {
                 Some(end) => cmd.replace(
-                    std::str::from_utf8(&cmd.as_bytes()[begin..index + end + 1]).unwrap(),
+                    str::from_utf8(&cmd.as_bytes()[begin..index + end + 1]).unwrap(),
                     "",
                 ),
-                None => cmd.replace(std::str::from_utf8(&cmd.as_bytes()[begin..]).unwrap(), ""),
+                None => cmd.replace(str::from_utf8(&cmd.as_bytes()[begin..]).unwrap(), ""),
             };
         }
         cmd = cmd.replace(&path_to_string_with_separator(self.build_path), "");

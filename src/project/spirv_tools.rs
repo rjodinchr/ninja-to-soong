@@ -1,7 +1,7 @@
 // Copyright 2024 ninja-to-soong authors
 // SPDX-License-Identifier: Apache-2.0
 
-use crate::project::*;
+use super::*;
 
 #[derive(Default)]
 pub struct SpirvTools {

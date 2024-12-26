@@ -1,6 +1,9 @@
 // Copyright 2024 ninja-to-soong authors
 // SPDX-License-Identifier: Apache-2.0
 
+use std::env;
+use std::path::*;
+
 pub use std::path::{Path, PathBuf};
 
 use super::*;
@@ -13,12 +16,12 @@ pub const ANDROID_ABI: &str = if ARM { "arm64-v8a" } else { "x86_64" };
 pub const ANDROID_CPU: &str = if ARM { "arm64" } else { "x64" };
 
 pub fn get_ndk_path(temp_path: &Path) -> Result<PathBuf, String> {
-    let android_ndk = if let Ok(android_ndk) = std::env::var("N2S_NDK") {
+    let android_ndk = if let Ok(android_ndk) = env::var("N2S_NDK") {
         android_ndk
     } else {
         String::from(ANDROID_NDK)
     };
-    let ndk_path = if let Ok(ndk_path) = std::env::var("N2S_NDK_PATH") {
+    let ndk_path = if let Ok(ndk_path) = env::var("N2S_NDK_PATH") {
         PathBuf::from(ndk_path)
     } else {
         PathBuf::from(temp_path)
@@ -47,7 +50,7 @@ pub fn canonicalize_path<P: AsRef<Path>>(path: P, build_path: &Path) -> PathBuf 
             .join(&path_buf)
             .components()
             .fold(PathBuf::new(), |path, component| {
-                if component == std::path::Component::ParentDir {
+                if component == Component::ParentDir {
                     PathBuf::from(path.parent().unwrap())
                 } else {
                     path.join(component)
@@ -61,17 +64,13 @@ pub fn path_to_string<P: AsRef<Path>>(path: P) -> String {
 }
 
 pub fn path_to_string_with_separator<P: AsRef<Path>>(path: P) -> String {
-    format!(
-        "{0}{1}",
-        path_to_string(path),
-        std::path::MAIN_SEPARATOR_STR
-    )
+    format!("{0}{1}", path_to_string(path), MAIN_SEPARATOR_STR)
 }
 
 pub fn path_to_id(path: PathBuf) -> String {
     path.to_str()
         .unwrap_or_default()
-        .replace(std::path::MAIN_SEPARATOR_STR, "_")
+        .replace(MAIN_SEPARATOR_STR, "_")
         .replace(".", "_")
 }
 
