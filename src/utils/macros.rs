@@ -80,4 +80,20 @@ macro_rules! execute_cmd {
     };
 }
 
-pub use {error, execute_cmd, print_info, print_internal, print_verbose};
+#[macro_export]
+macro_rules! define_projects {
+    ($(($project:ident, $module:ident)),*) => {
+        $(mod $module;)*
+        #[derive(Debug, Eq, PartialEq, Hash, Clone)]
+        pub enum ProjectId {
+            $($project,)*
+        }
+        fn get_projects() -> Vec<Box<dyn Project>> {
+            let mut projects: Vec<Box<dyn Project>> = Vec::new();
+            $(projects.push(Box::new($module::$project::default()));)*
+            projects
+        }
+    };
+}
+
+pub use {define_projects, error, execute_cmd, print_info, print_internal, print_verbose};
