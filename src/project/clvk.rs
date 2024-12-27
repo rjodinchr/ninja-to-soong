@@ -41,10 +41,10 @@ impl Project for Clvk {
                     ANDROID_ABI,
                     ANDROID_ISA,
                     ANDROID_PLATFORM,
-                    &path_to_string(projects_map.get_android_path(ProjectId::SpirvHeaders, ctx)?),
-                    &path_to_string(projects_map.get_android_path(ProjectId::SpirvTools, ctx)?),
-                    &path_to_string(projects_map.get_android_path(ProjectId::LlvmProject, ctx)?),
-                    &path_to_string(projects_map.get_android_path(ProjectId::Clspv, ctx)?),
+                    &path_to_string(ProjectId::SpirvHeaders.get_android_path(projects_map, ctx)?),
+                    &path_to_string(ProjectId::SpirvTools.get_android_path(projects_map, ctx)?),
+                    &path_to_string(ProjectId::LlvmProject.get_android_path(projects_map, ctx)?),
+                    &path_to_string(ProjectId::Clspv.get_android_path(projects_map, ctx)?),
                 ]
             )?;
         }
