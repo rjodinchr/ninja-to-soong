@@ -36,7 +36,7 @@ impl Project for SpirvTools {
             execute_cmd!(
                 "bash",
                 vec![
-                    &path_to_string(ctx.test_path.join(self.get_name()).join("gen-ninja.sh")),
+                    &path_to_string(self.get_test_path(ctx).join("gen-ninja.sh")),
                     &path_to_string(&self.src_path),
                     &path_to_string(&self.build_path),
                     &path_to_string(&self.ndk_path),
