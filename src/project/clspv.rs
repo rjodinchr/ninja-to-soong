@@ -69,7 +69,7 @@ impl Project for Clspv {
         Ok(package)
     }
 
-    fn get_deps_info(&self) -> Vec<(PathBuf, Dep)> {
+    fn get_deps_prefix(&self) -> Vec<(PathBuf, Dep)> {
         vec![
             (self.spirv_headers_path.clone(), Dep::SpirvHeaders),
             (self.llvm_project_path.join("clang"), Dep::ClangHeaders),

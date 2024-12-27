@@ -69,7 +69,7 @@ impl Project for SpirvTools {
         Ok(package)
     }
 
-    fn get_deps_info(&self) -> Vec<(PathBuf, Dep)> {
+    fn get_deps_prefix(&self) -> Vec<(PathBuf, Dep)> {
         vec![(self.spirv_headers_path.clone(), Dep::SpirvHeaders)]
     }
     fn get_deps(&self, dep: Dep) -> Vec<PathBuf> {

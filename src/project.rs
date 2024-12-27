@@ -100,7 +100,7 @@ pub trait Project {
         projects_map: &ProjectsMap,
     ) -> Result<SoongPackage, String>;
     // DEPENDENCIES FUNCTIONS
-    fn get_deps_info(&self) -> Vec<(PathBuf, Dep)> {
+    fn get_deps_prefix(&self) -> Vec<(PathBuf, Dep)> {
         Vec::new()
     }
     fn get_deps(&self, _dep: Dep) -> Vec<PathBuf> {

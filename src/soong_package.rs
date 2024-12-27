@@ -383,7 +383,7 @@ impl<'a> SoongPackage<'a> {
         inputs
             .iter()
             .filter(|input| {
-                for (prefix, dep) in project.get_deps_info() {
+                for (prefix, dep) in project.get_deps_prefix() {
                     if input.starts_with(&prefix) {
                         deps.insert(
                             PathBuf::from(input),
