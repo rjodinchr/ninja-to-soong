@@ -34,6 +34,33 @@ impl ProjectId {
     }
 }
 
+define_Dep!(
+    (ClangHeaders, LlvmProject, (Clspv)),
+    (ClspvTargets, Clspv, (Clvk)),
+    (LibclcBins, LlvmProject, (Clspv)),
+    (LlvmProjectTargets, LlvmProject, (Clvk)),
+    (SpirvHeaders, SpirvHeaders, (Clspv, SpirvTools)),
+    (SpirvToolsTargets, SpirvTools, (Clvk))
+);
+impl Dep {
+    pub fn get_id(self, input: &Path, prefix: &Path, build_path: &Path) -> String {
+        path_to_id(Path::new(&format!("{self:#?}")).join(strip_prefix(
+            canonicalize_path(input, build_path),
+            canonicalize_path(prefix, build_path),
+        )))
+    }
+    pub fn get(self, projects_map: &ProjectsMap) -> Result<Vec<PathBuf>, String> {
+        let mut all_deps = Vec::new();
+        let projects = self.projects().1;
+        for project in projects {
+            all_deps.extend(projects_map.get(project)?.get_deps(self.clone()));
+        }
+        all_deps.sort();
+        all_deps.dedup();
+        Ok(all_deps)
+    }
+}
+
 pub struct ProjectsMap(HashMap<ProjectId, Box<dyn Project>>);
 impl ProjectsMap {
     pub fn new() -> Self {
@@ -51,41 +78,17 @@ impl ProjectsMap {
     pub fn iter(&self) -> std::collections::hash_map::Iter<'_, ProjectId, Box<dyn Project>> {
         self.0.iter()
     }
-    pub fn get_deps(&self, dep: Dep) -> Result<Vec<PathBuf>, String> {
-        let mut all_deps = Vec::new();
-        let projects = dep.projects().1;
-        for project in projects {
-            let Some(project) = self.0.get(&project) else {
-                return error!("'{project:#?}' not found in projects map");
-            };
-            all_deps.extend(project.get_deps(dep.clone()));
-        }
-        all_deps.sort();
-        all_deps.dedup();
-        Ok(all_deps)
+    pub fn get(&self, id: ProjectId) -> Result<&Box<dyn Project>, String> {
+        let Some(project) = self.0.get(&id) else {
+            return error!("'{id:#?}' not found in projects map");
+        };
+        Ok(project)
     }
     pub fn get_android_path(&self, id: ProjectId, ctx: &Context) -> Result<PathBuf, String> {
         let Some(project) = self.0.get(&id) else {
             return error!("'{id:#?}' not found in projects map");
         };
         Ok(project.get_android_path(ctx))
-    }
-}
-
-define_Dep!(
-    (ClangHeaders, LlvmProject, (Clspv)),
-    (ClspvTargets, Clspv, (Clvk)),
-    (LibclcBins, LlvmProject, (Clspv)),
-    (LlvmProjectTargets, LlvmProject, (Clvk)),
-    (SpirvHeaders, SpirvHeaders, (Clspv, SpirvTools)),
-    (SpirvToolsTargets, SpirvTools, (Clvk))
-);
-impl Dep {
-    pub fn get_id(self, input: &Path, prefix: &Path, build_path: &Path) -> String {
-        path_to_id(Path::new(&format!("{self:#?}")).join(strip_prefix(
-            canonicalize_path(input, build_path),
-            canonicalize_path(prefix, build_path),
-        )))
     }
 }
 
