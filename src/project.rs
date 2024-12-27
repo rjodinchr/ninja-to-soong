@@ -32,6 +32,9 @@ impl ProjectId {
         }
         Vec::from_iter(projects)
     }
+    pub fn get_android_path(self, map: &ProjectsMap, ctx: &Context) -> Result<PathBuf, String> {
+        Ok(map.get(self)?.get_android_path(ctx))
+    }
 }
 
 define_Dep!(
@@ -83,12 +86,6 @@ impl ProjectsMap {
             return error!("'{id:#?}' not found in projects map");
         };
         Ok(project)
-    }
-    pub fn get_android_path(&self, id: ProjectId, ctx: &Context) -> Result<PathBuf, String> {
-        let Some(project) = self.0.get(&id) else {
-            return error!("'{id:#?}' not found in projects map");
-        };
-        Ok(project.get_android_path(ctx))
     }
 }
 

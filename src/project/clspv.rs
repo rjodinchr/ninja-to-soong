@@ -31,8 +31,8 @@ impl Project for Clspv {
         self.src_path = self.get_android_path(ctx);
         self.build_path = ctx.temp_path.join(self.get_name());
         self.ndk_path = get_ndk_path(&ctx.temp_path)?;
-        self.spirv_headers_path = projects_map.get_android_path(ProjectId::SpirvHeaders, ctx)?;
-        self.llvm_project_path = projects_map.get_android_path(ProjectId::LlvmProject, ctx)?;
+        self.spirv_headers_path = ProjectId::SpirvHeaders.get_android_path(projects_map, ctx)?;
+        self.llvm_project_path = ProjectId::LlvmProject.get_android_path(projects_map, ctx)?;
 
         if !ctx.skip_gen_ninja {
             execute_cmd!(
@@ -45,7 +45,7 @@ impl Project for Clspv {
                     ANDROID_ABI,
                     ANDROID_PLATFORM,
                     &path_to_string(&self.spirv_headers_path),
-                    &path_to_string(projects_map.get_android_path(ProjectId::SpirvTools, ctx)?),
+                    &path_to_string(ProjectId::SpirvTools.get_android_path(projects_map, ctx)?),
                     &path_to_string(&self.llvm_project_path),
                 ]
             )?;

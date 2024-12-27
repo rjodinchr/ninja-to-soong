@@ -30,7 +30,7 @@ impl Project for SpirvTools {
         self.src_path = self.get_android_path(ctx);
         self.build_path = ctx.temp_path.join(self.get_name());
         self.ndk_path = get_ndk_path(&ctx.temp_path)?;
-        self.spirv_headers_path = projects_map.get_android_path(ProjectId::SpirvHeaders, ctx)?;
+        self.spirv_headers_path = ProjectId::SpirvHeaders.get_android_path(projects_map, ctx)?;
 
         if !ctx.skip_gen_ninja {
             execute_cmd!(
