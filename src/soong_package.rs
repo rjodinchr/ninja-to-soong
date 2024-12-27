@@ -387,20 +387,15 @@ impl<'a> SoongPackage<'a> {
                     if input.starts_with(&prefix) {
                         deps.insert(
                             PathBuf::from(input),
-                            dep_name(&input, &prefix, dep.str(), self.build_path),
+                            dep.get_id(input, &prefix, self.build_path),
                         );
                         return false;
                     }
                 }
-                if !canonicalize_path(&input, self.build_path).starts_with(self.src_path) {
+                if canonicalize_path(&input, self.build_path).starts_with(self.build_path) {
                     deps.insert(
                         PathBuf::from(input),
-                        dep_name(
-                            &input,
-                            self.build_path,
-                            &project.get_name(),
-                            self.build_path,
-                        ),
+                        path_to_id(Path::new(project.get_name()).join(input)),
                     );
                     return false;
                 }

@@ -13,9 +13,6 @@ pub struct LlvmProject {
 }
 
 impl Project for LlvmProject {
-    fn get_id(&self) -> ProjectId {
-        ProjectId::LlvmProject
-    }
     fn get_name(&self) -> &'static str {
         "llvm-project"
     }
@@ -47,10 +44,8 @@ impl Project for LlvmProject {
                 ]
             )?;
         }
-        let targets_to_generate =
-            projects_map.get_deps(ProjectId::Clvk, self.get_id(), GenDeps::TargetsToGen)?;
-        let libclc_binaries =
-            projects_map.get_deps(ProjectId::Clspv, self.get_id(), GenDeps::LibclcBins)?;
+        let targets_to_generate = projects_map.get_deps(Dep::LlvmProjectTargets)?;
+        let libclc_binaries = projects_map.get_deps(Dep::LibclcBins)?;
         if !ctx.skip_build {
             let mut targets_to_build = Vec::new();
             targets_to_build.extend(targets_to_generate.clone());
@@ -114,16 +109,9 @@ impl Project for LlvmProject {
             ],
         ));
 
-        for clang_header in
-            projects_map.get_deps(ProjectId::Clspv, self.get_id(), GenDeps::ClangHeaders)?
-        {
+        for clang_header in projects_map.get_deps(Dep::ClangHeaders)? {
             package.add_module(SoongModule::new_copy_genrule(
-                dep_name(
-                    &clang_header,
-                    "clang",
-                    GenDeps::ClangHeaders.str(),
-                    &self.build_path,
-                ),
+                Dep::ClangHeaders.get_id(&clang_header, Path::new("clang"), &self.build_path),
                 path_to_string(&clang_header),
                 file_name(&clang_header),
             ));
@@ -131,22 +119,13 @@ impl Project for LlvmProject {
         for binary in libclc_binaries {
             let file_path = cmake_generated_path.join(binary);
             package.add_module(SoongModule::new_copy_genrule(
-                dep_name(
-                    &file_path,
-                    cmake_generated_path,
-                    GenDeps::LibclcBins.str(),
-                    &self.build_path,
-                ),
+                Dep::LibclcBins.get_id(&file_path, cmake_generated_path, &self.build_path),
                 path_to_string(&file_path),
                 file_name(&file_path),
             ));
         }
 
         Ok(package)
-    }
-
-    fn get_project_deps(&self) -> Vec<ProjectId> {
-        vec![ProjectId::Clvk, ProjectId::Clspv]
     }
 
     fn get_target_object_module(&self, _target: &str, mut module: SoongModule) -> SoongModule {

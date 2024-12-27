@@ -1,7 +1,7 @@
 // Copyright 2024 ninja-to-soong authors
 // SPDX-License-Identifier: Apache-2.0
 
-use std::collections::HashMap;
+use std::collections::{HashMap, HashSet};
 
 use crate::context::*;
 use crate::ninja_target::*;
@@ -12,7 +12,7 @@ use crate::utils::*;
 
 mod common;
 
-define_projects!(
+define_ProjectId!(
     (Angle, angle),
     (Clvk, clvk),
     (Clspv, clspv),
@@ -21,50 +21,48 @@ define_projects!(
     (SpirvHeaders, spirv_headers),
     (SpirvTools, spirv_tools)
 );
+impl ProjectId {
+    pub fn get_deps(&self) -> Vec<ProjectId> {
+        let mut projects = HashSet::new();
+        for gen_deps in get_deps() {
+            let (project_dep, projects_dep) = gen_deps.projects();
+            if &project_dep == self {
+                projects.extend(projects_dep);
+            }
+        }
+        Vec::from_iter(projects)
+    }
+}
 
 pub struct ProjectsMap(HashMap<ProjectId, Box<dyn Project>>);
 impl ProjectsMap {
     pub fn new() -> Self {
-        Self(
-            get_projects()
-                .into_iter()
-                .fold(HashMap::new(), |mut map, project| {
-                    map.insert(project.get_id(), project);
-                    map
-                }),
-        )
+        Self(get_projects())
     }
     pub fn insert(&mut self, id: ProjectId, project: Box<dyn Project>) {
         self.0.insert(id, project);
     }
-    pub fn remove_entry(
-        &mut self,
-        id: &ProjectId,
-    ) -> Result<(ProjectId, Box<dyn Project>), String> {
+    pub fn remove(&mut self, id: &ProjectId) -> Result<Box<dyn Project>, String> {
         let Some(entry) = self.0.remove_entry(id) else {
             return error!("'{id:#?}' not found in projects map");
         };
-        Ok(entry)
+        Ok(entry.1)
     }
     pub fn iter(&self) -> std::collections::hash_map::Iter<'_, ProjectId, Box<dyn Project>> {
         self.0.iter()
     }
-    pub fn get_deps(
-        &self,
-        from: ProjectId,
-        to: ProjectId,
-        gen_deps: GenDeps,
-    ) -> Result<Vec<PathBuf>, String> {
-        let Some(project) = self.0.get(&from) else {
-            return error!("'{from:#?}' not found in projects map");
-        };
-        let deps_map = project.get_deps_map(to);
-        let Some(gen_deps) = deps_map.get(&gen_deps) else {
-            return error!("'{gen_deps:#?}' not found in deps map");
-        };
-        let mut gen_deps = gen_deps.clone();
-        gen_deps.sort();
-        Ok(gen_deps)
+    pub fn get_deps(&self, dep: Dep) -> Result<Vec<PathBuf>, String> {
+        let mut all_deps = Vec::new();
+        let projects = dep.projects().1;
+        for project in projects {
+            let Some(project) = self.0.get(&project) else {
+                return error!("'{project:#?}' not found in projects map");
+            };
+            all_deps.extend(project.get_deps(dep.clone()));
+        }
+        all_deps.sort();
+        all_deps.dedup();
+        Ok(all_deps)
     }
     pub fn get_android_path(&self, id: ProjectId, ctx: &Context) -> Result<PathBuf, String> {
         let Some(project) = self.0.get(&id) else {
@@ -74,28 +72,25 @@ impl ProjectsMap {
     }
 }
 
-#[derive(Debug, Eq, PartialEq, Hash)]
-pub enum GenDeps {
-    SpirvHeaders,
-    TargetsToGen,
-    ClangHeaders,
-    LibclcBins,
-}
-impl GenDeps {
-    pub const fn str(self) -> &'static str {
-        match self {
-            Self::SpirvHeaders => "spirv-header-dep",
-            Self::TargetsToGen => "target-dep",
-            Self::ClangHeaders => "clang-dep",
-            Self::LibclcBins => "libclc-dep",
-        }
+define_Dep!(
+    (ClangHeaders, LlvmProject, (Clspv)),
+    (ClspvTargets, Clspv, (Clvk)),
+    (LibclcBins, LlvmProject, (Clspv)),
+    (LlvmProjectTargets, LlvmProject, (Clvk)),
+    (SpirvHeaders, SpirvHeaders, (Clspv, SpirvTools)),
+    (SpirvToolsTargets, SpirvTools, (Clvk))
+);
+impl Dep {
+    pub fn get_id(self, input: &Path, prefix: &Path, build_path: &Path) -> String {
+        path_to_id(Path::new(&format!("{self:#?}")).join(strip_prefix(
+            canonicalize_path(input, build_path),
+            canonicalize_path(prefix, build_path),
+        )))
     }
 }
-pub type GenDepsMap = HashMap<GenDeps, Vec<PathBuf>>;
 
 pub trait Project {
     // MANDATORY FUNCTIONS
-    fn get_id(&self) -> ProjectId;
     fn get_name(&self) -> &'static str;
     fn get_android_path(&self, ctx: &Context) -> PathBuf;
     fn get_test_path(&self, ctx: &Context) -> PathBuf;
@@ -105,14 +100,11 @@ pub trait Project {
         projects_map: &ProjectsMap,
     ) -> Result<SoongPackage, String>;
     // DEPENDENCIES FUNCTIONS
-    fn get_project_deps(&self) -> Vec<ProjectId> {
+    fn get_deps_info(&self) -> Vec<(PathBuf, Dep)> {
         Vec::new()
     }
-    fn get_deps_info(&self) -> Vec<(PathBuf, GenDeps)> {
+    fn get_deps(&self, _dep: Dep) -> Vec<PathBuf> {
         Vec::new()
-    }
-    fn get_deps_map(&self, _project: ProjectId) -> GenDepsMap {
-        GenDepsMap::new()
     }
     // TARGET FUNCTIONS
     fn get_target_name(&self, target: &str) -> String {

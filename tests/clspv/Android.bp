@@ -123,9 +123,9 @@ cc_library_static {
 
 cc_genrule {
     name: "clspv_include_clspv_spirv_reflection_hpp",
-    cmd: "$(location cmake/spirv_ext_inst.py) --input-file=$(location :spirv-header-dep_include_spirv_unified1_extinst_nonsemantic_clspvreflection_grammar_json) --output-file=$(location clspv/spirv_reflection.hpp) --namespace=reflection",
+    cmd: "$(location cmake/spirv_ext_inst.py) --input-file=$(location :SpirvHeaders_include_spirv_unified1_extinst_nonsemantic_clspvreflection_grammar_json) --output-file=$(location clspv/spirv_reflection.hpp) --namespace=reflection",
     srcs: [
-        ":spirv-header-dep_include_spirv_unified1_extinst_nonsemantic_clspvreflection_grammar_json",
+        ":SpirvHeaders_include_spirv_unified1_extinst_nonsemantic_clspvreflection_grammar_json",
         "cmake/spirv_ext_inst.py",
     ],
     out: ["clspv/spirv_reflection.hpp"],
@@ -133,9 +133,9 @@ cc_genrule {
 
 cc_genrule {
     name: "clspv_include_clspv_spirv_glsl_hpp",
-    cmd: "$(location cmake/spirv_ext_inst.py) --input-file=$(location :spirv-header-dep_include_spirv_unified1_extinst_glsl_std_450_grammar_json) --output-file=$(location clspv/spirv_glsl.hpp) --namespace=glsl",
+    cmd: "$(location cmake/spirv_ext_inst.py) --input-file=$(location :SpirvHeaders_include_spirv_unified1_extinst_glsl_std_450_grammar_json) --output-file=$(location clspv/spirv_glsl.hpp) --namespace=glsl",
     srcs: [
-        ":spirv-header-dep_include_spirv_unified1_extinst_glsl_std_450_grammar_json",
+        ":SpirvHeaders_include_spirv_unified1_extinst_glsl_std_450_grammar_json",
         "cmake/spirv_ext_inst.py",
     ],
     out: ["clspv/spirv_glsl.hpp"],
@@ -143,9 +143,9 @@ cc_genrule {
 
 cc_genrule {
     name: "clspv_include_clspv_spirv_c_strings_hpp",
-    cmd: "$(location cmake/spirv_c_strings.py) --input-file=$(location :spirv-header-dep_include_spirv_unified1_spirv_hpp) --output-file=$(location clspv/spirv_c_strings.hpp) --namespace=spv",
+    cmd: "$(location cmake/spirv_c_strings.py) --input-file=$(location :SpirvHeaders_include_spirv_unified1_spirv_hpp) --output-file=$(location clspv/spirv_c_strings.hpp) --namespace=spv",
     srcs: [
-        ":spirv-header-dep_include_spirv_unified1_spirv_hpp",
+        ":SpirvHeaders_include_spirv_unified1_spirv_hpp",
         "cmake/spirv_c_strings.py",
     ],
     out: ["clspv/spirv_c_strings.hpp"],
@@ -153,9 +153,9 @@ cc_genrule {
 
 cc_genrule {
     name: "clspv_include_clspv_clspv_builtin_library_h",
-    cmd: "$(location cmake/bake_file.py) --input-header-file=$(location :libclc-dep_tools_libclc_clspv--_bc) --output-file=$(location clspv/clspv_builtin_library.h) --header-var=clspv_builtin_library_data --header-size=clspv_builtin_library_size",
+    cmd: "$(location cmake/bake_file.py) --input-header-file=$(location :LibclcBins_tools_libclc_clspv--_bc) --output-file=$(location clspv/clspv_builtin_library.h) --header-var=clspv_builtin_library_data --header-size=clspv_builtin_library_size",
     srcs: [
-        ":libclc-dep_tools_libclc_clspv--_bc",
+        ":LibclcBins_tools_libclc_clspv--_bc",
         "cmake/bake_file.py",
     ],
     out: ["clspv/clspv_builtin_library.h"],
@@ -170,9 +170,9 @@ cc_genrule {
 
 cc_genrule {
     name: "clspv_include_clspv_opencl_builtins_header_h",
-    cmd: "$(location cmake/bake_file.py) --input-header-file=$(location :clspv_cmake_clspv-builtins_h) --input-base-file=$(location :clang-dep_lib_Headers_opencl-c-base_h) --output-file=$(location clspv/opencl_builtins_header.h) --header-var=clspv_builtins_header_data --header-size-var=clspv_builtins_header_size --base-var=opencl_base_builtins_header_data --base-size-var=opencl_base_builtins_header_size",
+    cmd: "$(location cmake/bake_file.py) --input-header-file=$(location :clspv_cmake_clspv-builtins_h) --input-base-file=$(location :ClangHeaders_lib_Headers_opencl-c-base_h) --output-file=$(location clspv/opencl_builtins_header.h) --header-var=clspv_builtins_header_data --header-size-var=clspv_builtins_header_size --base-var=opencl_base_builtins_header_data --base-size-var=opencl_base_builtins_header_size",
     srcs: [
-        ":clang-dep_lib_Headers_opencl-c-base_h",
+        ":ClangHeaders_lib_Headers_opencl-c-base_h",
         ":clspv_cmake_clspv-builtins_h",
         "cmake/bake_file.py",
     ],
@@ -181,9 +181,9 @@ cc_genrule {
 
 cc_genrule {
     name: "clspv_include_clspv_clspv64_builtin_library_h",
-    cmd: "$(location cmake/bake_file.py) --input-header-file=$(location :libclc-dep_tools_libclc_clspv64--_bc) --output-file=$(location clspv/clspv64_builtin_library.h) --header-var=clspv64_builtin_library_data --header-size=clspv64_builtin_library_size",
+    cmd: "$(location cmake/bake_file.py) --input-header-file=$(location :LibclcBins_tools_libclc_clspv64--_bc) --output-file=$(location clspv/clspv64_builtin_library.h) --header-var=clspv64_builtin_library_data --header-size=clspv64_builtin_library_size",
     srcs: [
-        ":libclc-dep_tools_libclc_clspv64--_bc",
+        ":LibclcBins_tools_libclc_clspv64--_bc",
         "cmake/bake_file.py",
     ],
     out: ["clspv/clspv64_builtin_library.h"],

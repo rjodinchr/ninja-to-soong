@@ -14,9 +14,6 @@ pub struct Clspv {
 }
 
 impl Project for Clspv {
-    fn get_id(&self) -> ProjectId {
-        ProjectId::Clspv
-    }
     fn get_name(&self) -> &'static str {
         "clspv"
     }
@@ -65,55 +62,42 @@ impl Project for Clspv {
             vec!["SPDX-license-identifier-Apache-2.0"],
             vec!["LICENSE"],
         );
-        package.generate(
-            projects_map.get_deps(ProjectId::Clvk, self.get_id(), GenDeps::TargetsToGen)?,
-            targets,
-            self,
-        )?;
+        package.generate(projects_map.get_deps(Dep::ClspvTargets)?, targets, self)?;
 
         self.gen_deps = package.get_gen_deps();
 
         Ok(package)
     }
 
-    fn get_project_deps(&self) -> Vec<ProjectId> {
-        vec![ProjectId::Clvk]
-    }
-    fn get_deps_info(&self) -> Vec<(PathBuf, GenDeps)> {
+    fn get_deps_info(&self) -> Vec<(PathBuf, Dep)> {
         vec![
-            (self.spirv_headers_path.clone(), GenDeps::SpirvHeaders),
-            (self.llvm_project_path.join("clang"), GenDeps::ClangHeaders),
-            (PathBuf::from("third_party/llvm"), GenDeps::LibclcBins),
+            (self.spirv_headers_path.clone(), Dep::SpirvHeaders),
+            (self.llvm_project_path.join("clang"), Dep::ClangHeaders),
+            (PathBuf::from("third_party/llvm"), Dep::LibclcBins),
         ]
     }
-    fn get_deps_map(&self, project: ProjectId) -> GenDepsMap {
-        let mut deps: GenDepsMap = HashMap::new();
-        match project {
-            ProjectId::SpirvHeaders => {
-                let files = self
-                    .gen_deps
-                    .iter()
-                    .filter(|dep| dep.starts_with(&self.spirv_headers_path))
-                    .map(|dep| dep.clone())
-                    .collect();
-                deps.insert(GenDeps::SpirvHeaders, files);
-            }
-            ProjectId::LlvmProject => {
-                let mut clang_headers = Vec::new();
-                let mut libclc_binaries = Vec::new();
-                for dep in &self.gen_deps {
-                    if let Ok(strip) = dep.strip_prefix(&self.llvm_project_path) {
-                        clang_headers.push(PathBuf::from(strip));
-                    } else if file_name(dep) == "clspv--.bc" || file_name(dep) == "clspv64--.bc" {
-                        libclc_binaries.push(strip_prefix(dep, "third_party/llvm"));
-                    }
-                }
-                deps.insert(GenDeps::ClangHeaders, clang_headers);
-                deps.insert(GenDeps::LibclcBins, libclc_binaries);
-            }
-            _ => (),
-        };
-        deps
+    fn get_deps(&self, dep: Dep) -> Vec<PathBuf> {
+        match dep {
+            Dep::ClangHeaders => self
+                .gen_deps
+                .iter()
+                .filter(|dep| dep.starts_with(&self.llvm_project_path))
+                .map(|dep| strip_prefix(dep, &self.llvm_project_path))
+                .collect(),
+            Dep::LibclcBins => self
+                .gen_deps
+                .iter()
+                .filter(|dep| file_name(dep) == "clspv--.bc" || file_name(dep) == "clspv64--.bc")
+                .map(|dep| strip_prefix(dep, "third_party/llvm"))
+                .collect(),
+            Dep::SpirvHeaders => self
+                .gen_deps
+                .iter()
+                .filter(|dep| dep.starts_with(&self.spirv_headers_path))
+                .map(|dep| dep.clone())
+                .collect(),
+            _ => Vec::new(),
+        }
     }
 
     fn get_target_object_module(&self, _target: &str, mut module: SoongModule) -> SoongModule {
