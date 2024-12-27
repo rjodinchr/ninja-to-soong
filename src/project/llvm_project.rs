@@ -44,8 +44,8 @@ impl Project for LlvmProject {
                 ]
             )?;
         }
-        let targets_to_generate = projects_map.get_deps(Dep::LlvmProjectTargets)?;
-        let libclc_binaries = projects_map.get_deps(Dep::LibclcBins)?;
+        let targets_to_generate = Dep::LlvmProjectTargets.get(projects_map)?;
+        let libclc_binaries = Dep::LibclcBins.get(projects_map)?;
         if !ctx.skip_build {
             let mut targets_to_build = Vec::new();
             targets_to_build.extend(targets_to_generate.clone());
@@ -109,7 +109,7 @@ impl Project for LlvmProject {
             ],
         ));
 
-        for clang_header in projects_map.get_deps(Dep::ClangHeaders)? {
+        for clang_header in Dep::ClangHeaders.get(projects_map)? {
             package.add_module(SoongModule::new_copy_genrule(
                 Dep::ClangHeaders.get_id(&clang_header, Path::new("clang"), &self.build_path),
                 path_to_string(&clang_header),

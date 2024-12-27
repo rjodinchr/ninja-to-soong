@@ -58,11 +58,7 @@ impl Project for SpirvTools {
             vec!["SPDX-license-identifier-Apache-2.0"],
             vec!["LICENSE"],
         );
-        package.generate(
-            projects_map.get_deps(Dep::SpirvToolsTargets)?,
-            targets,
-            self,
-        )?;
+        package.generate(Dep::SpirvToolsTargets.get(projects_map)?, targets, self)?;
         package.add_module(SoongModule::new_cc_library_headers(
             CcLibraryHeaders::SpirvTools,
             vec![String::from("include")],

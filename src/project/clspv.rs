@@ -62,7 +62,7 @@ impl Project for Clspv {
             vec!["SPDX-license-identifier-Apache-2.0"],
             vec!["LICENSE"],
         );
-        package.generate(projects_map.get_deps(Dep::ClspvTargets)?, targets, self)?;
+        package.generate(Dep::ClspvTargets.get(projects_map)?, targets, self)?;
 
         self.gen_deps = package.get_gen_deps();
 
