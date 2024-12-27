@@ -26,98 +26,98 @@ cc_library_headers {
 }
 
 genrule {
-    name: "spirv-header-dep_include_spirv_spir-v_xml",
+    name: "SpirvHeaders_include_spirv_spir-v_xml",
     cmd: "cp $(in) $(out)",
     srcs: ["include/spirv/spir-v.xml"],
     out: ["spir-v.xml"],
 }
 
 genrule {
-    name: "spirv-header-dep_include_spirv_unified1_extinst_debuginfo_grammar_json",
+    name: "SpirvHeaders_include_spirv_unified1_extinst_debuginfo_grammar_json",
     cmd: "cp $(in) $(out)",
     srcs: ["include/spirv/unified1/extinst.debuginfo.grammar.json"],
     out: ["extinst.debuginfo.grammar.json"],
 }
 
 genrule {
-    name: "spirv-header-dep_include_spirv_unified1_extinst_glsl_std_450_grammar_json",
+    name: "SpirvHeaders_include_spirv_unified1_extinst_glsl_std_450_grammar_json",
     cmd: "cp $(in) $(out)",
     srcs: ["include/spirv/unified1/extinst.glsl.std.450.grammar.json"],
     out: ["extinst.glsl.std.450.grammar.json"],
 }
 
 genrule {
-    name: "spirv-header-dep_include_spirv_unified1_extinst_nonsemantic_clspvreflection_grammar_json",
+    name: "SpirvHeaders_include_spirv_unified1_extinst_nonsemantic_clspvreflection_grammar_json",
     cmd: "cp $(in) $(out)",
     srcs: ["include/spirv/unified1/extinst.nonsemantic.clspvreflection.grammar.json"],
     out: ["extinst.nonsemantic.clspvreflection.grammar.json"],
 }
 
 genrule {
-    name: "spirv-header-dep_include_spirv_unified1_extinst_nonsemantic_shader_debuginfo_100_grammar_json",
+    name: "SpirvHeaders_include_spirv_unified1_extinst_nonsemantic_shader_debuginfo_100_grammar_json",
     cmd: "cp $(in) $(out)",
     srcs: ["include/spirv/unified1/extinst.nonsemantic.shader.debuginfo.100.grammar.json"],
     out: ["extinst.nonsemantic.shader.debuginfo.100.grammar.json"],
 }
 
 genrule {
-    name: "spirv-header-dep_include_spirv_unified1_extinst_nonsemantic_vkspreflection_grammar_json",
+    name: "SpirvHeaders_include_spirv_unified1_extinst_nonsemantic_vkspreflection_grammar_json",
     cmd: "cp $(in) $(out)",
     srcs: ["include/spirv/unified1/extinst.nonsemantic.vkspreflection.grammar.json"],
     out: ["extinst.nonsemantic.vkspreflection.grammar.json"],
 }
 
 genrule {
-    name: "spirv-header-dep_include_spirv_unified1_extinst_opencl_debuginfo_100_grammar_json",
+    name: "SpirvHeaders_include_spirv_unified1_extinst_opencl_debuginfo_100_grammar_json",
     cmd: "cp $(in) $(out)",
     srcs: ["include/spirv/unified1/extinst.opencl.debuginfo.100.grammar.json"],
     out: ["extinst.opencl.debuginfo.100.grammar.json"],
 }
 
 genrule {
-    name: "spirv-header-dep_include_spirv_unified1_extinst_opencl_std_100_grammar_json",
+    name: "SpirvHeaders_include_spirv_unified1_extinst_opencl_std_100_grammar_json",
     cmd: "cp $(in) $(out)",
     srcs: ["include/spirv/unified1/extinst.opencl.std.100.grammar.json"],
     out: ["extinst.opencl.std.100.grammar.json"],
 }
 
 genrule {
-    name: "spirv-header-dep_include_spirv_unified1_extinst_spv-amd-gcn-shader_grammar_json",
+    name: "SpirvHeaders_include_spirv_unified1_extinst_spv-amd-gcn-shader_grammar_json",
     cmd: "cp $(in) $(out)",
     srcs: ["include/spirv/unified1/extinst.spv-amd-gcn-shader.grammar.json"],
     out: ["extinst.spv-amd-gcn-shader.grammar.json"],
 }
 
 genrule {
-    name: "spirv-header-dep_include_spirv_unified1_extinst_spv-amd-shader-ballot_grammar_json",
+    name: "SpirvHeaders_include_spirv_unified1_extinst_spv-amd-shader-ballot_grammar_json",
     cmd: "cp $(in) $(out)",
     srcs: ["include/spirv/unified1/extinst.spv-amd-shader-ballot.grammar.json"],
     out: ["extinst.spv-amd-shader-ballot.grammar.json"],
 }
 
 genrule {
-    name: "spirv-header-dep_include_spirv_unified1_extinst_spv-amd-shader-explicit-vertex-parameter_grammar_json",
+    name: "SpirvHeaders_include_spirv_unified1_extinst_spv-amd-shader-explicit-vertex-parameter_grammar_json",
     cmd: "cp $(in) $(out)",
     srcs: ["include/spirv/unified1/extinst.spv-amd-shader-explicit-vertex-parameter.grammar.json"],
     out: ["extinst.spv-amd-shader-explicit-vertex-parameter.grammar.json"],
 }
 
 genrule {
-    name: "spirv-header-dep_include_spirv_unified1_extinst_spv-amd-shader-trinary-minmax_grammar_json",
+    name: "SpirvHeaders_include_spirv_unified1_extinst_spv-amd-shader-trinary-minmax_grammar_json",
     cmd: "cp $(in) $(out)",
     srcs: ["include/spirv/unified1/extinst.spv-amd-shader-trinary-minmax.grammar.json"],
     out: ["extinst.spv-amd-shader-trinary-minmax.grammar.json"],
 }
 
 genrule {
-    name: "spirv-header-dep_include_spirv_unified1_spirv_core_grammar_json",
+    name: "SpirvHeaders_include_spirv_unified1_spirv_core_grammar_json",
     cmd: "cp $(in) $(out)",
     srcs: ["include/spirv/unified1/spirv.core.grammar.json"],
     out: ["spirv.core.grammar.json"],
 }
 
 genrule {
-    name: "spirv-header-dep_include_spirv_unified1_spirv_hpp",
+    name: "SpirvHeaders_include_spirv_unified1_spirv_hpp",
     cmd: "cp $(in) $(out)",
     srcs: ["include/spirv/unified1/spirv.hpp"],
     out: ["spirv.hpp"],

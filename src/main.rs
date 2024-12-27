@@ -70,25 +70,24 @@ fn generate_projects(
         if projects_generated.contains(project_id) {
             continue;
         }
-        let (project_id, mut project) = projects_map.remove_entry(project_id)?;
-        let missing_deps: Vec<ProjectId> = project
-            .get_project_deps()
+        let mut project = projects_map.remove(project_id)?;
+        let missing_deps = project_id
+            .get_deps()
             .into_iter()
-            .filter(|dep| !projects_generated.contains(dep))
-            .collect();
-        if missing_deps.len() > 0 {
+            .filter(|dep| !projects_generated.contains(dep));
+        if missing_deps.clone().count() > 0 {
             projects_to_generate.extend(missing_deps);
             projects_to_generate.push_back(project_id.clone());
         } else {
             generate_project(
                 &mut project,
-                !project_to_write.contains(&project_id),
+                !project_to_write.contains(project_id),
                 &projects_map,
                 ctx,
             )?;
             projects_generated.insert(project_id.clone());
         }
-        projects_map.insert(project_id, project);
+        projects_map.insert(project_id.clone(), project);
     }
 
     Ok(())

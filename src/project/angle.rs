@@ -37,9 +37,6 @@ impl Angle {
 }
 
 impl Project for Angle {
-    fn get_id(&self) -> ProjectId {
-        ProjectId::Angle
-    }
     fn get_name(&self) -> &'static str {
         "angle"
     }

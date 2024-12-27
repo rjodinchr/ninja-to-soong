@@ -13,9 +13,6 @@ pub struct SpirvTools {
 }
 
 impl Project for SpirvTools {
-    fn get_id(&self) -> ProjectId {
-        ProjectId::SpirvTools
-    }
     fn get_name(&self) -> &'static str {
         "SPIRV-Tools"
     }
@@ -62,7 +59,7 @@ impl Project for SpirvTools {
             vec!["LICENSE"],
         );
         package.generate(
-            projects_map.get_deps(ProjectId::Clvk, self.get_id(), GenDeps::TargetsToGen)?,
+            projects_map.get_deps(Dep::SpirvToolsTargets)?,
             targets,
             self,
         )?;
@@ -76,16 +73,14 @@ impl Project for SpirvTools {
         Ok(package)
     }
 
-    fn get_project_deps(&self) -> Vec<ProjectId> {
-        vec![ProjectId::Clvk]
+    fn get_deps_info(&self) -> Vec<(PathBuf, Dep)> {
+        vec![(self.spirv_headers_path.clone(), Dep::SpirvHeaders)]
     }
-    fn get_deps_info(&self) -> Vec<(PathBuf, GenDeps)> {
-        vec![(self.spirv_headers_path.clone(), GenDeps::SpirvHeaders)]
-    }
-    fn get_deps_map(&self, _project: ProjectId) -> GenDepsMap {
-        let mut deps: GenDepsMap = HashMap::new();
-        deps.insert(GenDeps::SpirvHeaders, self.gen_deps.clone());
-        deps
+    fn get_deps(&self, dep: Dep) -> Vec<PathBuf> {
+        match dep {
+            Dep::SpirvHeaders => self.gen_deps.clone(),
+            _ => Vec::new(),
+        }
     }
 
     fn get_target_object_module(&self, _target: &str, mut module: SoongModule) -> SoongModule {

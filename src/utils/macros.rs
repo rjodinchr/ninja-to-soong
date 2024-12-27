@@ -81,19 +81,41 @@ macro_rules! execute_cmd {
 }
 
 #[macro_export]
-macro_rules! define_projects {
+macro_rules! define_ProjectId {
     ($(($project:ident, $module:ident)),*) => {
         $(mod $module;)*
         #[derive(Debug, Eq, PartialEq, Hash, Clone)]
         pub enum ProjectId {
             $($project,)*
         }
-        fn get_projects() -> Vec<Box<dyn Project>> {
-            let mut projects: Vec<Box<dyn Project>> = Vec::new();
-            $(projects.push(Box::new($module::$project::default()));)*
+        fn get_projects() -> HashMap<ProjectId, Box<dyn Project>> {
+            let mut projects: HashMap<ProjectId, Box<dyn Project>> = HashMap::new();
+            $(projects.insert(ProjectId::$project, Box::new($module::$project::default()));)*
             projects
         }
     };
 }
 
-pub use {define_projects, error, execute_cmd, print_info, print_internal, print_verbose};
+#[macro_export]
+macro_rules! define_Dep {
+    ($(($deps:ident, $project:ident, ($($projects:ident),*))),*) => {
+        #[derive(Debug, Eq, PartialEq, Hash, Clone)]
+        pub enum Dep {
+            $($deps,)*
+        }
+        impl Dep {
+            pub fn projects(&self) -> (ProjectId, Vec<ProjectId>) {
+                match self {
+                    $(Self::$deps => (ProjectId::$project, vec![$(ProjectId::$projects,)*]),)*
+                }
+            }
+        }
+        fn get_deps() -> Vec<Dep> {
+            vec![$(Dep::$deps,)*]
+        }
+    };
+}
+
+pub use {
+    define_Dep, define_ProjectId, error, execute_cmd, print_info, print_internal, print_verbose,
+};

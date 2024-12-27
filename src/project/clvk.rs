@@ -12,9 +12,6 @@ pub struct Clvk {
 }
 
 impl Project for Clvk {
-    fn get_id(&self) -> ProjectId {
-        ProjectId::Clvk
-    }
     fn get_name(&self) -> &'static str {
         "clvk"
     }
@@ -69,22 +66,18 @@ impl Project for Clvk {
         Ok(package)
     }
 
-    fn get_deps_map(&self, project: ProjectId) -> GenDepsMap {
-        let mut deps = HashMap::new();
-        let mut libs = Vec::new();
-        let prefix = match project {
-            ProjectId::Clspv => "clspv",
-            ProjectId::LlvmProject => "llvm-project",
-            ProjectId::SpirvTools => "SPIRV-Tools",
-            _ => "",
+    fn get_deps(&self, dep: Dep) -> Vec<PathBuf> {
+        let prefix = match dep {
+            Dep::ClspvTargets => "clspv",
+            Dep::LlvmProjectTargets => "llvm-project",
+            Dep::SpirvToolsTargets => "SPIRV-Tools",
+            _ => return Vec::new(),
         };
-        for library in &self.gen_libs {
-            if let Ok(lib) = self.get_lib(library).strip_prefix(prefix) {
-                libs.push(PathBuf::from(lib));
-            }
-        }
-        deps.insert(GenDeps::TargetsToGen, libs);
-        deps
+        self.gen_libs
+            .iter()
+            .filter(|lib| self.get_lib(lib).starts_with(prefix))
+            .map(|lib| strip_prefix(self.get_lib(lib), prefix))
+            .collect()
     }
 
     fn get_target_name(&self, target: &str) -> String {

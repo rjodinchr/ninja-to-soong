@@ -9,9 +9,6 @@ pub struct SpirvHeaders {
 }
 
 impl Project for SpirvHeaders {
-    fn get_id(&self) -> ProjectId {
-        ProjectId::SpirvHeaders
-    }
     fn get_name(&self) -> &'static str {
         "SPIRV-Headers"
     }
@@ -42,36 +39,14 @@ impl Project for SpirvHeaders {
             vec![String::from("include")],
         ));
 
-        let mut set = std::collections::HashSet::new();
-        set.extend(projects_map.get_deps(
-            ProjectId::SpirvTools,
-            self.get_id(),
-            GenDeps::SpirvHeaders,
-        )?);
-        set.extend(projects_map.get_deps(
-            ProjectId::Clspv,
-            self.get_id(),
-            GenDeps::SpirvHeaders,
-        )?);
-        let mut files = Vec::from_iter(set);
-        files.sort();
-        for file in files {
+        for file in projects_map.get_deps(Dep::SpirvHeaders)? {
             package.add_module(SoongModule::new_copy_genrule(
-                dep_name(
-                    &file,
-                    &self.src_path,
-                    GenDeps::SpirvHeaders.str(),
-                    Path::new(""),
-                ),
+                Dep::SpirvHeaders.get_id(&file, &self.src_path, Path::new("")),
                 path_to_string(strip_prefix(&file, &self.src_path)),
                 file_name(&file),
             ));
         }
 
         Ok(package)
-    }
-
-    fn get_project_deps(&self) -> Vec<ProjectId> {
-        vec![ProjectId::SpirvTools, ProjectId::Clspv]
     }
 }

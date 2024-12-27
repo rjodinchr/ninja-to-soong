@@ -38,9 +38,6 @@ pub struct Mesa {
 }
 
 impl Project for Mesa {
-    fn get_id(&self) -> ProjectId {
-        ProjectId::Mesa
-    }
     fn get_name(&self) -> &'static str {
         "mesa"
     }
