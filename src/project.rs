@@ -10,39 +10,23 @@ use crate::soong_module::*;
 use crate::soong_package::*;
 use crate::utils::*;
 
-mod angle;
-mod clspv;
-mod clvk;
 mod common;
-mod llvm_project;
-mod mesa;
-mod spirv_headers;
-mod spirv_tools;
 
-#[derive(Debug, Eq, PartialEq, Hash, Clone)]
-pub enum ProjectId {
-    Angle,
-    Clvk,
-    Clspv,
-    LlvmProject,
-    Mesa,
-    SpirvHeaders,
-    SpirvTools,
-}
+define_projects!(
+    (Angle, angle),
+    (Clvk, clvk),
+    (Clspv, clspv),
+    (LlvmProject, llvm_project),
+    (Mesa, mesa),
+    (SpirvHeaders, spirv_headers),
+    (SpirvTools, spirv_tools)
+);
+
 pub struct ProjectsMap(HashMap<ProjectId, Box<dyn Project>>);
 impl ProjectsMap {
     pub fn new() -> Self {
-        let projects: Vec<Box<dyn Project>> = vec![
-            Box::new(angle::Angle::default()),
-            Box::new(clvk::Clvk::default()),
-            Box::new(clspv::Clspv::default()),
-            Box::new(llvm_project::LlvmProject::default()),
-            Box::new(mesa::Mesa::default()),
-            Box::new(spirv_headers::SpirvHeaders::default()),
-            Box::new(spirv_tools::SpirvTools::default()),
-        ];
         Self(
-            projects
+            get_projects()
                 .into_iter()
                 .fold(HashMap::new(), |mut map, project| {
                     map.insert(project.get_id(), project);
