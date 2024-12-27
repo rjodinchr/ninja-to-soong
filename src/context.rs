@@ -13,18 +13,17 @@ const SKIP_BUILD: &str = "--skip-build";
 const SKIP_GEN_NINJA: &str = "--skip-gen-ninja";
 
 fn help(exec: &str, projects: &ProjectsMap) -> String {
-    let projects_help = projects
+    let mut projects_help = projects
         .iter()
-        .map(|(_, project)| project.get_name())
-        .collect::<Vec<&str>>()
-        .join("\n  ");
+        .map(|(_, project)| format!("  {0}\n", project.get_name()))
+        .collect::<Vec<String>>();
+    projects_help.sort();
     format!(
         "
 USAGE: {exec} [OPTIONS] [PROJECTS]
 
 PROJECTS:
-{projects_help}
-
+{0}
 OPTIONS:
 {AOSP_PATH} <path>   Path to Android tree (required for most project)
 {CLEAN_TMP}          Remove temporary directory before running
@@ -32,7 +31,8 @@ OPTIONS:
 {SKIP_BUILD}         Skip build step
 {SKIP_GEN_NINJA}     Skip generation of Ninja files
 -h, --help           Display the help and exit
-"
+",
+        projects_help.concat()
     )
 }
 

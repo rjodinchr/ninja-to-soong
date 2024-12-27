@@ -99,13 +99,13 @@ fn main() -> Result<(), String> {
         Ok(context) => context,
         Err(err) => {
             print_error!("{err}");
-            return Err(format!("Could not create context"));
+            return Err(format!("parse_args failed"));
         }
     };
 
     if let Err(err) = generate_projects(projects_map, project_ids, &ctx) {
         print_error!("{err}");
-        Err(format!("Could not generate projects"))
+        Err(format!("generate_projects failed"))
     } else {
         Ok(())
     }
