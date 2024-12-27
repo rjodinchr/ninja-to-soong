@@ -70,10 +70,10 @@ impl ProjectsMap {
         self.0.insert(id, project);
     }
     pub fn remove(&mut self, id: &ProjectId) -> Result<Box<dyn Project>, String> {
-        let Some(entry) = self.0.remove_entry(id) else {
+        let Some(entry) = self.0.remove(id) else {
             return error!("'{id:#?}' not found in projects map");
         };
-        Ok(entry.1)
+        Ok(entry)
     }
     pub fn iter(&self) -> std::collections::hash_map::Iter<'_, ProjectId, Box<dyn Project>> {
         self.0.iter()
