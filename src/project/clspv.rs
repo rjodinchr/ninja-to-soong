@@ -51,17 +51,20 @@ impl Project for Clspv {
             )?;
         }
 
-        let targets = parse_build_ninja::<CmakeNinjaTarget>(&self.build_path)?;
-        let mut package = SoongPackage::new(
-            &self.src_path,
-            &self.ndk_path,
-            &self.build_path,
+        let package = SoongPackage::new(
             "//external/clvk",
             "clspv_license",
             vec!["SPDX-license-identifier-Apache-2.0"],
             vec!["LICENSE"],
-        );
-        package.generate(Dep::ClspvTargets.get(projects_map)?, targets, self)?;
+        )
+        .generate(
+            Dep::ClspvTargets.get(projects_map)?,
+            parse_build_ninja::<CmakeNinjaTarget>(&self.build_path)?,
+            &self.src_path,
+            &self.ndk_path,
+            &self.build_path,
+            self,
+        )?;
         self.gen_deps = package.get_gen_deps();
 
         Ok(package.print())

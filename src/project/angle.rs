@@ -71,23 +71,24 @@ impl Project for Angle {
             )?;
         }
 
-        let targets = parse_build_ninja::<GnNinjaTarget>(&self.build_path)?;
-        let targets_to_generate = TARGETS
-            .into_iter()
-            .map(|target| PathBuf::from(target))
-            .collect();
-        let mut package = SoongPackage::new(
-            &self.src_path,
-            &self.ndk_path,
-            &self.build_path,
+        Ok(SoongPackage::new(
             "//visibility:public",
             "angle_license",
             vec!["SPDX-license-identifier-Apache-2.0"],
             vec!["LICENSE"],
-        );
-        package.generate(targets_to_generate, targets, self)?;
-
-        Ok(package.print())
+        )
+        .generate(
+            TARGETS
+                .into_iter()
+                .map(|target| PathBuf::from(target))
+                .collect(),
+            parse_build_ninja::<GnNinjaTarget>(&self.build_path)?,
+            &self.src_path,
+            &self.ndk_path,
+            &self.build_path,
+            self,
+        )?
+        .print())
     }
 
     fn get_target_name(&self, target: &Path) -> PathBuf {

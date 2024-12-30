@@ -47,17 +47,20 @@ impl Project for SpirvTools {
             )?;
         }
 
-        let targets = parse_build_ninja::<CmakeNinjaTarget>(&self.build_path)?;
         let mut package = SoongPackage::new(
-            &self.src_path,
-            &self.ndk_path,
-            &self.build_path,
             "//visibility:public",
             "SPIRV-Tools_license",
             vec!["SPDX-license-identifier-Apache-2.0"],
             vec!["LICENSE"],
-        );
-        package.generate(Dep::SpirvToolsTargets.get(projects_map)?, targets, self)?;
+        )
+        .generate(
+            Dep::SpirvToolsTargets.get(projects_map)?,
+            parse_build_ninja::<CmakeNinjaTarget>(&self.build_path)?,
+            &self.src_path,
+            &self.ndk_path,
+            &self.build_path,
+            self,
+        )?;
         package.add_module(SoongModule::new_cc_library_headers(
             CcLibraryHeaders::SpirvTools,
             vec![String::from("include")],
