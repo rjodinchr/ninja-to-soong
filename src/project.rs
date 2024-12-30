@@ -98,7 +98,7 @@ pub trait Project {
         &mut self,
         ctx: &Context,
         projects_map: &ProjectsMap,
-    ) -> Result<SoongPackage, String>;
+    ) -> Result<String, String>;
     // DEPENDENCIES FUNCTIONS
     fn get_deps_prefix(&self) -> Vec<(PathBuf, Dep)> {
         Vec::new()

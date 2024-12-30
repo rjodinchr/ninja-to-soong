@@ -50,7 +50,7 @@ impl Project for Angle {
         &mut self,
         ctx: &Context,
         _projects_map: &ProjectsMap,
-    ) -> Result<SoongPackage, String> {
+    ) -> Result<String, String> {
         self.src_path = if let Ok(path) = std::env::var("N2S_ANGLE_PATH") {
             PathBuf::from(path)
         } else {
@@ -70,8 +70,12 @@ impl Project for Angle {
                 ]
             )?;
         }
-        let targets = parse_build_ninja::<GnNinjaTarget>(&self.build_path)?;
 
+        let targets = parse_build_ninja::<GnNinjaTarget>(&self.build_path)?;
+        let targets_to_generate = TARGETS
+            .into_iter()
+            .map(|target| PathBuf::from(target))
+            .collect();
         let mut package = SoongPackage::new(
             &self.src_path,
             &self.ndk_path,
@@ -81,13 +85,9 @@ impl Project for Angle {
             vec!["SPDX-license-identifier-Apache-2.0"],
             vec!["LICENSE"],
         );
-        let targets_to_generate = TARGETS
-            .into_iter()
-            .map(|target| PathBuf::from(target))
-            .collect();
         package.generate(targets_to_generate, targets, self)?;
 
-        Ok(package)
+        Ok(package.print())
     }
 
     fn get_target_name(&self, target: &Path) -> PathBuf {

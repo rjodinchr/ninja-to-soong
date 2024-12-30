@@ -49,7 +49,7 @@ impl Project for Mesa {
         &mut self,
         ctx: &Context,
         _projects_map: &ProjectsMap,
-    ) -> Result<SoongPackage, String> {
+    ) -> Result<String, String> {
         self.src_path = if let Ok(path) = std::env::var("N2S_MESA_PATH") {
             PathBuf::from(path)
         } else {
@@ -116,7 +116,7 @@ impl Project for Mesa {
         package.filter_local_include_dirs(MESON_GENERATED, &gen_deps);
         common::copy_gen_deps(gen_deps, MESON_GENERATED, &self.build_path, ctx, self)?;
 
-        Ok(package)
+        Ok(package.print())
     }
 
     fn get_target_name(&self, target: &Path) -> PathBuf {

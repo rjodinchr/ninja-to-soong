@@ -25,7 +25,7 @@ impl Project for Clvk {
         &mut self,
         ctx: &Context,
         projects_map: &ProjectsMap,
-    ) -> Result<SoongPackage, String> {
+    ) -> Result<String, String> {
         self.src_path = self.get_android_path(ctx);
         self.build_path = ctx.temp_path.join(self.get_name());
         self.ndk_path = get_ndk_path(&ctx.temp_path)?;
@@ -50,7 +50,6 @@ impl Project for Clvk {
         }
 
         let targets = parse_build_ninja::<CmakeNinjaTarget>(&self.build_path)?;
-
         let mut package = SoongPackage::new(
             &self.src_path,
             &self.ndk_path,
@@ -61,9 +60,9 @@ impl Project for Clvk {
             vec!["LICENSE"],
         );
         package.generate(vec![PathBuf::from("libOpenCL.so")], targets, self)?;
-
         self.gen_libs = package.get_gen_libs();
-        Ok(package)
+
+        Ok(package.print())
     }
 
     fn get_deps(&self, dep: Dep) -> Vec<PathBuf> {
