@@ -4,8 +4,8 @@
 use std::collections::{HashSet, VecDeque};
 
 mod context;
+mod ninja_parser;
 mod ninja_target;
-mod parser;
 mod project;
 mod soong_module;
 mod soong_module_generator;
