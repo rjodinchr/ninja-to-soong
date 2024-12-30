@@ -142,7 +142,7 @@ impl<'a> SoongPackage<'a> {
                 debug_project!("filter_define({def})");
                 project.filter_define(def)
             })
-            .map(|def| format!("-D{0}", project.get_define(def)))
+            .map(|def| format!("-D{0}", project.map_define(def)))
             .collect()
     }
 
@@ -163,7 +163,7 @@ impl<'a> SoongPackage<'a> {
                 debug_project!("filter_include({include:#?})");
                 project.filter_include(include)
             })
-            .map(|inc| path_to_string(strip_prefix(project.get_include(&inc), self.src_path)))
+            .map(|inc| path_to_string(strip_prefix(project.map_include(&inc), self.src_path)))
             .collect()
     }
 
@@ -178,8 +178,7 @@ impl<'a> SoongPackage<'a> {
                     file_stem(lib)
                 } else {
                     self.gen_libs.insert(lib.clone());
-                    let lib_id = path_to_id(project.get_lib(&lib));
-                    project.get_target_name(&lib_id)
+                    path_to_id(project.get_target_name(&project.map_lib(&lib)))
                 }
             })
             .collect()
@@ -219,7 +218,7 @@ impl<'a> SoongPackage<'a> {
                         if source.starts_with(self.build_path) {
                             gen_deps.push(strip_prefix(&source, self.build_path));
                         }
-                        path_to_string(strip_prefix(project.get_source(&source), self.src_path))
+                        path_to_string(strip_prefix(project.map_source(&source), self.src_path))
                     }),
             );
 
@@ -235,7 +234,7 @@ impl<'a> SoongPackage<'a> {
         includes.extend(self.get_includes(target.get_includes(self.build_path), project));
         cflags.extend(self.get_defines(target.get_defines(), project));
         cflags.extend(self.get_cflags(target.get_cflags(), project));
-        cflags.extend(project.get_target_cflags(&target_name));
+        cflags.extend(project.extend_cflags(&target_name));
 
         let (version_script, link_flags) = target.get_link_flags();
         let link_flags = link_flags
@@ -248,7 +247,7 @@ impl<'a> SoongPackage<'a> {
         let (static_libraries, shared_libraries) = target.get_link_libraries()?;
         static_libs.extend(self.get_libs(static_libraries, project));
         shared_libs.extend(self.get_libs(shared_libraries, project));
-        shared_libs.extend(project.get_target_shared_libs(&target_name));
+        shared_libs.extend(project.extend_shared_libs(&target_name));
 
         let gen_headers = targets_map
             .traverse_from(
@@ -277,16 +276,18 @@ impl<'a> SoongPackage<'a> {
                 }
             })
             .map(|header| {
-                targets_map
-                    .get(&header)
-                    .unwrap()
-                    .get_name(project.get_name())
+                path_to_id(
+                    targets_map
+                        .get(&header)
+                        .unwrap()
+                        .get_name(project.get_name()),
+                )
             })
             .collect::<HashSet<String>>();
 
         self.gen_deps.extend(gen_deps);
 
-        let module_name = project.get_target_name(&target_name);
+        let module_name = path_to_id(project.get_target_name(&target_name));
         static_libs.remove(&module_name);
         shared_libs.remove(&module_name);
 
@@ -321,7 +322,7 @@ impl<'a> SoongPackage<'a> {
             SoongProp::VecStr(Vec::from_iter(gen_headers)),
         );
 
-        Ok(project.get_target_object_module(&target_name, module))
+        Ok(project.get_target_module(&target_name, module))
     }
 
     fn get_cmd(
@@ -349,7 +350,7 @@ impl<'a> SoongPackage<'a> {
         cmd = cmd.replace(&path_to_string_with_separator(self.build_path), "");
         for output in outputs {
             let marker = "<output>";
-            let replace_output = path_to_string(project.get_cmd_output(output));
+            let replace_output = path_to_string(project.map_cmd_output(output));
             cmd = cmd
                 .replace(&path_to_string(output), marker)
                 .replace(&format!(" {0}", file_name(output)), &format!(" {marker}"))
@@ -455,11 +456,12 @@ impl<'a> SoongPackage<'a> {
         let cmd = self.get_cmd(rule_cmd, inputs, target_outputs, deps, project);
         let outputs = target_outputs
             .iter()
-            .map(|output| path_to_string(project.get_cmd_output(output)))
+            .map(|output| path_to_string(project.map_cmd_output(output)))
             .collect::<HashSet<String>>();
 
         let mut module = SoongModule::new("cc_genrule");
-        module.add_prop("name", SoongProp::Str(target.get_name(project.get_name())));
+        let module_name = path_to_id(target.get_name(project.get_name()));
+        module.add_prop("name", SoongProp::Str(module_name));
         module.add_prop("cmd", SoongProp::Str(cmd));
         module.add_prop("srcs", SoongProp::VecStr(Vec::from_iter(sources)));
         module.add_prop("out", SoongProp::VecStr(Vec::from_iter(outputs)));

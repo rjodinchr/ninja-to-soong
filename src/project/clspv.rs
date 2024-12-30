@@ -100,7 +100,7 @@ impl Project for Clspv {
         }
     }
 
-    fn get_target_object_module(&self, _target: &str, mut module: SoongModule) -> SoongModule {
+    fn get_target_module(&self, _target: &Path, mut module: SoongModule) -> SoongModule {
         module.add_prop(
             "header_libs",
             SoongProp::VecStr(vec![
@@ -117,7 +117,7 @@ impl Project for Clspv {
         module
     }
 
-    fn get_cmd_output(&self, output: &Path) -> PathBuf {
+    fn map_cmd_output(&self, output: &Path) -> PathBuf {
         let mut prefix = output;
         while let Some(parent) = prefix.parent() {
             prefix = parent;

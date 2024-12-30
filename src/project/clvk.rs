@@ -75,19 +75,19 @@ impl Project for Clvk {
         };
         self.gen_libs
             .iter()
-            .filter(|lib| self.get_lib(lib).starts_with(prefix))
-            .map(|lib| strip_prefix(self.get_lib(lib), prefix))
+            .filter(|lib| self.map_lib(lib).starts_with(prefix))
+            .map(|lib| strip_prefix(self.map_lib(lib), prefix))
             .collect()
     }
 
-    fn get_target_name(&self, target: &str) -> String {
-        if target.ends_with("libOpenCL_so") {
-            String::from("libclvk")
+    fn get_target_name(&self, target: &Path) -> PathBuf {
+        if target.ends_with("libOpenCL.so") {
+            PathBuf::from("libclvk")
         } else {
-            String::from(target)
+            PathBuf::from(target)
         }
     }
-    fn get_target_object_module(&self, _target: &str, mut module: SoongModule) -> SoongModule {
+    fn get_target_module(&self, _target: &Path, mut module: SoongModule) -> SoongModule {
         module.add_prop(
             "header_libs",
             SoongProp::VecStr(vec![String::from("OpenCL-Headers")]),
@@ -95,7 +95,7 @@ impl Project for Clvk {
         module
     }
 
-    fn get_lib(&self, library: &Path) -> PathBuf {
+    fn map_lib(&self, library: &Path) -> PathBuf {
         strip_prefix(
             if let Ok(strip) = library.strip_prefix(Path::new("external/clspv/third_party/llvm")) {
                 Path::new("llvm-project").join(strip)

@@ -107,35 +107,36 @@ pub trait Project {
         Vec::new()
     }
     // TARGET FUNCTIONS
-    fn get_target_name(&self, target: &str) -> String {
-        String::from(target)
+    fn get_target_name(&self, target: &Path) -> PathBuf {
+        PathBuf::from(target)
     }
-    fn get_target_stem(&self, _target: &str) -> Option<String> {
+    fn get_target_stem(&self, _target: &Path) -> Option<String> {
         None
     }
-    fn get_target_object_module(&self, _target: &str, module: SoongModule) -> SoongModule {
+    fn get_target_module(&self, _target: &Path, module: SoongModule) -> SoongModule {
         module
     }
-    fn get_target_cflags(&self, _target: &str) -> Vec<String> {
+    // EXTEND FUNCTIONS
+    fn extend_cflags(&self, _target: &Path) -> Vec<String> {
         Vec::new()
     }
-    fn get_target_shared_libs(&self, _target: &str) -> Vec<String> {
+    fn extend_shared_libs(&self, _target: &Path) -> Vec<String> {
         Vec::new()
     }
-    // REWORK FUNCTIONS
-    fn get_cmd_output(&self, output: &Path) -> PathBuf {
+    // MAP FUNCTIONS
+    fn map_cmd_output(&self, output: &Path) -> PathBuf {
         PathBuf::from(output)
     }
-    fn get_define(&self, define: &str) -> String {
+    fn map_define(&self, define: &str) -> String {
         String::from(define)
     }
-    fn get_include(&self, include: &Path) -> PathBuf {
+    fn map_include(&self, include: &Path) -> PathBuf {
         PathBuf::from(include)
     }
-    fn get_lib(&self, lib: &Path) -> PathBuf {
+    fn map_lib(&self, lib: &Path) -> PathBuf {
         PathBuf::from(lib)
     }
-    fn get_source(&self, source: &Path) -> PathBuf {
+    fn map_source(&self, source: &Path) -> PathBuf {
         PathBuf::from(source)
     }
     // FILTER FUNCTIONS
