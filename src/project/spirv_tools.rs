@@ -74,7 +74,11 @@ impl Project for SpirvTools {
     }
     fn get_deps(&self, dep: Dep) -> Vec<PathBuf> {
         match dep {
-            Dep::SpirvHeaders => self.gen_deps.clone(),
+            Dep::SpirvHeaders => self
+                .gen_deps
+                .iter()
+                .map(|header| strip_prefix(header, &self.spirv_headers_path))
+                .collect(),
             _ => Vec::new(),
         }
     }

@@ -112,16 +112,14 @@ impl Project for LlvmProject {
         for clang_header in Dep::ClangHeaders.get(projects_map)? {
             package.add_module(SoongModule::new_copy_genrule(
                 Dep::ClangHeaders.get_id(&clang_header, Path::new("clang"), &self.build_path),
-                path_to_string(&clang_header),
-                file_name(&clang_header),
+                &clang_header,
             ));
         }
         for binary in libclc_binaries {
             let file_path = cmake_generated_path.join(binary);
             package.add_module(SoongModule::new_copy_genrule(
                 Dep::LibclcBins.get_id(&file_path, cmake_generated_path, &self.build_path),
-                path_to_string(&file_path),
-                file_name(&file_path),
+                &file_path,
             ));
         }
 

@@ -1,7 +1,7 @@
 // Copyright 2024 ninja-to-soong authors
 // SPDX-License-Identifier: Apache-2.0
 
-const INDENT: &str = "    ";
+use crate::utils::*;
 
 pub enum CcLibraryHeaders {
     SpirvTools,
@@ -47,6 +47,7 @@ impl SoongNamedProp {
     }
 
     fn print(self, indent_level: usize) -> String {
+        const INDENT: &str = "    ";
         let indent = INDENT.repeat(indent_level);
         format!(
             "{indent}{0}: {1},\n",
@@ -104,12 +105,12 @@ impl SoongModule {
         module
     }
 
-    pub fn new_copy_genrule(name: String, src: String, out: String) -> Self {
+    pub fn new_copy_genrule(name: String, file: &Path) -> Self {
         let mut module = Self::new("genrule");
         module.add_prop("name", SoongProp::Str(name));
         module.add_prop("cmd", SoongProp::Str(String::from("cp $(in) $(out)")));
-        module.add_prop("srcs", SoongProp::VecStr(vec![src]));
-        module.add_prop("out", SoongProp::VecStr(vec![out]));
+        module.add_prop("srcs", SoongProp::VecStr(vec![path_to_string(file)]));
+        module.add_prop("out", SoongProp::VecStr(vec![file_name(file)]));
         module
     }
 

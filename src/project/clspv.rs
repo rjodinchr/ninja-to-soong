@@ -94,7 +94,7 @@ impl Project for Clspv {
                 .gen_deps
                 .iter()
                 .filter(|dep| dep.starts_with(&self.spirv_headers_path))
-                .map(|dep| dep.clone())
+                .map(|dep| strip_prefix(dep, &self.spirv_headers_path))
                 .collect(),
             _ => Vec::new(),
         }
