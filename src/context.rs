@@ -17,7 +17,7 @@ fn help(exec: &str, projects: &ProjectsMap) -> String {
         .iter()
         .map(|(_, project)| format!("  {0}\n", project.get_name()))
         .collect::<Vec<String>>();
-    projects_help.sort();
+    projects_help.sort_unstable();
     format!(
         "
 USAGE: {exec} [OPTIONS] [PROJECTS]

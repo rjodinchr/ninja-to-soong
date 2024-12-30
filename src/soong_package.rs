@@ -129,14 +129,14 @@ impl<'a> SoongPackage<'a> {
 
     pub fn get_gen_deps(&self) -> Vec<PathBuf> {
         let mut gen_deps = self.gen_deps.to_owned();
-        gen_deps.sort();
+        gen_deps.sort_unstable();
         gen_deps.dedup();
         gen_deps
     }
 
     pub fn get_gen_libs(&self) -> Vec<PathBuf> {
         let mut gen_libs = self.gen_libs.to_owned();
-        gen_libs.sort();
+        gen_libs.sort_unstable();
         gen_libs.dedup();
         gen_libs
     }
