@@ -115,48 +115,45 @@ impl Project for Mesa {
         Ok(package)
     }
 
-    fn get_target_name(&self, target: &str) -> String {
+    fn get_target_name(&self, target: &Path) -> PathBuf {
         for (target_str, alias, _) in TARGETS {
-            if target == path_to_id(Path::new(self.get_name()).join(target_str))
-                && !alias.is_empty()
-            {
-                return String::from(alias);
+            if target == Path::new(self.get_name()).join(target_str) && !alias.is_empty() {
+                return PathBuf::from(alias);
             }
         }
-        String::from(target)
+        PathBuf::from(target)
     }
-    fn get_target_stem(&self, target: &str) -> Option<String> {
+    fn get_target_stem(&self, target: &Path) -> Option<String> {
         for (target_str, _, stem) in TARGETS {
-            if target == path_to_id(Path::new(self.get_name()).join(target_str)) && !stem.is_empty()
-            {
+            if target == Path::new(self.get_name()).join(target_str) && !stem.is_empty() {
                 return Some(String::from(stem));
             }
         }
         None
     }
-    fn get_target_object_module(&self, target: &str, mut module: SoongModule) -> SoongModule {
+    fn get_target_module(&self, target: &Path, mut module: SoongModule) -> SoongModule {
         let mut libs = Vec::new();
         for lib in [
-            "libgallium_a",
-            "libpipe_loader_static_a",
-            "libiris_a",
-            "libdri_a",
-            "libswkmsdri_a",
-            "libintel_dev_a",
-            "libanv_common_a",
-            "libloader_a",
-            "libmesa_util_a",
-            "libpps_a",
-            "libvulkan_instance_a",
-            "libvulkan_lite_runtime_a",
-            "libvulkan_wsi_a",
+            "libgallium.a",
+            "libpipe_loader_static.a",
+            "libiris.a",
+            "libdri.a",
+            "libswkmsdri.a",
+            "libintel_dev.a",
+            "libanv_common.a",
+            "libloader.a",
+            "libmesa_util.a",
+            "libpps.a",
+            "libvulkan_instance.a",
+            "libvulkan_lite_runtime.a",
+            "libvulkan_wsi.a",
         ] {
             if target.ends_with(lib) {
                 libs.push("libdrm_headers");
                 break;
             }
         }
-        if target.ends_with("libanv_common_a") {
+        if target.ends_with("libanv_common.a") {
             libs.push("hwvulkan_headers");
         }
         module.add_prop(
@@ -173,46 +170,47 @@ impl Project for Mesa {
         );
         module
     }
-    fn get_target_cflags(&self, target: &str) -> Vec<String> {
+
+    fn extend_cflags(&self, target: &Path) -> Vec<String> {
         let mut cflags = vec!["-Wno-non-virtual-dtor", "-Wno-error"];
-        if target.ends_with("libvulkan_lite_runtime_a") {
+        if target.ends_with("libvulkan_lite_runtime.a") {
             cflags.push("-Wno-unreachable-code-loop-increment");
         }
         cflags.into_iter().map(|flag| String::from(flag)).collect()
     }
-    fn get_target_shared_libs(&self, target: &str) -> Vec<String> {
+    fn extend_shared_libs(&self, target: &Path) -> Vec<String> {
         let mut libs = Vec::new();
-        if target.ends_with("libdri_a")
-            || target.ends_with("libanv_common_a")
-            || target.ends_with("libvulkan_wsi_a")
-            || target.ends_with("libvulkan_lite_runtime_a")
+        if target.ends_with("libdri.a")
+            || target.ends_with("libanv_common.a")
+            || target.ends_with("libvulkan_wsi.a")
+            || target.ends_with("libvulkan_lite_runtime.a")
         {
             libs.push("libsync");
         }
-        if target.ends_with("libmesa_util_a") {
+        if target.ends_with("libmesa_util.a") {
             libs.push("libz");
         }
-        if target.starts_with("mesa_src_intel_vulkan_")
-            || target.ends_with("libvulkan_lite_runtime_a")
+        if target.starts_with("mesa/src/intel/vulkan")
+            || target.ends_with("libvulkan_lite_runtime.a")
         {
             libs.push("libnativewindow");
         }
         libs.into_iter().map(|lib| String::from(lib)).collect()
     }
 
-    fn get_define(&self, define: &str) -> String {
+    fn map_define(&self, define: &str) -> String {
         define
             .replace(&path_to_string(&self.build_path), MESON_GENERATED)
             .replace(&path_to_string_with_separator(&self.src_path), "")
     }
-    fn get_include(&self, include: &Path) -> PathBuf {
+    fn map_include(&self, include: &Path) -> PathBuf {
         if let Ok(strip) = include.strip_prefix(&self.build_path) {
             Path::new(MESON_GENERATED).join(strip)
         } else {
             PathBuf::from(include)
         }
     }
-    fn get_lib(&self, library: &Path) -> PathBuf {
+    fn map_lib(&self, library: &Path) -> PathBuf {
         if file_name(library) == "libdrm.so" {
             PathBuf::from("libdrm")
         } else if library.starts_with("src/android_stub") {
@@ -223,7 +221,7 @@ impl Project for Mesa {
             PathBuf::from(library)
         }
     }
-    fn get_source(&self, source: &Path) -> PathBuf {
+    fn map_source(&self, source: &Path) -> PathBuf {
         if let Ok(strip) = source.strip_prefix(&self.build_path) {
             self.src_path.join(MESON_GENERATED).join(strip)
         } else {

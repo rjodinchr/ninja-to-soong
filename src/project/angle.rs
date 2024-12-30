@@ -90,16 +90,16 @@ impl Project for Angle {
         Ok(package)
     }
 
-    fn get_target_name(&self, target: &str) -> String {
+    fn get_target_name(&self, target: &Path) -> PathBuf {
         for str in TARGETS {
-            if format!("angle___{str}_angle_so") == target {
-                return format!("{str}_angle");
+            if target.ends_with(format!("{str}_angle.so")) {
+                return PathBuf::from(file_stem(target));
             }
         }
-        String::from(target)
+        PathBuf::from(target)
     }
-    fn get_target_object_module(&self, target: &str, mut module: SoongModule) -> SoongModule {
-        if target.ends_with("libtranslator_a") {
+    fn get_target_module(&self, target: &Path, mut module: SoongModule) -> SoongModule {
+        if target.ends_with("libtranslator.a") {
             module.add_prop(
                 "header_libs",
                 SoongProp::VecStr(vec![
@@ -121,23 +121,24 @@ impl Project for Angle {
         );
         module
     }
-    fn get_target_cflags(&self, _target: &str) -> Vec<String> {
+
+    fn extend_cflags(&self, _target: &Path) -> Vec<String> {
         vec![String::from("-Wno-nullability-completeness")]
     }
-    fn get_target_shared_libs(&self, target: &str) -> Vec<String> {
-        if target.starts_with("angle_obj_lib") {
+    fn extend_shared_libs(&self, target: &Path) -> Vec<String> {
+        if target.starts_with("angle/obj") {
             vec![String::from("libnativewindow")]
-        } else if target.ends_with("libGLESv2_angle_so") {
+        } else if target.ends_with("libGLESv2_angle.so") {
             vec![String::from("libz")]
         } else {
             Vec::new()
         }
     }
 
-    fn get_cmd_output(&self, output: &Path) -> PathBuf {
+    fn map_cmd_output(&self, output: &Path) -> PathBuf {
         PathBuf::from(file_name(output))
     }
-    fn get_lib(&self, library: &Path) -> PathBuf {
+    fn map_lib(&self, library: &Path) -> PathBuf {
         if library.starts_with("obj/third_party/spirv-tools") {
             PathBuf::from("SPIRV-Tools/source/libSPIRV-Tools.a")
         } else if library.starts_with("obj/third_party/zlib") {
@@ -147,11 +148,6 @@ impl Project for Angle {
         } else if library.starts_with("obj") {
             Path::new(self.get_name()).join(library)
         } else {
-            for str in TARGETS {
-                if format!("./{str}_angle.so") == path_to_string(library) {
-                    return PathBuf::from(format!("angle/./{str}_angle.so"));
-                }
-            }
             PathBuf::from(library)
         }
     }

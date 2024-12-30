@@ -128,13 +128,14 @@ impl Project for LlvmProject {
         Ok(package)
     }
 
-    fn get_target_object_module(&self, _target: &str, mut module: SoongModule) -> SoongModule {
+    fn get_target_module(&self, _target: &Path, mut module: SoongModule) -> SoongModule {
         module.add_prop("optimize_for_size", SoongProp::Bool(true));
         module
     }
-    fn get_target_cflags(&self, target: &str) -> Vec<String> {
+
+    fn extend_cflags(&self, target: &Path) -> Vec<String> {
         let mut cflags = vec!["-Wno-error", "-Wno-unreachable-code-loop-increment"];
-        if target.ends_with("libLLVMSupport_a") {
+        if target.ends_with("libLLVMSupport.a") {
             cflags.append(&mut vec![
                 "-DBLAKE3_NO_AVX512",
                 "-DBLAKE3_NO_AVX2",
@@ -144,15 +145,15 @@ impl Project for LlvmProject {
         }
         cflags.into_iter().map(|flag| String::from(flag)).collect()
     }
-    fn get_target_shared_libs(&self, target: &str) -> Vec<String> {
-        if target.ends_with("libLLVMSupport_a") {
+    fn extend_shared_libs(&self, target: &Path) -> Vec<String> {
+        if target.ends_with("libLLVMSupport.a") {
             vec![String::from("libz")]
         } else {
             Vec::new()
         }
     }
 
-    fn get_include(&self, include: &Path) -> PathBuf {
+    fn map_include(&self, include: &Path) -> PathBuf {
         if let Ok(strip) = include.strip_prefix(&self.build_path) {
             Path::new(CMAKE_GENERATED).join(strip)
         } else {

@@ -38,8 +38,8 @@ pub trait NinjaTarget: std::fmt::Debug {
         order_only_deps: Vec<PathBuf>,
         variables: HashMap<String, String>,
     ) -> Self;
-    fn get_name(&self, prefix: &str) -> String {
-        path_to_id(Path::new(prefix).join(&self.get_outputs()[0]))
+    fn get_name(&self, prefix: &str) -> PathBuf {
+        Path::new(prefix).join(&self.get_outputs()[0])
     }
     fn set_globals(&mut self, _globals: HashMap<String, String>) {}
     fn set_rule(&mut self, _rules: &NinjaRulesMap) {}
