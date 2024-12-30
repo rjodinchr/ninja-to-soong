@@ -108,7 +108,11 @@ impl Project for Mesa {
             .collect();
         package.generate(targets_to_generate, targets, self)?;
 
-        let gen_deps = package.get_gen_deps();
+        let gen_deps = package
+            .get_gen_deps()
+            .into_iter()
+            .filter(|include| !include.starts_with("subprojects"))
+            .collect();
         package.filter_local_include_dirs(MESON_GENERATED, &gen_deps);
         common::copy_gen_deps(gen_deps, MESON_GENERATED, &self.build_path, ctx, self)?;
 
