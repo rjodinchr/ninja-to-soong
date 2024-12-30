@@ -8,6 +8,7 @@ mod ninja_target;
 mod parser;
 mod project;
 mod soong_module;
+mod soong_module_generator;
 mod soong_package;
 mod utils;
 

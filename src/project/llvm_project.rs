@@ -58,17 +58,20 @@ impl Project for LlvmProject {
             execute_cmd!("cmake", args.iter().map(|target| target.as_str()).collect())?;
         }
 
-        let targets = parse_build_ninja::<CmakeNinjaTarget>(&self.build_path)?;
         let mut package = SoongPackage::new(
-            &self.src_path,
-            &self.ndk_path,
-            &self.build_path,
             "//visibility:public",
             "llvm-project_license",
             vec!["SPDX-license-identifier-Apache-2.0"],
             vec!["LICENSE.TXT"],
-        );
-        package.generate(targets_to_generate, targets, self)?;
+        )
+        .generate(
+            targets_to_generate,
+            parse_build_ninja::<CmakeNinjaTarget>(&self.build_path)?,
+            &self.src_path,
+            &self.ndk_path,
+            &self.build_path,
+            self,
+        )?;
 
         let mut gen_deps = package.get_gen_deps();
         gen_deps.extend(libclc_binaries.clone());

@@ -92,21 +92,23 @@ impl Project for Mesa {
             )?;
         }
 
-        let targets = parse_build_ninja::<MesonNinjaTarget>(&self.build_path)?;
         let mut package = SoongPackage::new(
-            &self.src_path,
-            &self.ndk_path,
-            &self.build_path,
             "//visibility:public",
             "mesa_licenses",
             vec!["SPDX-license-identifier-Apache-2.0"],
             vec!["docs/license.rst"],
-        );
-        let targets_to_generate = TARGETS
-            .iter()
-            .map(|(target, _, _)| PathBuf::from(target))
-            .collect();
-        package.generate(targets_to_generate, targets, self)?;
+        )
+        .generate(
+            TARGETS
+                .iter()
+                .map(|(target, _, _)| PathBuf::from(target))
+                .collect(),
+            parse_build_ninja::<MesonNinjaTarget>(&self.build_path)?,
+            &self.src_path,
+            &self.ndk_path,
+            &self.build_path,
+            self,
+        )?;
 
         let gen_deps = package
             .get_gen_deps()
