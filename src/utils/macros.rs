@@ -54,6 +54,14 @@ macro_rules! error {
     };
 }
 
+#[macro_export]
+macro_rules! debug_project {
+    ($($arg:tt)*) => {
+        #[cfg(feature = "debug_project")]
+        print_verbose!($($arg)*)
+    }
+}
+
 pub fn execute_command(program: &str, args: Vec<&str>, description: String) -> Result<(), String> {
     let mut command = std::process::Command::new(program);
     command.args(args);
@@ -117,5 +125,6 @@ macro_rules! define_Dep {
 }
 
 pub use {
-    define_Dep, define_ProjectId, error, execute_cmd, print_info, print_internal, print_verbose,
+    debug_project, define_Dep, define_ProjectId, error, execute_cmd, print_info, print_internal,
+    print_verbose,
 };

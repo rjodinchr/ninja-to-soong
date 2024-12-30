@@ -14,21 +14,7 @@
     - [Meson](https://mesonbuild.com/) and the Android NDK
 2. `ninja-to-soong` generates `Soong` files using [Ninja](https://ninja-build.org/) files.
 
-# Supported projects
-
-| Project | Ninja Generator | Targets |
-|-|-|-|
-| [clvk](https://github.com/kpet/clvk) | `CMake` | `libclvk.so` |
-| [clspv](https://github.com/google/clspv) | `CMake` | `clvk` dependencies |
-| [llvm-project](https://github.com/llvm/llvm-project) | `CMake` | `clvk` & `clspv` dependencies |
-| [SPIRV-Tools](https://github.com/KhronosGroup/SPIRV-Tools) | `CMake` | `clvk` dependencies |
-| [SPIRV-Headers](https://github.com/KhronosGroup/SPIRV-Headers) | `CMake` | `clspv` & `SPIRV-Tools` dependencies |
-| [angle](https://github.com/google/angle) (WIP) | `GN` | `libEGL_angle.so`, `libGLESv2_angle.so`, `libGLESv1_CM_angle.so` |
-| [mesa](https://www.mesa3d.org/) (WIP) | `meson` | `libEGL_mesa.so`, `libGLESv2_mesa.so`, `libGLESv1_CM_mesa.so`, `vulkan.intel.so`, `pps-producer` |
-
 # Dependencies
-
-`ninja-to-soong` depends on the following:
 
 * [Rust](https://www.rust-lang.org/)
 * [Ninja](https://ninja-build.org/)
@@ -59,6 +45,29 @@
 * `N2S_NDK`: Android NDK (default: `android-ndk-r27c`)
 * `N2S_NDK_PATH`: Path to Android NDK (default: temporary directory)
 * `N2S_TMP_PATH`: Path used by `ninja-to-soong` to store its temporary directories (default: `std::env::temp_dir()`)
+
+# Supported projects
+
+| Project | Ninja Generator | Targets |
+|-|-|-|
+| [clvk](https://github.com/kpet/clvk) | `CMake` | `libclvk.so` |
+| [clspv](https://github.com/google/clspv) | `CMake` | `clvk` dependencies |
+| [llvm-project](https://github.com/llvm/llvm-project) | `CMake` | `clvk` & `clspv` dependencies |
+| [SPIRV-Tools](https://github.com/KhronosGroup/SPIRV-Tools) | `CMake` | `clvk` dependencies |
+| [SPIRV-Headers](https://github.com/KhronosGroup/SPIRV-Headers) | `CMake` | `clspv` & `SPIRV-Tools` dependencies |
+| [angle](https://github.com/google/angle) (WIP) | `GN` | `libEGL_angle.so`, `libGLESv2_angle.so`, `libGLESv1_CM_angle.so` |
+| [mesa](https://www.mesa3d.org/) (WIP) | `meson` | `libEGL_mesa.so`, `libGLESv2_mesa.so`, `libGLESv1_CM_mesa.so`, `vulkan.intel.so`, `pps-producer` |
+
+## Adding a project
+
+To add a project, create a `<project>.rs` implementing the `Project` trait under the `project` folder.
+
+Then add the project in `define_ProjectId!` in `project.rs`.
+
+The following feature can be used to output debug information when writting a new project:
+```
+<ninja-to-soong> $ cargo run --release --features debug_project -- --aosp-path <path> <new_project>
+```
 
 # Tests
 
