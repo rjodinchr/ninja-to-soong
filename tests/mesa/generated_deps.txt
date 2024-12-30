@@ -287,5 +287,4 @@
     "src/vulkan/util/vk_struct_type_cast.h",
     "src/vulkan/wsi/wsi_common_entrypoints.c",
     "src/vulkan/wsi/wsi_common_entrypoints.h",
-    "subprojects/libdrm-2.4.123/generated_static_table_fourcc.h",
 ]
