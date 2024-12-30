@@ -9,8 +9,7 @@ use crate::utils::*;
 
 pub struct SoongPackage {
     modules: Vec<SoongModule>,
-    gen_deps: Vec<PathBuf>,
-    gen_libs: Vec<PathBuf>,
+    generated: Generated,
 }
 
 impl SoongPackage {
@@ -22,8 +21,7 @@ impl SoongPackage {
     ) -> Self {
         let mut package = Self {
             modules: Vec::new(),
-            gen_deps: Vec::new(),
-            gen_libs: Vec::new(),
+            generated: Generated::default(),
         };
         let mut package_module = SoongModule::new("package");
         package_module.add_prop(
@@ -117,14 +115,14 @@ impl SoongPackage {
     }
 
     pub fn get_gen_deps(&self) -> Vec<PathBuf> {
-        let mut gen_deps = self.gen_deps.clone();
+        let mut gen_deps = self.generated.deps.clone();
         gen_deps.sort_unstable();
         gen_deps.dedup();
         gen_deps
     }
 
     pub fn get_gen_libs(&self) -> Vec<PathBuf> {
-        let mut gen_libs = self.gen_libs.clone();
+        let mut gen_libs = self.generated.libs.clone();
         gen_libs.sort_unstable();
         gen_libs.dedup();
         gen_libs
@@ -143,15 +141,8 @@ impl SoongPackage {
         T: NinjaTarget,
     {
         let targets_map = NinjaTargetsMap::new(&targets);
-        let mut gen = SoongModuleGenerator::new(
-            src_path,
-            ndk_path,
-            build_path,
-            &mut self.gen_deps,
-            &mut self.gen_libs,
-            &targets_map,
-            project,
-        );
+        let mut gen =
+            SoongModuleGenerator::new(src_path, ndk_path, build_path, &targets_map, project);
         targets_map.traverse_from(
             targets_to_generate,
             (),
@@ -174,6 +165,8 @@ impl SoongPackage {
                 project.filter_target(target_name)
             },
         )?;
+        self.generated = gen.delete();
+
         Ok(self)
     }
 }

@@ -9,15 +9,20 @@ use crate::project::*;
 use crate::soong_module::*;
 use crate::utils::*;
 
+#[derive(Default)]
+pub struct Generated {
+    pub deps: Vec<PathBuf>,
+    pub libs: Vec<PathBuf>,
+}
+
 pub struct SoongModuleGenerator<'a, T>
 where
     T: NinjaTarget,
 {
+    generated: Generated,
     src_path: &'a Path,
     ndk_path: &'a Path,
     build_path: &'a Path,
-    gen_deps: &'a mut Vec<PathBuf>,
-    gen_libs: &'a mut Vec<PathBuf>,
     targets_map: &'a NinjaTargetsMap<'a, T>,
     project: &'a dyn Project,
 }
@@ -30,20 +35,20 @@ where
         src_path: &'a Path,
         ndk_path: &'a Path,
         build_path: &'a Path,
-        gen_deps: &'a mut Vec<PathBuf>,
-        gen_libs: &'a mut Vec<PathBuf>,
         targets_map: &'a NinjaTargetsMap<'a, T>,
         project: &'a dyn Project,
     ) -> Self {
         Self {
+            generated: Generated::default(),
             src_path,
             ndk_path,
             build_path,
-            gen_deps,
-            gen_libs,
             targets_map,
             project,
         }
+    }
+    pub fn delete(self) -> Generated {
+        self.generated
     }
 
     fn get_defines(&self, defines: Vec<String>) -> Vec<String> {
@@ -85,7 +90,7 @@ where
                 if lib.starts_with(&self.ndk_path) {
                     file_stem(lib)
                 } else {
-                    self.gen_libs.push(lib.clone());
+                    self.generated.libs.push(lib.clone());
                     path_to_id(self.project.get_target_name(&self.project.map_lib(&lib)))
                 }
             })
@@ -189,7 +194,7 @@ where
             })
             .collect();
 
-        self.gen_deps.extend(gen_deps);
+        self.generated.deps.extend(gen_deps);
 
         let mut module = SoongModule::new(name);
         module.add_prop("name", SoongProp::Str(module_name));
@@ -330,7 +335,7 @@ where
             .collect::<Vec<String>>();
         for (dep, dep_target_name) in &deps {
             sources.push(format!(":{dep_target_name}"));
-            self.gen_deps.push(dep.clone());
+            self.generated.deps.push(dep.clone());
         }
         let target_outputs = target.get_outputs();
         let cmd = self.get_cmd(rule_cmd, inputs, target_outputs, deps);
