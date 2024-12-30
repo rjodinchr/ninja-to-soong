@@ -249,9 +249,8 @@ impl Project for Mesa {
     }
     fn filter_target(&self, target: &Path) -> bool {
         let file_name = file_name(target);
-        (file_name.contains(".so")
-            || file_name.contains(".a")
-            || TARGETS.iter().any(|t| t.0 == &path_to_string(target)))
+        !file_name.ends_with(".o")
+            && !file_name.ends_with(".def")
             && !file_name.contains("libdrm")
             && !target.starts_with("src/android_stub")
     }
