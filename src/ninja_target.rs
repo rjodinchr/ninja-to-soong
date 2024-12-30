@@ -1,7 +1,7 @@
 // Copyright 2024 ninja-to-soong authors
 // SPDX-License-Identifier: Apache-2.0
 
-use std::collections::{HashMap, HashSet};
+use std::collections::HashMap;
 
 use crate::utils::*;
 
@@ -94,7 +94,7 @@ where
         F: FnMut(&mut Iterator, NinjaRule, &T) -> Result<(), String>,
         G: Fn(&Path) -> bool,
     {
-        let mut targets_seen = HashSet::new();
+        let mut targets_seen = std::collections::HashSet::new();
         while let Some(target_name) = targets.pop() {
             if targets_seen.contains(&target_name) || !filter_target(&target_name) {
                 continue;
