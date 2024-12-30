@@ -153,7 +153,11 @@ impl Project for LlvmProject {
     }
 
     fn get_include(&self, include: &Path) -> PathBuf {
-        Path::new(CMAKE_GENERATED).join(strip_prefix(include, &self.build_path))
+        if let Ok(strip) = include.strip_prefix(&self.build_path) {
+            Path::new(CMAKE_GENERATED).join(strip)
+        } else {
+            PathBuf::from(include)
+        }
     }
 
     fn filter_cflag(&self, _cflag: &str) -> bool {

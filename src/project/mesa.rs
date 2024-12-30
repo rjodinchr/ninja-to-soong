@@ -4,30 +4,28 @@
 use super::*;
 
 const MESON_GENERATED: &str = "meson_generated";
-const TARGETS: [(&str, Option<&str>, Option<&str>); 7] = [
+const TARGETS: [(&str, &str, &str); 5] = [
     (
         "src/egl/libEGL_mesa.so.1.0.0",
-        Some("libEGL_mesa"),
-        Some("libEGL_mesa_intel"),
+        "libEGL_mesa_intel",
+        "libEGL_mesa",
     ),
     (
         "src/mapi/es2api/libGLESv2_mesa.so.2.0.0",
-        Some("libGLESv2_mesa"),
-        Some("libGLESv2_mesa_intel"),
+        "libGLESv2_mesa_intel",
+        "libGLESv2_mesa",
     ),
     (
         "src/mapi/es1api/libGLESv1_CM_mesa.so.1.1.0",
-        Some("libGLESv1_CM_mesa"),
-        Some("libGLESv1_CM_mesa_intel"),
+        "libGLESv1_CM_mesa_intel",
+        "libGLESv1_CM_mesa",
     ),
-    ("src/mapi/shared-glapi/libglapi.so.0.0.0", None, None),
-    ("src/gallium/targets/dri/libgallium_dri.so", None, None),
     (
         "src/intel/vulkan/libvulkan_intel.so",
-        Some("vulkan.intel"),
-        Some("libvulkan_intel"),
+        "libvulkan_intel",
+        "vulkan.intel",
     ),
-    ("src/tool/pps/pps-producer", None, Some("pps-producer")),
+    ("src/tool/pps/pps-producer", "pps-producer", ""),
 ];
 
 #[derive(Default)]
@@ -118,21 +116,20 @@ impl Project for Mesa {
     }
 
     fn get_target_name(&self, target: &str) -> String {
-        for (target_str, _, some_alias) in TARGETS {
-            if target == path_to_id(Path::new(self.get_name()).join(target_str)) {
-                if let Some(alias) = some_alias {
-                    return String::from(alias);
-                }
+        for (target_str, alias, _) in TARGETS {
+            if target == path_to_id(Path::new(self.get_name()).join(target_str))
+                && !alias.is_empty()
+            {
+                return String::from(alias);
             }
         }
         String::from(target)
     }
     fn get_target_stem(&self, target: &str) -> Option<String> {
-        for (target_str, some_stem, _) in TARGETS {
-            if target == path_to_id(Path::new(self.get_name()).join(target_str)) {
-                if let Some(stem) = some_stem {
-                    return Some(String::from(stem));
-                }
+        for (target_str, _, stem) in TARGETS {
+            if target == path_to_id(Path::new(self.get_name()).join(target_str)) && !stem.is_empty()
+            {
+                return Some(String::from(stem));
             }
         }
         None
@@ -209,16 +206,13 @@ impl Project for Mesa {
             .replace(&path_to_string_with_separator(&self.src_path), "")
     }
     fn get_include(&self, include: &Path) -> PathBuf {
-        Path::new(MESON_GENERATED).join(strip_prefix(include, &self.build_path))
+        if let Ok(strip) = include.strip_prefix(&self.build_path) {
+            Path::new(MESON_GENERATED).join(strip)
+        } else {
+            PathBuf::from(include)
+        }
     }
     fn get_lib(&self, library: &Path) -> PathBuf {
-        for (target, _, alias) in TARGETS {
-            if let Some(alias) = alias {
-                if library == Path::new(target) {
-                    return PathBuf::from(alias);
-                }
-            }
-        }
         if file_name(library) == "libdrm.so" {
             PathBuf::from("libdrm")
         } else if library.starts_with("src/android_stub") {
@@ -261,7 +255,7 @@ impl Project for Mesa {
         let file_name = file_name(target);
         (file_name.contains(".so")
             || file_name.contains(".a")
-            || file_name.contains("pps-producer"))
+            || TARGETS.iter().any(|t| t.0 == &path_to_string(target)))
             && !file_name.contains("libdrm")
             && !target.starts_with("src/android_stub")
     }
