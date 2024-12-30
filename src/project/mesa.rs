@@ -211,14 +211,12 @@ impl Project for Mesa {
         }
     }
     fn map_lib(&self, library: &Path) -> PathBuf {
-        if file_name(library) == "libdrm.so" {
-            PathBuf::from("libdrm")
-        } else if library.starts_with("src/android_stub") {
-            PathBuf::from(file_stem(library))
-        } else if library.starts_with("src") || library.starts_with("subprojects") {
+        if !library.starts_with("src/android_stub")
+            && (library.starts_with("src") || library.starts_with("subprojects/perfetto"))
+        {
             Path::new(self.get_name()).join(library)
         } else {
-            PathBuf::from(library)
+            PathBuf::from(file_stem(library))
         }
     }
     fn map_source(&self, source: &Path) -> PathBuf {
@@ -236,9 +234,9 @@ impl Project for Mesa {
         define != "WITH_LIBBACKTRACE" // b/120606663
     }
     fn filter_include(&self, include: &Path) -> bool {
-        !(path_to_string(include)
-            .starts_with(&path_to_string(self.src_path.join("subprojects/libdrm")))
-            || include.ends_with("android_stub"))
+        !include.ends_with("android_stub")
+            && (!include.starts_with(self.src_path.join("subprojects"))
+                || include.starts_with(self.src_path.join("subprojects/perfetto")))
     }
     fn filter_link_flag(&self, _flag: &str) -> bool {
         false
