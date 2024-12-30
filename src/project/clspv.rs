@@ -27,7 +27,7 @@ impl Project for Clspv {
         &mut self,
         ctx: &Context,
         projects_map: &ProjectsMap,
-    ) -> Result<SoongPackage, String> {
+    ) -> Result<String, String> {
         self.src_path = self.get_android_path(ctx);
         self.build_path = ctx.temp_path.join(self.get_name());
         self.ndk_path = get_ndk_path(&ctx.temp_path)?;
@@ -52,7 +52,6 @@ impl Project for Clspv {
         }
 
         let targets = parse_build_ninja::<CmakeNinjaTarget>(&self.build_path)?;
-
         let mut package = SoongPackage::new(
             &self.src_path,
             &self.ndk_path,
@@ -63,10 +62,9 @@ impl Project for Clspv {
             vec!["LICENSE"],
         );
         package.generate(Dep::ClspvTargets.get(projects_map)?, targets, self)?;
-
         self.gen_deps = package.get_gen_deps();
 
-        Ok(package)
+        Ok(package.print())
     }
 
     fn get_deps_prefix(&self) -> Vec<(PathBuf, Dep)> {

@@ -22,8 +22,6 @@ fn generate_project(
     ctx: &Context,
 ) -> Result<(), String> {
     let project_name = project.get_name();
-    let android_path = project.get_android_path(ctx);
-    let test_path = project.get_test_path(ctx);
     let project_ctx = if !is_dependency {
         print_info!("Generating '{project_name}'");
         ctx.clone()
@@ -40,12 +38,12 @@ fn generate_project(
         print_debug!("Writing soong file...");
 
         const ANDROID_BP: &str = "Android.bp";
-        let file_path = test_path.join(ANDROID_BP);
-        write_file(file_path.as_path(), &package.print())?;
+        let file_path = project.get_test_path(ctx).join(ANDROID_BP);
+        write_file(file_path.as_path(), &package)?;
         print_verbose!("{file_path:#?} created");
 
         if ctx.copy_to_aosp {
-            let copy_dst = android_path.join(ANDROID_BP);
+            let copy_dst = project.get_android_path(ctx).join(ANDROID_BP);
             copy_file(&file_path, &copy_dst)?;
             print_verbose!("{file_path:#?} copied to {copy_dst:#?}");
         }

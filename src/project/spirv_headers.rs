@@ -4,9 +4,7 @@
 use super::*;
 
 #[derive(Default)]
-pub struct SpirvHeaders {
-    src_path: PathBuf,
-}
+pub struct SpirvHeaders();
 
 impl Project for SpirvHeaders {
     fn get_name(&self) -> &'static str {
@@ -22,10 +20,10 @@ impl Project for SpirvHeaders {
         &mut self,
         ctx: &Context,
         projects_map: &ProjectsMap,
-    ) -> Result<SoongPackage, String> {
-        self.src_path = self.get_android_path(ctx);
+    ) -> Result<String, String> {
+        let src_path = self.get_android_path(ctx);
         let mut package = SoongPackage::new(
-            &self.src_path,
+            &src_path,
             Path::new(""),
             Path::new(""),
             "//visibility:public",
@@ -33,7 +31,6 @@ impl Project for SpirvHeaders {
             vec!["SPDX-license-identifier-MIT"],
             vec!["LICENSE"],
         );
-
         package.add_module(SoongModule::new_cc_library_headers(
             CcLibraryHeaders::SpirvHeaders,
             vec![String::from("include")],
@@ -41,11 +38,11 @@ impl Project for SpirvHeaders {
 
         for file in Dep::SpirvHeaders.get(projects_map)? {
             package.add_module(SoongModule::new_copy_genrule(
-                Dep::SpirvHeaders.get_id(&file, &self.src_path, Path::new("")),
+                Dep::SpirvHeaders.get_id(&file, &src_path, Path::new("")),
                 &file,
             ));
         }
 
-        Ok(package)
+        Ok(package.print())
     }
 }

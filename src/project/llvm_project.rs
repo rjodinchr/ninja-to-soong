@@ -26,7 +26,7 @@ impl Project for LlvmProject {
         &mut self,
         ctx: &Context,
         projects_map: &ProjectsMap,
-    ) -> Result<SoongPackage, String> {
+    ) -> Result<String, String> {
         self.src_path = self.get_android_path(ctx);
         self.build_path = ctx.temp_path.join(self.get_name());
         self.ndk_path = get_ndk_path(&ctx.temp_path)?;
@@ -59,7 +59,6 @@ impl Project for LlvmProject {
         }
 
         let targets = parse_build_ninja::<CmakeNinjaTarget>(&self.build_path)?;
-
         let mut package = SoongPackage::new(
             &self.src_path,
             &self.ndk_path,
@@ -89,7 +88,6 @@ impl Project for LlvmProject {
             "tools/clang/include/clang/Config/config.h",
         ];
         gen_deps.extend(missing_gen_deps.iter().map(|dep| PathBuf::from(dep)));
-
         package.filter_local_include_dirs(CMAKE_GENERATED, &gen_deps);
         common::copy_gen_deps(gen_deps, CMAKE_GENERATED, &self.build_path, ctx, self)?;
 
@@ -123,7 +121,7 @@ impl Project for LlvmProject {
             ));
         }
 
-        Ok(package)
+        Ok(package.print())
     }
 
     fn get_target_module(&self, _target: &Path, mut module: SoongModule) -> SoongModule {

@@ -190,7 +190,7 @@ where
     parse_ninja_file(dir_path.join(split.nth(1).unwrap()), dir_path)
 }
 
-fn parse_ninja_file<'a, T>(
+fn parse_ninja_file<T>(
     file_path: PathBuf,
     build_path: &Path,
 ) -> Result<(Vec<T>, NinjaRulesMap), String>
