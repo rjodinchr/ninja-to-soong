@@ -62,7 +62,7 @@ impl Project for Clvk {
         );
         package.generate(vec![PathBuf::from("libOpenCL.so")], targets, self)?;
 
-        self.gen_libs = Vec::from_iter(package.get_gen_libs());
+        self.gen_libs = package.get_gen_libs();
         Ok(package)
     }
 
