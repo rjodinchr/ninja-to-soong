@@ -1,7 +1,7 @@
 // Copyright 2024 ninja-to-soong authors
 // SPDX-License-Identifier: Apache-2.0
 
-use std::collections::{HashMap, HashSet};
+use std::collections::HashMap;
 
 use crate::context::*;
 use crate::ninja_target::*;
@@ -23,7 +23,7 @@ define_ProjectId!(
 );
 impl ProjectId {
     pub fn get_deps(&self) -> Vec<ProjectId> {
-        let mut projects = HashSet::new();
+        let mut projects = std::collections::HashSet::new();
         for gen_deps in get_deps() {
             let (project_dep, projects_dep) = gen_deps.projects();
             if &project_dep == self {

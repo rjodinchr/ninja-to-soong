@@ -1,7 +1,7 @@
 // Copyright 2024 ninja-to-soong authors
 // SPDX-License-Identifier: Apache-2.0
 
-use std::collections::{HashMap, HashSet};
+use std::collections::HashMap;
 use std::str;
 
 use crate::ninja_target::*;
@@ -11,8 +11,8 @@ use crate::utils::*;
 
 pub struct SoongPackage<'a> {
     modules: Vec<SoongModule>,
-    gen_deps: HashSet<PathBuf>,
-    gen_libs: HashSet<PathBuf>,
+    gen_deps: Vec<PathBuf>,
+    gen_libs: Vec<PathBuf>,
     src_path: &'a Path,
     ndk_path: &'a Path,
     build_path: &'a Path,
@@ -30,8 +30,8 @@ impl<'a> SoongPackage<'a> {
     ) -> Self {
         let mut package = Self {
             modules: Vec::new(),
-            gen_deps: HashSet::new(),
-            gen_libs: HashSet::new(),
+            gen_deps: Vec::new(),
+            gen_libs: Vec::new(),
             src_path,
             ndk_path,
             build_path,
@@ -81,7 +81,7 @@ impl<'a> SoongPackage<'a> {
     }
 
     pub fn filter_local_include_dirs(&mut self, prefix: &str, files: &Vec<PathBuf>) {
-        let mut set = HashSet::new();
+        let mut set = std::collections::HashSet::new();
         for file in files {
             let mut path = file.clone();
             while let Some(parent) = path.parent() {
@@ -128,11 +128,17 @@ impl<'a> SoongPackage<'a> {
     }
 
     pub fn get_gen_deps(&self) -> Vec<PathBuf> {
-        Vec::from_iter(self.gen_deps.to_owned())
+        let mut gen_deps = self.gen_deps.to_owned();
+        gen_deps.sort();
+        gen_deps.dedup();
+        gen_deps
     }
 
     pub fn get_gen_libs(&self) -> Vec<PathBuf> {
-        Vec::from_iter(self.gen_libs.to_owned())
+        let mut gen_libs = self.gen_libs.to_owned();
+        gen_libs.sort();
+        gen_libs.dedup();
+        gen_libs
     }
 
     fn get_defines(&self, defines: Vec<String>, project: &dyn Project) -> Vec<String> {
@@ -167,7 +173,12 @@ impl<'a> SoongPackage<'a> {
             .collect()
     }
 
-    fn get_libs(&mut self, libs: Vec<PathBuf>, project: &dyn Project) -> Vec<String> {
+    fn get_libs(
+        &mut self,
+        libs: Vec<PathBuf>,
+        module_name: &String,
+        project: &dyn Project,
+    ) -> Vec<String> {
         libs.iter()
             .filter(|lib| {
                 debug_project!("filter_lib({lib:#?})");
@@ -177,10 +188,11 @@ impl<'a> SoongPackage<'a> {
                 if lib.starts_with(&self.ndk_path) {
                     file_stem(lib)
                 } else {
-                    self.gen_libs.insert(lib.clone());
+                    self.gen_libs.push(lib.clone());
                     path_to_id(project.get_target_name(&project.map_lib(&lib)))
                 }
             })
+            .filter(|lib| lib != module_name)
             .collect()
     }
 
@@ -195,11 +207,12 @@ impl<'a> SoongPackage<'a> {
         T: NinjaTarget,
     {
         let target_name = target.get_name(project.get_name());
-        let mut cflags = HashSet::new();
-        let mut includes = HashSet::new();
-        let mut sources = HashSet::new();
-        let mut static_libs = HashSet::new();
-        let mut shared_libs = HashSet::new();
+        let module_name = path_to_id(project.get_target_name(&target_name));
+        let mut cflags = Vec::new();
+        let mut includes = Vec::new();
+        let mut sources = Vec::new();
+        let mut static_libs = Vec::new();
+        let mut shared_libs = Vec::new();
         let mut gen_deps = Vec::new();
         for input in target.get_inputs() {
             let Some(input_target) = targets_map.get(input) else {
@@ -223,8 +236,8 @@ impl<'a> SoongPackage<'a> {
             );
 
             let (static_libraries, shared_libraries) = input_target.get_link_libraries()?;
-            static_libs.extend(self.get_libs(static_libraries, project));
-            shared_libs.extend(self.get_libs(shared_libraries, project));
+            static_libs.extend(self.get_libs(static_libraries, &module_name, project));
+            shared_libs.extend(self.get_libs(shared_libraries, &module_name, project));
 
             includes.extend(self.get_includes(input_target.get_includes(self.build_path), project));
             cflags.extend(self.get_defines(input_target.get_defines(), project));
@@ -243,16 +256,16 @@ impl<'a> SoongPackage<'a> {
                 debug_project!("filter_link_flag({flag})");
                 project.filter_link_flag(flag)
             })
-            .collect::<Vec<String>>();
+            .collect();
         let (static_libraries, shared_libraries) = target.get_link_libraries()?;
-        static_libs.extend(self.get_libs(static_libraries, project));
-        shared_libs.extend(self.get_libs(shared_libraries, project));
+        static_libs.extend(self.get_libs(static_libraries, &module_name, project));
+        shared_libs.extend(self.get_libs(shared_libraries, &module_name, project));
         shared_libs.extend(project.extend_shared_libs(&target_name));
 
         let gen_headers = targets_map
             .traverse_from(
                 target.get_outputs().clone(),
-                HashSet::new(),
+                Vec::new(),
                 |gen_headers, rule, target| match rule {
                     NinjaRule::CustomCommand => {
                         if target.get_cmd()?.is_none() {
@@ -272,7 +285,7 @@ impl<'a> SoongPackage<'a> {
                     gen_deps.push(PathBuf::from(header));
                     false
                 } else {
-                    true
+                    targets_map.get(&header).is_some()
                 }
             })
             .map(|header| {
@@ -283,13 +296,9 @@ impl<'a> SoongPackage<'a> {
                         .get_name(project.get_name()),
                 )
             })
-            .collect::<HashSet<String>>();
+            .collect();
 
         self.gen_deps.extend(gen_deps);
-
-        let module_name = path_to_id(project.get_target_name(&target_name));
-        static_libs.remove(&module_name);
-        shared_libs.remove(&module_name);
 
         let mut module = SoongModule::new(name);
         module.add_prop("name", SoongProp::Str(module_name));
@@ -302,25 +311,13 @@ impl<'a> SoongPackage<'a> {
                 SoongProp::Str(path_to_string(strip_prefix(vs, &self.src_path))),
             );
         }
-        module.add_prop("srcs", SoongProp::VecStr(Vec::from_iter(sources)));
-        module.add_prop("cflags", SoongProp::VecStr(Vec::from_iter(cflags)));
+        module.add_prop("srcs", SoongProp::VecStr(sources));
+        module.add_prop("cflags", SoongProp::VecStr(cflags));
         module.add_prop("ldflags", SoongProp::VecStr(link_flags));
-        module.add_prop(
-            "shared_libs",
-            SoongProp::VecStr(Vec::from_iter(shared_libs)),
-        );
-        module.add_prop(
-            "static_libs",
-            SoongProp::VecStr(Vec::from_iter(static_libs)),
-        );
-        module.add_prop(
-            "local_include_dirs",
-            SoongProp::VecStr(Vec::from_iter(includes)),
-        );
-        module.add_prop(
-            "generated_headers",
-            SoongProp::VecStr(Vec::from_iter(gen_headers)),
-        );
+        module.add_prop("shared_libs", SoongProp::VecStr(shared_libs));
+        module.add_prop("static_libs", SoongProp::VecStr(static_libs));
+        module.add_prop("local_include_dirs", SoongProp::VecStr(includes));
+        module.add_prop("generated_headers", SoongProp::VecStr(gen_headers));
 
         Ok(project.get_target_module(&target_name, module))
     }
@@ -328,7 +325,7 @@ impl<'a> SoongPackage<'a> {
     fn get_cmd(
         &self,
         rule_cmd: NinjaRuleCmd,
-        inputs: HashSet<PathBuf>,
+        inputs: Vec<PathBuf>,
         outputs: &Vec<PathBuf>,
         deps: HashMap<PathBuf, String>,
         project: &dyn Project,
@@ -434,7 +431,7 @@ impl<'a> SoongPackage<'a> {
     where
         T: NinjaTarget,
     {
-        let mut inputs = HashSet::new();
+        let mut inputs = Vec::new();
         let mut deps = HashMap::new();
         inputs.extend(self.get_cmd_inputs(target.get_inputs(), &mut deps, project));
         inputs.extend(self.get_cmd_inputs(target.get_implicit_deps(), &mut deps, project));
@@ -447,24 +444,24 @@ impl<'a> SoongPackage<'a> {
                     self.src_path,
                 ))
             })
-            .collect::<HashSet<String>>();
+            .collect::<Vec<String>>();
         for (dep, dep_target_name) in &deps {
-            sources.insert(format!(":{dep_target_name}"));
-            self.gen_deps.insert(dep.clone());
+            sources.push(format!(":{dep_target_name}"));
+            self.gen_deps.push(dep.clone());
         }
         let target_outputs = target.get_outputs();
         let cmd = self.get_cmd(rule_cmd, inputs, target_outputs, deps, project);
         let outputs = target_outputs
             .iter()
             .map(|output| path_to_string(project.map_cmd_output(output)))
-            .collect::<HashSet<String>>();
+            .collect();
+        let module_name = path_to_id(target.get_name(project.get_name()));
 
         let mut module = SoongModule::new("cc_genrule");
-        let module_name = path_to_id(target.get_name(project.get_name()));
         module.add_prop("name", SoongProp::Str(module_name));
         module.add_prop("cmd", SoongProp::Str(cmd));
-        module.add_prop("srcs", SoongProp::VecStr(Vec::from_iter(sources)));
-        module.add_prop("out", SoongProp::VecStr(Vec::from_iter(outputs)));
+        module.add_prop("srcs", SoongProp::VecStr(sources));
+        module.add_prop("out", SoongProp::VecStr(outputs));
 
         Ok(module)
     }

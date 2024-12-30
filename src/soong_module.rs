@@ -54,10 +54,11 @@ impl SoongNamedProp {
             match self.prop {
                 SoongProp::Str(str) => format!("\"{str}\""),
                 SoongProp::VecStr(mut vec_str) => {
-                    vec_str.sort();
                     if vec_str.len() == 0 {
                         return String::new();
                     }
+                    vec_str.sort();
+                    vec_str.dedup();
                     if vec_str.len() == 1 {
                         format!("[\"{0}\"]", vec_str[0])
                     } else {
