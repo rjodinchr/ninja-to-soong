@@ -58,7 +58,7 @@ impl Dep {
         for project in projects {
             all_deps.extend(projects_map.get(project)?.get_deps(self.clone()));
         }
-        all_deps.sort();
+        all_deps.sort_unstable();
         all_deps.dedup();
         Ok(all_deps)
     }

@@ -58,7 +58,7 @@ impl SoongNamedProp {
                     if vec_str.len() == 0 {
                         return String::new();
                     }
-                    vec_str.sort();
+                    vec_str.sort_unstable();
                     vec_str.dedup();
                     if vec_str.len() == 1 {
                         format!("[\"{0}\"]", vec_str[0])
