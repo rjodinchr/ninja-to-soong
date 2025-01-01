@@ -17,8 +17,8 @@ impl SoongPackage {
     pub fn new(
         default_visibility: &str,
         license_module_name: &str,
-        license_kinds: Vec<&str>,
-        license_text: Vec<&str>,
+        license_kinds: &[&str],
+        license_text: &[&str],
     ) -> Self {
         Self::default()
             .add_module(
@@ -44,7 +44,7 @@ impl SoongPackage {
                         SoongProp::VecStr(
                             license_kinds
                                 .into_iter()
-                                .map(|kind| String::from(kind))
+                                .map(|kind| String::from(*kind))
                                 .collect(),
                         ),
                     )
@@ -53,7 +53,7 @@ impl SoongPackage {
                         SoongProp::VecStr(
                             license_text
                                 .into_iter()
-                                .map(|text| String::from(text))
+                                .map(|text| String::from(*text))
                                 .collect(),
                         ),
                     ),

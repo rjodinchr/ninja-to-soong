@@ -62,7 +62,7 @@ impl Project for Mesa {
             let intel_clc_build_path = ctx.temp_path.join("intel_clc");
             execute_cmd!(
                 "bash",
-                vec![
+                [
                     &path_to_string(self.get_test_path(ctx).join("build_intel_clc.sh")),
                     &path_to_string(&self.src_path),
                     &path_to_string(&intel_clc_build_path)
@@ -75,7 +75,7 @@ impl Project for Mesa {
         if !ctx.skip_gen_ninja {
             execute_cmd!(
                 "bash",
-                vec![
+                [
                     &path_to_string(self.get_test_path(ctx).join("gen-ninja.sh")),
                     &path_to_string(&self.src_path),
                     &path_to_string(&self.build_path),
@@ -88,15 +88,15 @@ impl Project for Mesa {
         if !ctx.skip_build {
             execute_cmd!(
                 "meson",
-                vec!["compile", "-C", &path_to_string(&self.build_path)]
+                ["compile", "-C", &path_to_string(&self.build_path)]
             )?;
         }
 
         let mut package = SoongPackage::new(
             "//visibility:public",
             "mesa_licenses",
-            vec!["SPDX-license-identifier-Apache-2.0"],
-            vec!["docs/license.rst"],
+            &["SPDX-license-identifier-Apache-2.0"],
+            &["docs/license.rst"],
         )
         .generate(
             TARGETS

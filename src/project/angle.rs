@@ -62,7 +62,7 @@ impl Project for Angle {
         if !ctx.skip_gen_ninja {
             execute_cmd!(
                 "bash",
-                vec![
+                [
                     &path_to_string(self.get_test_path(ctx).join("gen-ninja.sh")),
                     &path_to_string(&self.src_path),
                     &path_to_string(&self.build_path),
@@ -74,8 +74,8 @@ impl Project for Angle {
         Ok(SoongPackage::new(
             "//visibility:public",
             "angle_license",
-            vec!["SPDX-license-identifier-Apache-2.0"],
-            vec!["LICENSE"],
+            &["SPDX-license-identifier-Apache-2.0"],
+            &["LICENSE"],
         )
         .generate(
             TARGETS

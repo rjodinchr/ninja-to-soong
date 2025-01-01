@@ -34,7 +34,7 @@ impl Project for LlvmProject {
         if !ctx.skip_gen_ninja {
             execute_cmd!(
                 "bash",
-                vec![
+                [
                     &path_to_string(self.get_test_path(ctx).join("gen-ninja.sh")),
                     &path_to_string(self.src_path.join("llvm")),
                     &path_to_string(&self.build_path),
@@ -55,15 +55,16 @@ impl Project for LlvmProject {
                 args.push(String::from("--target"));
                 args.push(path_to_string(target));
             }
-            execute_cmd!("cmake", args.iter().map(|target| target.as_str()).collect())?;
+            let args: Vec<&str> = args.iter().map(|target| target.as_str()).collect();
+            execute_cmd!("cmake", &args)?;
         }
 
         let cmake_generated_path = Path::new(CMAKE_GENERATED);
         let mut package = SoongPackage::new(
             "//visibility:public",
             "llvm-project_license",
-            vec!["SPDX-license-identifier-Apache-2.0"],
-            vec!["LICENSE.TXT"],
+            &["SPDX-license-identifier-Apache-2.0"],
+            &["LICENSE.TXT"],
         )
         .generate(
             targets_to_generate,
@@ -119,7 +120,6 @@ impl Project for LlvmProject {
                 "tools/clang/include/clang/Basic/Version.inc",
                 "tools/clang/include/clang/Config/config.h",
             ]
-            .iter()
             .map(|dep| PathBuf::from(dep)),
         );
         package.filter_local_include_dirs(CMAKE_GENERATED, &gen_deps);
@@ -135,7 +135,7 @@ impl Project for LlvmProject {
     fn extend_cflags(&self, target: &Path) -> Vec<String> {
         let mut cflags = vec!["-Wno-error", "-Wno-unreachable-code-loop-increment"];
         if target.ends_with("libLLVMSupport.a") {
-            cflags.append(&mut vec![
+            cflags.extend([
                 "-DBLAKE3_NO_AVX512",
                 "-DBLAKE3_NO_AVX2",
                 "-DBLAKE3_NO_SSE41",

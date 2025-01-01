@@ -141,7 +141,7 @@ impl NinjaTarget for GnNinjaTarget {
 
     fn get_cflags(&self) -> Vec<String> {
         let mut cflags = Vec::new();
-        for cflag in vec!["cflags", "cflags_cc"] {
+        for cflag in ["cflags", "cflags_cc"] {
             if let Some(globals) = &self.globals {
                 if let Some(defs) = globals.get(cflag) {
                     cflags.append(&mut common::get_cflags(defs));

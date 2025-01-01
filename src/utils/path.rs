@@ -33,11 +33,8 @@ pub fn get_ndk_path(temp_path: &Path) -> Result<PathBuf, String> {
 
     let ndk_zip = path_to_string(ndk_path.join("android-ndk.zip"));
     let ndk_url = format!("https://dl.google.com/android/repository/{android_ndk}-linux.zip");
-    execute_cmd!("wget", vec![&ndk_url, "-q", "-O", &ndk_zip])?;
-    execute_cmd!(
-        "unzip",
-        vec!["-q", &ndk_zip, "-d", &path_to_string(ndk_path)]
-    )?;
+    execute_cmd!("wget", [&ndk_url, "-q", "-O", &ndk_zip])?;
+    execute_cmd!("unzip", ["-q", &ndk_zip, "-d", &path_to_string(ndk_path)])?;
     Ok(android_ndk_path)
 }
 
