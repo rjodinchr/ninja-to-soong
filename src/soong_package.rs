@@ -10,7 +10,7 @@ use crate::utils::*;
 #[derive(Default)]
 pub struct SoongPackage {
     modules: Vec<SoongModule>,
-    generated: Generated,
+    internals: SoongModuleGeneratorInternals,
 }
 
 impl SoongPackage {
@@ -113,15 +113,15 @@ impl SoongPackage {
     }
 
     pub fn get_gen_deps(&mut self) -> Vec<PathBuf> {
-        self.generated.deps.sort_unstable();
-        self.generated.deps.dedup();
-        std::mem::take(&mut self.generated.deps)
+        self.internals.deps.sort_unstable();
+        self.internals.deps.dedup();
+        std::mem::take(&mut self.internals.deps)
     }
 
     pub fn get_gen_libs(&mut self) -> Vec<PathBuf> {
-        self.generated.libs.sort_unstable();
-        self.generated.libs.dedup();
-        std::mem::take(&mut self.generated.libs)
+        self.internals.libs.sort_unstable();
+        self.internals.libs.dedup();
+        std::mem::take(&mut self.internals.libs)
     }
 
     pub fn generate<T>(
@@ -161,7 +161,7 @@ impl SoongPackage {
                 project.filter_target(target_name)
             },
         )?;
-        self.generated = gen.delete();
+        self.internals = gen.delete();
 
         Ok(self)
     }
