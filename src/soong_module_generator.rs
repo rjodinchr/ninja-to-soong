@@ -10,7 +10,7 @@ use crate::soong_module::*;
 use crate::utils::*;
 
 #[derive(Default)]
-pub struct Generated {
+pub struct SoongModuleGeneratorInternals {
     pub deps: Vec<PathBuf>,
     pub libs: Vec<PathBuf>,
 }
@@ -19,7 +19,7 @@ pub struct SoongModuleGenerator<'a, T>
 where
     T: NinjaTarget,
 {
-    generated: Generated,
+    internals: SoongModuleGeneratorInternals,
     src_path: &'a Path,
     ndk_path: &'a Path,
     build_path: &'a Path,
@@ -39,7 +39,7 @@ where
         project: &'a dyn Project,
     ) -> Self {
         Self {
-            generated: Generated::default(),
+            internals: SoongModuleGeneratorInternals::default(),
             src_path,
             ndk_path,
             build_path,
@@ -47,8 +47,8 @@ where
             project,
         }
     }
-    pub fn delete(self) -> Generated {
-        self.generated
+    pub fn delete(self) -> SoongModuleGeneratorInternals {
+        self.internals
     }
 
     fn get_defines(&self, defines: Vec<String>) -> Vec<String> {
@@ -90,7 +90,7 @@ where
                 if lib.starts_with(&self.ndk_path) {
                     file_stem(lib)
                 } else {
-                    self.generated.libs.push(lib.clone());
+                    self.internals.libs.push(lib.clone());
                     path_to_id(self.project.get_target_name(&self.project.map_lib(&lib)))
                 }
             })
@@ -194,7 +194,7 @@ where
             })
             .collect();
 
-        self.generated.deps.extend(gen_deps);
+        self.internals.deps.extend(gen_deps);
 
         let mut module = SoongModule::new(name).add_prop("name", SoongProp::Str(module_name));
         if let Some(stem) = self.project.get_target_stem(&target_name) {
@@ -335,7 +335,7 @@ where
             .collect::<Vec<String>>();
         for (dep, dep_target_name) in &deps {
             sources.push(format!(":{dep_target_name}"));
-            self.generated.deps.push(dep.clone());
+            self.internals.deps.push(dep.clone());
         }
         let target_outputs = target.get_outputs();
         let cmd = self.get_cmd(rule_cmd, inputs, target_outputs, deps);
