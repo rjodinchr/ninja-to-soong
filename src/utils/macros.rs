@@ -62,7 +62,7 @@ macro_rules! debug_project {
     }
 }
 
-pub fn execute_command(program: &str, args: Vec<&str>, description: String) -> Result<(), String> {
+pub fn execute_command(program: &str, args: &[&str], description: String) -> Result<(), String> {
     let mut command = std::process::Command::new(program);
     command.args(args);
     println!("{command:#?}");
@@ -82,7 +82,7 @@ macro_rules! execute_cmd {
     ($program:expr, $args:expr) => {
         execute_command(
             $program,
-            $args,
+            &$args,
             format!("{0}:{1}: {2}", file!(), line!(), $program),
         )
     };

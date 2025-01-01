@@ -25,8 +25,8 @@ impl Project for SpirvHeaders {
         let mut package = SoongPackage::new(
             "//visibility:public",
             "SPIRV-Headers_license",
-            vec!["SPDX-license-identifier-MIT"],
-            vec!["LICENSE"],
+            &["SPDX-license-identifier-MIT"],
+            &["LICENSE"],
         )
         .add_module(SoongModule::new_cc_library_headers(
             CcLibraryHeaders::SpirvHeaders,
