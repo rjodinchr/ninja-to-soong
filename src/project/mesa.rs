@@ -137,7 +137,7 @@ impl Project for Mesa {
         }
         None
     }
-    fn get_target_module(&self, target: &Path, mut module: SoongModule) -> SoongModule {
+    fn get_target_module(&self, target: &Path, module: SoongModule) -> SoongModule {
         let mut libs = Vec::new();
         for lib in [
             "libgallium.a",
@@ -162,19 +162,18 @@ impl Project for Mesa {
         if target.ends_with("libanv_common.a") {
             libs.push("hwvulkan_headers");
         }
-        module.add_prop(
-            "header_libs",
-            SoongProp::VecStr(libs.into_iter().map(|lib| String::from(lib)).collect()),
-        );
-
-        module.add_prop(
-            "arch",
-            SoongNamedProp::new_prop(
-                "x86",
-                SoongNamedProp::new_prop("enabled", SoongProp::Bool(false)),
-            ),
-        );
         module
+            .add_prop(
+                "header_libs",
+                SoongProp::VecStr(libs.into_iter().map(|lib| String::from(lib)).collect()),
+            )
+            .add_prop(
+                "arch",
+                SoongNamedProp::new_prop(
+                    "x86",
+                    SoongNamedProp::new_prop("enabled", SoongProp::Bool(false)),
+                ),
+            )
     }
 
     fn extend_cflags(&self, target: &Path) -> Vec<String> {

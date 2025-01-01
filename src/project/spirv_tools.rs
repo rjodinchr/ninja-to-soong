@@ -60,8 +60,8 @@ impl Project for SpirvTools {
             &self.ndk_path,
             &self.build_path,
             self,
-        )?;
-        package.add_module(SoongModule::new_cc_library_headers(
+        )?
+        .add_module(SoongModule::new_cc_library_headers(
             CcLibraryHeaders::SpirvTools,
             vec![String::from("include")],
         ));
@@ -84,20 +84,20 @@ impl Project for SpirvTools {
         }
     }
 
-    fn get_target_module(&self, _target: &Path, mut module: SoongModule) -> SoongModule {
-        module.add_prop(
-            "header_libs",
-            SoongProp::VecStr(vec![CcLibraryHeaders::SpirvHeaders.str()]),
-        );
-        module.add_prop(
-            "export_include_dirs",
-            SoongProp::VecStr(vec![String::from("include")]),
-        );
-        module.add_prop(
-            "export_header_lib_headers",
-            SoongProp::VecStr(vec![CcLibraryHeaders::SpirvHeaders.str()]),
-        );
+    fn get_target_module(&self, _target: &Path, module: SoongModule) -> SoongModule {
         module
+            .add_prop(
+                "header_libs",
+                SoongProp::VecStr(vec![CcLibraryHeaders::SpirvHeaders.str()]),
+            )
+            .add_prop(
+                "export_include_dirs",
+                SoongProp::VecStr(vec![String::from("include")]),
+            )
+            .add_prop(
+                "export_header_lib_headers",
+                SoongProp::VecStr(vec![CcLibraryHeaders::SpirvHeaders.str()]),
+            )
     }
 
     fn extend_cflags(&self, _target: &Path) -> Vec<String> {
