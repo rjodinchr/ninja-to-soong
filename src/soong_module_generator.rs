@@ -105,7 +105,6 @@ where
         let mut sources = Vec::new();
         let mut static_libs = Vec::new();
         let mut shared_libs = Vec::new();
-        let mut gen_deps = Vec::new();
         for input in target.get_inputs() {
             let Some(input_target) = self.targets_map.get(input) else {
                 return error!("unsupported input for library: {input:#?}");
@@ -121,7 +120,9 @@ where
                     })
                     .map(|source| {
                         if source.starts_with(self.build_path) {
-                            gen_deps.push(strip_prefix(&source, self.build_path));
+                            self.internals
+                                .deps
+                                .push(strip_prefix(&source, self.build_path));
                         }
                         path_to_string(strip_prefix(
                             self.project.map_source(&source),
@@ -178,7 +179,7 @@ where
             .filter(|header| {
                 debug_project!("filter_gen_header({header:#?})");
                 if !self.project.filter_gen_header(header) {
-                    gen_deps.push(PathBuf::from(header));
+                    self.internals.deps.push(PathBuf::from(header));
                     false
                 } else {
                     self.targets_map.get(&header).is_some()
@@ -193,8 +194,6 @@ where
                 )
             })
             .collect();
-
-        self.internals.deps.extend(gen_deps);
 
         let mut module = SoongModule::new(name).add_prop("name", SoongProp::Str(module_name));
         if let Some(stem) = self.project.get_target_stem(&target_name) {
