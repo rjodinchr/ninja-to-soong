@@ -114,18 +114,16 @@ impl SoongPackage {
         package
     }
 
-    pub fn get_gen_deps(&self) -> Vec<PathBuf> {
-        let mut gen_deps = self.generated.deps.clone();
-        gen_deps.sort_unstable();
-        gen_deps.dedup();
-        gen_deps
+    pub fn get_gen_deps(&mut self) -> Vec<PathBuf> {
+        self.generated.deps.sort_unstable();
+        self.generated.deps.dedup();
+        std::mem::take(&mut self.generated.deps)
     }
 
-    pub fn get_gen_libs(&self) -> Vec<PathBuf> {
-        let mut gen_libs = self.generated.libs.clone();
-        gen_libs.sort_unstable();
-        gen_libs.dedup();
-        gen_libs
+    pub fn get_gen_libs(&mut self) -> Vec<PathBuf> {
+        self.generated.libs.sort_unstable();
+        self.generated.libs.dedup();
+        std::mem::take(&mut self.generated.libs)
     }
 
     pub fn generate<T>(
