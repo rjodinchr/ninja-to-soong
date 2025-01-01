@@ -89,12 +89,11 @@ impl Project for Clvk {
             PathBuf::from(target)
         }
     }
-    fn get_target_module(&self, _target: &Path, mut module: SoongModule) -> SoongModule {
+    fn get_target_module(&self, _target: &Path, module: SoongModule) -> SoongModule {
         module.add_prop(
             "header_libs",
             SoongProp::VecStr(vec![String::from("OpenCL-Headers")]),
-        );
-        module
+        )
     }
 
     fn map_lib(&self, library: &Path) -> PathBuf {

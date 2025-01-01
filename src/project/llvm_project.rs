@@ -95,30 +95,31 @@ impl Project for LlvmProject {
         common::copy_gen_deps(gen_deps, CMAKE_GENERATED, &self.build_path, ctx, self)?;
 
         let cmake_generated_path = Path::new(CMAKE_GENERATED);
-        package.add_module(SoongModule::new_cc_library_headers(
-            CcLibraryHeaders::Llvm,
-            vec![
-                String::from("llvm/include"),
-                path_to_string(cmake_generated_path.join("include")),
-            ],
-        ));
-        package.add_module(SoongModule::new_cc_library_headers(
-            CcLibraryHeaders::Clang,
-            vec![
-                String::from("clang/include"),
-                path_to_string(cmake_generated_path.join("tools/clang/include")),
-            ],
-        ));
+        package = package
+            .add_module(SoongModule::new_cc_library_headers(
+                CcLibraryHeaders::Llvm,
+                vec![
+                    String::from("llvm/include"),
+                    path_to_string(cmake_generated_path.join("include")),
+                ],
+            ))
+            .add_module(SoongModule::new_cc_library_headers(
+                CcLibraryHeaders::Clang,
+                vec![
+                    String::from("clang/include"),
+                    path_to_string(cmake_generated_path.join("tools/clang/include")),
+                ],
+            ));
 
         for clang_header in Dep::ClangHeaders.get(projects_map)? {
-            package.add_module(SoongModule::new_copy_genrule(
+            package = package.add_module(SoongModule::new_copy_genrule(
                 Dep::ClangHeaders.get_id(&clang_header, Path::new("clang"), &self.build_path),
                 &clang_header,
             ));
         }
         for binary in libclc_binaries {
             let file_path = cmake_generated_path.join(binary);
-            package.add_module(SoongModule::new_copy_genrule(
+            package = package.add_module(SoongModule::new_copy_genrule(
                 Dep::LibclcBins.get_id(&file_path, cmake_generated_path, &self.build_path),
                 &file_path,
             ));
@@ -127,9 +128,8 @@ impl Project for LlvmProject {
         Ok(package.print())
     }
 
-    fn get_target_module(&self, _target: &Path, mut module: SoongModule) -> SoongModule {
-        module.add_prop("optimize_for_size", SoongProp::Bool(true));
-        module
+    fn get_target_module(&self, _target: &Path, module: SoongModule) -> SoongModule {
+        module.add_prop("optimize_for_size", SoongProp::Bool(true))
     }
 
     fn extend_cflags(&self, target: &Path) -> Vec<String> {

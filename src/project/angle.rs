@@ -101,7 +101,7 @@ impl Project for Angle {
     }
     fn get_target_module(&self, target: &Path, mut module: SoongModule) -> SoongModule {
         if target.ends_with("libtranslator.a") {
-            module.add_prop(
+            module = module.add_prop(
                 "header_libs",
                 SoongProp::VecStr(vec![
                     CcLibraryHeaders::SpirvHeaders.str(),
@@ -109,18 +109,18 @@ impl Project for Angle {
                 ]),
             );
         }
-        module.add_prop("stl", SoongProp::Str(String::from("libc++_static")));
-        module.add_prop(
-            "arch",
-            SoongNamedProp::new_prop(
-                "arm64",
-                SoongNamedProp::new_prop(
-                    "cflags",
-                    SoongProp::VecStr(vec![String::from("-D__ARM_NEON__=1")]),
-                ),
-            ),
-        );
         module
+            .add_prop("stl", SoongProp::Str(String::from("libc++_static")))
+            .add_prop(
+                "arch",
+                SoongNamedProp::new_prop(
+                    "arm64",
+                    SoongNamedProp::new_prop(
+                        "cflags",
+                        SoongProp::VecStr(vec![String::from("-D__ARM_NEON__=1")]),
+                    ),
+                ),
+            )
     }
 
     fn extend_cflags(&self, _target: &Path) -> Vec<String> {

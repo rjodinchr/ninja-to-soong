@@ -99,23 +99,22 @@ impl SoongModule {
     }
 
     pub fn new_cc_library_headers(name: CcLibraryHeaders, include_dirs: Vec<String>) -> Self {
-        let mut module = Self::new("cc_library_headers");
-        module.add_prop("name", SoongProp::Str(name.str()));
-        module.add_prop("export_include_dirs", SoongProp::VecStr(include_dirs));
-        module
+        Self::new("cc_library_headers")
+            .add_prop("name", SoongProp::Str(name.str()))
+            .add_prop("export_include_dirs", SoongProp::VecStr(include_dirs))
     }
 
     pub fn new_copy_genrule(name: String, file: &Path) -> Self {
-        let mut module = Self::new("genrule");
-        module.add_prop("name", SoongProp::Str(name));
-        module.add_prop("cmd", SoongProp::Str(String::from("cp $(in) $(out)")));
-        module.add_prop("srcs", SoongProp::VecStr(vec![path_to_string(file)]));
-        module.add_prop("out", SoongProp::VecStr(vec![file_name(file)]));
-        module
+        Self::new("genrule")
+            .add_prop("name", SoongProp::Str(name))
+            .add_prop("cmd", SoongProp::Str(String::from("cp $(in) $(out)")))
+            .add_prop("srcs", SoongProp::VecStr(vec![path_to_string(file)]))
+            .add_prop("out", SoongProp::VecStr(vec![file_name(file)]))
     }
 
-    pub fn add_prop(&mut self, name: &str, prop: SoongProp) {
+    pub fn add_prop(mut self, name: &str, prop: SoongProp) -> SoongModule {
         self.props.push(SoongNamedProp::new(name, prop));
+        self
     }
 
     pub fn update_prop<F>(&mut self, name: &str, f: F)

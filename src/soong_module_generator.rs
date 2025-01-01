@@ -196,24 +196,24 @@ where
 
         self.generated.deps.extend(gen_deps);
 
-        let mut module = SoongModule::new(name);
-        module.add_prop("name", SoongProp::Str(module_name));
+        let mut module = SoongModule::new(name).add_prop("name", SoongProp::Str(module_name));
         if let Some(stem) = self.project.get_target_stem(&target_name) {
-            module.add_prop("stem", SoongProp::Str(stem));
+            module = module.add_prop("stem", SoongProp::Str(stem));
         }
         if let Some(vs) = version_script {
-            module.add_prop(
+            module = module.add_prop(
                 "version_script",
                 SoongProp::Str(path_to_string(strip_prefix(vs, &self.src_path))),
             );
         }
-        module.add_prop("srcs", SoongProp::VecStr(sources));
-        module.add_prop("cflags", SoongProp::VecStr(cflags));
-        module.add_prop("ldflags", SoongProp::VecStr(link_flags));
-        module.add_prop("shared_libs", SoongProp::VecStr(shared_libs));
-        module.add_prop("static_libs", SoongProp::VecStr(static_libs));
-        module.add_prop("local_include_dirs", SoongProp::VecStr(includes));
-        module.add_prop("generated_headers", SoongProp::VecStr(gen_headers));
+        module = module
+            .add_prop("srcs", SoongProp::VecStr(sources))
+            .add_prop("cflags", SoongProp::VecStr(cflags))
+            .add_prop("ldflags", SoongProp::VecStr(link_flags))
+            .add_prop("shared_libs", SoongProp::VecStr(shared_libs))
+            .add_prop("static_libs", SoongProp::VecStr(static_libs))
+            .add_prop("local_include_dirs", SoongProp::VecStr(includes))
+            .add_prop("generated_headers", SoongProp::VecStr(gen_headers));
 
         Ok(self.project.get_target_module(&target_name, module))
     }
@@ -345,12 +345,10 @@ where
             .collect();
         let module_name = path_to_id(target.get_name(self.project.get_name()));
 
-        let mut module = SoongModule::new("cc_genrule");
-        module.add_prop("name", SoongProp::Str(module_name));
-        module.add_prop("cmd", SoongProp::Str(cmd));
-        module.add_prop("srcs", SoongProp::VecStr(sources));
-        module.add_prop("out", SoongProp::VecStr(outputs));
-
-        Ok(module)
+        Ok(SoongModule::new("cc_genrule")
+            .add_prop("name", SoongProp::Str(module_name))
+            .add_prop("cmd", SoongProp::Str(cmd))
+            .add_prop("srcs", SoongProp::VecStr(sources))
+            .add_prop("out", SoongProp::VecStr(outputs)))
     }
 }

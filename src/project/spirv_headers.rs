@@ -27,14 +27,14 @@ impl Project for SpirvHeaders {
             "SPIRV-Headers_license",
             vec!["SPDX-license-identifier-MIT"],
             vec!["LICENSE"],
-        );
-        package.add_module(SoongModule::new_cc_library_headers(
+        )
+        .add_module(SoongModule::new_cc_library_headers(
             CcLibraryHeaders::SpirvHeaders,
             vec![String::from("include")],
         ));
 
         for file in Dep::SpirvHeaders.get(projects_map)? {
-            package.add_module(SoongModule::new_copy_genrule(
+            package = package.add_module(SoongModule::new_copy_genrule(
                 Dep::SpirvHeaders.get_id(&file, &src_path, Path::new("")),
                 &file,
             ));
