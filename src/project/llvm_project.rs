@@ -58,6 +58,7 @@ impl Project for LlvmProject {
             execute_cmd!("cmake", args.iter().map(|target| target.as_str()).collect())?;
         }
 
+        let cmake_generated_path = Path::new(CMAKE_GENERATED);
         let mut package = SoongPackage::new(
             "//visibility:public",
             "llvm-project_license",
@@ -71,59 +72,58 @@ impl Project for LlvmProject {
             &self.ndk_path,
             &self.build_path,
             self,
-        )?;
-
-        let mut gen_deps = package.get_gen_deps();
-        gen_deps.extend(libclc_binaries.clone());
-        let missing_gen_deps = vec![
-            "include/llvm/Config/llvm-config.h",
-            "include/llvm/Config/abi-breaking.h",
-            "include/llvm/Config/config.h",
-            "include/llvm/Config/Targets.def",
-            "include/llvm/Config/AsmPrinters.def",
-            "include/llvm/Config/AsmParsers.def",
-            "include/llvm/Config/Disassemblers.def",
-            "include/llvm/Config/TargetMCAs.def",
-            "include/llvm/Support/Extension.def",
-            "include/llvm/Support/VCSRevision.h",
-            "tools/clang/lib/Basic/VCSVersion.inc",
-            "tools/clang/include/clang/Basic/Version.inc",
-            "tools/clang/include/clang/Config/config.h",
-        ];
-        gen_deps.extend(missing_gen_deps.iter().map(|dep| PathBuf::from(dep)));
-        package.filter_local_include_dirs(CMAKE_GENERATED, &gen_deps);
-        common::copy_gen_deps(gen_deps, CMAKE_GENERATED, &self.build_path, ctx, self)?;
-
-        let cmake_generated_path = Path::new(CMAKE_GENERATED);
-        package = package
-            .add_module(SoongModule::new_cc_library_headers(
-                CcLibraryHeaders::Llvm,
-                vec![
-                    String::from("llvm/include"),
-                    path_to_string(cmake_generated_path.join("include")),
-                ],
-            ))
-            .add_module(SoongModule::new_cc_library_headers(
-                CcLibraryHeaders::Clang,
-                vec![
-                    String::from("clang/include"),
-                    path_to_string(cmake_generated_path.join("tools/clang/include")),
-                ],
-            ));
-
+        )?
+        .add_module(SoongModule::new_cc_library_headers(
+            CcLibraryHeaders::Llvm,
+            vec![
+                String::from("llvm/include"),
+                path_to_string(cmake_generated_path.join("include")),
+            ],
+        ))
+        .add_module(SoongModule::new_cc_library_headers(
+            CcLibraryHeaders::Clang,
+            vec![
+                String::from("clang/include"),
+                path_to_string(cmake_generated_path.join("tools/clang/include")),
+            ],
+        ));
         for clang_header in Dep::ClangHeaders.get(projects_map)? {
             package = package.add_module(SoongModule::new_copy_genrule(
                 Dep::ClangHeaders.get_id(&clang_header, Path::new("clang"), &self.build_path),
                 &clang_header,
             ));
         }
-        for binary in libclc_binaries {
+        for binary in &libclc_binaries {
             let file_path = cmake_generated_path.join(binary);
             package = package.add_module(SoongModule::new_copy_genrule(
                 Dep::LibclcBins.get_id(&file_path, cmake_generated_path, &self.build_path),
                 &file_path,
             ));
         }
+
+        let mut gen_deps = package.get_gen_deps();
+        gen_deps.extend(libclc_binaries);
+        gen_deps.extend(
+            [
+                "include/llvm/Config/llvm-config.h",
+                "include/llvm/Config/abi-breaking.h",
+                "include/llvm/Config/config.h",
+                "include/llvm/Config/Targets.def",
+                "include/llvm/Config/AsmPrinters.def",
+                "include/llvm/Config/AsmParsers.def",
+                "include/llvm/Config/Disassemblers.def",
+                "include/llvm/Config/TargetMCAs.def",
+                "include/llvm/Support/Extension.def",
+                "include/llvm/Support/VCSRevision.h",
+                "tools/clang/lib/Basic/VCSVersion.inc",
+                "tools/clang/include/clang/Basic/Version.inc",
+                "tools/clang/include/clang/Config/config.h",
+            ]
+            .iter()
+            .map(|dep| PathBuf::from(dep)),
+        );
+        package.filter_local_include_dirs(CMAKE_GENERATED, &gen_deps);
+        common::copy_gen_deps(gen_deps, CMAKE_GENERATED, &self.build_path, ctx, self)?;
 
         Ok(package.print())
     }
