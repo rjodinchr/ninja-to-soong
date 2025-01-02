@@ -5,9 +5,6 @@ use super::*;
 
 #[derive(Default)]
 pub struct Clvk {
-    src_path: PathBuf,
-    build_path: PathBuf,
-    ndk_path: PathBuf,
     gen_libs: Vec<PathBuf>,
 }
 
@@ -26,18 +23,18 @@ impl Project for Clvk {
         ctx: &Context,
         projects_map: &ProjectsMap,
     ) -> Result<String, String> {
-        self.src_path = self.get_android_path(ctx);
-        self.build_path = ctx.temp_path.join(self.get_name());
-        self.ndk_path = get_ndk_path(&ctx.temp_path)?;
+        let src_path = self.get_android_path(ctx);
+        let build_path = ctx.temp_path.join(self.get_name());
+        let ndk_path = get_ndk_path(&ctx.temp_path)?;
 
         if !ctx.skip_gen_ninja {
             execute_cmd!(
                 "bash",
                 [
                     &path_to_string(self.get_test_path(ctx).join("gen-ninja.sh")),
-                    &path_to_string(&self.src_path),
-                    &path_to_string(&self.build_path),
-                    &path_to_string(&self.ndk_path),
+                    &path_to_string(&src_path),
+                    &path_to_string(&build_path),
+                    &path_to_string(&ndk_path),
                     ANDROID_ABI,
                     ANDROID_ISA,
                     ANDROID_PLATFORM,
@@ -57,10 +54,10 @@ impl Project for Clvk {
         )
         .generate(
             vec![PathBuf::from("libOpenCL.so")],
-            parse_build_ninja::<CmakeNinjaTarget>(&self.build_path)?,
-            &self.src_path,
-            &self.ndk_path,
-            &self.build_path,
+            parse_build_ninja::<CmakeNinjaTarget>(&build_path)?,
+            &src_path,
+            &ndk_path,
+            &build_path,
             self,
         )?;
         self.gen_libs = package.get_gen_libs();
