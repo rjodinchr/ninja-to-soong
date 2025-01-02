@@ -77,8 +77,12 @@ impl Project for Clvk {
         };
         self.gen_libs
             .iter()
-            .filter(|lib| self.map_lib(lib).starts_with(prefix))
-            .map(|lib| strip_prefix(self.map_lib(lib), prefix))
+            .filter_map(|lib| {
+                if let Ok(strip) = self.map_lib(lib).strip_prefix(prefix) {
+                    return Some(PathBuf::from(strip));
+                }
+                None
+            })
             .collect()
     }
 

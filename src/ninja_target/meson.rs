@@ -116,8 +116,12 @@ impl NinjaTarget for MesonNinjaTarget {
         let defines = args
             .split(" ")
             .map(|arg| arg.trim_matches('\''))
-            .filter(|arg| arg.starts_with("-D"))
-            .map(|arg| arg.replace("\"", "\\\""))
+            .filter_map(|arg| {
+                if !arg.starts_with("-D") {
+                    return None;
+                }
+                Some(arg.replace("\"", "\\\""))
+            })
             .collect::<Vec<String>>();
         common::get_defines(&defines.join(" "))
     }

@@ -54,29 +54,31 @@ where
     fn get_sources(&mut self, sources: Vec<PathBuf>) -> Vec<String> {
         sources
             .iter()
-            .filter(|source| {
+            .filter_map(|source| {
                 debug_project!("filter_source({source:#?})");
-                self.project.filter_source(source)
-            })
-            .map(|source| {
+                if !self.project.filter_source(source) {
+                    return None;
+                }
                 if let Ok(strip) = source.strip_prefix(self.build_path) {
                     self.internals.deps.push(PathBuf::from(strip));
                 }
-                path_to_string(strip_prefix(
+                Some(path_to_string(strip_prefix(
                     self.project.map_source(&source),
                     self.src_path,
-                ))
+                )))
             })
             .collect()
     }
     fn get_defines(&self, defines: Vec<String>) -> Vec<String> {
         defines
             .iter()
-            .filter(|def| {
+            .filter_map(|def| {
                 debug_project!("filter_define({def})");
-                self.project.filter_define(def)
+                if !self.project.filter_define(def) {
+                    return None;
+                }
+                Some(format!("-D{0}", self.project.map_define(def)))
             })
-            .map(|def| format!("-D{0}", self.project.map_define(def)))
             .collect()
     }
     fn get_cflags(&self, cflags: Vec<String>) -> Vec<String> {
@@ -91,26 +93,31 @@ where
     fn get_includes(&self, includes: Vec<PathBuf>) -> Vec<String> {
         includes
             .iter()
-            .filter(|include| {
+            .filter_map(|include| {
                 debug_project!("filter_include({include:#?})");
-                self.project.filter_include(include)
+                if !self.project.filter_include(include) {
+                    return None;
+                }
+                Some(path_to_string(strip_prefix(
+                    self.project.map_include(include),
+                    self.src_path,
+                )))
             })
-            .map(|inc| path_to_string(strip_prefix(self.project.map_include(&inc), self.src_path)))
             .collect()
     }
     fn get_libs(&mut self, libs: Vec<PathBuf>, module_name: &String) -> Vec<String> {
         libs.iter()
-            .filter(|lib| {
+            .filter_map(|lib| {
                 debug_project!("filter_lib({lib:#?})");
-                self.project.filter_lib(&path_to_string(lib))
-            })
-            .map(|lib| {
-                if lib.starts_with(&self.ndk_path) {
+                if !self.project.filter_lib(&path_to_string(lib)) {
+                    return None;
+                }
+                Some(if lib.starts_with(&self.ndk_path) {
                     file_stem(lib)
                 } else {
                     self.internals.libs.push(lib.clone());
                     path_to_id(self.project.get_target_name(&self.project.map_lib(&lib)))
-                }
+                })
             })
             .filter(|lib| lib != module_name)
             .collect()
@@ -143,22 +150,20 @@ where
                 |_target_name| true,
             )?
             .iter()
-            .filter(|header| {
+            .filter_map(|header| {
                 debug_project!("filter_gen_header({header:#?})");
                 if !self.project.filter_gen_header(header) {
                     self.internals.deps.push(PathBuf::from(header));
-                    false
-                } else {
-                    self.targets_map.get(&header).is_some()
+                    return None;
+                } else if self.targets_map.get(&header).is_none() {
+                    return None;
                 }
-            })
-            .map(|header| {
-                path_to_id(
+                Some(path_to_id(
                     self.targets_map
                         .get(&header)
                         .unwrap()
                         .get_name(self.project.get_name()),
-                )
+                ))
             })
             .collect())
     }
@@ -270,13 +275,15 @@ where
                 "echo \\\"{0}\\\" > {rsp} && {cmd}",
                 rsp_content
                     .split(" ")
-                    .filter(|file| !file.is_empty())
-                    .map(|file| {
+                    .filter_map(|file| {
+                        if file.is_empty() {
+                            return None;
+                        }
                         let file_path = path_to_string(strip_prefix(
                             canonicalize_path(file, self.build_path),
                             self.src_path,
                         ));
-                        format!("$(location {file_path})",)
+                        Some(format!("$(location {file_path})"))
                     })
                     .collect::<Vec<String>>()
                     .join(" ")
@@ -292,14 +299,14 @@ where
     ) -> Vec<PathBuf> {
         inputs
             .iter()
-            .filter(|input| {
+            .filter_map(|input| {
                 for (prefix, dep) in self.project.get_deps_prefix() {
                     if input.starts_with(&prefix) {
                         deps.insert(
                             PathBuf::from(input),
                             dep.get_id(input, &prefix, self.build_path),
                         );
-                        return false;
+                        return None;
                     }
                 }
                 if canonicalize_path(&input, self.build_path).starts_with(self.build_path) {
@@ -307,11 +314,10 @@ where
                         PathBuf::from(input),
                         path_to_id(Path::new(self.project.get_name()).join(input)),
                     );
-                    return false;
+                    return None;
                 }
-                true
+                Some(PathBuf::from(input))
             })
-            .map(|input| PathBuf::from(input))
             .collect()
     }
     pub fn generate_custom_command(&mut self, target: &T, rule_cmd: NinjaRuleCmd) -> SoongModule {
