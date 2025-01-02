@@ -101,16 +101,14 @@ impl NinjaTarget for GnNinjaTarget {
     }
 
     fn get_link_libraries(&self) -> Result<(Vec<PathBuf>, Vec<PathBuf>), String> {
-        let (mut static_libs, mut shared_libs) = if let Some(libs) = self.variables.get("libs") {
-            common::get_link_libraries(libs)?
-        } else {
-            (Vec::new(), Vec::new())
-        };
-
-        if let Some(libs) = self.variables.get("solibs") {
-            let (static_libraries, shared_libraries) = common::get_link_libraries(libs)?;
-            static_libs.extend(static_libraries);
-            shared_libs.extend(shared_libraries);
+        let mut static_libs = Vec::new();
+        let mut shared_libs = Vec::new();
+        for lib_key in ["libs", "solibs"] {
+            if let Some(libs) = self.variables.get(lib_key) {
+                let (static_libraries, shared_libraries) = common::get_link_libraries(libs)?;
+                static_libs.extend(static_libraries);
+                shared_libs.extend(shared_libraries);
+            }
         }
 
         if self.rule == SHARED_LIB {
