@@ -3,8 +3,6 @@
 
 use super::*;
 
-const CMAKE_GENERATED: &str = "cmake_generated";
-
 #[derive(Default)]
 pub struct LlvmProject {
     build_path: PathBuf,
@@ -55,6 +53,7 @@ impl Project for LlvmProject {
             execute_cmd!("cmake", &args)?;
         }
 
+        const CMAKE_GENERATED: &str = "cmake_generated";
         let cmake_generated_path = Path::new(CMAKE_GENERATED);
         let mut package = SoongPackage::new(
             "//visibility:public",
@@ -68,6 +67,7 @@ impl Project for LlvmProject {
             &src_path,
             &ndk_path,
             &self.build_path,
+            Some(CMAKE_GENERATED),
             self,
         )?
         .add_module(SoongModule::new_cc_library_headers(
@@ -145,14 +145,6 @@ impl Project for LlvmProject {
             vec![String::from("libz")]
         } else {
             Vec::new()
-        }
-    }
-
-    fn map_include(&self, include: &Path) -> PathBuf {
-        if let Ok(strip) = include.strip_prefix(&self.build_path) {
-            Path::new(CMAKE_GENERATED).join(strip)
-        } else {
-            PathBuf::from(include)
         }
     }
 

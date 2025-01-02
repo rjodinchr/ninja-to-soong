@@ -131,14 +131,21 @@ impl SoongPackage {
         src_path: &Path,
         ndk_path: &Path,
         build_path: &Path,
+        gen_build_prefix: Option<&str>,
         project: &dyn Project,
     ) -> Result<SoongPackage, String>
     where
         T: NinjaTarget,
     {
         let targets_map = NinjaTargetsMap::new(&targets);
-        let mut gen =
-            SoongModuleGenerator::new(src_path, ndk_path, build_path, &targets_map, project);
+        let mut gen = SoongModuleGenerator::new(
+            src_path,
+            ndk_path,
+            build_path,
+            gen_build_prefix,
+            &targets_map,
+            project,
+        );
         targets_map.traverse_from(
             targets_to_generate,
             (),

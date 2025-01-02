@@ -55,6 +55,7 @@ impl Project for Clvk {
             &src_path,
             &ndk_path,
             &build_path,
+            None,
             self,
         )?;
         self.gen_libs = package.get_gen_libs();

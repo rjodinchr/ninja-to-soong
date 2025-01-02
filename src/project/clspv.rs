@@ -59,6 +59,7 @@ impl Project for Clspv {
             &src_path,
             &ndk_path,
             &self.build_path,
+            None,
             self,
         )?;
         self.gen_deps = package.get_gen_deps();

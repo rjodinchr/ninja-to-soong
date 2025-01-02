@@ -127,17 +127,8 @@ pub trait Project {
     fn map_cmd_output(&self, output: &Path) -> PathBuf {
         PathBuf::from(output)
     }
-    fn map_define(&self, define: &str) -> String {
-        String::from(define)
-    }
-    fn map_include(&self, include: &Path) -> PathBuf {
-        PathBuf::from(include)
-    }
     fn map_lib(&self, lib: &Path) -> PathBuf {
         PathBuf::from(lib)
-    }
-    fn map_source(&self, source: &Path) -> PathBuf {
-        PathBuf::from(source)
     }
     // FILTER FUNCTIONS
     fn filter_cflag(&self, _cflag: &str) -> bool {
