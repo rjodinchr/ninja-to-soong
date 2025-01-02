@@ -60,7 +60,7 @@ pub trait NinjaTarget: std::fmt::Debug {
 }
 
 #[derive(Debug)]
-pub struct NinjaTargetsMap<'a, T>(HashMap<PathBuf, &'a T>)
+pub struct NinjaTargetsMap<'a, T>(HashMap<&'a Path, &'a T>)
 where
     T: NinjaTarget;
 
@@ -72,10 +72,10 @@ where
         let mut map = HashMap::new();
         for target in targets {
             for output in target.get_outputs() {
-                map.insert(output.clone(), target);
+                map.insert(output.as_path(), target);
             }
             for output in target.get_implicit_ouputs() {
-                map.insert(output.clone(), target);
+                map.insert(output.as_path(), target);
             }
         }
         Self(map)
