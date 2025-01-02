@@ -58,35 +58,35 @@ fn generate_projects(
     ctx: &Context,
 ) -> Result<(), String> {
     let mut projects_to_generate = if project_ids.len() == 0 {
-        VecDeque::from_iter(projects_map.iter().map(|(key, _)| key.clone()))
+        VecDeque::from_iter(projects_map.iter().map(|(key, _)| *key))
     } else {
         VecDeque::from_iter(project_ids)
     };
     let project_to_write: HashSet<ProjectId> = HashSet::from_iter(projects_to_generate.clone());
 
     let mut projects_generated = HashSet::new();
-    while let Some(project_id) = projects_to_generate.pop_front().as_ref() {
-        if projects_generated.contains(project_id) {
+    while let Some(project_id) = projects_to_generate.pop_front() {
+        if projects_generated.contains(&project_id) {
             continue;
         }
-        let mut project = projects_map.remove(project_id)?;
+        let mut project = projects_map.remove(&project_id)?;
         let missing_deps = project_id
             .get_deps()
             .into_iter()
             .filter(|dep| !projects_generated.contains(dep));
         if missing_deps.clone().count() > 0 {
             projects_to_generate.extend(missing_deps);
-            projects_to_generate.push_back(project_id.clone());
+            projects_to_generate.push_back(project_id);
         } else {
             generate_project(
                 &mut project,
-                !project_to_write.contains(project_id),
+                !project_to_write.contains(&project_id),
                 &projects_map,
                 ctx,
             )?;
-            projects_generated.insert(project_id.clone());
+            projects_generated.insert(project_id);
         }
-        projects_map.insert(project_id.clone(), project);
+        projects_map.insert(project_id, project);
     }
 
     Ok(())

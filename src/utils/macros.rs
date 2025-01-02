@@ -92,7 +92,7 @@ macro_rules! execute_cmd {
 macro_rules! define_ProjectId {
     ($(($project:ident, $module:ident)),*) => {
         $(mod $module;)*
-        #[derive(Debug, Eq, PartialEq, Hash, Clone)]
+        #[derive(Debug, Eq, PartialEq, Hash, Copy, Clone)]
         pub enum ProjectId {
             $($project,)*
         }
@@ -107,7 +107,7 @@ macro_rules! define_ProjectId {
 #[macro_export]
 macro_rules! define_Dep {
     ($(($deps:ident, $project:ident, ($($projects:ident),*))),*) => {
-        #[derive(Debug, Eq, PartialEq, Hash, Clone)]
+        #[derive(Debug, Copy, Clone)]
         pub enum Dep {
             $($deps,)*
         }

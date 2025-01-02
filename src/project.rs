@@ -56,7 +56,7 @@ impl Dep {
         let mut all_deps = Vec::new();
         let projects = self.projects().1;
         for project in projects {
-            all_deps.extend(projects_map.get(project)?.get_deps(self.clone()));
+            all_deps.extend(projects_map.get(project)?.get_deps(self));
         }
         all_deps.sort_unstable();
         all_deps.dedup();
