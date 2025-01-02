@@ -55,6 +55,7 @@ impl Project for SpirvTools {
             &src_path,
             &ndk_path,
             &self.build_path,
+            None,
             self,
         )?
         .add_module(SoongModule::new_cc_library_headers(

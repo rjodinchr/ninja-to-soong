@@ -3,7 +3,6 @@
 
 use super::*;
 
-const MESON_GENERATED: &str = "meson_generated";
 const TARGETS: [(&str, &str, &str); 5] = [
     (
         "src/egl/libEGL_mesa.so.1.0.0",
@@ -90,6 +89,7 @@ impl Project for Mesa {
             )?;
         }
 
+        const MESON_GENERATED: &str = "meson_generated";
         let mut package = SoongPackage::new(
             "//visibility:public",
             "mesa_licenses",
@@ -105,6 +105,7 @@ impl Project for Mesa {
             &self.src_path,
             &ndk_path,
             &self.build_path,
+            Some(MESON_GENERATED),
             self,
         )?;
 
@@ -201,18 +202,6 @@ impl Project for Mesa {
         libs.into_iter().map(|lib| String::from(lib)).collect()
     }
 
-    fn map_define(&self, define: &str) -> String {
-        define
-            .replace(&path_to_string(&self.build_path), MESON_GENERATED)
-            .replace(&path_to_string_with_separator(&self.src_path), "")
-    }
-    fn map_include(&self, include: &Path) -> PathBuf {
-        if let Ok(strip) = include.strip_prefix(&self.build_path) {
-            Path::new(MESON_GENERATED).join(strip)
-        } else {
-            PathBuf::from(include)
-        }
-    }
     fn map_lib(&self, library: &Path) -> PathBuf {
         if !library.starts_with("src/android_stub")
             && (library.starts_with("src") || library.starts_with("subprojects/perfetto"))
@@ -220,13 +209,6 @@ impl Project for Mesa {
             Path::new(self.get_name()).join(library)
         } else {
             PathBuf::from(file_stem(library))
-        }
-    }
-    fn map_source(&self, source: &Path) -> PathBuf {
-        if let Ok(strip) = source.strip_prefix(&self.build_path) {
-            self.src_path.join(MESON_GENERATED).join(strip)
-        } else {
-            PathBuf::from(source)
         }
     }
 

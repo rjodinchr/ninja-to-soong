@@ -23,6 +23,7 @@ where
     src_path: &'a Path,
     ndk_path: &'a Path,
     build_path: &'a Path,
+    gen_build_prefix: Option<&'a str>,
     targets_map: &'a NinjaTargetsMap<'a, T>,
     project: &'a dyn Project,
 }
@@ -35,6 +36,7 @@ where
         src_path: &'a Path,
         ndk_path: &'a Path,
         build_path: &'a Path,
+        gen_build_prefix: Option<&'a str>,
         targets_map: &'a NinjaTargetsMap<'a, T>,
         project: &'a dyn Project,
     ) -> Self {
@@ -43,6 +45,7 @@ where
             src_path,
             ndk_path,
             build_path,
+            gen_build_prefix,
             targets_map,
             project,
         }
@@ -51,32 +54,35 @@ where
         self.internals
     }
 
-    fn get_sources(&mut self, sources: Vec<PathBuf>) -> Vec<String> {
-        sources
-            .iter()
-            .filter_map(|source| {
-                debug_project!("filter_source({source:#?})");
-                if !self.project.filter_source(source) {
-                    return None;
-                }
-                Some(path_to_string(strip_prefix(
-                    self.project.map_source(source),
-                    self.src_path,
-                )))
-            })
-            .collect()
+    fn replace_path(&self, iter: impl Iterator<Item = String>) -> Vec<String> {
+        let iter = iter.map(|path| {
+            path.replace(&path_to_string_with_separator(self.src_path), "")
+                .replace(&path_to_string(self.src_path), "")
+        });
+        if let Some(prefix) = self.gen_build_prefix {
+            iter.map(|path| path.replace(&path_to_string(self.build_path), prefix))
+                .collect()
+        } else {
+            iter.collect()
+        }
+    }
+    fn get_sources(&self, sources: Vec<PathBuf>) -> Vec<String> {
+        self.replace_path(sources.iter().filter_map(|source| {
+            debug_project!("filter_source({source:#?})");
+            if !self.project.filter_source(source) {
+                return None;
+            }
+            Some(path_to_string(source))
+        }))
     }
     fn get_defines(&self, defines: Vec<String>) -> Vec<String> {
-        defines
-            .iter()
-            .filter_map(|def| {
-                debug_project!("filter_define({def})");
-                if !self.project.filter_define(def) {
-                    return None;
-                }
-                Some(format!("-D{0}", self.project.map_define(def)))
-            })
-            .collect()
+        self.replace_path(defines.into_iter().filter(|def| {
+            debug_project!("filter_define({def})");
+            self.project.filter_define(&def)
+        }))
+        .iter()
+        .map(|def| format!("-D{def}"))
+        .collect()
     }
     fn get_cflags(&self, cflags: Vec<String>) -> Vec<String> {
         cflags
@@ -88,19 +94,13 @@ where
             .collect()
     }
     fn get_includes(&self, includes: Vec<PathBuf>) -> Vec<String> {
-        includes
-            .iter()
-            .filter_map(|include| {
-                debug_project!("filter_include({include:#?})");
-                if !self.project.filter_include(include) {
-                    return None;
-                }
-                Some(path_to_string(strip_prefix(
-                    self.project.map_include(include),
-                    self.src_path,
-                )))
-            })
-            .collect()
+        self.replace_path(includes.iter().filter_map(|include| {
+            debug_project!("filter_include({include:#?})");
+            if !self.project.filter_include(include) {
+                return None;
+            }
+            Some(path_to_string(include))
+        }))
     }
     fn get_libs(&mut self, libs: Vec<PathBuf>, module_name: &String) -> Vec<String> {
         libs.into_iter()
