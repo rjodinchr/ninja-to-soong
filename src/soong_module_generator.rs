@@ -133,23 +133,24 @@ where
             .collect()
     }
     fn get_generated_headers(&mut self, target: &T) -> Result<Vec<String>, String> {
-        Ok(self
-            .targets_map
-            .traverse_from(
-                target.get_outputs().clone(),
-                Vec::new(),
-                |gen_headers, rule, target| match rule {
+        let mut gen_headers = Vec::new();
+        self.targets_map
+            .traverse_from(target.get_outputs().clone(), |target| {
+                let Some(rule) = target.get_rule() else {
+                    return Ok(true);
+                };
+                match rule {
                     NinjaRule::CustomCommand => {
                         if target.get_cmd()?.is_none() {
-                            return Ok(());
+                            return Ok(true);
                         }
                         gen_headers.extend(target.get_outputs().clone());
-                        return Ok(());
+                        Ok(true)
                     }
-                    _ => return Ok(()),
-                },
-                |_target_name| true,
-            )?
+                    _ => Ok(true),
+                }
+            })?;
+        Ok(gen_headers
             .iter()
             .filter_map(|header| {
                 debug_project!("filter_gen_header({header:#?})");
@@ -161,7 +162,7 @@ where
                 }
                 Some(path_to_id(
                     self.targets_map
-                        .get(&header)
+                        .get(header)
                         .unwrap()
                         .get_name(self.project.get_name()),
                 ))
