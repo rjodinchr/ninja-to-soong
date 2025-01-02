@@ -51,6 +51,24 @@ where
         self.internals
     }
 
+    fn get_sources(&mut self, sources: Vec<PathBuf>) -> Vec<String> {
+        sources
+            .iter()
+            .filter(|source| {
+                debug_project!("filter_source({source:#?})");
+                self.project.filter_source(source)
+            })
+            .map(|source| {
+                if let Ok(strip) = source.strip_prefix(self.build_path) {
+                    self.internals.deps.push(PathBuf::from(strip));
+                }
+                path_to_string(strip_prefix(
+                    self.project.map_source(&source),
+                    self.src_path,
+                ))
+            })
+            .collect()
+    }
     fn get_defines(&self, defines: Vec<String>) -> Vec<String> {
         defines
             .iter()
@@ -97,68 +115,17 @@ where
             .filter(|lib| lib != module_name)
             .collect()
     }
-    pub fn generate_object(&mut self, name: &str, target: &T) -> Result<SoongModule, String> {
-        let target_name = target.get_name(self.project.get_name());
-        let module_name = path_to_id(self.project.get_target_name(&target_name));
-        let mut cflags = Vec::new();
-        let mut includes = Vec::new();
-        let mut sources = Vec::new();
-        let mut static_libs = Vec::new();
-        let mut shared_libs = Vec::new();
-        for input in target.get_inputs() {
-            let Some(input_target) = self.targets_map.get(input) else {
-                return error!("unsupported input for library: {input:#?}");
-            };
-
-            sources.extend(
-                input_target
-                    .get_sources(self.build_path)?
-                    .iter()
-                    .filter(|source| {
-                        debug_project!("filter_source({source:#?})");
-                        self.project.filter_source(source)
-                    })
-                    .map(|source| {
-                        if source.starts_with(self.build_path) {
-                            self.internals
-                                .deps
-                                .push(strip_prefix(&source, self.build_path));
-                        }
-                        path_to_string(strip_prefix(
-                            self.project.map_source(&source),
-                            self.src_path,
-                        ))
-                    }),
-            );
-
-            let (static_libraries, shared_libraries) = input_target.get_link_libraries()?;
-            static_libs.extend(self.get_libs(static_libraries, &module_name));
-            shared_libs.extend(self.get_libs(shared_libraries, &module_name));
-
-            includes.extend(self.get_includes(input_target.get_includes(self.build_path)));
-            cflags.extend(self.get_defines(input_target.get_defines()));
-            cflags.extend(self.get_cflags(input_target.get_cflags()));
-        }
-
-        includes.extend(self.get_includes(target.get_includes(self.build_path)));
-        cflags.extend(self.get_defines(target.get_defines()));
-        cflags.extend(self.get_cflags(target.get_cflags()));
-        cflags.extend(self.project.extend_cflags(&target_name));
-
-        let (version_script, link_flags) = target.get_link_flags();
-        let link_flags = link_flags
+    fn get_link_flags(&self, link_flags: Vec<String>) -> Vec<String> {
+        link_flags
             .into_iter()
             .filter(|flag| {
                 debug_project!("filter_link_flag({flag})");
                 self.project.filter_link_flag(flag)
             })
-            .collect();
-        let (static_libraries, shared_libraries) = target.get_link_libraries()?;
-        static_libs.extend(self.get_libs(static_libraries, &module_name));
-        shared_libs.extend(self.get_libs(shared_libraries, &module_name));
-        shared_libs.extend(self.project.extend_shared_libs(&target_name));
-
-        let gen_headers = self
+            .collect()
+    }
+    fn get_generated_headers(&mut self, target: &T) -> Result<Vec<String>, String> {
+        Ok(self
             .targets_map
             .traverse_from(
                 target.get_outputs().clone(),
@@ -193,7 +160,41 @@ where
                         .get_name(self.project.get_name()),
                 )
             })
-            .collect();
+            .collect())
+    }
+    pub fn generate_object(&mut self, name: &str, target: &T) -> Result<SoongModule, String> {
+        let target_name = target.get_name(self.project.get_name());
+        let module_name = path_to_id(self.project.get_target_name(&target_name));
+        let mut cflags = Vec::new();
+        let mut includes = Vec::new();
+        let mut sources = Vec::new();
+        let mut static_libs = Vec::new();
+        let mut shared_libs = Vec::new();
+        for input in target.get_inputs() {
+            let Some(input_target) = self.targets_map.get(input) else {
+                return error!("unsupported input for library: {input:#?}");
+            };
+
+            let (static_libraries, shared_libraries) = input_target.get_link_libraries()?;
+            static_libs.extend(self.get_libs(static_libraries, &module_name));
+            shared_libs.extend(self.get_libs(shared_libraries, &module_name));
+            sources.extend(self.get_sources(input_target.get_sources(self.build_path)?));
+            includes.extend(self.get_includes(input_target.get_includes(self.build_path)));
+            cflags.extend(self.get_defines(input_target.get_defines()));
+            cflags.extend(self.get_cflags(input_target.get_cflags()));
+        }
+        includes.extend(self.get_includes(target.get_includes(self.build_path)));
+        cflags.extend(self.get_defines(target.get_defines()));
+        cflags.extend(self.get_cflags(target.get_cflags()));
+        cflags.extend(self.project.extend_cflags(&target_name));
+
+        let generated_headers = self.get_generated_headers(target)?;
+        let (version_script, link_flags) = target.get_link_flags();
+        let link_flags = self.get_link_flags(link_flags);
+        let (static_libraries, shared_libraries) = target.get_link_libraries()?;
+        static_libs.extend(self.get_libs(static_libraries, &module_name));
+        shared_libs.extend(self.get_libs(shared_libraries, &module_name));
+        shared_libs.extend(self.project.extend_shared_libs(&target_name));
 
         let mut module = SoongModule::new(name).add_prop("name", SoongProp::Str(module_name));
         if let Some(stem) = self.project.get_target_stem(&target_name) {
@@ -212,7 +213,7 @@ where
             .add_prop("shared_libs", SoongProp::VecStr(shared_libs))
             .add_prop("static_libs", SoongProp::VecStr(static_libs))
             .add_prop("local_include_dirs", SoongProp::VecStr(includes))
-            .add_prop("generated_headers", SoongProp::VecStr(gen_headers));
+            .add_prop("generated_headers", SoongProp::VecStr(generated_headers));
 
         Ok(self.project.get_target_module(&target_name, module))
     }
