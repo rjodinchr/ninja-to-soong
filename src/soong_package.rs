@@ -148,7 +148,7 @@ impl SoongPackage {
                     NinjaRule::SharedLibrary => gen.generate_object("cc_library_shared", target)?,
                     NinjaRule::StaticLibrary => gen.generate_object("cc_library_static", target)?,
                     NinjaRule::CustomCommand => match target.get_cmd()? {
-                        Some(cmd) => gen.generate_custom_command(target, cmd)?,
+                        Some(cmd) => gen.generate_custom_command(target, cmd),
                         None => return Ok(()),
                     },
                 };
