@@ -31,8 +31,12 @@ pub fn get_link_libraries(libs: &str) -> Result<(Vec<PathBuf>, Vec<PathBuf>), St
 pub fn get_defines(defines: &str) -> Vec<String> {
     defines
         .split("-D")
-        .filter(|define| !define.is_empty())
-        .map(|define| define.trim().replace("\\(", "(").replace("\\)", ")"))
+        .filter_map(|define| {
+            if define.is_empty() {
+                return None;
+            }
+            Some(define.trim().replace("\\(", "(").replace("\\)", ")"))
+        })
         .collect()
 }
 
@@ -40,8 +44,12 @@ pub fn get_includes(includes: &str, build_path: &Path) -> Vec<PathBuf> {
     includes
         .split(" ")
         .map(|include| include.strip_prefix("-I").unwrap_or(include))
-        .filter(|include| !(include.is_empty() || *include == "isystem"))
-        .map(|include| canonicalize_path(include, build_path))
+        .filter_map(|include| {
+            if include.is_empty() || include == "isystem" {
+                return None;
+            }
+            Some(canonicalize_path(include, build_path))
+        })
         .collect()
 }
 
@@ -60,8 +68,12 @@ pub fn get_link_flags(flags: &str) -> (Option<PathBuf>, Vec<String>) {
 pub fn get_cflags(flags: &str) -> Vec<String> {
     flags
         .split(" ")
-        .filter(|flag| !flag.is_empty())
-        .map(|flag| String::from(flag))
+        .filter_map(|flag| {
+            if flag.is_empty() {
+                return None;
+            }
+            Some(String::from(flag))
+        })
         .collect()
 }
 

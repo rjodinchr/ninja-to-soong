@@ -78,24 +78,31 @@ impl Project for Clspv {
         ]
     }
     fn get_deps(&self, dep: Dep) -> Vec<PathBuf> {
+        let iter = self.gen_deps.iter();
         match dep {
-            Dep::ClangHeaders => self
-                .gen_deps
-                .iter()
-                .filter(|dep| dep.starts_with(&self.llvm_project_path))
-                .map(|dep| strip_prefix(dep, &self.llvm_project_path))
+            Dep::ClangHeaders => iter
+                .filter_map(|dep| {
+                    if let Ok(strip) = dep.strip_prefix(&self.llvm_project_path) {
+                        return Some(PathBuf::from(strip));
+                    }
+                    None
+                })
                 .collect(),
-            Dep::LibclcBins => self
-                .gen_deps
-                .iter()
-                .filter(|dep| file_name(dep) == "clspv--.bc" || file_name(dep) == "clspv64--.bc")
-                .map(|dep| strip_prefix(dep, "third_party/llvm"))
+            Dep::LibclcBins => iter
+                .filter_map(|dep| {
+                    if file_name(dep) == "clspv--.bc" || file_name(dep) == "clspv64--.bc" {
+                        return Some(strip_prefix(dep, "third_party/llvm"));
+                    }
+                    None
+                })
                 .collect(),
-            Dep::SpirvHeaders => self
-                .gen_deps
-                .iter()
-                .filter(|dep| dep.starts_with(&self.spirv_headers_path))
-                .map(|dep| strip_prefix(dep, &self.spirv_headers_path))
+            Dep::SpirvHeaders => iter
+                .filter_map(|dep| {
+                    if let Ok(strip) = dep.strip_prefix(&self.spirv_headers_path) {
+                        return Some(PathBuf::from(strip));
+                    }
+                    None
+                })
                 .collect(),
             _ => Vec::new(),
         }
