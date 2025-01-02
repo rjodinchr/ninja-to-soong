@@ -40,8 +40,6 @@ impl Project for Clspv {
                     &path_to_string(&src_path),
                     &path_to_string(&self.build_path),
                     &path_to_string(&ndk_path),
-                    ANDROID_ABI,
-                    ANDROID_PLATFORM,
                     &path_to_string(&self.spirv_headers_path),
                     &path_to_string(ProjectId::SpirvTools.get_android_path(projects_map, ctx)?),
                     &path_to_string(&self.llvm_project_path),

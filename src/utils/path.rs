@@ -8,18 +8,11 @@ pub use std::path::{Path, PathBuf};
 
 use super::*;
 
-const ARM: bool = true;
-pub const ANDROID_NDK: &str = "android-ndk-r27c";
-pub const ANDROID_PLATFORM: &str = "35";
-pub const ANDROID_ISA: &str = if ARM { "aarch64" } else { "x86_64" };
-pub const ANDROID_ABI: &str = if ARM { "arm64-v8a" } else { "x86_64" };
-pub const ANDROID_CPU: &str = if ARM { "arm64" } else { "x64" };
-
 pub fn get_ndk_path(temp_path: &Path) -> Result<PathBuf, String> {
     let android_ndk = if let Ok(android_ndk) = env::var("N2S_NDK") {
         android_ndk
     } else {
-        String::from(ANDROID_NDK)
+        String::from("android-ndk-r27c")
     };
     let ndk_path = if let Ok(ndk_path) = env::var("N2S_NDK_PATH") {
         PathBuf::from(ndk_path)

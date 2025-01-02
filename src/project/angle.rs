@@ -65,7 +65,6 @@ impl Project for Angle {
                     &path_to_string(self.get_test_path(ctx).join("gen-ninja.sh")),
                     &path_to_string(&self.src_path),
                     &path_to_string(&self.build_path),
-                    ANDROID_CPU,
                 ]
             )?;
         }
