@@ -83,34 +83,32 @@ where
     pub fn get(&self, key: &Path) -> Option<&&T> {
         self.0.get(key)
     }
-    pub fn traverse_from<Iterator, F, G>(
+    pub fn traverse_from<F>(
         &self,
         mut targets: Vec<PathBuf>,
-        mut iterator: Iterator,
-        mut f: F,
-        filter_target: G,
-    ) -> Result<Iterator, String>
+        mut filter_target: F,
+    ) -> Result<(), String>
     where
-        F: FnMut(&mut Iterator, NinjaRule, &T) -> Result<(), String>,
-        G: Fn(&Path) -> bool,
+        F: FnMut(&T) -> Result<bool, String>,
     {
         let mut targets_seen = std::collections::HashSet::new();
         while let Some(target_name) = targets.pop() {
-            if targets_seen.contains(&target_name) || !filter_target(&target_name) {
+            if targets_seen.contains(&target_name) {
                 continue;
             }
+            targets_seen.insert(target_name.clone());
             let Some(target) = self.get(&target_name) else {
                 continue;
             };
+            targets_seen.extend(target.get_outputs().clone());
+            targets_seen.extend(target.get_implicit_ouputs().clone());
+            if !filter_target(target)? {
+                continue;
+            }
             targets.extend(target.get_inputs().clone());
             targets.extend(target.get_implicit_deps().clone());
             targets.extend(target.get_order_only_deps().clone());
-            targets_seen.extend(target.get_outputs().clone());
-            targets_seen.extend(target.get_implicit_ouputs().clone());
-            if let Some(rule) = target.get_rule() {
-                f(&mut iterator, rule, target)?;
-            }
         }
-        Ok(iterator)
+        Ok(())
     }
 }

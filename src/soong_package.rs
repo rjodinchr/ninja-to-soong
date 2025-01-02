@@ -146,28 +146,27 @@ impl SoongPackage {
             &targets_map,
             project,
         );
-        targets_map.traverse_from(
-            targets_to_generate,
-            (),
-            |_, rule, target| {
-                let module = match rule {
-                    NinjaRule::Binary => gen.generate_object("cc_binary", target)?,
-                    NinjaRule::SharedLibrary => gen.generate_object("cc_library_shared", target)?,
-                    NinjaRule::StaticLibrary => gen.generate_object("cc_library_static", target)?,
-                    NinjaRule::CustomCommand => match target.get_cmd()? {
-                        Some(cmd) => gen.generate_custom_command(target, cmd),
-                        None => return Ok(()),
-                    },
-                };
-                self.modules.push(module);
-
-                Ok(())
-            },
-            |target_name| {
-                debug_project!("filter_target({target_name:#?})");
-                project.filter_target(target_name)
-            },
-        )?;
+        targets_map.traverse_from(targets_to_generate, |target| {
+            let target_name = target.get_name("");
+            debug_project!("filter_target({target_name:#?})");
+            if !project.filter_target(&target_name) {
+                return Ok(false);
+            }
+            let Some(rule) = target.get_rule() else {
+                return Ok(true);
+            };
+            let module = match rule {
+                NinjaRule::Binary => gen.generate_object("cc_binary", target)?,
+                NinjaRule::SharedLibrary => gen.generate_object("cc_library_shared", target)?,
+                NinjaRule::StaticLibrary => gen.generate_object("cc_library_static", target)?,
+                NinjaRule::CustomCommand => match target.get_cmd()? {
+                    Some(rule_cmd) => gen.generate_custom_command(target, rule_cmd),
+                    None => return Ok(false),
+                },
+            };
+            self.modules.push(module);
+            Ok(true)
+        })?;
         self.internals = gen.delete();
 
         Ok(self)
