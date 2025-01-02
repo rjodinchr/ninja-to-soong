@@ -79,7 +79,6 @@ impl Project for Mesa {
                     &path_to_string(&self.src_path),
                     &path_to_string(&self.build_path),
                     &path_to_string(intel_clc_path),
-                    ANDROID_PLATFORM,
                     &path_to_string(&ndk_path)
                 ]
             )?;

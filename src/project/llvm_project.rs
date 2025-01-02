@@ -37,8 +37,6 @@ impl Project for LlvmProject {
                     &path_to_string(src_path.join("llvm")),
                     &path_to_string(&self.build_path),
                     &path_to_string(&ndk_path),
-                    ANDROID_ABI,
-                    ANDROID_PLATFORM,
                 ]
             )?;
         }

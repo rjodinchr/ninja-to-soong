@@ -2,11 +2,10 @@
 
 set -xe
 
-[ $# -eq 3 ]
+[ $# -eq 2 ]
 
 SRC_PATH="$1"
 BUILD_PATH="$2"
-ANDROID_CPU="$3"
 
 cd "${SRC_PATH}"
 
@@ -15,7 +14,7 @@ gn args "${BUILD_PATH}" \
     --list \
     --overrides-only \
     --short \
-    --args="target_cpu=\"${ANDROID_CPU}\" target_os=\"android\" \
+    --args="target_cpu=\"arm64\" target_os=\"android\" \
     is_component_build=false \
     is_debug=false \
     dcheck_always_on=false \
