@@ -4,7 +4,7 @@
 
 # Legal
 
-`ninja-to-soong` is licensed under the terms opf the [Apache 2.0 license](LICENSE)
+`ninja-to-soong` is licensed under the terms of the [Apache 2.0 license](LICENSE)
 
 # How does it work?
 
