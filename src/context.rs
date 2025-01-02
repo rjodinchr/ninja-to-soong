@@ -55,7 +55,7 @@ impl Context {
         let project_name_to_id = projects.iter().fold(
             std::collections::HashMap::new(),
             |mut map, (project_id, project)| {
-                map.insert(project.get_name(), project_id.clone());
+                map.insert(project.get_name(), *project_id);
                 map
             },
         );
@@ -78,7 +78,7 @@ impl Context {
                 CLEAN_TMP => clean_tmp = true,
                 "-h" | "--help" => return Err(help(&exec, projects)),
                 project => match project_name_to_id.get(project) {
-                    Some(project) => project_ids.push(project.clone()),
+                    Some(project) => project_ids.push(*project),
                     None => {
                         return Err(format!(
                             "Unknown project '{project}'\n{0}",
