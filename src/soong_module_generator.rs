@@ -59,11 +59,8 @@ where
                 if !self.project.filter_source(source) {
                     return None;
                 }
-                if let Ok(strip) = source.strip_prefix(self.build_path) {
-                    self.internals.deps.push(PathBuf::from(strip));
-                }
                 Some(path_to_string(strip_prefix(
-                    self.project.map_source(&source),
+                    self.project.map_source(source),
                     self.src_path,
                 )))
             })
@@ -106,20 +103,24 @@ where
             .collect()
     }
     fn get_libs(&mut self, libs: Vec<PathBuf>, module_name: &String) -> Vec<String> {
-        libs.iter()
+        libs.into_iter()
             .filter_map(|lib| {
                 debug_project!("filter_lib({lib:#?})");
-                if !self.project.filter_lib(&path_to_string(lib)) {
+                if !self.project.filter_lib(&path_to_string(&lib)) {
                     return None;
                 }
                 Some(if lib.starts_with(&self.ndk_path) {
-                    file_stem(lib)
+                    file_stem(&lib)
                 } else {
-                    self.internals.libs.push(lib.clone());
-                    path_to_id(self.project.get_target_name(&self.project.map_lib(&lib)))
+                    let lib_id =
+                        path_to_id(self.project.get_target_name(&self.project.map_lib(&lib)));
+                    if lib_id == *module_name {
+                        return None;
+                    }
+                    self.internals.libs.push(lib);
+                    lib_id
                 })
             })
-            .filter(|lib| lib != module_name)
             .collect()
     }
     fn get_link_flags(&self, link_flags: Vec<String>) -> Vec<String> {
@@ -155,7 +156,7 @@ where
                 if !self.project.filter_gen_header(header) {
                     self.internals.deps.push(PathBuf::from(header));
                     return None;
-                } else if self.targets_map.get(&header).is_none() {
+                } else if self.targets_map.get(header).is_none() {
                     return None;
                 }
                 Some(path_to_id(
