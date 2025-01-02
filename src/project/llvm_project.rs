@@ -7,9 +7,7 @@ const CMAKE_GENERATED: &str = "cmake_generated";
 
 #[derive(Default)]
 pub struct LlvmProject {
-    src_path: PathBuf,
     build_path: PathBuf,
-    ndk_path: PathBuf,
 }
 
 impl Project for LlvmProject {
@@ -27,18 +25,18 @@ impl Project for LlvmProject {
         ctx: &Context,
         projects_map: &ProjectsMap,
     ) -> Result<String, String> {
-        self.src_path = self.get_android_path(ctx);
+        let src_path = self.get_android_path(ctx);
         self.build_path = ctx.temp_path.join(self.get_name());
-        self.ndk_path = get_ndk_path(&ctx.temp_path)?;
+        let ndk_path = get_ndk_path(&ctx.temp_path)?;
 
         if !ctx.skip_gen_ninja {
             execute_cmd!(
                 "bash",
                 [
                     &path_to_string(self.get_test_path(ctx).join("gen-ninja.sh")),
-                    &path_to_string(self.src_path.join("llvm")),
+                    &path_to_string(src_path.join("llvm")),
                     &path_to_string(&self.build_path),
-                    &path_to_string(&self.ndk_path),
+                    &path_to_string(&ndk_path),
                     ANDROID_ABI,
                     ANDROID_PLATFORM,
                 ]
@@ -69,8 +67,8 @@ impl Project for LlvmProject {
         .generate(
             targets_to_generate,
             parse_build_ninja::<CmakeNinjaTarget>(&self.build_path)?,
-            &self.src_path,
-            &self.ndk_path,
+            &src_path,
+            &ndk_path,
             &self.build_path,
             self,
         )?

@@ -5,9 +5,7 @@ use super::*;
 
 #[derive(Default)]
 pub struct SpirvTools {
-    src_path: PathBuf,
     build_path: PathBuf,
-    ndk_path: PathBuf,
     spirv_headers_path: PathBuf,
     gen_deps: Vec<PathBuf>,
 }
@@ -27,9 +25,9 @@ impl Project for SpirvTools {
         ctx: &Context,
         projects_map: &ProjectsMap,
     ) -> Result<String, String> {
-        self.src_path = self.get_android_path(ctx);
+        let src_path = self.get_android_path(ctx);
         self.build_path = ctx.temp_path.join(self.get_name());
-        self.ndk_path = get_ndk_path(&ctx.temp_path)?;
+        let ndk_path = get_ndk_path(&ctx.temp_path)?;
         self.spirv_headers_path = ProjectId::SpirvHeaders.get_android_path(projects_map, ctx)?;
 
         if !ctx.skip_gen_ninja {
@@ -37,9 +35,9 @@ impl Project for SpirvTools {
                 "bash",
                 [
                     &path_to_string(self.get_test_path(ctx).join("gen-ninja.sh")),
-                    &path_to_string(&self.src_path),
+                    &path_to_string(&src_path),
                     &path_to_string(&self.build_path),
-                    &path_to_string(&self.ndk_path),
+                    &path_to_string(&ndk_path),
                     ANDROID_ABI,
                     ANDROID_PLATFORM,
                     &path_to_string(&self.spirv_headers_path),
@@ -56,8 +54,8 @@ impl Project for SpirvTools {
         .generate(
             Dep::SpirvToolsTargets.get(projects_map)?,
             parse_build_ninja::<CmakeNinjaTarget>(&self.build_path)?,
-            &self.src_path,
-            &self.ndk_path,
+            &src_path,
+            &ndk_path,
             &self.build_path,
             self,
         )?

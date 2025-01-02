@@ -32,7 +32,6 @@ const TARGETS: [(&str, &str, &str); 5] = [
 pub struct Mesa {
     src_path: PathBuf,
     build_path: PathBuf,
-    ndk_path: PathBuf,
 }
 
 impl Project for Mesa {
@@ -55,7 +54,7 @@ impl Project for Mesa {
         } else {
             self.get_android_path(ctx)
         };
-        self.ndk_path = get_ndk_path(&ctx.temp_path)?;
+        let ndk_path = get_ndk_path(&ctx.temp_path)?;
         self.build_path = ctx.temp_path.join(self.get_name());
 
         let intel_clc_path = if !ctx.skip_build {
@@ -81,7 +80,7 @@ impl Project for Mesa {
                     &path_to_string(&self.build_path),
                     &path_to_string(intel_clc_path),
                     ANDROID_PLATFORM,
-                    &path_to_string(&self.ndk_path)
+                    &path_to_string(&ndk_path)
                 ]
             )?;
         }
@@ -105,7 +104,7 @@ impl Project for Mesa {
                 .collect(),
             parse_build_ninja::<MesonNinjaTarget>(&self.build_path)?,
             &self.src_path,
-            &self.ndk_path,
+            &ndk_path,
             &self.build_path,
             self,
         )?;

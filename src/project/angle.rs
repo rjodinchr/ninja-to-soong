@@ -9,7 +9,6 @@ const TARGETS: [&'static str; 3] = ["libEGL", "libGLESv2", "libGLESv1_CM"];
 pub struct Angle {
     src_path: PathBuf,
     build_path: PathBuf,
-    ndk_path: PathBuf,
 }
 
 impl Angle {
@@ -57,7 +56,7 @@ impl Project for Angle {
             self.get_android_path(ctx)
         };
         self.build_path = ctx.temp_path.join(self.get_name());
-        self.ndk_path = self.src_path.join("third_party/android_toolchain/ndk");
+        let ndk_path = self.src_path.join("third_party/android_toolchain/ndk");
 
         if !ctx.skip_gen_ninja {
             execute_cmd!(
@@ -84,7 +83,7 @@ impl Project for Angle {
                 .collect(),
             parse_build_ninja::<GnNinjaTarget>(&self.build_path)?,
             &self.src_path,
-            &self.ndk_path,
+            &ndk_path,
             &self.build_path,
             self,
         )?
