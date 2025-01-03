@@ -132,7 +132,7 @@ where
         variables.insert(key, value);
     }
 
-    Ok(T::new(
+    Ok(T::new(NinjaTargetCommon {
         rule,
         outputs,
         implicit_outputs,
@@ -140,7 +140,7 @@ where
         implicit_deps,
         order_only_deps,
         variables,
-    ))
+    }))
 }
 
 fn parse_ninja_rule(line: &str, mut lines: str::Lines) -> Result<(String, NinjaRuleCmd), String> {
