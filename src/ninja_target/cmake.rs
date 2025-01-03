@@ -1,49 +1,26 @@
 // Copyright 2024 ninja-to-soong authors
 // SPDX-License-Identifier: Apache-2.0
 
-use std::collections::HashMap;
-
 use super::*;
 
 #[derive(Debug)]
-pub struct CmakeNinjaTarget {
-    rule: String,
-    outputs: Vec<PathBuf>,
-    implicit_outputs: Vec<PathBuf>,
-    inputs: Vec<PathBuf>,
-    implicit_deps: Vec<PathBuf>,
-    order_only_deps: Vec<PathBuf>,
-    variables: HashMap<String, String>,
-}
+pub struct CmakeNinjaTarget(NinjaTargetCommon);
 
 impl NinjaTarget for CmakeNinjaTarget {
-    fn new(
-        rule: String,
-        outputs: Vec<PathBuf>,
-        implicit_outputs: Vec<PathBuf>,
-        inputs: Vec<PathBuf>,
-        implicit_deps: Vec<PathBuf>,
-        order_only_deps: Vec<PathBuf>,
-        variables: HashMap<String, String>,
-    ) -> Self {
-        Self {
-            rule,
-            outputs,
-            implicit_outputs,
-            inputs,
-            implicit_deps,
-            order_only_deps,
-            variables,
-        }
+    fn new(common: NinjaTargetCommon) -> Self {
+        Self(common)
+    }
+    fn get_common(&self) -> &NinjaTargetCommon {
+        &self.0
     }
 
     fn get_rule(&self) -> Result<NinjaRule, String> {
-        Ok(if self.rule.starts_with("CXX_SHARED_LIBRARY") {
+        Ok(if self.0.rule.starts_with("CXX_SHARED_LIBRARY") {
             NinjaRule::SharedLibrary
-        } else if self.rule.starts_with("CXX_STATIC_LIBRARY") {
+        } else if self.0.rule.starts_with("CXX_STATIC_LIBRARY") {
             NinjaRule::StaticLibrary
-        } else if self.rule.starts_with("CUSTOM_COMMAND") {
-            let Some(command) = self.variables.get("COMMAND") else {
+        } else if self.0.rule.starts_with("CUSTOM_COMMAND") {
+            let Some(command) = self.0.variables.get("COMMAND") else {
                 return error!("No command in: {self:#?}");
             };
             let mut split = command.split(" && ");
@@ -62,70 +39,44 @@ impl NinjaTarget for CmakeNinjaTarget {
                     rsp_info: None,
                 })
             }
-        } else if self.rule.starts_with("CXX_EXECUTABLE") {
+        } else if self.0.rule.starts_with("CXX_EXECUTABLE") {
             NinjaRule::Binary
         } else {
             NinjaRule::None
         })
     }
-
-    fn get_inputs(&self) -> &Vec<PathBuf> {
-        &self.inputs
-    }
-
-    fn get_implicit_deps(&self) -> &Vec<PathBuf> {
-        &self.implicit_deps
-    }
-
-    fn get_order_only_deps(&self) -> &Vec<PathBuf> {
-        &self.order_only_deps
-    }
-
-    fn get_outputs(&self) -> &Vec<PathBuf> {
-        &self.outputs
-    }
-
-    fn get_implicit_ouputs(&self) -> &Vec<PathBuf> {
-        &self.implicit_outputs
-    }
-
     fn get_sources(&self, build_path: &Path) -> Result<Vec<PathBuf>, String> {
-        if self.inputs.len() != 1 {
+        if self.0.inputs.len() != 1 {
             return error!("Too many inputs in: {self:#?}");
         }
-        Ok(common::get_sources(&self.inputs, build_path))
+        Ok(common::get_sources(&self.0.inputs, build_path))
     }
-
     fn get_link_flags(&self) -> (Option<PathBuf>, Vec<String>) {
-        let Some(flags) = self.variables.get("LINK_FLAGS") else {
+        let Some(flags) = self.0.variables.get("LINK_FLAGS") else {
             return (None, Vec::new());
         };
         common::get_link_flags(flags)
     }
-
     fn get_link_libraries(&self) -> Result<(Vec<PathBuf>, Vec<PathBuf>), String> {
-        let Some(libs) = self.variables.get("LINK_LIBRARIES") else {
+        let Some(libs) = self.0.variables.get("LINK_LIBRARIES") else {
             return Ok((Vec::new(), Vec::new()));
         };
         common::get_link_libraries(libs)
     }
-
     fn get_defines(&self) -> Vec<String> {
-        let Some(defs) = self.variables.get("DEFINES") else {
+        let Some(defs) = self.0.variables.get("DEFINES") else {
             return Vec::new();
         };
         common::get_defines(defs)
     }
-
     fn get_includes(&self, build_path: &Path) -> Vec<PathBuf> {
-        let Some(incs) = self.variables.get("INCLUDES") else {
+        let Some(incs) = self.0.variables.get("INCLUDES") else {
             return Vec::new();
         };
         common::get_includes(incs, build_path)
     }
-
     fn get_cflags(&self) -> Vec<String> {
-        let Some(flags) = self.variables.get("FLAGS") else {
+        let Some(flags) = self.0.variables.get("FLAGS") else {
             return Vec::new();
         };
         common::get_cflags(flags)

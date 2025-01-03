@@ -29,34 +29,50 @@ pub enum NinjaRule {
     None,
 }
 
-pub trait NinjaTarget: std::fmt::Debug {
-    fn new(
-        rule: String,
-        outputs: Vec<PathBuf>,
-        implicit_outputs: Vec<PathBuf>,
-        inputs: Vec<PathBuf>,
-        implicit_deps: Vec<PathBuf>,
-        order_only_deps: Vec<PathBuf>,
-        variables: HashMap<String, String>,
-    ) -> Self;
-    fn get_name(&self, prefix: &str) -> PathBuf {
-        Path::new(prefix).join(&self.get_outputs()[0])
-    }
-    fn set_globals(&mut self, _globals: HashMap<String, String>) {}
-    fn set_rule(&mut self, _rules: &NinjaRulesMap) {}
+#[derive(Debug)]
+pub struct NinjaTargetCommon {
+    pub rule: String,
+    pub outputs: Vec<PathBuf>,
+    pub implicit_outputs: Vec<PathBuf>,
+    pub inputs: Vec<PathBuf>,
+    pub implicit_deps: Vec<PathBuf>,
+    pub order_only_deps: Vec<PathBuf>,
+    pub variables: HashMap<String, String>,
+}
 
+pub trait NinjaTarget: std::fmt::Debug {
+    // MANDATORY FUNCTIONS
+    fn new(common: NinjaTargetCommon) -> Self;
+    fn get_common(&self) -> &NinjaTargetCommon;
     fn get_rule(&self) -> Result<NinjaRule, String>;
-    fn get_inputs(&self) -> &Vec<PathBuf>;
-    fn get_implicit_deps(&self) -> &Vec<PathBuf>;
-    fn get_order_only_deps(&self) -> &Vec<PathBuf>;
-    fn get_outputs(&self) -> &Vec<PathBuf>;
-    fn get_implicit_ouputs(&self) -> &Vec<PathBuf>;
     fn get_sources(&self, build_path: &Path) -> Result<Vec<PathBuf>, String>;
     fn get_link_flags(&self) -> (Option<PathBuf>, Vec<String>);
     fn get_link_libraries(&self) -> Result<(Vec<PathBuf>, Vec<PathBuf>), String>;
     fn get_defines(&self) -> Vec<String>;
     fn get_includes(&self, build_path: &Path) -> Vec<PathBuf>;
     fn get_cflags(&self) -> Vec<String>;
+    // OPTIONAL FUNCTIONS
+    fn set_globals(&mut self, _globals: HashMap<String, String>) {}
+    fn set_rule(&mut self, _rules: &NinjaRulesMap) {}
+    // COMMON FUNCTIONS
+    fn get_name(&self, prefix: &str) -> PathBuf {
+        Path::new(prefix).join(&self.get_common().outputs[0])
+    }
+    fn get_inputs(&self) -> &Vec<PathBuf> {
+        &self.get_common().inputs
+    }
+    fn get_implicit_deps(&self) -> &Vec<PathBuf> {
+        &self.get_common().implicit_deps
+    }
+    fn get_order_only_deps(&self) -> &Vec<PathBuf> {
+        &self.get_common().order_only_deps
+    }
+    fn get_outputs(&self) -> &Vec<PathBuf> {
+        &self.get_common().outputs
+    }
+    fn get_implicit_ouputs(&self) -> &Vec<PathBuf> {
+        &self.get_common().implicit_outputs
+    }
 }
 
 #[derive(Debug)]
