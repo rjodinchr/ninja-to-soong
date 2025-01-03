@@ -54,15 +54,18 @@ impl NinjaTarget for GnNinjaTarget {
         }
     }
 
-    fn get_rule(&self) -> Option<NinjaRule> {
-        Some(if self.rule == SHARED_LIB {
+    fn get_rule(&self) -> Result<NinjaRule, String> {
+        Ok(if self.rule == SHARED_LIB {
             NinjaRule::SharedLibrary
         } else if self.rule == STATIC_LIB {
             NinjaRule::StaticLibrary
         } else if self.rule.ends_with("__rule") {
-            NinjaRule::CustomCommand
+            let Some(command) = self.rule_cmd.clone() else {
+                return error!("No command in: {self:#?}");
+            };
+            NinjaRule::CustomCommand(command)
         } else {
-            return None;
+            NinjaRule::None
         })
     }
 
@@ -147,12 +150,5 @@ impl NinjaTarget for GnNinjaTarget {
             }
         }
         cflags
-    }
-
-    fn get_cmd(&self) -> Result<Option<NinjaRuleCmd>, String> {
-        let Some(command) = &self.rule_cmd else {
-            return error!("No command in: {self:#?}");
-        };
-        Ok(Some(command.clone()))
     }
 }

@@ -136,14 +136,8 @@ where
         let mut gen_headers = Vec::new();
         self.targets_map
             .traverse_from(target.get_outputs().clone(), |target| {
-                let Some(rule) = target.get_rule() else {
-                    return Ok(true);
-                };
-                match rule {
-                    NinjaRule::CustomCommand => {
-                        if target.get_cmd()?.is_none() {
-                            return Ok(true);
-                        }
+                match target.get_rule()? {
+                    NinjaRule::CustomCommand(_) => {
                         gen_headers.extend(target.get_outputs().clone());
                         Ok(true)
                     }
