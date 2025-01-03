@@ -152,19 +152,13 @@ impl SoongPackage {
             if !project.filter_target(&target_name) {
                 return Ok(false);
             }
-            let Some(rule) = target.get_rule() else {
-                return Ok(true);
-            };
-            let module = match rule {
+            self.modules.push(match target.get_rule()? {
                 NinjaRule::Binary => gen.generate_object("cc_binary", target)?,
                 NinjaRule::SharedLibrary => gen.generate_object("cc_library_shared", target)?,
                 NinjaRule::StaticLibrary => gen.generate_object("cc_library_static", target)?,
-                NinjaRule::CustomCommand => match target.get_cmd()? {
-                    Some(rule_cmd) => gen.generate_custom_command(target, rule_cmd),
-                    None => return Ok(false),
-                },
-            };
-            self.modules.push(module);
+                NinjaRule::CustomCommand(rule_cmd) => gen.generate_custom_command(target, rule_cmd),
+                NinjaRule::None => return Ok(true),
+            });
             Ok(true)
         })?;
         self.internals = gen.delete();

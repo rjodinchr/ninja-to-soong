@@ -37,8 +37,8 @@ impl NinjaTarget for MesonNinjaTarget {
         }
     }
 
-    fn get_rule(&self) -> Option<NinjaRule> {
-        Some(if self.rule == "c_LINKER" || self.rule == "cpp_LINKER" {
+    fn get_rule(&self) -> Result<NinjaRule, String> {
+        Ok(if self.rule == "c_LINKER" || self.rule == "cpp_LINKER" {
             let (_, link_flags) = self.get_link_flags();
             if link_flags.contains(&String::from("-fPIC")) {
                 NinjaRule::SharedLibrary
@@ -48,9 +48,15 @@ impl NinjaTarget for MesonNinjaTarget {
         } else if self.rule == "STATIC_LINKER" {
             NinjaRule::StaticLibrary
         } else if self.rule == "CUSTOM_COMMAND" || self.rule == "CUSTOM_COMMAND_DEP" {
-            NinjaRule::CustomCommand
+            let Some(command) = self.variables.get("COMMAND") else {
+                return error!("No command in: {self:#?}");
+            };
+            NinjaRule::CustomCommand(NinjaRuleCmd {
+                command: String::from(command.split_once(" -- ").unwrap_or(("", command)).1),
+                rsp_info: None,
+            })
         } else {
-            return None;
+            NinjaRule::None
         })
     }
 
@@ -146,15 +152,5 @@ impl NinjaTarget for MesonNinjaTarget {
             .filter(|arg| !arg.starts_with("-I") && !arg.starts_with("-D"))
             .collect::<Vec<&str>>();
         common::get_cflags(&cflags.join(" "))
-    }
-
-    fn get_cmd(&self) -> Result<Option<NinjaRuleCmd>, String> {
-        let Some(command) = self.variables.get("COMMAND") else {
-            return error!("No command in: {self:#?}");
-        };
-        Ok(Some(NinjaRuleCmd {
-            command: String::from(command.split_once(" -- ").unwrap_or(("", command)).1),
-            rsp_info: None,
-        }))
     }
 }

@@ -25,7 +25,8 @@ pub enum NinjaRule {
     Binary,
     StaticLibrary,
     SharedLibrary,
-    CustomCommand,
+    CustomCommand(NinjaRuleCmd),
+    None,
 }
 
 pub trait NinjaTarget: std::fmt::Debug {
@@ -44,7 +45,7 @@ pub trait NinjaTarget: std::fmt::Debug {
     fn set_globals(&mut self, _globals: HashMap<String, String>) {}
     fn set_rule(&mut self, _rules: &NinjaRulesMap) {}
 
-    fn get_rule(&self) -> Option<NinjaRule>;
+    fn get_rule(&self) -> Result<NinjaRule, String>;
     fn get_inputs(&self) -> &Vec<PathBuf>;
     fn get_implicit_deps(&self) -> &Vec<PathBuf>;
     fn get_order_only_deps(&self) -> &Vec<PathBuf>;
@@ -56,7 +57,6 @@ pub trait NinjaTarget: std::fmt::Debug {
     fn get_defines(&self) -> Vec<String>;
     fn get_includes(&self, build_path: &Path) -> Vec<PathBuf>;
     fn get_cflags(&self) -> Vec<String>;
-    fn get_cmd(&self) -> Result<Option<NinjaRuleCmd>, String>;
 }
 
 #[derive(Debug)]

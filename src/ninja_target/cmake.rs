@@ -37,17 +37,35 @@ impl NinjaTarget for CmakeNinjaTarget {
         }
     }
 
-    fn get_rule(&self) -> Option<NinjaRule> {
-        Some(if self.rule.starts_with("CXX_SHARED_LIBRARY") {
+    fn get_rule(&self) -> Result<NinjaRule, String> {
+        Ok(if self.rule.starts_with("CXX_SHARED_LIBRARY") {
             NinjaRule::SharedLibrary
         } else if self.rule.starts_with("CXX_STATIC_LIBRARY") {
             NinjaRule::StaticLibrary
         } else if self.rule.starts_with("CUSTOM_COMMAND") {
-            NinjaRule::CustomCommand
+            let Some(command) = self.variables.get("COMMAND") else {
+                return error!("No command in: {self:#?}");
+            };
+            let mut split = command.split(" && ");
+            let split_count = split.clone().count();
+            if split_count < 2 {
+                return error!(
+                    "Could not find enough split in command (expected at least 2, got {split_count}"
+                );
+            }
+            let command = split.nth(1).unwrap();
+            if command.contains("bin/cmake ") {
+                NinjaRule::None
+            } else {
+                NinjaRule::CustomCommand(NinjaRuleCmd {
+                    command: String::from(command),
+                    rsp_info: None,
+                })
+            }
         } else if self.rule.starts_with("CXX_EXECUTABLE") {
             NinjaRule::Binary
         } else {
-            return None;
+            NinjaRule::None
         })
     }
 
@@ -111,27 +129,5 @@ impl NinjaTarget for CmakeNinjaTarget {
             return Vec::new();
         };
         common::get_cflags(flags)
-    }
-
-    fn get_cmd(&self) -> Result<Option<NinjaRuleCmd>, String> {
-        let Some(command) = self.variables.get("COMMAND") else {
-            return error!("No command in: {self:#?}");
-        };
-        let mut split = command.split(" && ");
-        let split_count = split.clone().count();
-        if split_count < 2 {
-            return error!(
-                "Could not find enough split in command (expected at least 2, got {split_count}"
-            );
-        }
-        let command = split.nth(1).unwrap();
-        Ok(if command.contains("bin/cmake ") {
-            None
-        } else {
-            Some(NinjaRuleCmd {
-                command: String::from(command),
-                rsp_info: None,
-            })
-        })
     }
 }
