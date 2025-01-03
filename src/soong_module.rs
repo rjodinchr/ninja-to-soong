@@ -1,8 +1,6 @@
 // Copyright 2024 ninja-to-soong authors
 // SPDX-License-Identifier: Apache-2.0
 
-use crate::utils::*;
-
 pub enum CcLibraryHeaders {
     SpirvTools,
     SpirvHeaders,
@@ -104,12 +102,10 @@ impl SoongModule {
             .add_prop("export_include_dirs", SoongProp::VecStr(include_dirs))
     }
 
-    pub fn new_copy_genrule(name: String, file: &Path) -> Self {
-        Self::new("genrule")
+    pub fn new_filegroup(name: String, files: Vec<String>) -> Self {
+        Self::new("filegroup")
             .add_prop("name", SoongProp::Str(name))
-            .add_prop("cmd", SoongProp::Str(String::from("cp $(in) $(out)")))
-            .add_prop("srcs", SoongProp::VecStr(vec![path_to_string(file)]))
-            .add_prop("out", SoongProp::VecStr(vec![file_name(file)]))
+            .add_prop("srcs", SoongProp::VecStr(files))
     }
 
     pub fn add_prop(mut self, name: &str, prop: SoongProp) -> SoongModule {

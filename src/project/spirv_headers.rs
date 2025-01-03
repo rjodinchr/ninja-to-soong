@@ -34,9 +34,9 @@ impl Project for SpirvHeaders {
         ));
 
         for file in Dep::SpirvHeaders.get(projects_map)? {
-            package = package.add_module(SoongModule::new_copy_genrule(
+            package = package.add_module(SoongModule::new_filegroup(
                 Dep::SpirvHeaders.get_id(&file, &src_path, Path::new("")),
-                &file,
+                vec![path_to_string(file)],
             ));
         }
 
