@@ -55,8 +55,8 @@ pub trait NinjaTarget: std::fmt::Debug {
     fn set_globals(&mut self, _globals: HashMap<String, String>) {}
     fn set_rule(&mut self, _rules: &NinjaRulesMap) {}
     // COMMON FUNCTIONS
-    fn get_name(&self, prefix: &str) -> PathBuf {
-        Path::new(prefix).join(&self.get_common().outputs[0])
+    fn get_name(&self) -> PathBuf {
+        PathBuf::from(&self.get_common().outputs[0])
     }
     fn get_inputs(&self) -> &Vec<PathBuf> {
         &self.get_common().inputs
@@ -72,6 +72,63 @@ pub trait NinjaTarget: std::fmt::Debug {
     }
     fn get_implicit_ouputs(&self) -> &Vec<PathBuf> {
         &self.get_common().implicit_outputs
+    }
+}
+
+pub struct NinjaTargetToGen<'a>(pub &'a str, pub Option<&'a str>, pub Option<&'a str>);
+
+pub struct NinjaTargetsToGenMap(HashMap<PathBuf, (Option<PathBuf>, Option<String>)>);
+impl NinjaTargetsToGenMap {
+    pub fn get_name(&self, target: &Path) -> Option<PathBuf> {
+        let Some(pair) = self.0.get(target) else {
+            return None;
+        };
+        let Some(alias) = &pair.0 else {
+            return None;
+        };
+        Some(alias.clone())
+    }
+    pub fn get_stem(&self, target: &Path) -> Option<String> {
+        let Some(pair) = self.0.get(target) else {
+            return None;
+        };
+        let Some(stem) = &pair.1 else {
+            return None;
+        };
+        Some(stem.clone())
+    }
+    pub fn get_targets(&self) -> Vec<PathBuf> {
+        let mut vec = self
+            .0
+            .iter()
+            .map(|(key, _value)| key.clone())
+            .collect::<Vec<PathBuf>>();
+        vec.sort_unstable();
+        vec
+    }
+    pub fn from(targets: &[NinjaTargetToGen]) -> Self {
+        Self(targets.iter().fold(HashMap::new(), |mut map, target| {
+            map.insert(
+                PathBuf::from(target.0),
+                (
+                    match target.1 {
+                        Some(name) => Some(PathBuf::from(name)),
+                        None => None,
+                    },
+                    match target.2 {
+                        Some(stem) => Some(String::from(stem)),
+                        None => None,
+                    },
+                ),
+            );
+            map
+        }))
+    }
+    pub fn from_dep(targets: Vec<PathBuf>) -> Self {
+        Self(targets.into_iter().fold(HashMap::new(), |mut map, target| {
+            map.insert(target.clone(), (None, None));
+            map
+        }))
     }
 }
 

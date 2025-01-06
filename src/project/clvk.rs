@@ -50,7 +50,7 @@ impl Project for Clvk {
             &["LICENSE"],
         )
         .generate(
-            vec![PathBuf::from("libOpenCL.so")],
+            NinjaTargetsToGenMap::from(&[NinjaTargetToGen("libOpenCL.so", Some("libclvk"), None)]),
             parse_build_ninja::<CmakeNinjaTarget>(&build_path)?,
             &src_path,
             &ndk_path,
@@ -73,7 +73,7 @@ impl Project for Clvk {
         self.gen_libs
             .iter()
             .filter_map(|lib| {
-                if let Ok(strip) = self.map_lib(lib).strip_prefix(prefix) {
+                if let Ok(strip) = self.map_lib(lib).unwrap().strip_prefix(prefix) {
                     return Some(PathBuf::from(strip));
                 }
                 None
@@ -81,29 +81,22 @@ impl Project for Clvk {
             .collect()
     }
 
-    fn get_target_name(&self, target: &Path) -> PathBuf {
-        if target.ends_with("libOpenCL.so") {
-            PathBuf::from("libclvk")
-        } else {
-            PathBuf::from(target)
-        }
-    }
-    fn get_target_module(&self, _target: &Path, module: SoongModule) -> SoongModule {
+    fn extend_module(&self, _target: &Path, module: SoongModule) -> SoongModule {
         module.add_prop(
             "header_libs",
             SoongProp::VecStr(vec![String::from("OpenCL-Headers")]),
         )
     }
 
-    fn map_lib(&self, library: &Path) -> PathBuf {
-        strip_prefix(
+    fn map_lib(&self, library: &Path) -> Option<PathBuf> {
+        Some(strip_prefix(
             if let Ok(strip) = library.strip_prefix(Path::new("external/clspv/third_party/llvm")) {
                 Path::new("llvm-project").join(strip)
             } else {
                 PathBuf::from(library)
             },
             "external",
-        )
+        ))
     }
 
     fn filter_cflag(&self, _cflag: &str) -> bool {

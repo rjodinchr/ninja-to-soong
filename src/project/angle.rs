@@ -3,7 +3,11 @@
 
 use super::*;
 
-const TARGETS: [&'static str; 3] = ["libEGL", "libGLESv2", "libGLESv1_CM"];
+const TARGETS: [NinjaTargetToGen; 3] = [
+    NinjaTargetToGen("./libEGL_angle.so", Some("libEGL_angle"), None),
+    NinjaTargetToGen("./libGLESv2_angle.so", Some("libGLESv2_angle"), None),
+    NinjaTargetToGen("./libGLESv1_CM_angle.so", Some("libGLESv1_CM_angle"), None),
+];
 
 #[derive(Default)]
 pub struct Angle {
@@ -76,10 +80,7 @@ impl Project for Angle {
             &["LICENSE"],
         )
         .generate(
-            TARGETS
-                .into_iter()
-                .map(|target| PathBuf::from(target))
-                .collect(),
+            NinjaTargetsToGenMap::from(&TARGETS),
             parse_build_ninja::<GnNinjaTarget>(&self.build_path)?,
             &self.src_path,
             &ndk_path,
@@ -90,15 +91,7 @@ impl Project for Angle {
         .print())
     }
 
-    fn get_target_name(&self, target: &Path) -> PathBuf {
-        for str in TARGETS {
-            if target.ends_with(format!("{str}_angle.so")) {
-                return PathBuf::from(file_stem(target));
-            }
-        }
-        PathBuf::from(target)
-    }
-    fn get_target_module(&self, target: &Path, mut module: SoongModule) -> SoongModule {
+    fn extend_module(&self, target: &Path, mut module: SoongModule) -> SoongModule {
         if target.ends_with("libtranslator.a") {
             module = module.add_prop(
                 "header_libs",
@@ -121,12 +114,11 @@ impl Project for Angle {
                 ),
             )
     }
-
     fn extend_cflags(&self, _target: &Path) -> Vec<String> {
         vec![String::from("-Wno-nullability-completeness")]
     }
     fn extend_shared_libs(&self, target: &Path) -> Vec<String> {
-        if target.starts_with("angle/obj") {
+        if target.starts_with("obj") {
             vec![String::from("libnativewindow")]
         } else if target.ends_with("libGLESv2_angle.so") {
             vec![String::from("libz")]
@@ -138,17 +130,17 @@ impl Project for Angle {
     fn map_cmd_output(&self, output: &Path) -> PathBuf {
         PathBuf::from(file_name(output))
     }
-    fn map_lib(&self, library: &Path) -> PathBuf {
+    fn map_lib(&self, library: &Path) -> Option<PathBuf> {
         if library.starts_with("obj/third_party/spirv-tools") {
-            PathBuf::from("SPIRV-Tools/source/libSPIRV-Tools.a")
+            Some(PathBuf::from("SPIRV-Tools/source/libSPIRV-Tools.a"))
         } else if library.starts_with("obj/third_party/zlib") {
-            PathBuf::from("zlib_google_compression_utils_portable")
+            Some(PathBuf::from("zlib_google_compression_utils_portable"))
         } else if library.starts_with("obj/third_party/cpu_features") {
-            PathBuf::from("cpufeatures")
+            Some(PathBuf::from("cpufeatures"))
         } else if library.starts_with("obj") {
-            Path::new(self.get_name()).join(library)
+            None
         } else {
-            PathBuf::from(library)
+            Some(PathBuf::from(library))
         }
     }
 

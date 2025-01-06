@@ -126,7 +126,7 @@ impl SoongPackage {
 
     pub fn generate<T>(
         mut self,
-        targets_to_generate: Vec<PathBuf>,
+        targets_to_gen: NinjaTargetsToGenMap,
         targets: Vec<T>,
         src_path: &Path,
         ndk_path: &Path,
@@ -144,10 +144,11 @@ impl SoongPackage {
             build_path,
             gen_build_prefix,
             &targets_map,
+            &targets_to_gen,
             project,
         );
-        targets_map.traverse_from(targets_to_generate, |target| {
-            let target_name = target.get_name("");
+        targets_map.traverse_from(targets_to_gen.get_targets(), |target| {
+            let target_name = target.get_name();
             debug_project!("filter_target({target_name:#?})");
             if !project.filter_target(&target_name) {
                 return Ok(false);

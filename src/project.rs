@@ -106,17 +106,10 @@ pub trait Project {
     fn get_deps(&self, _dep: Dep) -> Vec<PathBuf> {
         Vec::new()
     }
-    // TARGET FUNCTIONS
-    fn get_target_name(&self, target: &Path) -> PathBuf {
-        PathBuf::from(target)
-    }
-    fn get_target_stem(&self, _target: &Path) -> Option<String> {
-        None
-    }
-    fn get_target_module(&self, _target: &Path, module: SoongModule) -> SoongModule {
+    // EXTEND FUNCTIONS
+    fn extend_module(&self, _target: &Path, module: SoongModule) -> SoongModule {
         module
     }
-    // EXTEND FUNCTIONS
     fn extend_cflags(&self, _target: &Path) -> Vec<String> {
         Vec::new()
     }
@@ -127,8 +120,8 @@ pub trait Project {
     fn map_cmd_output(&self, output: &Path) -> PathBuf {
         PathBuf::from(output)
     }
-    fn map_lib(&self, lib: &Path) -> PathBuf {
-        PathBuf::from(lib)
+    fn map_lib(&self, _lib: &Path) -> Option<PathBuf> {
+        None
     }
     // FILTER FUNCTIONS
     fn filter_cflag(&self, _cflag: &str) -> bool {

@@ -21,57 +21,6 @@ license {
 }
 
 cc_library_shared {
-    name: "libGLESv1_CM_angle",
-    srcs: ["src/libGLESv1_CM/libGLESv1_CM.cpp"],
-    cflags: [
-        "-DANDROID",
-        "-DANDROID_NDK_VERSION_ROLL=r27_1",
-        "-DANGLE_ENABLE_CONTEXT_MUTEX=1",
-        "-DANGLE_ENABLE_CONTEXT_MUTEX_RECURSION=1",
-        "-DANGLE_ENABLE_GLOBAL_MUTEX_LOAD_TIME_ALLOCATE=1",
-        "-DANGLE_ENABLE_GLOBAL_MUTEX_RECURSION=1",
-        "-DANGLE_ENABLE_SHARE_CONTEXT_LOCK=1",
-        "-DANGLE_TEST_ENABLE_SYSTEM_EGL",
-        "-DANGLE_USE_ANDROID_TLS_SLOT=1",
-        "-DCR_CLANG_REVISION=\"llvmorg-20-init-13894-g8cb44859-1\"",
-        "-DDYNAMIC_ANNOTATIONS_ENABLED=0",
-        "-DEGL_EGLEXT_PROTOTYPES",
-        "-DEGL_EGL_PROTOTYPES=1",
-        "-DGL_API=__attribute__((visibility(\"default\")))",
-        "-DGL_APICALL=__attribute__((visibility(\"default\")))",
-        "-DGL_GLES_PROTOTYPES=1",
-        "-DGL_GLEXT_PROTOTYPES",
-        "-DHAVE_SYS_UIO_H",
-        "-DNDEBUG",
-        "-DNVALGRIND",
-        "-D_FORTIFY_SOURCE=2",
-        "-D_GNU_SOURCE",
-        "-D_LIBCPP_HARDENING_MODE=_LIBCPP_HARDENING_MODE_NONE",
-        "-D__ANDROID_UNAVAILABLE_SYMBOLS_ARE_WEAK__",
-        "-D__STDC_CONSTANT_MACROS",
-        "-D__STDC_FORMAT_MACROS",
-        "-Wno-nullability-completeness",
-        "-fvisibility-inlines-hidden",
-        "-fvisibility=hidden",
-    ],
-    shared_libs: ["libGLESv2_angle"],
-    local_include_dirs: [
-        "include",
-        "src",
-    ],
-    generated_headers: [
-        "angle_gen_angle_ANGLEShaderProgramVersion_h",
-        "angle_gen_angle_angle_commit_h",
-    ],
-    stl: "libc++_static",
-    arch: {
-        arm64: {
-            cflags: ["-D__ARM_NEON__=1"],
-        },
-    },
-}
-
-cc_library_shared {
     name: "libGLESv2_angle",
     srcs: [
         "src/common/angle_version_info.cpp",
@@ -2016,6 +1965,57 @@ cc_library_static {
         "src/third_party/volk",
         "third_party/abseil-cpp",
         "third_party/vulkan-headers/src/include",
+    ],
+    stl: "libc++_static",
+    arch: {
+        arm64: {
+            cflags: ["-D__ARM_NEON__=1"],
+        },
+    },
+}
+
+cc_library_shared {
+    name: "libGLESv1_CM_angle",
+    srcs: ["src/libGLESv1_CM/libGLESv1_CM.cpp"],
+    cflags: [
+        "-DANDROID",
+        "-DANDROID_NDK_VERSION_ROLL=r27_1",
+        "-DANGLE_ENABLE_CONTEXT_MUTEX=1",
+        "-DANGLE_ENABLE_CONTEXT_MUTEX_RECURSION=1",
+        "-DANGLE_ENABLE_GLOBAL_MUTEX_LOAD_TIME_ALLOCATE=1",
+        "-DANGLE_ENABLE_GLOBAL_MUTEX_RECURSION=1",
+        "-DANGLE_ENABLE_SHARE_CONTEXT_LOCK=1",
+        "-DANGLE_TEST_ENABLE_SYSTEM_EGL",
+        "-DANGLE_USE_ANDROID_TLS_SLOT=1",
+        "-DCR_CLANG_REVISION=\"llvmorg-20-init-13894-g8cb44859-1\"",
+        "-DDYNAMIC_ANNOTATIONS_ENABLED=0",
+        "-DEGL_EGLEXT_PROTOTYPES",
+        "-DEGL_EGL_PROTOTYPES=1",
+        "-DGL_API=__attribute__((visibility(\"default\")))",
+        "-DGL_APICALL=__attribute__((visibility(\"default\")))",
+        "-DGL_GLES_PROTOTYPES=1",
+        "-DGL_GLEXT_PROTOTYPES",
+        "-DHAVE_SYS_UIO_H",
+        "-DNDEBUG",
+        "-DNVALGRIND",
+        "-D_FORTIFY_SOURCE=2",
+        "-D_GNU_SOURCE",
+        "-D_LIBCPP_HARDENING_MODE=_LIBCPP_HARDENING_MODE_NONE",
+        "-D__ANDROID_UNAVAILABLE_SYMBOLS_ARE_WEAK__",
+        "-D__STDC_CONSTANT_MACROS",
+        "-D__STDC_FORMAT_MACROS",
+        "-Wno-nullability-completeness",
+        "-fvisibility-inlines-hidden",
+        "-fvisibility=hidden",
+    ],
+    shared_libs: ["libGLESv2_angle"],
+    local_include_dirs: [
+        "include",
+        "src",
+    ],
+    generated_headers: [
+        "angle_gen_angle_ANGLEShaderProgramVersion_h",
+        "angle_gen_angle_angle_commit_h",
     ],
     stl: "libc++_static",
     arch: {

@@ -62,7 +62,7 @@ impl Project for LlvmProject {
             &["LICENSE.TXT"],
         )
         .generate(
-            targets_to_generate,
+            NinjaTargetsToGenMap::from_dep(targets_to_generate),
             parse_build_ninja::<CmakeNinjaTarget>(&self.build_path)?,
             &src_path,
             &ndk_path,
@@ -124,7 +124,7 @@ impl Project for LlvmProject {
         Ok(package.print())
     }
 
-    fn get_target_module(&self, _target: &Path, module: SoongModule) -> SoongModule {
+    fn extend_module(&self, _target: &Path, module: SoongModule) -> SoongModule {
         module.add_prop("optimize_for_size", SoongProp::Bool(true))
     }
 
