@@ -3,28 +3,28 @@
 
 use super::*;
 
-const TARGETS: [(&str, &str, &str); 5] = [
-    (
+const TARGETS: [NinjaTargetToGen; 5] = [
+    NinjaTargetToGen(
         "src/egl/libEGL_mesa.so.1.0.0",
-        "libEGL_mesa_intel",
-        "libEGL_mesa",
+        Some("libEGL_mesa_intel"),
+        Some("libEGL_mesa"),
     ),
-    (
+    NinjaTargetToGen(
         "src/mapi/es2api/libGLESv2_mesa.so.2.0.0",
-        "libGLESv2_mesa_intel",
-        "libGLESv2_mesa",
+        Some("libGLESv2_mesa_intel"),
+        Some("libGLESv2_mesa"),
     ),
-    (
+    NinjaTargetToGen(
         "src/mapi/es1api/libGLESv1_CM_mesa.so.1.1.0",
-        "libGLESv1_CM_mesa_intel",
-        "libGLESv1_CM_mesa",
+        Some("libGLESv1_CM_mesa_intel"),
+        Some("libGLESv1_CM_mesa"),
     ),
-    (
+    NinjaTargetToGen(
         "src/intel/vulkan/libvulkan_intel.so",
-        "libvulkan_intel",
-        "vulkan.intel",
+        Some("libvulkan_intel"),
+        Some("vulkan.intel"),
     ),
-    ("src/tool/pps/pps-producer", "pps-producer", ""),
+    NinjaTargetToGen("src/tool/pps/pps-producer", Some("pps-producer"), None),
 ];
 
 #[derive(Default)]
@@ -97,10 +97,7 @@ impl Project for Mesa {
             &["docs/license.rst"],
         )
         .generate(
-            TARGETS
-                .iter()
-                .map(|(target, _, _)| PathBuf::from(target))
-                .collect(),
+            NinjaTargetsToGenMap::from(&TARGETS),
             parse_build_ninja::<MesonNinjaTarget>(&self.build_path)?,
             &self.src_path,
             &ndk_path,
@@ -120,23 +117,7 @@ impl Project for Mesa {
         Ok(package.print())
     }
 
-    fn get_target_name(&self, target: &Path) -> PathBuf {
-        for (target_str, alias, _) in TARGETS {
-            if target == Path::new(self.get_name()).join(target_str) && !alias.is_empty() {
-                return PathBuf::from(alias);
-            }
-        }
-        PathBuf::from(target)
-    }
-    fn get_target_stem(&self, target: &Path) -> Option<String> {
-        for (target_str, _, stem) in TARGETS {
-            if target == Path::new(self.get_name()).join(target_str) && !stem.is_empty() {
-                return Some(String::from(stem));
-            }
-        }
-        None
-    }
-    fn get_target_module(&self, target: &Path, module: SoongModule) -> SoongModule {
+    fn extend_module(&self, target: &Path, module: SoongModule) -> SoongModule {
         let mut libs = Vec::new();
         for lib in [
             "libgallium.a",
@@ -174,7 +155,6 @@ impl Project for Mesa {
                 ),
             )
     }
-
     fn extend_cflags(&self, target: &Path) -> Vec<String> {
         let mut cflags = vec!["-Wno-non-virtual-dtor", "-Wno-error"];
         if target.ends_with("libvulkan_lite_runtime.a") {
@@ -194,21 +174,19 @@ impl Project for Mesa {
         if target.ends_with("libmesa_util.a") {
             libs.push("libz");
         }
-        if target.starts_with("mesa/src/intel/vulkan")
-            || target.ends_with("libvulkan_lite_runtime.a")
-        {
+        if target.starts_with("src/intel/vulkan") || target.ends_with("libvulkan_lite_runtime.a") {
             libs.push("libnativewindow");
         }
         libs.into_iter().map(|lib| String::from(lib)).collect()
     }
 
-    fn map_lib(&self, library: &Path) -> PathBuf {
-        if !library.starts_with("src/android_stub")
-            && (library.starts_with("src") || library.starts_with("subprojects/perfetto"))
+    fn map_lib(&self, library: &Path) -> Option<PathBuf> {
+        if library.starts_with("src/android_stub")
+            || (!library.starts_with("src") && !library.starts_with("subprojects/perfetto"))
         {
-            Path::new(self.get_name()).join(library)
+            Some(PathBuf::from(file_stem(library)))
         } else {
-            PathBuf::from(file_stem(library))
+            None
         }
     }
 

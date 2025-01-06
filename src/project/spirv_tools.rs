@@ -50,7 +50,7 @@ impl Project for SpirvTools {
             &["LICENSE"],
         )
         .generate(
-            Dep::SpirvToolsTargets.get(projects_map)?,
+            NinjaTargetsToGenMap::from_dep(Dep::SpirvToolsTargets.get(projects_map)?),
             parse_build_ninja::<CmakeNinjaTarget>(&self.build_path)?,
             &src_path,
             &ndk_path,
@@ -81,7 +81,7 @@ impl Project for SpirvTools {
         }
     }
 
-    fn get_target_module(&self, _target: &Path, module: SoongModule) -> SoongModule {
+    fn extend_module(&self, _target: &Path, module: SoongModule) -> SoongModule {
         module
             .add_prop(
                 "header_libs",

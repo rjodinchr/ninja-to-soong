@@ -25,6 +25,7 @@ where
     build_path: &'a Path,
     gen_build_prefix: Option<&'a str>,
     targets_map: &'a NinjaTargetsMap<'a, T>,
+    targets_to_gen: &'a NinjaTargetsToGenMap,
     project: &'a dyn Project,
 }
 
@@ -38,6 +39,7 @@ where
         build_path: &'a Path,
         gen_build_prefix: Option<&'a str>,
         targets_map: &'a NinjaTargetsMap<'a, T>,
+        targets_to_gen: &'a NinjaTargetsToGenMap,
         project: &'a dyn Project,
     ) -> Self {
         Self {
@@ -47,6 +49,7 @@ where
             build_path,
             gen_build_prefix,
             targets_map,
+            targets_to_gen,
             project,
         }
     }
@@ -112,8 +115,16 @@ where
                 Some(if lib.starts_with(&self.ndk_path) {
                     file_stem(&lib)
                 } else {
-                    let lib_id =
-                        path_to_id(self.project.get_target_name(&self.project.map_lib(&lib)));
+                    let lib_id = path_to_id(match self.project.map_lib(&lib) {
+                        Some(map_lib) => match self.targets_to_gen.get_name(&map_lib) {
+                            Some(name) => name,
+                            None => map_lib,
+                        },
+                        None => match self.targets_to_gen.get_name(&lib) {
+                            Some(name) => name,
+                            None => Path::new(self.project.get_name()).join(&lib),
+                        },
+                    });
                     if lib_id == *module_name {
                         return None;
                     }
@@ -155,17 +166,18 @@ where
                     return None;
                 }
                 Some(path_to_id(
-                    self.targets_map
-                        .get(header)
-                        .unwrap()
-                        .get_name(self.project.get_name()),
+                    Path::new(self.project.get_name())
+                        .join(self.targets_map.get(header).unwrap().get_name()),
                 ))
             })
             .collect())
     }
     pub fn generate_object(&mut self, name: &str, target: &T) -> Result<SoongModule, String> {
-        let target_name = target.get_name(self.project.get_name());
-        let module_name = path_to_id(self.project.get_target_name(&target_name));
+        let target_name = target.get_name();
+        let module_name = path_to_id(match self.targets_to_gen.get_name(&target_name) {
+            Some(name) => name,
+            None => Path::new(self.project.get_name()).join(&target_name),
+        });
         let mut cflags = Vec::new();
         let mut includes = Vec::new();
         let mut sources = Vec::new();
@@ -198,7 +210,7 @@ where
         shared_libs.extend(self.project.extend_shared_libs(&target_name));
 
         let mut module = SoongModule::new(name).add_prop("name", SoongProp::Str(module_name));
-        if let Some(stem) = self.project.get_target_stem(&target_name) {
+        if let Some(stem) = self.targets_to_gen.get_stem(&target_name) {
             module = module.add_prop("stem", SoongProp::Str(stem));
         }
         if let Some(vs) = version_script {
@@ -216,7 +228,7 @@ where
             .add_prop("local_include_dirs", SoongProp::VecStr(includes))
             .add_prop("generated_headers", SoongProp::VecStr(generated_headers));
 
-        Ok(self.project.get_target_module(&target_name, module))
+        Ok(self.project.extend_module(&target_name, module))
     }
 
     fn get_cmd(
@@ -341,7 +353,7 @@ where
             .iter()
             .map(|output| path_to_string(self.project.map_cmd_output(output)))
             .collect();
-        let module_name = path_to_id(target.get_name(self.project.get_name()));
+        let module_name = path_to_id(Path::new(self.project.get_name()).join(target.get_name()));
 
         SoongModule::new("cc_genrule")
             .add_prop("name", SoongProp::Str(module_name))
