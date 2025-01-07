@@ -4,9 +4,7 @@
 use super::*;
 
 #[derive(Default)]
-pub struct LlvmProject {
-    build_path: PathBuf,
-}
+pub struct LlvmProject();
 
 impl Project for LlvmProject {
     fn get_name(&self) -> &'static str {
@@ -24,7 +22,7 @@ impl Project for LlvmProject {
         projects_map: &ProjectsMap,
     ) -> Result<String, String> {
         let src_path = self.get_android_path(ctx);
-        self.build_path = ctx.temp_path.join(self.get_name());
+        let build_path = ctx.temp_path.join(self.get_name());
         let ndk_path = get_ndk_path(&ctx.temp_path)?;
 
         if !ctx.skip_gen_ninja {
@@ -33,7 +31,7 @@ impl Project for LlvmProject {
                 [
                     &path_to_string(self.get_test_path(ctx).join("gen-ninja.sh")),
                     &path_to_string(src_path.join("llvm")),
-                    &path_to_string(&self.build_path),
+                    &path_to_string(&build_path),
                     &path_to_string(&ndk_path),
                 ]
             )?;
@@ -44,7 +42,7 @@ impl Project for LlvmProject {
             let mut targets_to_build = Vec::new();
             targets_to_build.extend(targets_to_generate.clone());
             targets_to_build.extend(libclc_binaries.clone());
-            let mut args = vec![String::from("--build"), path_to_string(&self.build_path)];
+            let mut args = vec![String::from("--build"), path_to_string(&build_path)];
             for target in targets_to_build {
                 args.push(String::from("--target"));
                 args.push(path_to_string(target));
@@ -63,10 +61,10 @@ impl Project for LlvmProject {
         )
         .generate(
             NinjaTargetsToGenMap::from_dep(targets_to_generate),
-            parse_build_ninja::<CmakeNinjaTarget>(&self.build_path)?,
+            parse_build_ninja::<CmakeNinjaTarget>(&build_path)?,
             &src_path,
             &ndk_path,
-            &self.build_path,
+            &build_path,
             Some(CMAKE_GENERATED),
             self,
         )?
@@ -86,14 +84,14 @@ impl Project for LlvmProject {
         ));
         for clang_header in Dep::ClangHeaders.get(projects_map)? {
             package = package.add_module(SoongModule::new_filegroup(
-                Dep::ClangHeaders.get_id(&clang_header, Path::new("clang"), &self.build_path),
+                Dep::ClangHeaders.get_id(&clang_header, Path::new("clang"), &build_path),
                 vec![path_to_string(clang_header)],
             ));
         }
         for binary in &libclc_binaries {
             let file_path = cmake_generated_path.join(binary);
             package = package.add_module(SoongModule::new_filegroup(
-                Dep::LibclcBins.get_id(&file_path, cmake_generated_path, &self.build_path),
+                Dep::LibclcBins.get_id(&file_path, cmake_generated_path, &build_path),
                 vec![path_to_string(file_path)],
             ));
         }
@@ -119,7 +117,7 @@ impl Project for LlvmProject {
             .map(|dep| PathBuf::from(dep)),
         );
         package.filter_local_include_dirs(CMAKE_GENERATED, &gen_deps);
-        common::copy_gen_deps(gen_deps, CMAKE_GENERATED, &self.build_path, ctx, self)?;
+        common::copy_gen_deps(gen_deps, CMAKE_GENERATED, &build_path, ctx, self)?;
 
         Ok(package.print())
     }
@@ -127,7 +125,6 @@ impl Project for LlvmProject {
     fn extend_module(&self, _target: &Path, module: SoongModule) -> SoongModule {
         module.add_prop("optimize_for_size", SoongProp::Bool(true))
     }
-
     fn extend_cflags(&self, target: &Path) -> Vec<String> {
         let mut cflags = vec!["-Wno-error", "-Wno-unreachable-code-loop-increment"];
         if target.ends_with("libLLVMSupport.a") {
