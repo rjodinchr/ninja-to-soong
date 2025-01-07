@@ -43,7 +43,7 @@ impl Project for Clvk {
             )?;
         }
 
-        let mut package = SoongPackage::new(
+        let package = SoongPackage::new(
             "//visibility:public",
             "clvk_license",
             &["SPDX-license-identifier-Apache-2.0"],
