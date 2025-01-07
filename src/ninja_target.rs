@@ -175,12 +175,11 @@ where
             };
             targets_seen.extend(target.get_outputs().clone());
             targets_seen.extend(target.get_implicit_ouputs().clone());
-            if !filter_target(target)? {
-                continue;
+            if filter_target(target)? {
+                targets.extend(target.get_inputs().clone());
+                targets.extend(target.get_implicit_deps().clone());
+                targets.extend(target.get_order_only_deps().clone());
             }
-            targets.extend(target.get_inputs().clone());
-            targets.extend(target.get_implicit_deps().clone());
-            targets.extend(target.get_order_only_deps().clone());
         }
         Ok(())
     }
