@@ -1,7 +1,6 @@
 // Copyright 2024 ninja-to-soong authors
 // SPDX-License-Identifier: Apache-2.0
 
-use std::collections::HashMap;
 use std::str;
 
 use crate::ninja_target::*;
@@ -236,7 +235,7 @@ where
         rule_cmd: NinjaRuleCmd,
         inputs: Vec<PathBuf>,
         outputs: &Vec<PathBuf>,
-        deps: HashMap<PathBuf, String>,
+        deps: Vec<(PathBuf, String)>,
     ) -> String {
         let mut cmd = rule_cmd.command;
         while let Some(index) = cmd.find("python") {
@@ -302,39 +301,34 @@ where
     }
     fn get_cmd_inputs(
         &self,
-        inputs: &Vec<PathBuf>,
-        deps: &mut HashMap<PathBuf, String>,
+        inputs: Vec<PathBuf>,
+        deps: &mut Vec<(PathBuf, String)>,
     ) -> Vec<PathBuf> {
         inputs
-            .iter()
+            .into_iter()
             .filter_map(|input| {
                 for (prefix, dep) in self.project.get_deps_prefix() {
                     if input.starts_with(&prefix) {
-                        deps.insert(
-                            PathBuf::from(input),
-                            dep.get_id(input, &prefix, self.build_path),
-                        );
+                        let dep_id = dep.get_id(&input, &prefix, self.build_path);
+                        deps.push((input, dep_id));
                         return None;
                     }
                 }
                 if canonicalize_path(&input, self.build_path).starts_with(self.build_path) {
-                    deps.insert(
-                        PathBuf::from(input),
-                        path_to_id(Path::new(self.project.get_name()).join(input)),
-                    );
+                    let dep_id = path_to_id(Path::new(self.project.get_name()).join(&input));
+                    deps.push((input, dep_id));
                     return None;
                 }
-                Some(PathBuf::from(input))
+                Some(input)
             })
             .collect()
     }
     pub fn generate_custom_command(&mut self, target: &T, rule_cmd: NinjaRuleCmd) -> SoongModule {
         let mut inputs = Vec::new();
-        let mut deps = HashMap::new();
-        inputs.extend(self.get_cmd_inputs(target.get_inputs(), &mut deps));
-        inputs.extend(self.get_cmd_inputs(target.get_implicit_deps(), &mut deps));
+        let mut deps = Vec::new();
+        inputs.extend(self.get_cmd_inputs(target.get_inputs().clone(), &mut deps));
+        inputs.extend(self.get_cmd_inputs(target.get_implicit_deps().clone(), &mut deps));
         let mut sources = inputs
-            .clone()
             .iter()
             .map(|input| {
                 path_to_string(strip_prefix(
