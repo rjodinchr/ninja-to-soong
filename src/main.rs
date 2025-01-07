@@ -18,26 +18,18 @@ use crate::utils::*;
 
 fn generate_project(
     project: &mut Box<dyn Project>,
-    is_dependency: bool,
+    project_to_write: bool,
     projects_map: &ProjectsMap,
     ctx: &Context,
 ) -> Result<(), String> {
     let project_name = project.get_name();
-    let project_ctx = if !is_dependency {
+    if project_to_write {
         print_info!("Generating '{project_name}'");
-        ctx.clone()
-    } else {
-        print_info!("Generating dependency '{project_name}'");
-        let mut dep_ctx = ctx.clone();
-        dep_ctx.copy_to_aosp = false;
-        dep_ctx.skip_build = true;
-        dep_ctx
-    };
-    print_debug!("Creating soong package...");
-    let package = project.generate_package(&project_ctx, projects_map)?;
-    if !is_dependency {
-        print_debug!("Writing soong file...");
 
+        print_debug!("Creating soong package...");
+        let package = project.generate_package(ctx, projects_map)?;
+
+        print_debug!("Writing soong file...");
         const ANDROID_BP: &str = "Android.bp";
         let file_path = project.get_test_path(ctx).join(ANDROID_BP);
         write_file(file_path.as_path(), &package)?;
@@ -48,6 +40,12 @@ fn generate_project(
             copy_file(&file_path, &copy_dst)?;
             print_verbose!("{file_path:#?} copied to {copy_dst:#?}");
         }
+    } else {
+        print_info!("Generating dependency '{project_name}'");
+        let mut dep_ctx = ctx.clone();
+        dep_ctx.copy_to_aosp = false;
+        dep_ctx.skip_build = true;
+        project.generate_package(&dep_ctx, projects_map)?;
     }
     Ok(())
 }
@@ -62,7 +60,7 @@ fn generate_projects(
     } else {
         VecDeque::from_iter(project_ids)
     };
-    let project_to_write: HashSet<ProjectId> = HashSet::from_iter(projects_to_generate.clone());
+    let projects_to_write: HashSet<ProjectId> = HashSet::from_iter(projects_to_generate.clone());
 
     let mut projects_generated = HashSet::new();
     while let Some(project_id) = projects_to_generate.pop_front() {
@@ -80,7 +78,7 @@ fn generate_projects(
         } else {
             generate_project(
                 &mut project,
-                !project_to_write.contains(&project_id),
+                projects_to_write.contains(&project_id),
                 &projects_map,
                 ctx,
             )?;
