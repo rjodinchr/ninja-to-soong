@@ -30,7 +30,6 @@ const TARGETS: [NinjaTargetToGen; 5] = [
 #[derive(Default)]
 pub struct Mesa {
     src_path: PathBuf,
-    build_path: PathBuf,
 }
 
 impl Project for Mesa {
@@ -54,7 +53,7 @@ impl Project for Mesa {
             self.get_android_path(ctx)
         };
         let ndk_path = get_ndk_path(&ctx.temp_path)?;
-        self.build_path = ctx.temp_path.join(self.get_name());
+        let build_path = ctx.temp_path.join(self.get_name());
 
         let intel_clc_path = if !ctx.skip_build {
             let intel_clc_build_path = ctx.temp_path.join("intel_clc");
@@ -76,17 +75,14 @@ impl Project for Mesa {
                 [
                     &path_to_string(self.get_test_path(ctx).join("gen-ninja.sh")),
                     &path_to_string(&self.src_path),
-                    &path_to_string(&self.build_path),
+                    &path_to_string(&build_path),
                     &path_to_string(intel_clc_path),
                     &path_to_string(&ndk_path)
                 ]
             )?;
         }
         if !ctx.skip_build {
-            execute_cmd!(
-                "meson",
-                ["compile", "-C", &path_to_string(&self.build_path)]
-            )?;
+            execute_cmd!("meson", ["compile", "-C", &path_to_string(&build_path)])?;
         }
 
         const MESON_GENERATED: &str = "meson_generated";
@@ -98,10 +94,10 @@ impl Project for Mesa {
         )
         .generate(
             NinjaTargetsToGenMap::from(&TARGETS),
-            parse_build_ninja::<MesonNinjaTarget>(&self.build_path)?,
+            parse_build_ninja::<MesonNinjaTarget>(&build_path)?,
             &self.src_path,
             &ndk_path,
-            &self.build_path,
+            &build_path,
             Some(MESON_GENERATED),
             self,
         )?;
@@ -112,7 +108,7 @@ impl Project for Mesa {
             .filter(|include| !include.starts_with("subprojects"))
             .collect();
         package.filter_local_include_dirs(MESON_GENERATED, &gen_deps);
-        common::copy_gen_deps(gen_deps, MESON_GENERATED, &self.build_path, ctx, self)?;
+        common::copy_gen_deps(gen_deps, MESON_GENERATED, &build_path, ctx, self)?;
 
         Ok(package.print())
     }
