@@ -3,12 +3,6 @@
 
 use super::*;
 
-const TARGETS: [NinjaTargetToGen; 3] = [
-    NinjaTargetToGen("./libEGL_angle.so", Some("libEGL_angle"), None),
-    NinjaTargetToGen("./libGLESv2_angle.so", Some("libGLESv2_angle"), None),
-    NinjaTargetToGen("./libGLESv1_CM_angle.so", Some("libGLESv1_CM_angle"), None),
-];
-
 #[derive(Default)]
 pub struct Angle {
     src_path: PathBuf,
@@ -80,7 +74,11 @@ impl Project for Angle {
             &["LICENSE"],
         )
         .generate(
-            NinjaTargetsToGenMap::from(&TARGETS),
+            NinjaTargetsToGenMap::from(&[
+                NinjaTargetToGen("./libEGL_angle.so", Some("libEGL_angle"), None),
+                NinjaTargetToGen("./libGLESv2_angle.so", Some("libGLESv2_angle"), None),
+                NinjaTargetToGen("./libGLESv1_CM_angle.so", Some("libGLESv1_CM_angle"), None),
+            ]),
             parse_build_ninja::<GnNinjaTarget>(&self.build_path)?,
             &self.src_path,
             &ndk_path,

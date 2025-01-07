@@ -3,30 +3,6 @@
 
 use super::*;
 
-const TARGETS: [NinjaTargetToGen; 5] = [
-    NinjaTargetToGen(
-        "src/egl/libEGL_mesa.so.1.0.0",
-        Some("libEGL_mesa_intel"),
-        Some("libEGL_mesa"),
-    ),
-    NinjaTargetToGen(
-        "src/mapi/es2api/libGLESv2_mesa.so.2.0.0",
-        Some("libGLESv2_mesa_intel"),
-        Some("libGLESv2_mesa"),
-    ),
-    NinjaTargetToGen(
-        "src/mapi/es1api/libGLESv1_CM_mesa.so.1.1.0",
-        Some("libGLESv1_CM_mesa_intel"),
-        Some("libGLESv1_CM_mesa"),
-    ),
-    NinjaTargetToGen(
-        "src/intel/vulkan/libvulkan_intel.so",
-        Some("libvulkan_intel"),
-        Some("vulkan.intel"),
-    ),
-    NinjaTargetToGen("src/tool/pps/pps-producer", Some("pps-producer"), None),
-];
-
 #[derive(Default)]
 pub struct Mesa {
     src_path: PathBuf,
@@ -93,7 +69,29 @@ impl Project for Mesa {
             &["docs/license.rst"],
         )
         .generate(
-            NinjaTargetsToGenMap::from(&TARGETS),
+            NinjaTargetsToGenMap::from(&[
+                NinjaTargetToGen(
+                    "src/egl/libEGL_mesa.so.1.0.0",
+                    Some("libEGL_mesa_intel"),
+                    Some("libEGL_mesa"),
+                ),
+                NinjaTargetToGen(
+                    "src/mapi/es2api/libGLESv2_mesa.so.2.0.0",
+                    Some("libGLESv2_mesa_intel"),
+                    Some("libGLESv2_mesa"),
+                ),
+                NinjaTargetToGen(
+                    "src/mapi/es1api/libGLESv1_CM_mesa.so.1.1.0",
+                    Some("libGLESv1_CM_mesa_intel"),
+                    Some("libGLESv1_CM_mesa"),
+                ),
+                NinjaTargetToGen(
+                    "src/intel/vulkan/libvulkan_intel.so",
+                    Some("libvulkan_intel"),
+                    Some("vulkan.intel"),
+                ),
+                NinjaTargetToGen("src/tool/pps/pps-producer", Some("pps-producer"), None),
+            ]),
             parse_build_ninja::<MesonNinjaTarget>(&build_path)?,
             &self.src_path,
             &ndk_path,
