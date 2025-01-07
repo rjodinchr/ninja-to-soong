@@ -43,7 +43,7 @@ impl Project for SpirvTools {
             )?;
         }
 
-        let mut package = SoongPackage::new(
+        let package = SoongPackage::new(
             "//visibility:public",
             "SPIRV-Tools_license",
             &["SPDX-license-identifier-Apache-2.0"],

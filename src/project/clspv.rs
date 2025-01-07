@@ -47,7 +47,7 @@ impl Project for Clspv {
             )?;
         }
 
-        let mut package = SoongPackage::new(
+        let package = SoongPackage::new(
             "//external/clvk",
             "clspv_license",
             &["SPDX-license-identifier-Apache-2.0"],
