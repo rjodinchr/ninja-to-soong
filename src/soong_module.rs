@@ -52,6 +52,8 @@ impl SoongNamedProp {
             self.name,
             match self.prop {
                 SoongProp::Str(str) => format!("\"{str}\""),
+                SoongProp::Bool(bool) => format!("{bool}"),
+                SoongProp::Prop(prop) => format!("{{\n{0}{indent}}}", prop.print(indent_level + 1)),
                 SoongProp::VecStr(mut vec_str) => {
                     if vec_str.len() == 0 {
                         return String::new();
@@ -72,11 +74,6 @@ impl SoongNamedProp {
                         )
                     }
                 }
-                SoongProp::Bool(bool) => {
-                    format!("{bool}")
-                }
-                SoongProp::Prop(prop) =>
-                    format!("{{\n{0}{indent}}}", prop.print(indent_level + 1),),
             }
         )
     }
