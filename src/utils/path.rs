@@ -20,7 +20,7 @@ pub fn get_ndk_path(temp_path: &Path) -> Result<PathBuf, String> {
         PathBuf::from(temp_path)
     };
     let android_ndk_path = ndk_path.join(&android_ndk);
-    if exists(&android_ndk_path) {
+    if android_ndk_path.exists() {
         return Ok(android_ndk_path);
     }
 
