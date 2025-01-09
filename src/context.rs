@@ -1,25 +1,69 @@
 // Copyright 2024 ninja-to-soong authors
 // SPDX-License-Identifier: Apache-2.0
 
+use std::collections::VecDeque;
 use std::env;
 
 use crate::project::*;
 use crate::utils::*;
 
-const AOSP_PATH: &str = "--aosp-path";
-const CLEAN_TMP: &str = "--clean-tmp";
-const COPY_TO_AOSP: &str = "--copy-to-aosp";
-const SKIP_BUILD: &str = "--skip-build";
-const SKIP_GEN_NINJA: &str = "--skip-gen-ninja";
+#[derive(Default, Clone)]
+pub struct Context {
+    pub projects_to_generate: VecDeque<ProjectId>,
+    pub temp_path: PathBuf,
+    pub test_path: PathBuf,
+    pub android_path: PathBuf,
+    pub skip_gen_ninja: bool,
+    pub skip_build: bool,
+    pub copy_to_aosp: bool,
+}
 
-fn help(exec: &str, projects: &ProjectsMap) -> String {
-    let mut projects_help = projects
-        .iter()
-        .map(|(_, project)| format!("  {0}\n", project.get_name()))
-        .collect::<Vec<String>>();
-    projects_help.sort_unstable();
-    format!(
-        "
+impl Context {
+    pub fn parse_args(projects_map: &ProjectsMap) -> Result<Self, String> {
+        const AOSP_PATH: &str = "--aosp-path";
+        const CLEAN_TMP: &str = "--clean-tmp";
+        const COPY_TO_AOSP: &str = "--copy-to-aosp";
+        const SKIP_BUILD: &str = "--skip-build";
+        const SKIP_GEN_NINJA: &str = "--skip-gen-ninja";
+
+        let args = env::args().collect::<Vec<String>>();
+        let exec = file_name(&Path::new(&args[0]));
+        let mut iter = args[1..].iter();
+        let mut clean_tmp = false;
+        let project_name_to_id = projects_map.iter().fold(
+            std::collections::HashMap::new(),
+            |mut map, (project_id, project)| {
+                map.insert(project.get_name(), *project_id);
+                map
+            },
+        );
+        let mut ctx = Self::default();
+        while let Some(arg) = iter.next() {
+            match arg.as_str() {
+                AOSP_PATH => {
+                    let Some(path) = iter.next() else {
+                        return Err(format!("<path> missing for {AOSP_PATH}"));
+                    };
+                    ctx.android_path = PathBuf::from(path);
+                    if !ctx.android_path.exists() {
+                        return Err(format!("<path> for {AOSP_PATH} does not exist"));
+                    }
+                }
+                SKIP_GEN_NINJA => {
+                    ctx.skip_gen_ninja = true;
+                    ctx.skip_build = true
+                }
+                SKIP_BUILD => ctx.skip_build = true,
+                COPY_TO_AOSP => ctx.copy_to_aosp = true,
+                CLEAN_TMP => clean_tmp = true,
+                "-h" | "--help" => {
+                    let mut projects_help = projects_map
+                        .iter()
+                        .map(|(_, project)| format!("  {0}\n", project.get_name()))
+                        .collect::<Vec<String>>();
+                    projects_help.sort_unstable();
+                    return Err(format!(
+                        "
 USAGE: {exec} [OPTIONS] [PROJECTS]
 
 PROJECTS:
@@ -32,66 +76,19 @@ OPTIONS:
 {SKIP_GEN_NINJA}     Skip generation of Ninja files
 -h, --help           Display the help and exit
 ",
-        projects_help.concat()
-    )
-}
-
-#[derive(Default, Clone)]
-pub struct Context {
-    pub temp_path: PathBuf,
-    pub test_path: PathBuf,
-    pub android_path: PathBuf,
-    pub skip_gen_ninja: bool,
-    pub skip_build: bool,
-    pub copy_to_aosp: bool,
-}
-
-impl Context {
-    pub fn parse_args(projects: &ProjectsMap) -> Result<(Self, Vec<ProjectId>), String> {
-        let args = env::args().collect::<Vec<String>>();
-        let exec = file_name(&Path::new(&args[0]));
-        let mut iter = args[1..].iter();
-        let mut clean_tmp = false;
-        let project_name_to_id = projects.iter().fold(
-            std::collections::HashMap::new(),
-            |mut map, (project_id, project)| {
-                map.insert(project.get_name(), *project_id);
-                map
-            },
-        );
-        let mut project_ids = Vec::new();
-        let mut ctx = Self::default();
-        while let Some(arg) = iter.next() {
-            match arg.as_str() {
-                AOSP_PATH => {
-                    let Some(path) = iter.next() else {
-                        return Err(help(&exec, projects));
-                    };
-                    ctx.android_path = PathBuf::from(path);
+                        projects_help.concat()
+                    ));
                 }
-                SKIP_GEN_NINJA => {
-                    ctx.skip_gen_ninja = true;
-                    ctx.skip_build = true
-                }
-                SKIP_BUILD => ctx.skip_build = true,
-                COPY_TO_AOSP => ctx.copy_to_aosp = true,
-                CLEAN_TMP => clean_tmp = true,
-                "-h" | "--help" => return Err(help(&exec, projects)),
                 project => match project_name_to_id.get(project) {
-                    Some(project) => project_ids.push(*project),
-                    None => {
-                        return Err(format!(
-                            "Unknown project '{project}'\n{0}",
-                            help(&exec, projects)
-                        ))
-                    }
+                    Some(project) => ctx.projects_to_generate.push_back(*project),
+                    None => return Err(format!("Unknown project '{project}'")),
                 },
             }
         }
-        if ctx.copy_to_aosp && !exists(&ctx.android_path) {
+        if ctx.copy_to_aosp && !ctx.android_path.exists() {
             return error!("'{COPY_TO_AOSP}' requires a valid '{AOSP_PATH}'");
         }
-
+        // TEMP_PATH
         ctx.temp_path = if let Ok(dir) = env::var("N2S_TMP_PATH") {
             PathBuf::from(dir)
         } else {
@@ -104,6 +101,7 @@ impl Context {
         if create_dir(&ctx.temp_path)? {
             print_info!("{0:#?} created", ctx.temp_path);
         }
+        // TEST_PATH
         ctx.test_path = match env::current_exe() {
             Ok(exe_path) => {
                 PathBuf::from(
@@ -119,7 +117,12 @@ impl Context {
             }
             Err(err) => return error!("Could not get current executable path: {err}"),
         };
+        // PROJECTS_TO_GENERATE
+        if ctx.projects_to_generate.len() == 0 {
+            ctx.projects_to_generate =
+                VecDeque::from_iter(projects_map.iter().map(|(key, _)| *key));
+        }
 
-        Ok((ctx, project_ids))
+        Ok(ctx)
     }
 }

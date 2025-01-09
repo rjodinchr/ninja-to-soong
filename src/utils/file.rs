@@ -6,12 +6,8 @@ use std::io::{Read, Write};
 
 use super::*;
 
-pub fn exists(path: &Path) -> bool {
-    File::open(path).is_ok()
-}
-
 pub fn remove_dir(dir: &Path) -> Result<bool, String> {
-    if !exists(dir) {
+    if !dir.exists() {
         return Ok(false);
     }
     if let Err(err) = remove_dir_all(dir) {
@@ -21,7 +17,7 @@ pub fn remove_dir(dir: &Path) -> Result<bool, String> {
 }
 
 pub fn create_dir(dir: &Path) -> Result<bool, String> {
-    if exists(dir) {
+    if dir.exists() {
         return Ok(false);
     }
     if let Err(err) = create_dir_all(dir) {

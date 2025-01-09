@@ -1,7 +1,7 @@
 // Copyright 2024 ninja-to-soong authors
 // SPDX-License-Identifier: Apache-2.0
 
-use std::collections::{HashSet, VecDeque};
+use std::collections::HashSet;
 
 mod context;
 mod ninja_parser;
@@ -50,18 +50,9 @@ fn generate_project(
     Ok(())
 }
 
-fn generate_projects(
-    mut projects_map: ProjectsMap,
-    project_ids: Vec<ProjectId>,
-    ctx: &Context,
-) -> Result<(), String> {
-    let mut projects_to_generate = if project_ids.len() == 0 {
-        VecDeque::from_iter(projects_map.iter().map(|(key, _)| *key))
-    } else {
-        VecDeque::from_iter(project_ids)
-    };
-    let projects_to_write: HashSet<ProjectId> = HashSet::from_iter(projects_to_generate.clone());
-
+fn generate_projects(mut projects_map: ProjectsMap, ctx: &Context) -> Result<(), String> {
+    let projects_to_write: HashSet<&ProjectId> = HashSet::from_iter(&ctx.projects_to_generate);
+    let mut projects_to_generate = ctx.projects_to_generate.clone();
     let mut projects_generated = HashSet::new();
     while let Some(project_id) = projects_to_generate.pop_front() {
         if projects_generated.contains(&project_id) {
@@ -92,18 +83,17 @@ fn generate_projects(
 
 fn main() -> Result<(), String> {
     let projects_map = ProjectsMap::new();
-    let (ctx, project_ids) = match Context::parse_args(&projects_map) {
-        Ok(context) => context,
+    match Context::parse_args(&projects_map) {
+        Ok(ctx) => {
+            if let Err(err) = generate_projects(projects_map, &ctx) {
+                print_error!("{err}");
+                return Err(String::from("generate_projects failed"));
+            }
+        }
         Err(err) => {
             print_error!("{err}");
-            return Err(format!("parse_args failed"));
+            return Err(String::from("parse_args failed"));
         }
-    };
-
-    if let Err(err) = generate_projects(projects_map, project_ids, &ctx) {
-        print_error!("{err}");
-        Err(format!("generate_projects failed"))
-    } else {
-        Ok(())
     }
+    Ok(())
 }
