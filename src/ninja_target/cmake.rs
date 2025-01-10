@@ -51,17 +51,26 @@ impl NinjaTarget for CmakeNinjaTarget {
         }
         Ok(common::get_sources(&self.0.inputs, build_path))
     }
+    fn get_libs_static_whole(&self) -> Vec<PathBuf> {
+        Vec::new()
+    }
+    fn get_libs_static(&self) -> Vec<PathBuf> {
+        let Some(libs) = self.0.variables.get("LINK_LIBRARIES") else {
+            return Vec::new();
+        };
+        common::get_libs_static(libs)
+    }
+    fn get_libs_shared(&self) -> Vec<PathBuf> {
+        let Some(libs) = self.0.variables.get("LINK_LIBRARIES") else {
+            return Vec::new();
+        };
+        common::get_libs_shared(libs)
+    }
     fn get_link_flags(&self) -> (Option<PathBuf>, Vec<String>) {
         let Some(flags) = self.0.variables.get("LINK_FLAGS") else {
             return (None, Vec::new());
         };
         common::get_link_flags(flags)
-    }
-    fn get_link_libraries(&self) -> Result<(Vec<PathBuf>, Vec<PathBuf>), String> {
-        let Some(libs) = self.0.variables.get("LINK_LIBRARIES") else {
-            return Ok((Vec::new(), Vec::new()));
-        };
-        common::get_link_libraries(libs)
     }
     fn get_defines(&self) -> Vec<String> {
         let Some(defs) = self.0.variables.get("DEFINES") else {
