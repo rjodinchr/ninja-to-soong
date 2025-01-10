@@ -4,16 +4,14 @@
 use super::*;
 
 #[derive(Default)]
-pub struct Mesa {
-    src_path: PathBuf,
-}
+pub struct MesaDesktopIntel();
 
-impl Project for Mesa {
+impl Project for MesaDesktopIntel {
     fn get_name(&self) -> &'static str {
-        "mesa"
+        "mesa_desktop_intel"
     }
     fn get_android_path(&self, ctx: &Context) -> PathBuf {
-        ctx.android_path.join("external").join(self.get_name())
+        ctx.android_path.join("vendor/google").join(self.get_name())
     }
     fn get_test_path(&self, ctx: &Context) -> PathBuf {
         ctx.test_path.join(self.get_name())
@@ -23,7 +21,7 @@ impl Project for Mesa {
         ctx: &Context,
         _projects_map: &ProjectsMap,
     ) -> Result<String, String> {
-        self.src_path = if let Ok(path) = std::env::var("N2S_MESA_PATH") {
+        let src_path = if let Ok(path) = std::env::var("N2S_MESA_PATH") {
             PathBuf::from(path)
         } else {
             self.get_android_path(ctx)
@@ -37,7 +35,7 @@ impl Project for Mesa {
                 "bash",
                 [
                     &path_to_string(self.get_test_path(ctx).join("build_intel_clc.sh")),
-                    &path_to_string(&self.src_path),
+                    &path_to_string(&src_path),
                     &path_to_string(&intel_clc_build_path)
                 ]
             )?;
@@ -50,7 +48,7 @@ impl Project for Mesa {
                 "bash",
                 [
                     &path_to_string(self.get_test_path(ctx).join("gen-ninja.sh")),
-                    &path_to_string(&self.src_path),
+                    &path_to_string(&src_path),
                     &path_to_string(&build_path),
                     &path_to_string(intel_clc_path),
                     &path_to_string(&ndk_path)
@@ -64,36 +62,50 @@ impl Project for Mesa {
         const MESON_GENERATED: &str = "meson_generated";
         let mut package = SoongPackage::new(
             "//visibility:public",
-            "mesa_licenses",
-            &["SPDX-license-identifier-Apache-2.0"],
-            &["docs/license.rst"],
+            "mesa_desktop_intel_licenses",
+            &[
+                "SPDX-license-identifier-MIT",
+                "SPDX-license-identifier-Apache-2.0",
+                "SPDX-license-identifier-GPL-1.0-or-later",
+                "SPDX-license-identifier-GPL-2.0-only",
+            ],
+            &[
+                "licenses/MIT",
+                "licenses/Apache-2.0",
+                "licenses/GPL-1.0-or-later",
+                "licenses/GPL-2.0-only",
+            ],
         )
         .generate(
             NinjaTargetsToGenMap::from(&[
                 NinjaTargetToGen(
                     "src/egl/libEGL_mesa.so.1.0.0",
-                    Some("libEGL_mesa_intel"),
+                    Some("libEGL_mesa_desktop_intel"),
                     Some("libEGL_mesa"),
                 ),
                 NinjaTargetToGen(
                     "src/mapi/es2api/libGLESv2_mesa.so.2.0.0",
-                    Some("libGLESv2_mesa_intel"),
+                    Some("libGLESv2_mesa_desktop_intel"),
                     Some("libGLESv2_mesa"),
                 ),
                 NinjaTargetToGen(
                     "src/mapi/es1api/libGLESv1_CM_mesa.so.1.1.0",
-                    Some("libGLESv1_CM_mesa_intel"),
+                    Some("libGLESv1_CM_mesa_desktop_intel"),
                     Some("libGLESv1_CM_mesa"),
                 ),
                 NinjaTargetToGen(
                     "src/intel/vulkan/libvulkan_intel.so",
-                    Some("libvulkan_intel"),
+                    Some("libvulkan_mesa_desktop_intel"),
                     Some("vulkan.intel"),
                 ),
-                NinjaTargetToGen("src/tool/pps/pps-producer", Some("pps-producer"), None),
+                NinjaTargetToGen(
+                    "src/tool/pps/pps-producer",
+                    Some("pps-producer_mesa_desktop_intel"),
+                    Some("pps-producer"),
+                ),
             ]),
             parse_build_ninja::<MesonNinjaTarget>(&build_path)?,
-            &self.src_path,
+            &src_path,
             &ndk_path,
             &build_path,
             Some(MESON_GENERATED),
@@ -123,6 +135,7 @@ impl Project for Mesa {
             "libanv_common.a",
             "libloader.a",
             "libmesa_util.a",
+            "libpipe_loader_dynamic.a",
             "libpps.a",
             "libvulkan_instance.a",
             "libvulkan_lite_runtime.a",
@@ -191,9 +204,11 @@ impl Project for Mesa {
         define != "WITH_LIBBACKTRACE" // b/120606663
     }
     fn filter_include(&self, include: &Path) -> bool {
+        let inc = path_to_string(include);
+        let subprojects = Path::new(self.get_name()).join("subprojects");
         !include.ends_with("android_stub")
-            && (!include.starts_with(self.src_path.join("subprojects"))
-                || include.starts_with(self.src_path.join("subprojects/perfetto")))
+            && (!inc.contains(&path_to_string(&subprojects))
+                || inc.contains(&path_to_string(&subprojects.join("perfetto"))))
     }
     fn filter_link_flag(&self, _flag: &str) -> bool {
         false
