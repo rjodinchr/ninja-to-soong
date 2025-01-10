@@ -180,6 +180,7 @@ where
         let mut cflags = Vec::new();
         let mut includes = Vec::new();
         let mut sources = Vec::new();
+        let mut whole_static_libs = Vec::new();
         let mut static_libs = Vec::new();
         let mut shared_libs = Vec::new();
         for input in target.get_inputs() {
@@ -187,9 +188,10 @@ where
                 return error!("unsupported input for library: {input:#?}");
             };
 
-            let (static_libraries, shared_libraries) = input_target.get_link_libraries()?;
-            static_libs.extend(self.get_libs(static_libraries, &module_name));
-            shared_libs.extend(self.get_libs(shared_libraries, &module_name));
+            whole_static_libs
+                .extend(self.get_libs(input_target.get_libs_static_whole(), &module_name));
+            static_libs.extend(self.get_libs(input_target.get_libs_static(), &module_name));
+            shared_libs.extend(self.get_libs(input_target.get_libs_shared(), &module_name));
             sources.extend(self.get_sources(input_target.get_sources(self.build_path)?));
             includes.extend(self.get_includes(input_target.get_includes(self.build_path)));
             cflags.extend(self.get_defines(input_target.get_defines()));
@@ -203,9 +205,9 @@ where
         let generated_headers = self.get_generated_headers(target)?;
         let (version_script, link_flags) = target.get_link_flags();
         let link_flags = self.get_link_flags(link_flags);
-        let (static_libraries, shared_libraries) = target.get_link_libraries()?;
-        static_libs.extend(self.get_libs(static_libraries, &module_name));
-        shared_libs.extend(self.get_libs(shared_libraries, &module_name));
+        whole_static_libs.extend(self.get_libs(target.get_libs_static_whole(), &module_name));
+        static_libs.extend(self.get_libs(target.get_libs_static(), &module_name));
+        shared_libs.extend(self.get_libs(target.get_libs_shared(), &module_name));
         shared_libs.extend(self.project.extend_shared_libs(&target_name));
 
         let mut module = SoongModule::new(name).add_prop("name", SoongProp::Str(module_name));
@@ -224,6 +226,7 @@ where
             .add_prop("ldflags", SoongProp::VecStr(link_flags))
             .add_prop("shared_libs", SoongProp::VecStr(shared_libs))
             .add_prop("static_libs", SoongProp::VecStr(static_libs))
+            .add_prop("whole_static_libs", SoongProp::VecStr(whole_static_libs))
             .add_prop("local_include_dirs", SoongProp::VecStr(includes))
             .add_prop("generated_headers", SoongProp::VecStr(generated_headers));
 

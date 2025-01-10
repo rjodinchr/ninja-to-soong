@@ -3,29 +3,38 @@
 
 use crate::utils::*;
 
-pub fn get_link_libraries(libs: &str) -> Result<(Vec<PathBuf>, Vec<PathBuf>), String> {
-    let mut static_libraries = Vec::new();
-    let mut shared_libraries = Vec::new();
-    for lib in libs.split(" ") {
-        if lib.is_empty() || lib == "-pthread" {
-            continue;
-        } else if let Some(library) = lib.strip_prefix("-l") {
-            if library == "dl" || library == "m" || library == "c" {
-                continue;
+fn filter_lib(lib: &str) -> bool {
+    !lib.is_empty() && lib != "-pthread"
+}
+
+pub fn get_libs_static(libs: &str) -> Vec<PathBuf> {
+    libs.split(" ")
+        .filter_map(|lib| {
+            if !filter_lib(lib) || lib.starts_with("-l") || !lib.contains(".a") {
+                return None;
             }
-            shared_libraries.push(PathBuf::from(format!("lib{library}")));
-        } else {
-            let lib_path = PathBuf::from(lib);
-            if lib.contains(".a") {
-                static_libraries.push(lib_path);
-            } else if lib.contains(".so") {
-                shared_libraries.push(lib_path);
-            } else {
-                return error!("unsupported library '{lib}'");
+            Some(PathBuf::from(lib))
+        })
+        .collect()
+}
+
+pub fn get_libs_shared(libs: &str) -> Vec<PathBuf> {
+    libs.split(" ")
+        .filter_map(|lib| {
+            if !filter_lib(lib) {
+                return None;
             }
-        }
-    }
-    Ok((static_libraries, shared_libraries))
+            if let Some(library) = lib.strip_prefix("-l") {
+                if library == "dl" || library == "m" || library == "c" {
+                    return None;
+                }
+                return Some(PathBuf::from(format!("lib{library}")));
+            } else if !lib.contains(".so") {
+                return None;
+            }
+            Some(PathBuf::from(lib))
+        })
+        .collect()
 }
 
 pub fn get_defines(defines: &str) -> Vec<String> {
