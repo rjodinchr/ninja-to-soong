@@ -6,4 +6,4 @@ set -xe
 DEST="$1"
 SCRIPT_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
 
-bash "${SCRIPT_DIR}/../../utils/checkout.sh" https://github.com/llvm/llvm-project 5fa59edfa73a69ab146d7b9cc115de5770d11dca "${DEST}/external/llvm-project"
+bash "${SCRIPT_DIR}/../../utils/checkout.sh" https://github.com/llvm/llvm-project 2e637dbbb8bc9a41f8eabd1df347ca2559b1abd7 "${DEST}/external/llvm-project"

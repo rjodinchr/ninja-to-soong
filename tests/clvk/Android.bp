@@ -80,6 +80,7 @@ cc_library_shared {
         "llvm-project_lib_libLLVMDebugInfoPDB_a",
         "llvm-project_lib_libLLVMDemangle_a",
         "llvm-project_lib_libLLVMExtensions_a",
+        "llvm-project_lib_libLLVMFrontendAtomic_a",
         "llvm-project_lib_libLLVMFrontendDriver_a",
         "llvm-project_lib_libLLVMFrontendHLSL_a",
         "llvm-project_lib_libLLVMFrontendOffloading_a",

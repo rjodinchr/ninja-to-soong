@@ -337,6 +337,7 @@ cc_library_static {
         "clang/lib/Sema/SemaPPC.cpp",
         "clang/lib/Sema/SemaPseudoObject.cpp",
         "clang/lib/Sema/SemaRISCV.cpp",
+        "clang/lib/Sema/SemaSPIRV.cpp",
         "clang/lib/Sema/SemaSYCL.cpp",
         "clang/lib/Sema/SemaStmt.cpp",
         "clang/lib/Sema/SemaStmtAsm.cpp",
@@ -478,6 +479,7 @@ cc_library_static {
         "clang/lib/Basic/Targets/WebAssembly.cpp",
         "clang/lib/Basic/Targets/X86.cpp",
         "clang/lib/Basic/Targets/XCore.cpp",
+        "clang/lib/Basic/Targets/Xtensa.cpp",
         "clang/lib/Basic/TokenKinds.cpp",
         "clang/lib/Basic/TypeTraits.cpp",
         "clang/lib/Basic/Version.cpp",
@@ -1020,6 +1022,7 @@ cc_library_static {
         "llvm/lib/IR/Value.cpp",
         "llvm/lib/IR/ValueSymbolTable.cpp",
         "llvm/lib/IR/VectorBuilder.cpp",
+        "llvm/lib/IR/VectorTypeUtils.cpp",
         "llvm/lib/IR/Verifier.cpp",
     ],
     cflags: [
@@ -1670,6 +1673,21 @@ cc_library_static {
 }
 
 cc_library_static {
+    name: "llvm-project_lib_libLLVMFrontendAtomic_a",
+    srcs: ["llvm/lib/Frontend/Atomic/Atomic.cpp"],
+    cflags: [
+        "-Wno-error",
+        "-Wno-unreachable-code-loop-increment",
+    ],
+    local_include_dirs: [
+        "cmake_generated/include",
+        "llvm/include",
+        "llvm/lib/Frontend/Atomic",
+    ],
+    optimize_for_size: true,
+}
+
+cc_library_static {
     name: "llvm-project_lib_libclangEdit_a",
     srcs: [
         "clang/lib/Edit/Commit.cpp",
@@ -2080,6 +2098,8 @@ cc_library_static {
         "clang/lib/Driver/ToolChains/PS4CPU.cpp",
         "clang/lib/Driver/ToolChains/RISCVToolchain.cpp",
         "clang/lib/Driver/ToolChains/SPIRV.cpp",
+        "clang/lib/Driver/ToolChains/SPIRVOpenMP.cpp",
+        "clang/lib/Driver/ToolChains/SYCL.cpp",
         "clang/lib/Driver/ToolChains/Solaris.cpp",
         "clang/lib/Driver/ToolChains/TCE.cpp",
         "clang/lib/Driver/ToolChains/UEFI.cpp",
@@ -2418,11 +2438,11 @@ cc_library_static {
         "llvm/lib/Transforms/Instrumentation/PGOForceFunctionAttrs.cpp",
         "llvm/lib/Transforms/Instrumentation/PGOInstrumentation.cpp",
         "llvm/lib/Transforms/Instrumentation/PGOMemOPSizeOpt.cpp",
-        "llvm/lib/Transforms/Instrumentation/PoisonChecking.cpp",
         "llvm/lib/Transforms/Instrumentation/RealtimeSanitizer.cpp",
         "llvm/lib/Transforms/Instrumentation/SanitizerBinaryMetadata.cpp",
         "llvm/lib/Transforms/Instrumentation/SanitizerCoverage.cpp",
         "llvm/lib/Transforms/Instrumentation/ThreadSanitizer.cpp",
+        "llvm/lib/Transforms/Instrumentation/TypeSanitizer.cpp",
         "llvm/lib/Transforms/Instrumentation/ValueProfileCollector.cpp",
     ],
     cflags: [
@@ -2482,6 +2502,7 @@ cc_library_static {
     name: "llvm-project_lib_libLLVMPasses_a",
     srcs: [
         "llvm/lib/Passes/CodeGenPassBuilder.cpp",
+        "llvm/lib/Passes/DroppedVariableStatsIR.cpp",
         "llvm/lib/Passes/OptimizationLevel.cpp",
         "llvm/lib/Passes/PassBuilder.cpp",
         "llvm/lib/Passes/PassBuilderBindings.cpp",
