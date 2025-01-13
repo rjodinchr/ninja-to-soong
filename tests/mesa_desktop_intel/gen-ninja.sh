@@ -22,9 +22,7 @@ meson setup \
     --cross-file "${AOSP_X86_64}" \
     --libdir lib64 \
     --sysconfdir=/system/vendor/etc \
-    -Ddri-search-path=/system/lib64/dri:/system/vendor/lib64/dri \
     -Dllvm=disabled \
-    -Ddri3=disabled \
     -Dglx=disabled \
     -Dgbm=disabled \
     -Degl=enabled \
