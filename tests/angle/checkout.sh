@@ -14,5 +14,5 @@ mkdir -p "${ANGLE}"
 cd "${ANGLE}"
 fetch --no-history angle
 echo "target_os = [\"android\"]" >> .gclient
-gclient sync --no-history --shallow --revision=b0d686ae30e51e4376297261f3984922d4e7d8da
+gclient sync --no-history --shallow --revision=d4a3dbee0da44da98eea4d36bbfa769221583a23
 sudo ./build/install-build-deps.sh
