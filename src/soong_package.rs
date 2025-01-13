@@ -150,9 +150,7 @@ impl SoongPackage {
             project,
         );
         targets_map.traverse_from(targets_to_gen.get_targets(), |target| {
-            let target_name = target.get_name();
-            debug_project!("filter_target({target_name:#?})");
-            if !project.filter_target(&target_name) {
+            if !gen.filter_target(target) {
                 return Ok(false);
             }
             self.modules.push(match target.get_rule()? {

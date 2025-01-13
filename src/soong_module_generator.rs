@@ -56,6 +56,12 @@ where
         self.internals
     }
 
+    pub fn filter_target(&self, target: &T) -> bool {
+        let target_name = target.get_name();
+        debug_project!("filter_target({target_name:#?})");
+        self.project.filter_target(&target_name)
+    }
+
     fn replace_path(&self, iter: impl Iterator<Item = String>) -> Vec<String> {
         let iter = iter.map(|path| {
             path.replace(&path_to_string_with_separator(self.src_path), "")
