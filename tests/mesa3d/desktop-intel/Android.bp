@@ -10,11 +10,11 @@
 
 package {
     default_visibility: ["//visibility:public"],
-    default_applicable_licenses: ["mesa_desktop_intel_licenses"],
+    default_applicable_licenses: ["mesa3d_desktop_intel_licenses"],
 }
 
 license {
-    name: "mesa_desktop_intel_licenses",
+    name: "mesa3d_desktop_intel_licenses",
     visibility: [":__subpackages__"],
     license_kinds: [
         "SPDX-license-identifier-Apache-2.0",
@@ -31,7 +31,7 @@ license {
 }
 
 cc_binary {
-    name: "pps-producer_mesa_desktop_intel",
+    name: "pps-producer_mesa3d_desktop_intel",
     stem: "pps-producer",
     srcs: [
         "src/tool/pps/pps_datasource.cc",
@@ -150,32 +150,32 @@ cc_binary {
         "libz",
     ],
     static_libs: [
-        "mesa_desktop_intel_src_c11_impl_libmesa_util_c11_a",
-        "mesa_desktop_intel_src_intel_common_libintel_clflushopt_a",
-        "mesa_desktop_intel_src_intel_common_libintel_common_a",
-        "mesa_desktop_intel_src_intel_dev_libintel_dev_a",
-        "mesa_desktop_intel_src_intel_ds_libpps-intel_a",
-        "mesa_desktop_intel_src_intel_isl_libisl_a",
-        "mesa_desktop_intel_src_intel_isl_libisl_per_hw_ver110_a",
-        "mesa_desktop_intel_src_intel_isl_libisl_per_hw_ver120_a",
-        "mesa_desktop_intel_src_intel_isl_libisl_per_hw_ver125_a",
-        "mesa_desktop_intel_src_intel_isl_libisl_per_hw_ver200_a",
-        "mesa_desktop_intel_src_intel_isl_libisl_per_hw_ver300_a",
-        "mesa_desktop_intel_src_intel_isl_libisl_per_hw_ver40_a",
-        "mesa_desktop_intel_src_intel_isl_libisl_per_hw_ver50_a",
-        "mesa_desktop_intel_src_intel_isl_libisl_per_hw_ver60_a",
-        "mesa_desktop_intel_src_intel_isl_libisl_per_hw_ver70_a",
-        "mesa_desktop_intel_src_intel_isl_libisl_per_hw_ver75_a",
-        "mesa_desktop_intel_src_intel_isl_libisl_per_hw_ver80_a",
-        "mesa_desktop_intel_src_intel_isl_libisl_per_hw_ver90_a",
-        "mesa_desktop_intel_src_intel_isl_libisl_tiled_memcpy_a",
-        "mesa_desktop_intel_src_intel_isl_libisl_tiled_memcpy_sse41_a",
-        "mesa_desktop_intel_src_intel_perf_libintel_perf_a",
-        "mesa_desktop_intel_src_tool_pps_libpps_a",
-        "mesa_desktop_intel_src_util_blake3_libblake3_a",
-        "mesa_desktop_intel_src_util_libmesa_util_a",
-        "mesa_desktop_intel_src_util_libmesa_util_sse41_a",
-        "mesa_desktop_intel_subprojects_perfetto_libperfetto_a",
+        "mesa3d_desktop-intel_src_c11_impl_libmesa_util_c11_a",
+        "mesa3d_desktop-intel_src_intel_common_libintel_clflushopt_a",
+        "mesa3d_desktop-intel_src_intel_common_libintel_common_a",
+        "mesa3d_desktop-intel_src_intel_dev_libintel_dev_a",
+        "mesa3d_desktop-intel_src_intel_ds_libpps-intel_a",
+        "mesa3d_desktop-intel_src_intel_isl_libisl_a",
+        "mesa3d_desktop-intel_src_intel_isl_libisl_per_hw_ver110_a",
+        "mesa3d_desktop-intel_src_intel_isl_libisl_per_hw_ver120_a",
+        "mesa3d_desktop-intel_src_intel_isl_libisl_per_hw_ver125_a",
+        "mesa3d_desktop-intel_src_intel_isl_libisl_per_hw_ver200_a",
+        "mesa3d_desktop-intel_src_intel_isl_libisl_per_hw_ver300_a",
+        "mesa3d_desktop-intel_src_intel_isl_libisl_per_hw_ver40_a",
+        "mesa3d_desktop-intel_src_intel_isl_libisl_per_hw_ver50_a",
+        "mesa3d_desktop-intel_src_intel_isl_libisl_per_hw_ver60_a",
+        "mesa3d_desktop-intel_src_intel_isl_libisl_per_hw_ver70_a",
+        "mesa3d_desktop-intel_src_intel_isl_libisl_per_hw_ver75_a",
+        "mesa3d_desktop-intel_src_intel_isl_libisl_per_hw_ver80_a",
+        "mesa3d_desktop-intel_src_intel_isl_libisl_per_hw_ver90_a",
+        "mesa3d_desktop-intel_src_intel_isl_libisl_tiled_memcpy_a",
+        "mesa3d_desktop-intel_src_intel_isl_libisl_tiled_memcpy_sse41_a",
+        "mesa3d_desktop-intel_src_intel_perf_libintel_perf_a",
+        "mesa3d_desktop-intel_src_tool_pps_libpps_a",
+        "mesa3d_desktop-intel_src_util_blake3_libblake3_a",
+        "mesa3d_desktop-intel_src_util_libmesa_util_a",
+        "mesa3d_desktop-intel_src_util_libmesa_util_sse41_a",
+        "mesa3d_desktop-intel_subprojects_perfetto_libperfetto_a",
     ],
     local_include_dirs: [
         "meson_generated/src",
@@ -192,7 +192,7 @@ cc_binary {
 }
 
 cc_library_static {
-    name: "mesa_desktop_intel_subprojects_perfetto_libperfetto_a",
+    name: "mesa3d_desktop-intel_subprojects_perfetto_libperfetto_a",
     srcs: ["subprojects/perfetto/sdk/perfetto.cc"],
     cflags: [
         "-DNDEBUG",
@@ -209,7 +209,7 @@ cc_library_static {
 }
 
 cc_library_static {
-    name: "mesa_desktop_intel_src_util_libmesa_util_sse41_a",
+    name: "mesa3d_desktop-intel_src_util_libmesa_util_sse41_a",
     srcs: ["src/util/streaming-load-memcpy.c"],
     cflags: [
         "-DAMD_LLVM_AVAILABLE=0",
@@ -329,7 +329,7 @@ cc_library_static {
 }
 
 cc_library_static {
-    name: "mesa_desktop_intel_src_util_libmesa_util_a",
+    name: "mesa3d_desktop-intel_src_util_libmesa_util_a",
     srcs: [
         "meson_generated/src/util/format/u_format_table.c",
         "meson_generated/src/util/format_srgb.c",
@@ -537,7 +537,7 @@ cc_library_static {
 }
 
 cc_library_static {
-    name: "mesa_desktop_intel_src_util_blake3_libblake3_a",
+    name: "mesa3d_desktop-intel_src_util_blake3_libblake3_a",
     srcs: [
         "src/util/blake3/blake3.c",
         "src/util/blake3/blake3_avx2_x86-64_unix.S",
@@ -659,7 +659,7 @@ cc_library_static {
 }
 
 cc_library_static {
-    name: "mesa_desktop_intel_src_tool_pps_libpps_a",
+    name: "mesa3d_desktop-intel_src_tool_pps_libpps_a",
     srcs: [
         "src/tool/pps/pps.cc",
         "src/tool/pps/pps_counter.cc",
@@ -787,7 +787,7 @@ cc_library_static {
 }
 
 cc_library_static {
-    name: "mesa_desktop_intel_src_intel_perf_libintel_perf_a",
+    name: "mesa3d_desktop-intel_src_intel_perf_libintel_perf_a",
     srcs: [
         "meson_generated/src/intel/perf/intel_perf_metrics.c",
         "src/intel/perf/i915/intel_perf.c",
@@ -920,7 +920,7 @@ cc_library_static {
 }
 
 cc_library_static {
-    name: "mesa_desktop_intel_src_intel_isl_libisl_tiled_memcpy_sse41_a",
+    name: "mesa3d_desktop-intel_src_intel_isl_libisl_tiled_memcpy_sse41_a",
     srcs: ["src/intel/isl/isl_tiled_memcpy_sse41.c"],
     cflags: [
         "-DAMD_LLVM_AVAILABLE=0",
@@ -1045,7 +1045,7 @@ cc_library_static {
 }
 
 cc_library_static {
-    name: "mesa_desktop_intel_src_intel_isl_libisl_tiled_memcpy_a",
+    name: "mesa3d_desktop-intel_src_intel_isl_libisl_tiled_memcpy_a",
     srcs: ["src/intel/isl/isl_tiled_memcpy_normal.c"],
     cflags: [
         "-DAMD_LLVM_AVAILABLE=0",
@@ -1170,7 +1170,7 @@ cc_library_static {
 }
 
 cc_library_static {
-    name: "mesa_desktop_intel_src_intel_isl_libisl_per_hw_ver90_a",
+    name: "mesa3d_desktop-intel_src_intel_isl_libisl_per_hw_ver90_a",
     srcs: [
         "src/intel/isl/isl_emit_cpb.c",
         "src/intel/isl/isl_emit_depth_stencil.c",
@@ -1303,7 +1303,7 @@ cc_library_static {
 }
 
 cc_library_static {
-    name: "mesa_desktop_intel_src_intel_isl_libisl_per_hw_ver80_a",
+    name: "mesa3d_desktop-intel_src_intel_isl_libisl_per_hw_ver80_a",
     srcs: [
         "src/intel/isl/isl_emit_cpb.c",
         "src/intel/isl/isl_emit_depth_stencil.c",
@@ -1436,7 +1436,7 @@ cc_library_static {
 }
 
 cc_library_static {
-    name: "mesa_desktop_intel_src_intel_isl_libisl_per_hw_ver75_a",
+    name: "mesa3d_desktop-intel_src_intel_isl_libisl_per_hw_ver75_a",
     srcs: [
         "src/intel/isl/isl_emit_cpb.c",
         "src/intel/isl/isl_emit_depth_stencil.c",
@@ -1568,7 +1568,7 @@ cc_library_static {
 }
 
 cc_library_static {
-    name: "mesa_desktop_intel_src_intel_isl_libisl_per_hw_ver70_a",
+    name: "mesa3d_desktop-intel_src_intel_isl_libisl_per_hw_ver70_a",
     srcs: [
         "src/intel/isl/isl_emit_cpb.c",
         "src/intel/isl/isl_emit_depth_stencil.c",
@@ -1701,7 +1701,7 @@ cc_library_static {
 }
 
 cc_library_static {
-    name: "mesa_desktop_intel_src_intel_isl_libisl_per_hw_ver60_a",
+    name: "mesa3d_desktop-intel_src_intel_isl_libisl_per_hw_ver60_a",
     srcs: [
         "src/intel/isl/isl_emit_cpb.c",
         "src/intel/isl/isl_emit_depth_stencil.c",
@@ -1834,7 +1834,7 @@ cc_library_static {
 }
 
 cc_library_static {
-    name: "mesa_desktop_intel_src_intel_isl_libisl_per_hw_ver50_a",
+    name: "mesa3d_desktop-intel_src_intel_isl_libisl_per_hw_ver50_a",
     srcs: [
         "src/intel/isl/isl_emit_cpb.c",
         "src/intel/isl/isl_emit_depth_stencil.c",
@@ -1966,7 +1966,7 @@ cc_library_static {
 }
 
 cc_library_static {
-    name: "mesa_desktop_intel_src_intel_isl_libisl_per_hw_ver40_a",
+    name: "mesa3d_desktop-intel_src_intel_isl_libisl_per_hw_ver40_a",
     srcs: [
         "src/intel/isl/isl_emit_cpb.c",
         "src/intel/isl/isl_emit_depth_stencil.c",
@@ -2099,7 +2099,7 @@ cc_library_static {
 }
 
 cc_library_static {
-    name: "mesa_desktop_intel_src_intel_isl_libisl_per_hw_ver300_a",
+    name: "mesa3d_desktop-intel_src_intel_isl_libisl_per_hw_ver300_a",
     srcs: [
         "src/intel/isl/isl_emit_cpb.c",
         "src/intel/isl/isl_emit_depth_stencil.c",
@@ -2232,7 +2232,7 @@ cc_library_static {
 }
 
 cc_library_static {
-    name: "mesa_desktop_intel_src_intel_isl_libisl_per_hw_ver200_a",
+    name: "mesa3d_desktop-intel_src_intel_isl_libisl_per_hw_ver200_a",
     srcs: [
         "src/intel/isl/isl_emit_cpb.c",
         "src/intel/isl/isl_emit_depth_stencil.c",
@@ -2365,7 +2365,7 @@ cc_library_static {
 }
 
 cc_library_static {
-    name: "mesa_desktop_intel_src_intel_isl_libisl_per_hw_ver125_a",
+    name: "mesa3d_desktop-intel_src_intel_isl_libisl_per_hw_ver125_a",
     srcs: [
         "src/intel/isl/isl_emit_cpb.c",
         "src/intel/isl/isl_emit_depth_stencil.c",
@@ -2498,7 +2498,7 @@ cc_library_static {
 }
 
 cc_library_static {
-    name: "mesa_desktop_intel_src_intel_isl_libisl_per_hw_ver120_a",
+    name: "mesa3d_desktop-intel_src_intel_isl_libisl_per_hw_ver120_a",
     srcs: [
         "src/intel/isl/isl_emit_cpb.c",
         "src/intel/isl/isl_emit_depth_stencil.c",
@@ -2631,7 +2631,7 @@ cc_library_static {
 }
 
 cc_library_static {
-    name: "mesa_desktop_intel_src_intel_isl_libisl_per_hw_ver110_a",
+    name: "mesa3d_desktop-intel_src_intel_isl_libisl_per_hw_ver110_a",
     srcs: [
         "src/intel/isl/isl_emit_cpb.c",
         "src/intel/isl/isl_emit_depth_stencil.c",
@@ -2763,7 +2763,7 @@ cc_library_static {
 }
 
 cc_library_static {
-    name: "mesa_desktop_intel_src_intel_isl_libisl_a",
+    name: "mesa3d_desktop-intel_src_intel_isl_libisl_a",
     srcs: [
         "meson_generated/src/intel/isl/isl_format_layout.c",
         "src/intel/isl/isl.c",
@@ -2896,7 +2896,7 @@ cc_library_static {
 }
 
 cc_library_static {
-    name: "mesa_desktop_intel_src_intel_ds_libpps-intel_a",
+    name: "mesa3d_desktop-intel_src_intel_ds_libpps-intel_a",
     srcs: [
         "src/intel/ds/intel_pps_driver.cc",
         "src/intel/ds/intel_pps_perf.cc",
@@ -3025,7 +3025,7 @@ cc_library_static {
 }
 
 cc_library_static {
-    name: "mesa_desktop_intel_src_intel_dev_libintel_dev_a",
+    name: "mesa3d_desktop-intel_src_intel_dev_libintel_dev_a",
     srcs: [
         "meson_generated/src/intel/dev/intel_wa.c",
         "src/intel/dev/i915/intel_device_info.c",
@@ -3158,7 +3158,7 @@ cc_library_static {
 }
 
 cc_library_static {
-    name: "mesa_desktop_intel_src_intel_common_libintel_common_a",
+    name: "mesa3d_desktop-intel_src_intel_common_libintel_common_a",
     srcs: [
         "src/intel/common/i915/intel_engine.c",
         "src/intel/common/i915/intel_gem.c",
@@ -3304,7 +3304,7 @@ cc_library_static {
 }
 
 cc_library_static {
-    name: "mesa_desktop_intel_src_intel_common_libintel_clflushopt_a",
+    name: "mesa3d_desktop-intel_src_intel_common_libintel_clflushopt_a",
     srcs: ["src/intel/common/intel_clflushopt.c"],
     cflags: [
         "-DAMD_LLVM_AVAILABLE=0",
@@ -3424,7 +3424,7 @@ cc_library_static {
 }
 
 cc_library_static {
-    name: "mesa_desktop_intel_src_c11_impl_libmesa_util_c11_a",
+    name: "mesa3d_desktop-intel_src_c11_impl_libmesa_util_c11_a",
     srcs: ["src/c11/impl/time.c"],
     cflags: [
         "-DAMD_LLVM_AVAILABLE=0",
@@ -3542,7 +3542,7 @@ cc_library_static {
 }
 
 cc_library_shared {
-    name: "libGLESv2_mesa_desktop_intel",
+    name: "libGLESv2_mesa3d_desktop_intel",
     stem: "libGLESv2_mesa",
     srcs: ["src/mapi/entry.c"],
     cflags: [
@@ -3652,9 +3652,9 @@ cc_library_shared {
     ],
     shared_libs: [
         "libdrm",
-        "mesa_desktop_intel_src_mapi_shared-glapi_libglapi_so_0_0_0",
+        "mesa3d_desktop-intel_src_mapi_shared-glapi_libglapi_so_0_0_0",
     ],
-    static_libs: ["mesa_desktop_intel_src_c11_impl_libmesa_util_c11_a"],
+    static_libs: ["mesa3d_desktop-intel_src_c11_impl_libmesa_util_c11_a"],
     local_include_dirs: [
         "include",
         "meson_generated/src",
@@ -3672,7 +3672,7 @@ cc_library_shared {
 }
 
 cc_library_shared {
-    name: "mesa_desktop_intel_src_mapi_shared-glapi_libglapi_so_0_0_0",
+    name: "mesa3d_desktop-intel_src_mapi_shared-glapi_libglapi_so_0_0_0",
     srcs: [
         "src/mapi/entry.c",
         "src/mapi/shared-glapi/glapi.c",
@@ -3794,11 +3794,11 @@ cc_library_shared {
         "libz",
     ],
     static_libs: [
-        "mesa_desktop_intel_src_c11_impl_libmesa_util_c11_a",
-        "mesa_desktop_intel_src_util_blake3_libblake3_a",
-        "mesa_desktop_intel_src_util_libmesa_util_a",
-        "mesa_desktop_intel_src_util_libmesa_util_sse41_a",
-        "mesa_desktop_intel_subprojects_perfetto_libperfetto_a",
+        "mesa3d_desktop-intel_src_c11_impl_libmesa_util_c11_a",
+        "mesa3d_desktop-intel_src_util_blake3_libblake3_a",
+        "mesa3d_desktop-intel_src_util_libmesa_util_a",
+        "mesa3d_desktop-intel_src_util_libmesa_util_sse41_a",
+        "mesa3d_desktop-intel_subprojects_perfetto_libperfetto_a",
     ],
     local_include_dirs: [
         "include",
@@ -3819,7 +3819,7 @@ cc_library_shared {
 }
 
 cc_library_shared {
-    name: "libGLESv1_CM_mesa_desktop_intel",
+    name: "libGLESv1_CM_mesa3d_desktop_intel",
     stem: "libGLESv1_CM_mesa",
     srcs: ["src/mapi/entry.c"],
     cflags: [
@@ -3929,9 +3929,9 @@ cc_library_shared {
     ],
     shared_libs: [
         "libdrm",
-        "mesa_desktop_intel_src_mapi_shared-glapi_libglapi_so_0_0_0",
+        "mesa3d_desktop-intel_src_mapi_shared-glapi_libglapi_so_0_0_0",
     ],
-    static_libs: ["mesa_desktop_intel_src_c11_impl_libmesa_util_c11_a"],
+    static_libs: ["mesa3d_desktop-intel_src_c11_impl_libmesa_util_c11_a"],
     local_include_dirs: [
         "include",
         "meson_generated/src",
@@ -3949,7 +3949,7 @@ cc_library_shared {
 }
 
 cc_library_shared {
-    name: "libvulkan_mesa_desktop_intel",
+    name: "libvulkan_mesa3d_desktop_intel",
     stem: "vulkan.intel",
     srcs: ["src/intel/vulkan/anv_gem.c"],
     cflags: [
@@ -4068,54 +4068,54 @@ cc_library_shared {
         "libz",
     ],
     static_libs: [
-        "mesa_desktop_intel_src_c11_impl_libmesa_util_c11_a",
-        "mesa_desktop_intel_src_compiler_libcompiler_a",
-        "mesa_desktop_intel_src_compiler_nir_libnir_a",
-        "mesa_desktop_intel_src_compiler_spirv_libvtn_a",
-        "mesa_desktop_intel_src_intel_blorp_libblorp_a",
-        "mesa_desktop_intel_src_intel_common_libintel_clflushopt_a",
-        "mesa_desktop_intel_src_intel_common_libintel_common_a",
-        "mesa_desktop_intel_src_intel_compiler_libintel_compiler_a",
-        "mesa_desktop_intel_src_intel_decoder_libintel_decoder_a",
-        "mesa_desktop_intel_src_intel_decoder_libintel_decoder_brw_a",
-        "mesa_desktop_intel_src_intel_dev_libintel_dev_a",
-        "mesa_desktop_intel_src_intel_ds_libintel-driver-ds_a",
-        "mesa_desktop_intel_src_intel_isl_libisl_a",
-        "mesa_desktop_intel_src_intel_isl_libisl_per_hw_ver110_a",
-        "mesa_desktop_intel_src_intel_isl_libisl_per_hw_ver120_a",
-        "mesa_desktop_intel_src_intel_isl_libisl_per_hw_ver125_a",
-        "mesa_desktop_intel_src_intel_isl_libisl_per_hw_ver200_a",
-        "mesa_desktop_intel_src_intel_isl_libisl_per_hw_ver300_a",
-        "mesa_desktop_intel_src_intel_isl_libisl_per_hw_ver40_a",
-        "mesa_desktop_intel_src_intel_isl_libisl_per_hw_ver50_a",
-        "mesa_desktop_intel_src_intel_isl_libisl_per_hw_ver60_a",
-        "mesa_desktop_intel_src_intel_isl_libisl_per_hw_ver70_a",
-        "mesa_desktop_intel_src_intel_isl_libisl_per_hw_ver75_a",
-        "mesa_desktop_intel_src_intel_isl_libisl_per_hw_ver80_a",
-        "mesa_desktop_intel_src_intel_isl_libisl_per_hw_ver90_a",
-        "mesa_desktop_intel_src_intel_isl_libisl_tiled_memcpy_a",
-        "mesa_desktop_intel_src_intel_isl_libisl_tiled_memcpy_sse41_a",
-        "mesa_desktop_intel_src_intel_perf_libintel_perf_a",
-        "mesa_desktop_intel_src_util_blake3_libblake3_a",
-        "mesa_desktop_intel_src_util_libmesa_util_a",
-        "mesa_desktop_intel_src_util_libmesa_util_sse41_a",
-        "mesa_desktop_intel_src_util_libxmlconfig_a",
-        "mesa_desktop_intel_src_util_u_gralloc_lib_mesa_u_gralloc_a",
-        "mesa_desktop_intel_src_vulkan_util_libvulkan_util_a",
-        "mesa_desktop_intel_subprojects_perfetto_libperfetto_a",
+        "mesa3d_desktop-intel_src_c11_impl_libmesa_util_c11_a",
+        "mesa3d_desktop-intel_src_compiler_libcompiler_a",
+        "mesa3d_desktop-intel_src_compiler_nir_libnir_a",
+        "mesa3d_desktop-intel_src_compiler_spirv_libvtn_a",
+        "mesa3d_desktop-intel_src_intel_blorp_libblorp_a",
+        "mesa3d_desktop-intel_src_intel_common_libintel_clflushopt_a",
+        "mesa3d_desktop-intel_src_intel_common_libintel_common_a",
+        "mesa3d_desktop-intel_src_intel_compiler_libintel_compiler_a",
+        "mesa3d_desktop-intel_src_intel_decoder_libintel_decoder_a",
+        "mesa3d_desktop-intel_src_intel_decoder_libintel_decoder_brw_a",
+        "mesa3d_desktop-intel_src_intel_dev_libintel_dev_a",
+        "mesa3d_desktop-intel_src_intel_ds_libintel-driver-ds_a",
+        "mesa3d_desktop-intel_src_intel_isl_libisl_a",
+        "mesa3d_desktop-intel_src_intel_isl_libisl_per_hw_ver110_a",
+        "mesa3d_desktop-intel_src_intel_isl_libisl_per_hw_ver120_a",
+        "mesa3d_desktop-intel_src_intel_isl_libisl_per_hw_ver125_a",
+        "mesa3d_desktop-intel_src_intel_isl_libisl_per_hw_ver200_a",
+        "mesa3d_desktop-intel_src_intel_isl_libisl_per_hw_ver300_a",
+        "mesa3d_desktop-intel_src_intel_isl_libisl_per_hw_ver40_a",
+        "mesa3d_desktop-intel_src_intel_isl_libisl_per_hw_ver50_a",
+        "mesa3d_desktop-intel_src_intel_isl_libisl_per_hw_ver60_a",
+        "mesa3d_desktop-intel_src_intel_isl_libisl_per_hw_ver70_a",
+        "mesa3d_desktop-intel_src_intel_isl_libisl_per_hw_ver75_a",
+        "mesa3d_desktop-intel_src_intel_isl_libisl_per_hw_ver80_a",
+        "mesa3d_desktop-intel_src_intel_isl_libisl_per_hw_ver90_a",
+        "mesa3d_desktop-intel_src_intel_isl_libisl_tiled_memcpy_a",
+        "mesa3d_desktop-intel_src_intel_isl_libisl_tiled_memcpy_sse41_a",
+        "mesa3d_desktop-intel_src_intel_perf_libintel_perf_a",
+        "mesa3d_desktop-intel_src_util_blake3_libblake3_a",
+        "mesa3d_desktop-intel_src_util_libmesa_util_a",
+        "mesa3d_desktop-intel_src_util_libmesa_util_sse41_a",
+        "mesa3d_desktop-intel_src_util_libxmlconfig_a",
+        "mesa3d_desktop-intel_src_util_u_gralloc_lib_mesa_u_gralloc_a",
+        "mesa3d_desktop-intel_src_vulkan_util_libvulkan_util_a",
+        "mesa3d_desktop-intel_subprojects_perfetto_libperfetto_a",
     ],
     whole_static_libs: [
-        "mesa_desktop_intel_src_intel_vulkan_libanv_common_a",
-        "mesa_desktop_intel_src_intel_vulkan_libanv_per_hw_ver110_a",
-        "mesa_desktop_intel_src_intel_vulkan_libanv_per_hw_ver120_a",
-        "mesa_desktop_intel_src_intel_vulkan_libanv_per_hw_ver125_a",
-        "mesa_desktop_intel_src_intel_vulkan_libanv_per_hw_ver200_a",
-        "mesa_desktop_intel_src_intel_vulkan_libanv_per_hw_ver300_a",
-        "mesa_desktop_intel_src_intel_vulkan_libanv_per_hw_ver90_a",
-        "mesa_desktop_intel_src_vulkan_runtime_libvulkan_instance_a",
-        "mesa_desktop_intel_src_vulkan_runtime_libvulkan_lite_runtime_a",
-        "mesa_desktop_intel_src_vulkan_runtime_libvulkan_runtime_a",
-        "mesa_desktop_intel_src_vulkan_wsi_libvulkan_wsi_a",
+        "mesa3d_desktop-intel_src_intel_vulkan_libanv_common_a",
+        "mesa3d_desktop-intel_src_intel_vulkan_libanv_per_hw_ver110_a",
+        "mesa3d_desktop-intel_src_intel_vulkan_libanv_per_hw_ver120_a",
+        "mesa3d_desktop-intel_src_intel_vulkan_libanv_per_hw_ver125_a",
+        "mesa3d_desktop-intel_src_intel_vulkan_libanv_per_hw_ver200_a",
+        "mesa3d_desktop-intel_src_intel_vulkan_libanv_per_hw_ver300_a",
+        "mesa3d_desktop-intel_src_intel_vulkan_libanv_per_hw_ver90_a",
+        "mesa3d_desktop-intel_src_vulkan_runtime_libvulkan_instance_a",
+        "mesa3d_desktop-intel_src_vulkan_runtime_libvulkan_lite_runtime_a",
+        "mesa3d_desktop-intel_src_vulkan_runtime_libvulkan_runtime_a",
+        "mesa3d_desktop-intel_src_vulkan_wsi_libvulkan_wsi_a",
     ],
     local_include_dirs: [
         "include",
@@ -4156,7 +4156,7 @@ cc_library_shared {
 }
 
 cc_library_static {
-    name: "mesa_desktop_intel_src_vulkan_wsi_libvulkan_wsi_a",
+    name: "mesa3d_desktop-intel_src_vulkan_wsi_libvulkan_wsi_a",
     srcs: [
         "meson_generated/src/vulkan/wsi/wsi_common_entrypoints.c",
         "src/vulkan/wsi/wsi_common.c",
@@ -4293,7 +4293,7 @@ cc_library_static {
 }
 
 cc_library_static {
-    name: "mesa_desktop_intel_src_vulkan_util_libvulkan_util_a",
+    name: "mesa3d_desktop-intel_src_vulkan_util_libvulkan_util_a",
     srcs: [
         "meson_generated/src/vulkan/util/vk_dispatch_table.c",
         "meson_generated/src/vulkan/util/vk_enum_to_str.c",
@@ -4427,7 +4427,7 @@ cc_library_static {
 }
 
 cc_library_static {
-    name: "mesa_desktop_intel_src_vulkan_runtime_libvulkan_runtime_a",
+    name: "mesa3d_desktop-intel_src_vulkan_runtime_libvulkan_runtime_a",
     srcs: [
         "src/vulkan/runtime/radix_sort/common/util.c",
         "src/vulkan/runtime/radix_sort/common/vk/barrier.c",
@@ -4578,7 +4578,7 @@ cc_library_static {
 }
 
 cc_library_static {
-    name: "mesa_desktop_intel_src_vulkan_runtime_libvulkan_lite_runtime_a",
+    name: "mesa3d_desktop-intel_src_vulkan_runtime_libvulkan_lite_runtime_a",
     srcs: [
         "meson_generated/src/vulkan/runtime/vk_cmd_enqueue_entrypoints.c",
         "meson_generated/src/vulkan/runtime/vk_cmd_queue.c",
@@ -4766,7 +4766,7 @@ cc_library_static {
 }
 
 cc_library_static {
-    name: "mesa_desktop_intel_src_vulkan_runtime_libvulkan_instance_a",
+    name: "mesa3d_desktop-intel_src_vulkan_runtime_libvulkan_instance_a",
     srcs: ["src/vulkan/runtime/vk_instance.c"],
     cflags: [
         "-DAMD_LLVM_AVAILABLE=0",
@@ -4898,7 +4898,7 @@ cc_library_static {
 }
 
 cc_library_static {
-    name: "mesa_desktop_intel_src_util_u_gralloc_lib_mesa_u_gralloc_a",
+    name: "mesa3d_desktop-intel_src_util_u_gralloc_lib_mesa_u_gralloc_a",
     srcs: [
         "src/util/u_gralloc/u_gralloc.c",
         "src/util/u_gralloc/u_gralloc_cros_api.c",
@@ -5024,7 +5024,7 @@ cc_library_static {
 }
 
 cc_library_static {
-    name: "mesa_desktop_intel_src_util_libxmlconfig_a",
+    name: "mesa3d_desktop-intel_src_util_libxmlconfig_a",
     srcs: ["src/util/xmlconfig.c"],
     cflags: [
         "-DAMD_LLVM_AVAILABLE=0",
@@ -5149,7 +5149,7 @@ cc_library_static {
 }
 
 cc_library_static {
-    name: "mesa_desktop_intel_src_intel_vulkan_libanv_per_hw_ver90_a",
+    name: "mesa3d_desktop-intel_src_intel_vulkan_libanv_per_hw_ver90_a",
     srcs: [
         "src/intel/vulkan/genX_acceleration_structure.c",
         "src/intel/vulkan/genX_blorp_exec.c",
@@ -5312,7 +5312,7 @@ cc_library_static {
 }
 
 cc_library_static {
-    name: "mesa_desktop_intel_src_intel_vulkan_libanv_per_hw_ver300_a",
+    name: "mesa3d_desktop-intel_src_intel_vulkan_libanv_per_hw_ver300_a",
     srcs: [
         "src/intel/vulkan/genX_acceleration_structure.c",
         "src/intel/vulkan/genX_blorp_exec.c",
@@ -5475,7 +5475,7 @@ cc_library_static {
 }
 
 cc_library_static {
-    name: "mesa_desktop_intel_src_intel_vulkan_libanv_per_hw_ver200_a",
+    name: "mesa3d_desktop-intel_src_intel_vulkan_libanv_per_hw_ver200_a",
     srcs: [
         "src/intel/vulkan/genX_acceleration_structure.c",
         "src/intel/vulkan/genX_blorp_exec.c",
@@ -5638,7 +5638,7 @@ cc_library_static {
 }
 
 cc_library_static {
-    name: "mesa_desktop_intel_src_intel_vulkan_libanv_per_hw_ver125_a",
+    name: "mesa3d_desktop-intel_src_intel_vulkan_libanv_per_hw_ver125_a",
     srcs: [
         "src/intel/vulkan/genX_acceleration_structure.c",
         "src/intel/vulkan/genX_blorp_exec.c",
@@ -5801,7 +5801,7 @@ cc_library_static {
 }
 
 cc_library_static {
-    name: "mesa_desktop_intel_src_intel_vulkan_libanv_per_hw_ver120_a",
+    name: "mesa3d_desktop-intel_src_intel_vulkan_libanv_per_hw_ver120_a",
     srcs: [
         "src/intel/vulkan/genX_acceleration_structure.c",
         "src/intel/vulkan/genX_blorp_exec.c",
@@ -5964,7 +5964,7 @@ cc_library_static {
 }
 
 cc_library_static {
-    name: "mesa_desktop_intel_src_intel_vulkan_libanv_per_hw_ver110_a",
+    name: "mesa3d_desktop-intel_src_intel_vulkan_libanv_per_hw_ver110_a",
     srcs: [
         "src/intel/vulkan/genX_acceleration_structure.c",
         "src/intel/vulkan/genX_blorp_exec.c",
@@ -6127,7 +6127,7 @@ cc_library_static {
 }
 
 cc_library_static {
-    name: "mesa_desktop_intel_src_intel_vulkan_libanv_common_a",
+    name: "mesa3d_desktop-intel_src_intel_vulkan_libanv_common_a",
     srcs: [
         "meson_generated/src/intel/vulkan/anv_entrypoints.c",
         "src/intel/vulkan/anv_allocator.c",
@@ -6337,7 +6337,7 @@ cc_library_static {
 }
 
 cc_library_static {
-    name: "mesa_desktop_intel_src_intel_ds_libintel-driver-ds_a",
+    name: "mesa3d_desktop-intel_src_intel_ds_libintel-driver-ds_a",
     srcs: [
         "meson_generated/src/intel/ds/intel_tracepoints.c",
         "src/intel/ds/intel_driver_ds.cc",
@@ -6469,7 +6469,7 @@ cc_library_static {
 }
 
 cc_library_static {
-    name: "mesa_desktop_intel_src_intel_decoder_libintel_decoder_brw_a",
+    name: "mesa3d_desktop-intel_src_intel_decoder_libintel_decoder_brw_a",
     cflags: [
         "-Wno-error",
         "-Wno-non-virtual-dtor",
@@ -6482,7 +6482,7 @@ cc_library_static {
 }
 
 cc_library_static {
-    name: "mesa_desktop_intel_src_intel_decoder_libintel_decoder_a",
+    name: "mesa3d_desktop-intel_src_intel_decoder_libintel_decoder_a",
     srcs: ["src/intel/decoder/intel_batch_decoder_stub.c"],
     cflags: [
         "-DAMD_LLVM_AVAILABLE=0",
@@ -6607,7 +6607,7 @@ cc_library_static {
 }
 
 cc_library_static {
-    name: "mesa_desktop_intel_src_intel_compiler_libintel_compiler_a",
+    name: "mesa3d_desktop-intel_src_intel_compiler_libintel_compiler_a",
     srcs: [
         "meson_generated/src/intel/compiler/brw_device_sha1_gen.c",
         "meson_generated/src/intel/compiler/brw_nir_lower_fsign.c",
@@ -6823,7 +6823,7 @@ cc_library_static {
 }
 
 cc_library_static {
-    name: "mesa_desktop_intel_src_intel_blorp_libblorp_a",
+    name: "mesa3d_desktop-intel_src_intel_blorp_libblorp_a",
     srcs: [
         "src/intel/blorp/blorp.c",
         "src/intel/blorp/blorp_blit.c",
@@ -6958,7 +6958,7 @@ cc_library_static {
 }
 
 cc_library_static {
-    name: "mesa_desktop_intel_src_compiler_spirv_libvtn_a",
+    name: "mesa3d_desktop-intel_src_compiler_spirv_libvtn_a",
     srcs: [
         "meson_generated/src/compiler/spirv/spirv_info.c",
         "meson_generated/src/compiler/spirv/vtn_gather_types.c",
@@ -7103,7 +7103,7 @@ cc_library_static {
 }
 
 cc_library_static {
-    name: "mesa_desktop_intel_src_compiler_nir_libnir_a",
+    name: "mesa3d_desktop-intel_src_compiler_nir_libnir_a",
     srcs: [
         "meson_generated/src/compiler/nir/nir_constant_expressions.c",
         "meson_generated/src/compiler/nir/nir_intrinsics.c",
@@ -7435,7 +7435,7 @@ cc_library_static {
 }
 
 cc_library_static {
-    name: "mesa_desktop_intel_src_compiler_libcompiler_a",
+    name: "mesa3d_desktop-intel_src_compiler_libcompiler_a",
     srcs: [
         "meson_generated/src/compiler/builtin_types.c",
         "src/compiler/glsl_types.c",
@@ -7559,7 +7559,7 @@ cc_library_static {
 }
 
 cc_library_shared {
-    name: "libEGL_mesa_desktop_intel",
+    name: "libEGL_mesa3d_desktop_intel",
     stem: "libEGL_mesa",
     srcs: [
         "src/egl/drivers/dri2/egl_dri2.c",
@@ -7694,19 +7694,19 @@ cc_library_shared {
         "libnativewindow",
         "libsync",
         "libz",
-        "mesa_desktop_intel_src_gallium_targets_dri_libgallium_dri_so",
-        "mesa_desktop_intel_src_mapi_shared-glapi_libglapi_so_0_0_0",
+        "mesa3d_desktop-intel_src_gallium_targets_dri_libgallium_dri_so",
+        "mesa3d_desktop-intel_src_mapi_shared-glapi_libglapi_so_0_0_0",
     ],
     static_libs: [
-        "mesa_desktop_intel_src_c11_impl_libmesa_util_c11_a",
-        "mesa_desktop_intel_src_gallium_auxiliary_pipe-loader_libpipe_loader_dynamic_a",
-        "mesa_desktop_intel_src_loader_libloader_a",
-        "mesa_desktop_intel_src_util_blake3_libblake3_a",
-        "mesa_desktop_intel_src_util_libmesa_util_a",
-        "mesa_desktop_intel_src_util_libmesa_util_sse41_a",
-        "mesa_desktop_intel_src_util_libxmlconfig_a",
-        "mesa_desktop_intel_src_util_u_gralloc_lib_mesa_u_gralloc_a",
-        "mesa_desktop_intel_subprojects_perfetto_libperfetto_a",
+        "mesa3d_desktop-intel_src_c11_impl_libmesa_util_c11_a",
+        "mesa3d_desktop-intel_src_gallium_auxiliary_pipe-loader_libpipe_loader_dynamic_a",
+        "mesa3d_desktop-intel_src_loader_libloader_a",
+        "mesa3d_desktop-intel_src_util_blake3_libblake3_a",
+        "mesa3d_desktop-intel_src_util_libmesa_util_a",
+        "mesa3d_desktop-intel_src_util_libmesa_util_sse41_a",
+        "mesa3d_desktop-intel_src_util_libxmlconfig_a",
+        "mesa3d_desktop-intel_src_util_u_gralloc_lib_mesa_u_gralloc_a",
+        "mesa3d_desktop-intel_subprojects_perfetto_libperfetto_a",
     ],
     local_include_dirs: [
         "include",
@@ -7734,7 +7734,7 @@ cc_library_shared {
 }
 
 cc_library_static {
-    name: "mesa_desktop_intel_src_loader_libloader_a",
+    name: "mesa3d_desktop-intel_src_loader_libloader_a",
     srcs: [
         "src/loader/loader.c",
         "src/loader/loader_dri_helper.c",
@@ -7861,7 +7861,7 @@ cc_library_static {
 }
 
 cc_library_shared {
-    name: "mesa_desktop_intel_src_gallium_targets_dri_libgallium_dri_so",
+    name: "mesa3d_desktop-intel_src_gallium_targets_dri_libgallium_dri_so",
     srcs: ["src/gallium/targets/dri/dri_target.c"],
     cflags: [
         "-DAMD_LLVM_AVAILABLE=0",
@@ -7975,68 +7975,68 @@ cc_library_shared {
         "libnativewindow",
         "libsync",
         "libz",
-        "mesa_desktop_intel_src_mapi_shared-glapi_libglapi_so_0_0_0",
+        "mesa3d_desktop-intel_src_mapi_shared-glapi_libglapi_so_0_0_0",
     ],
     static_libs: [
-        "mesa_desktop_intel_src_c11_impl_libmesa_util_c11_a",
-        "mesa_desktop_intel_src_compiler_glsl_glcpp_libglcpp_a",
-        "mesa_desktop_intel_src_compiler_glsl_libglsl_a",
-        "mesa_desktop_intel_src_compiler_libcompiler_a",
-        "mesa_desktop_intel_src_compiler_nir_libnir_a",
-        "mesa_desktop_intel_src_compiler_spirv_libvtn_a",
-        "mesa_desktop_intel_src_gallium_auxiliary_libgallium_a",
-        "mesa_desktop_intel_src_gallium_auxiliary_libgalliumvl_a",
-        "mesa_desktop_intel_src_gallium_auxiliary_pipe-loader_libpipe_loader_static_a",
-        "mesa_desktop_intel_src_gallium_drivers_iris_libiris_a",
-        "mesa_desktop_intel_src_gallium_drivers_iris_libiris_per_hw_ver110_a",
-        "mesa_desktop_intel_src_gallium_drivers_iris_libiris_per_hw_ver120_a",
-        "mesa_desktop_intel_src_gallium_drivers_iris_libiris_per_hw_ver125_a",
-        "mesa_desktop_intel_src_gallium_drivers_iris_libiris_per_hw_ver200_a",
-        "mesa_desktop_intel_src_gallium_drivers_iris_libiris_per_hw_ver300_a",
-        "mesa_desktop_intel_src_gallium_drivers_iris_libiris_per_hw_ver80_a",
-        "mesa_desktop_intel_src_gallium_drivers_iris_libiris_per_hw_ver90_a",
-        "mesa_desktop_intel_src_gallium_winsys_iris_drm_libiriswinsys_a",
-        "mesa_desktop_intel_src_gallium_winsys_sw_dri_libswdri_a",
-        "mesa_desktop_intel_src_gallium_winsys_sw_kms-dri_libswkmsdri_a",
-        "mesa_desktop_intel_src_gallium_winsys_sw_null_libws_null_a",
-        "mesa_desktop_intel_src_gallium_winsys_sw_wrapper_libwsw_a",
-        "mesa_desktop_intel_src_intel_blorp_libblorp_a",
-        "mesa_desktop_intel_src_intel_blorp_libblorp_elk_a",
-        "mesa_desktop_intel_src_intel_common_libintel_clflushopt_a",
-        "mesa_desktop_intel_src_intel_common_libintel_common_a",
-        "mesa_desktop_intel_src_intel_compiler_elk_libintel_compiler_elk_a",
-        "mesa_desktop_intel_src_intel_compiler_libintel_compiler_a",
-        "mesa_desktop_intel_src_intel_decoder_libintel_decoder_a",
-        "mesa_desktop_intel_src_intel_decoder_libintel_decoder_brw_a",
-        "mesa_desktop_intel_src_intel_decoder_libintel_decoder_elk_a",
-        "mesa_desktop_intel_src_intel_dev_libintel_dev_a",
-        "mesa_desktop_intel_src_intel_ds_libintel-driver-ds_a",
-        "mesa_desktop_intel_src_intel_isl_libisl_a",
-        "mesa_desktop_intel_src_intel_isl_libisl_per_hw_ver110_a",
-        "mesa_desktop_intel_src_intel_isl_libisl_per_hw_ver120_a",
-        "mesa_desktop_intel_src_intel_isl_libisl_per_hw_ver125_a",
-        "mesa_desktop_intel_src_intel_isl_libisl_per_hw_ver200_a",
-        "mesa_desktop_intel_src_intel_isl_libisl_per_hw_ver300_a",
-        "mesa_desktop_intel_src_intel_isl_libisl_per_hw_ver40_a",
-        "mesa_desktop_intel_src_intel_isl_libisl_per_hw_ver50_a",
-        "mesa_desktop_intel_src_intel_isl_libisl_per_hw_ver60_a",
-        "mesa_desktop_intel_src_intel_isl_libisl_per_hw_ver70_a",
-        "mesa_desktop_intel_src_intel_isl_libisl_per_hw_ver75_a",
-        "mesa_desktop_intel_src_intel_isl_libisl_per_hw_ver80_a",
-        "mesa_desktop_intel_src_intel_isl_libisl_per_hw_ver90_a",
-        "mesa_desktop_intel_src_intel_isl_libisl_tiled_memcpy_a",
-        "mesa_desktop_intel_src_intel_isl_libisl_tiled_memcpy_sse41_a",
-        "mesa_desktop_intel_src_intel_perf_libintel_perf_a",
-        "mesa_desktop_intel_src_loader_libloader_a",
-        "mesa_desktop_intel_src_mesa_libmesa_a",
-        "mesa_desktop_intel_src_mesa_libmesa_sse41_a",
-        "mesa_desktop_intel_src_util_blake3_libblake3_a",
-        "mesa_desktop_intel_src_util_libmesa_util_a",
-        "mesa_desktop_intel_src_util_libmesa_util_sse41_a",
-        "mesa_desktop_intel_src_util_libxmlconfig_a",
-        "mesa_desktop_intel_subprojects_perfetto_libperfetto_a",
+        "mesa3d_desktop-intel_src_c11_impl_libmesa_util_c11_a",
+        "mesa3d_desktop-intel_src_compiler_glsl_glcpp_libglcpp_a",
+        "mesa3d_desktop-intel_src_compiler_glsl_libglsl_a",
+        "mesa3d_desktop-intel_src_compiler_libcompiler_a",
+        "mesa3d_desktop-intel_src_compiler_nir_libnir_a",
+        "mesa3d_desktop-intel_src_compiler_spirv_libvtn_a",
+        "mesa3d_desktop-intel_src_gallium_auxiliary_libgallium_a",
+        "mesa3d_desktop-intel_src_gallium_auxiliary_libgalliumvl_a",
+        "mesa3d_desktop-intel_src_gallium_auxiliary_pipe-loader_libpipe_loader_static_a",
+        "mesa3d_desktop-intel_src_gallium_drivers_iris_libiris_a",
+        "mesa3d_desktop-intel_src_gallium_drivers_iris_libiris_per_hw_ver110_a",
+        "mesa3d_desktop-intel_src_gallium_drivers_iris_libiris_per_hw_ver120_a",
+        "mesa3d_desktop-intel_src_gallium_drivers_iris_libiris_per_hw_ver125_a",
+        "mesa3d_desktop-intel_src_gallium_drivers_iris_libiris_per_hw_ver200_a",
+        "mesa3d_desktop-intel_src_gallium_drivers_iris_libiris_per_hw_ver300_a",
+        "mesa3d_desktop-intel_src_gallium_drivers_iris_libiris_per_hw_ver80_a",
+        "mesa3d_desktop-intel_src_gallium_drivers_iris_libiris_per_hw_ver90_a",
+        "mesa3d_desktop-intel_src_gallium_winsys_iris_drm_libiriswinsys_a",
+        "mesa3d_desktop-intel_src_gallium_winsys_sw_dri_libswdri_a",
+        "mesa3d_desktop-intel_src_gallium_winsys_sw_kms-dri_libswkmsdri_a",
+        "mesa3d_desktop-intel_src_gallium_winsys_sw_null_libws_null_a",
+        "mesa3d_desktop-intel_src_gallium_winsys_sw_wrapper_libwsw_a",
+        "mesa3d_desktop-intel_src_intel_blorp_libblorp_a",
+        "mesa3d_desktop-intel_src_intel_blorp_libblorp_elk_a",
+        "mesa3d_desktop-intel_src_intel_common_libintel_clflushopt_a",
+        "mesa3d_desktop-intel_src_intel_common_libintel_common_a",
+        "mesa3d_desktop-intel_src_intel_compiler_elk_libintel_compiler_elk_a",
+        "mesa3d_desktop-intel_src_intel_compiler_libintel_compiler_a",
+        "mesa3d_desktop-intel_src_intel_decoder_libintel_decoder_a",
+        "mesa3d_desktop-intel_src_intel_decoder_libintel_decoder_brw_a",
+        "mesa3d_desktop-intel_src_intel_decoder_libintel_decoder_elk_a",
+        "mesa3d_desktop-intel_src_intel_dev_libintel_dev_a",
+        "mesa3d_desktop-intel_src_intel_ds_libintel-driver-ds_a",
+        "mesa3d_desktop-intel_src_intel_isl_libisl_a",
+        "mesa3d_desktop-intel_src_intel_isl_libisl_per_hw_ver110_a",
+        "mesa3d_desktop-intel_src_intel_isl_libisl_per_hw_ver120_a",
+        "mesa3d_desktop-intel_src_intel_isl_libisl_per_hw_ver125_a",
+        "mesa3d_desktop-intel_src_intel_isl_libisl_per_hw_ver200_a",
+        "mesa3d_desktop-intel_src_intel_isl_libisl_per_hw_ver300_a",
+        "mesa3d_desktop-intel_src_intel_isl_libisl_per_hw_ver40_a",
+        "mesa3d_desktop-intel_src_intel_isl_libisl_per_hw_ver50_a",
+        "mesa3d_desktop-intel_src_intel_isl_libisl_per_hw_ver60_a",
+        "mesa3d_desktop-intel_src_intel_isl_libisl_per_hw_ver70_a",
+        "mesa3d_desktop-intel_src_intel_isl_libisl_per_hw_ver75_a",
+        "mesa3d_desktop-intel_src_intel_isl_libisl_per_hw_ver80_a",
+        "mesa3d_desktop-intel_src_intel_isl_libisl_per_hw_ver90_a",
+        "mesa3d_desktop-intel_src_intel_isl_libisl_tiled_memcpy_a",
+        "mesa3d_desktop-intel_src_intel_isl_libisl_tiled_memcpy_sse41_a",
+        "mesa3d_desktop-intel_src_intel_perf_libintel_perf_a",
+        "mesa3d_desktop-intel_src_loader_libloader_a",
+        "mesa3d_desktop-intel_src_mesa_libmesa_a",
+        "mesa3d_desktop-intel_src_mesa_libmesa_sse41_a",
+        "mesa3d_desktop-intel_src_util_blake3_libblake3_a",
+        "mesa3d_desktop-intel_src_util_libmesa_util_a",
+        "mesa3d_desktop-intel_src_util_libmesa_util_sse41_a",
+        "mesa3d_desktop-intel_src_util_libxmlconfig_a",
+        "mesa3d_desktop-intel_subprojects_perfetto_libperfetto_a",
     ],
-    whole_static_libs: ["mesa_desktop_intel_src_gallium_frontends_dri_libdri_a"],
+    whole_static_libs: ["mesa3d_desktop-intel_src_gallium_frontends_dri_libdri_a"],
     local_include_dirs: [
         "include",
         "meson_generated/src",
@@ -8063,7 +8063,7 @@ cc_library_shared {
 }
 
 cc_library_static {
-    name: "mesa_desktop_intel_src_mesa_libmesa_sse41_a",
+    name: "mesa3d_desktop-intel_src_mesa_libmesa_sse41_a",
     srcs: ["src/mesa/main/sse_minmax.c"],
     cflags: [
         "-DAMD_LLVM_AVAILABLE=0",
@@ -8188,7 +8188,7 @@ cc_library_static {
 }
 
 cc_library_static {
-    name: "mesa_desktop_intel_src_mesa_libmesa_a",
+    name: "mesa3d_desktop-intel_src_mesa_libmesa_a",
     srcs: [
         "meson_generated/src/mapi/glapi/gen/api_exec_init.c",
         "meson_generated/src/mapi/glapi/gen/enums.c",
@@ -8544,7 +8544,7 @@ cc_library_static {
 }
 
 cc_library_static {
-    name: "mesa_desktop_intel_src_intel_decoder_libintel_decoder_elk_a",
+    name: "mesa3d_desktop-intel_src_intel_decoder_libintel_decoder_elk_a",
     cflags: [
         "-Wno-error",
         "-Wno-non-virtual-dtor",
@@ -8557,7 +8557,7 @@ cc_library_static {
 }
 
 cc_library_static {
-    name: "mesa_desktop_intel_src_intel_compiler_elk_libintel_compiler_elk_a",
+    name: "mesa3d_desktop-intel_src_intel_compiler_elk_libintel_compiler_elk_a",
     srcs: [
         "meson_generated/src/intel/compiler/elk/elk_nir_trig_workarounds.c",
         "src/intel/compiler/elk/elk_cfg.cpp",
@@ -8775,7 +8775,7 @@ cc_library_static {
 }
 
 cc_library_static {
-    name: "mesa_desktop_intel_src_intel_blorp_libblorp_elk_a",
+    name: "mesa3d_desktop-intel_src_intel_blorp_libblorp_elk_a",
     srcs: [
         "src/intel/blorp/blorp.c",
         "src/intel/blorp/blorp_blit.c",
@@ -8910,7 +8910,7 @@ cc_library_static {
 }
 
 cc_library_static {
-    name: "mesa_desktop_intel_src_gallium_winsys_sw_wrapper_libwsw_a",
+    name: "mesa3d_desktop-intel_src_gallium_winsys_sw_wrapper_libwsw_a",
     srcs: ["src/gallium/winsys/sw/wrapper/wrapper_sw_winsys.c"],
     cflags: [
         "-DAMD_LLVM_AVAILABLE=0",
@@ -9034,7 +9034,7 @@ cc_library_static {
 }
 
 cc_library_static {
-    name: "mesa_desktop_intel_src_gallium_winsys_sw_null_libws_null_a",
+    name: "mesa3d_desktop-intel_src_gallium_winsys_sw_null_libws_null_a",
     srcs: ["src/gallium/winsys/sw/null/null_sw_winsys.c"],
     cflags: [
         "-DAMD_LLVM_AVAILABLE=0",
@@ -9158,7 +9158,7 @@ cc_library_static {
 }
 
 cc_library_static {
-    name: "mesa_desktop_intel_src_gallium_winsys_sw_kms-dri_libswkmsdri_a",
+    name: "mesa3d_desktop-intel_src_gallium_winsys_sw_kms-dri_libswkmsdri_a",
     srcs: ["src/gallium/winsys/sw/kms-dri/kms_dri_sw_winsys.c"],
     cflags: [
         "-DAMD_LLVM_AVAILABLE=0",
@@ -9283,7 +9283,7 @@ cc_library_static {
 }
 
 cc_library_static {
-    name: "mesa_desktop_intel_src_gallium_winsys_sw_dri_libswdri_a",
+    name: "mesa3d_desktop-intel_src_gallium_winsys_sw_dri_libswdri_a",
     srcs: ["src/gallium/winsys/sw/dri/dri_sw_winsys.c"],
     cflags: [
         "-DAMD_LLVM_AVAILABLE=0",
@@ -9407,7 +9407,7 @@ cc_library_static {
 }
 
 cc_library_static {
-    name: "mesa_desktop_intel_src_gallium_winsys_iris_drm_libiriswinsys_a",
+    name: "mesa3d_desktop-intel_src_gallium_winsys_iris_drm_libiriswinsys_a",
     srcs: ["src/gallium/winsys/iris/drm/iris_drm_winsys.c"],
     cflags: [
         "-DAMD_LLVM_AVAILABLE=0",
@@ -9532,7 +9532,7 @@ cc_library_static {
 }
 
 cc_library_static {
-    name: "mesa_desktop_intel_src_gallium_frontends_dri_libdri_a",
+    name: "mesa3d_desktop-intel_src_gallium_frontends_dri_libdri_a",
     srcs: [
         "src/gallium/frontends/dri/dri2.c",
         "src/gallium/frontends/dri/dri_context.c",
@@ -9674,7 +9674,7 @@ cc_library_static {
 }
 
 cc_library_static {
-    name: "mesa_desktop_intel_src_gallium_drivers_iris_libiris_per_hw_ver90_a",
+    name: "mesa3d_desktop-intel_src_gallium_drivers_iris_libiris_per_hw_ver90_a",
     srcs: [
         "src/gallium/drivers/iris/iris_blorp.c",
         "src/gallium/drivers/iris/iris_indirect_gen.c",
@@ -9820,7 +9820,7 @@ cc_library_static {
 }
 
 cc_library_static {
-    name: "mesa_desktop_intel_src_gallium_drivers_iris_libiris_per_hw_ver80_a",
+    name: "mesa3d_desktop-intel_src_gallium_drivers_iris_libiris_per_hw_ver80_a",
     srcs: [
         "src/gallium/drivers/iris/iris_blorp.c",
         "src/gallium/drivers/iris/iris_indirect_gen.c",
@@ -9966,7 +9966,7 @@ cc_library_static {
 }
 
 cc_library_static {
-    name: "mesa_desktop_intel_src_gallium_drivers_iris_libiris_per_hw_ver300_a",
+    name: "mesa3d_desktop-intel_src_gallium_drivers_iris_libiris_per_hw_ver300_a",
     srcs: [
         "src/gallium/drivers/iris/iris_blorp.c",
         "src/gallium/drivers/iris/iris_indirect_gen.c",
@@ -10112,7 +10112,7 @@ cc_library_static {
 }
 
 cc_library_static {
-    name: "mesa_desktop_intel_src_gallium_drivers_iris_libiris_per_hw_ver200_a",
+    name: "mesa3d_desktop-intel_src_gallium_drivers_iris_libiris_per_hw_ver200_a",
     srcs: [
         "src/gallium/drivers/iris/iris_blorp.c",
         "src/gallium/drivers/iris/iris_indirect_gen.c",
@@ -10258,7 +10258,7 @@ cc_library_static {
 }
 
 cc_library_static {
-    name: "mesa_desktop_intel_src_gallium_drivers_iris_libiris_per_hw_ver125_a",
+    name: "mesa3d_desktop-intel_src_gallium_drivers_iris_libiris_per_hw_ver125_a",
     srcs: [
         "src/gallium/drivers/iris/iris_blorp.c",
         "src/gallium/drivers/iris/iris_indirect_gen.c",
@@ -10404,7 +10404,7 @@ cc_library_static {
 }
 
 cc_library_static {
-    name: "mesa_desktop_intel_src_gallium_drivers_iris_libiris_per_hw_ver120_a",
+    name: "mesa3d_desktop-intel_src_gallium_drivers_iris_libiris_per_hw_ver120_a",
     srcs: [
         "src/gallium/drivers/iris/iris_blorp.c",
         "src/gallium/drivers/iris/iris_indirect_gen.c",
@@ -10550,7 +10550,7 @@ cc_library_static {
 }
 
 cc_library_static {
-    name: "mesa_desktop_intel_src_gallium_drivers_iris_libiris_per_hw_ver110_a",
+    name: "mesa3d_desktop-intel_src_gallium_drivers_iris_libiris_per_hw_ver110_a",
     srcs: [
         "src/gallium/drivers/iris/iris_blorp.c",
         "src/gallium/drivers/iris/iris_indirect_gen.c",
@@ -10696,7 +10696,7 @@ cc_library_static {
 }
 
 cc_library_static {
-    name: "mesa_desktop_intel_src_gallium_drivers_iris_libiris_a",
+    name: "mesa3d_desktop-intel_src_gallium_drivers_iris_libiris_a",
     srcs: [
         "src/gallium/drivers/iris/i915/iris_batch.c",
         "src/gallium/drivers/iris/i915/iris_bufmgr.c",
@@ -10867,7 +10867,7 @@ cc_library_static {
 }
 
 cc_library_static {
-    name: "mesa_desktop_intel_src_gallium_auxiliary_pipe-loader_libpipe_loader_static_a",
+    name: "mesa3d_desktop-intel_src_gallium_auxiliary_pipe-loader_libpipe_loader_static_a",
     srcs: [
         "src/gallium/auxiliary/pipe-loader/pipe_loader.c",
         "src/gallium/auxiliary/pipe-loader/pipe_loader_drm.c",
@@ -11000,7 +11000,7 @@ cc_library_static {
 }
 
 cc_library_static {
-    name: "mesa_desktop_intel_src_gallium_auxiliary_libgalliumvl_a",
+    name: "mesa3d_desktop-intel_src_gallium_auxiliary_libgalliumvl_a",
     srcs: [
         "src/gallium/auxiliary/vl/vl_bicubic_filter.c",
         "src/gallium/auxiliary/vl/vl_codec.c",
@@ -11145,7 +11145,7 @@ cc_library_static {
 }
 
 cc_library_static {
-    name: "mesa_desktop_intel_src_gallium_auxiliary_libgallium_a",
+    name: "mesa3d_desktop-intel_src_gallium_auxiliary_libgallium_a",
     srcs: [
         "meson_generated/src/gallium/auxiliary/tr_util.c",
         "meson_generated/src/gallium/auxiliary/u_indices_gen.c",
@@ -11428,7 +11428,7 @@ cc_library_static {
 }
 
 cc_library_static {
-    name: "mesa_desktop_intel_src_compiler_glsl_libglsl_a",
+    name: "mesa3d_desktop-intel_src_compiler_glsl_libglsl_a",
     srcs: [
         "meson_generated/src/compiler/glsl/glsl_lexer.cpp",
         "meson_generated/src/compiler/glsl/glsl_parser.cpp",
@@ -11636,7 +11636,7 @@ cc_library_static {
 }
 
 cc_library_static {
-    name: "mesa_desktop_intel_src_compiler_glsl_glcpp_libglcpp_a",
+    name: "mesa3d_desktop-intel_src_compiler_glsl_glcpp_libglcpp_a",
     srcs: [
         "meson_generated/src/compiler/glsl/glcpp/glcpp-lex.c",
         "meson_generated/src/compiler/glsl/glcpp/glcpp-parse.c",
@@ -11769,7 +11769,7 @@ cc_library_static {
 }
 
 cc_library_static {
-    name: "mesa_desktop_intel_src_gallium_auxiliary_pipe-loader_libpipe_loader_dynamic_a",
+    name: "mesa3d_desktop-intel_src_gallium_auxiliary_pipe-loader_libpipe_loader_dynamic_a",
     srcs: [
         "src/gallium/auxiliary/pipe-loader/pipe_loader.c",
         "src/gallium/auxiliary/pipe-loader/pipe_loader_drm.c",

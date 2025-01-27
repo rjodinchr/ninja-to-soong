@@ -4,16 +4,18 @@
 use super::*;
 
 #[derive(Default)]
-pub struct MesaDesktopIntel {
+pub struct Mesa3DDesktopIntel {
     src_path: PathBuf,
 }
 
-impl Project for MesaDesktopIntel {
+impl Project for Mesa3DDesktopIntel {
     fn get_name(&self) -> &'static str {
-        "mesa_desktop_intel"
+        "mesa3d/desktop-intel"
     }
     fn get_android_path(&self, ctx: &Context) -> PathBuf {
-        ctx.android_path.join("vendor/google").join(self.get_name())
+        ctx.android_path
+            .join("vendor/google/graphics")
+            .join(self.get_name())
     }
     fn get_test_path(&self, ctx: &Context) -> PathBuf {
         ctx.test_path.join(self.get_name())
@@ -45,6 +47,7 @@ impl Project for MesaDesktopIntel {
         } else {
             self.get_test_path(ctx)
         };
+
         if !ctx.skip_gen_ninja {
             execute_cmd!(
                 "bash",
@@ -64,7 +67,7 @@ impl Project for MesaDesktopIntel {
         const MESON_GENERATED: &str = "meson_generated";
         let mut package = SoongPackage::new(
             "//visibility:public",
-            "mesa_desktop_intel_licenses",
+            "mesa3d_desktop_intel_licenses",
             &[
                 "SPDX-license-identifier-MIT",
                 "SPDX-license-identifier-Apache-2.0",
@@ -82,27 +85,27 @@ impl Project for MesaDesktopIntel {
             NinjaTargetsToGenMap::from(&[
                 NinjaTargetToGen(
                     "src/egl/libEGL_mesa.so.1.0.0",
-                    Some("libEGL_mesa_desktop_intel"),
+                    Some("libEGL_mesa3d_desktop_intel"),
                     Some("libEGL_mesa"),
                 ),
                 NinjaTargetToGen(
                     "src/mapi/es2api/libGLESv2_mesa.so.2.0.0",
-                    Some("libGLESv2_mesa_desktop_intel"),
+                    Some("libGLESv2_mesa3d_desktop_intel"),
                     Some("libGLESv2_mesa"),
                 ),
                 NinjaTargetToGen(
                     "src/mapi/es1api/libGLESv1_CM_mesa.so.1.1.0",
-                    Some("libGLESv1_CM_mesa_desktop_intel"),
+                    Some("libGLESv1_CM_mesa3d_desktop_intel"),
                     Some("libGLESv1_CM_mesa"),
                 ),
                 NinjaTargetToGen(
                     "src/intel/vulkan/libvulkan_intel.so",
-                    Some("libvulkan_mesa_desktop_intel"),
+                    Some("libvulkan_mesa3d_desktop_intel"),
                     Some("vulkan.intel"),
                 ),
                 NinjaTargetToGen(
                     "src/tool/pps/pps-producer",
-                    Some("pps-producer_mesa_desktop_intel"),
+                    Some("pps-producer_mesa3d_desktop_intel"),
                     Some("pps-producer"),
                 ),
             ]),
