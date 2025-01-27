@@ -17,7 +17,7 @@ define_ProjectId!(
     (Clvk, clvk),
     (Clspv, clspv),
     (LlvmProject, llvm_project),
-    (MesaDesktopIntel, mesa_desktop_intel),
+    (Mesa3DDesktopIntel, mesa3d_desktop_intel),
     (SpirvHeaders, spirv_headers),
     (SpirvTools, spirv_tools)
 );
