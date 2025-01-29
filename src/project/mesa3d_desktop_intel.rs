@@ -84,6 +84,16 @@ impl Project for Mesa3DDesktopIntel {
         .generate(
             NinjaTargetsToGenMap::from(&[
                 NinjaTargetToGen(
+                    "src/mapi/shared-glapi/libglapi.so.0.0.0",
+                    Some("libglapi_mesa3d_desktop_intel"),
+                    Some("libglapi"),
+                ),
+                NinjaTargetToGen(
+                    "src/gallium/targets/dri/libgallium_dri.so",
+                    Some("libgallium_dri_mesa3d_desktop_intel"),
+                    Some("libgallium_dri"),
+                ),
+                NinjaTargetToGen(
                     "src/egl/libEGL_mesa.so.1.0.0",
                     Some("libEGL_mesa3d_desktop_intel"),
                     Some("libEGL_mesa"),
