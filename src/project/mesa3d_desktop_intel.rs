@@ -110,7 +110,7 @@ impl Project for Mesa3DDesktopIntel {
                 ),
                 NinjaTargetToGen(
                     "src/intel/vulkan/libvulkan_intel.so",
-                    Some("libvulkan_mesa3d_desktop_intel"),
+                    Some("libvulkan_intel_mesa3d_desktop_intel"),
                     Some("vulkan.intel"),
                 ),
                 NinjaTargetToGen(

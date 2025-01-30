@@ -3950,7 +3950,7 @@ cc_library_shared {
 }
 
 cc_library_shared {
-    name: "libvulkan_mesa3d_desktop_intel",
+    name: "libvulkan_intel_mesa3d_desktop_intel",
     stem: "vulkan.intel",
     srcs: ["src/intel/vulkan/anv_gem.c"],
     cflags: [
