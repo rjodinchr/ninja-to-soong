@@ -4,7 +4,9 @@
 use super::*;
 
 #[derive(Default)]
-pub struct MesaDesktopIntel();
+pub struct MesaDesktopIntel {
+    src_path: PathBuf,
+}
 
 impl Project for MesaDesktopIntel {
     fn get_name(&self) -> &'static str {
@@ -21,7 +23,7 @@ impl Project for MesaDesktopIntel {
         ctx: &Context,
         _projects_map: &ProjectsMap,
     ) -> Result<String, String> {
-        let src_path = if let Ok(path) = std::env::var("N2S_MESA_PATH") {
+        self.src_path = if let Ok(path) = std::env::var("N2S_MESA_PATH") {
             PathBuf::from(path)
         } else {
             self.get_android_path(ctx)
@@ -35,7 +37,7 @@ impl Project for MesaDesktopIntel {
                 "bash",
                 [
                     &path_to_string(self.get_test_path(ctx).join("build_intel_clc.sh")),
-                    &path_to_string(&src_path),
+                    &path_to_string(&self.src_path),
                     &path_to_string(&intel_clc_build_path)
                 ]
             )?;
@@ -48,7 +50,7 @@ impl Project for MesaDesktopIntel {
                 "bash",
                 [
                     &path_to_string(self.get_test_path(ctx).join("gen-ninja.sh")),
-                    &path_to_string(&src_path),
+                    &path_to_string(&self.src_path),
                     &path_to_string(&build_path),
                     &path_to_string(intel_clc_path),
                     &path_to_string(&ndk_path)
@@ -105,7 +107,7 @@ impl Project for MesaDesktopIntel {
                 ),
             ]),
             parse_build_ninja::<MesonNinjaTarget>(&build_path)?,
-            &src_path,
+            &self.src_path,
             &ndk_path,
             &build_path,
             Some(MESON_GENERATED),
