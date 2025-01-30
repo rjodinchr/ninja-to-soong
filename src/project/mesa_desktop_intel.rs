@@ -207,7 +207,7 @@ impl Project for MesaDesktopIntel {
     }
     fn filter_include(&self, include: &Path) -> bool {
         let inc = path_to_string(include);
-        let subprojects = Path::new(self.get_name()).join("subprojects");
+        let subprojects = self.src_path.join("subprojects");
         !include.ends_with("android_stub")
             && (!inc.contains(&path_to_string(&subprojects))
                 || inc.contains(&path_to_string(&subprojects.join("perfetto"))))
