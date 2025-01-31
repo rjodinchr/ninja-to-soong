@@ -22,8 +22,9 @@ jobs:
         shell: bash
         run: |
           set -x
+          shopt -s globstar
           echo "android=$(realpath ${{ github.workspace }}/../android)" >> $GITHUB_ENV
-          echo "key=$(git log -1 --format='%h' tests/*/checkout.sh tests/*/gen-ninja.sh)" >> $GITHUB_ENV
+          echo "key=$(git log -1 --format='%h' tests/**/checkout.sh tests/**/gen-ninja.sh)" >> $GITHUB_ENV
           echo "tmp_dir=$(realpath ${{ github.workspace }}/../tmp)" >> $GITHUB_ENV
       - name: Get repositories from cache
         id: checkout-repositories
@@ -39,10 +40,11 @@ jobs:
           N2S_NDK_PATH: ${{ env.android }}
         run: |
           set -x
+          shopt -s globstar
           mkdir -p "${{ env.android }}"
-          for repo in tests/*
+          for checkout in tests/**/checkout.sh
           do
-            bash "${repo}/checkout.sh" "${{ env.android }}"
+            bash "${checkout}" "${{ env.android }}"
           done
           PATH="${{ env.android }}/depot_tools:${PATH}" cargo run --release -- --skip-build --aosp-path "${{ env.android }}"
       - name: Tests w/ cache
