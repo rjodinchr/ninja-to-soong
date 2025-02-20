@@ -85,37 +85,37 @@ impl Project for Mesa3DDesktopIntel {
             NinjaTargetsToGenMap::from(&[
                 NinjaTargetToGen(
                     "src/mapi/shared-glapi/libglapi.so.0.0.0",
-                    Some("libglapi_mesa3d_desktop_intel"),
+                    Some("mesa3d_desktop-intel_libglapi"),
                     Some("libglapi"),
                 ),
                 NinjaTargetToGen(
                     "src/gallium/targets/dri/libgallium_dri.so",
-                    Some("libgallium_dri_mesa3d_desktop_intel"),
+                    Some("mesa3d_desktop-intel_libgallium_dri"),
                     Some("libgallium_dri"),
                 ),
                 NinjaTargetToGen(
                     "src/egl/libEGL_mesa.so.1.0.0",
-                    Some("libEGL_mesa3d_desktop_intel"),
+                    Some("mesa3d_desktop-intel_libEGL_mesa"),
                     Some("libEGL_mesa"),
                 ),
                 NinjaTargetToGen(
                     "src/mapi/es2api/libGLESv2_mesa.so.2.0.0",
-                    Some("libGLESv2_mesa3d_desktop_intel"),
+                    Some("mesa3d_desktop-intel_libGLESv2_mesa"),
                     Some("libGLESv2_mesa"),
                 ),
                 NinjaTargetToGen(
                     "src/mapi/es1api/libGLESv1_CM_mesa.so.1.1.0",
-                    Some("libGLESv1_CM_mesa3d_desktop_intel"),
+                    Some("mesa3d_desktop-intel_libGLESv1_CM_mesa"),
                     Some("libGLESv1_CM_mesa"),
                 ),
                 NinjaTargetToGen(
                     "src/intel/vulkan/libvulkan_intel.so",
-                    Some("libvulkan_intel_mesa3d_desktop_intel"),
+                    Some("mesa3d_desktop-intel_libvulkan_intel"),
                     Some("vulkan.intel"),
                 ),
                 NinjaTargetToGen(
                     "src/tool/pps/pps-producer",
-                    Some("pps-producer_mesa3d_desktop_intel"),
+                    Some("mesa3d_desktop-intel_pps-producer"),
                     Some("pps-producer"),
                 ),
             ]),
