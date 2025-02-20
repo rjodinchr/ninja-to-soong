@@ -31,7 +31,7 @@ license {
 }
 
 cc_binary {
-    name: "pps-producer_mesa3d_desktop_intel",
+    name: "mesa3d_desktop-intel_pps-producer",
     stem: "pps-producer",
     srcs: [
         "src/tool/pps/pps_datasource.cc",
@@ -3542,7 +3542,7 @@ cc_library_static {
 }
 
 cc_library_shared {
-    name: "libglapi_mesa3d_desktop_intel",
+    name: "mesa3d_desktop-intel_libglapi",
     stem: "libglapi",
     srcs: [
         "src/mapi/entry.c",
@@ -3690,7 +3690,7 @@ cc_library_shared {
 }
 
 cc_library_shared {
-    name: "libGLESv2_mesa3d_desktop_intel",
+    name: "mesa3d_desktop-intel_libGLESv2_mesa",
     stem: "libGLESv2_mesa",
     srcs: ["src/mapi/entry.c"],
     cflags: [
@@ -3800,7 +3800,7 @@ cc_library_shared {
     ],
     shared_libs: [
         "libdrm",
-        "libglapi_mesa3d_desktop_intel",
+        "mesa3d_desktop-intel_libglapi",
     ],
     static_libs: ["mesa3d_desktop-intel_src_c11_impl_libmesa_util_c11_a"],
     local_include_dirs: [
@@ -3820,7 +3820,7 @@ cc_library_shared {
 }
 
 cc_library_shared {
-    name: "libGLESv1_CM_mesa3d_desktop_intel",
+    name: "mesa3d_desktop-intel_libGLESv1_CM_mesa",
     stem: "libGLESv1_CM_mesa",
     srcs: ["src/mapi/entry.c"],
     cflags: [
@@ -3930,7 +3930,7 @@ cc_library_shared {
     ],
     shared_libs: [
         "libdrm",
-        "libglapi_mesa3d_desktop_intel",
+        "mesa3d_desktop-intel_libglapi",
     ],
     static_libs: ["mesa3d_desktop-intel_src_c11_impl_libmesa_util_c11_a"],
     local_include_dirs: [
@@ -3950,7 +3950,7 @@ cc_library_shared {
 }
 
 cc_library_shared {
-    name: "libvulkan_intel_mesa3d_desktop_intel",
+    name: "mesa3d_desktop-intel_libvulkan_intel",
     stem: "vulkan.intel",
     srcs: ["src/intel/vulkan/anv_gem.c"],
     cflags: [
@@ -7560,7 +7560,7 @@ cc_library_static {
 }
 
 cc_library_shared {
-    name: "libgallium_dri_mesa3d_desktop_intel",
+    name: "mesa3d_desktop-intel_libgallium_dri",
     stem: "libgallium_dri",
     srcs: ["src/gallium/targets/dri/dri_target.c"],
     cflags: [
@@ -7670,12 +7670,12 @@ cc_library_shared {
     shared_libs: [
         "libcutils",
         "libdrm",
-        "libglapi_mesa3d_desktop_intel",
         "libhardware",
         "liblog",
         "libnativewindow",
         "libsync",
         "libz",
+        "mesa3d_desktop-intel_libglapi",
     ],
     static_libs: [
         "mesa3d_desktop-intel_src_c11_impl_libmesa_util_c11_a",
@@ -11596,7 +11596,7 @@ cc_library_static {
 }
 
 cc_library_shared {
-    name: "libEGL_mesa3d_desktop_intel",
+    name: "mesa3d_desktop-intel_libEGL_mesa",
     stem: "libEGL_mesa",
     srcs: [
         "src/egl/drivers/dri2/egl_dri2.c",
@@ -11726,13 +11726,13 @@ cc_library_shared {
     shared_libs: [
         "libcutils",
         "libdrm",
-        "libgallium_dri_mesa3d_desktop_intel",
-        "libglapi_mesa3d_desktop_intel",
         "libhardware",
         "liblog",
         "libnativewindow",
         "libsync",
         "libz",
+        "mesa3d_desktop-intel_libgallium_dri",
+        "mesa3d_desktop-intel_libglapi",
     ],
     static_libs: [
         "mesa3d_desktop-intel_src_c11_impl_libmesa_util_c11_a",
