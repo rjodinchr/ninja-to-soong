@@ -169,11 +169,12 @@ impl Project for Mesa3DDesktopIntel {
                 "header_libs",
                 SoongProp::VecStr(libs.into_iter().map(|lib| String::from(lib)).collect()),
             )
+            .add_prop("enabled", SoongProp::Bool(false))
             .add_prop(
                 "arch",
                 SoongNamedProp::new_prop(
-                    "x86",
-                    SoongNamedProp::new_prop("enabled", SoongProp::Bool(false)),
+                    "x86_64",
+                    SoongNamedProp::new_prop("enabled", SoongProp::Bool(true)),
                 ),
             )
     }

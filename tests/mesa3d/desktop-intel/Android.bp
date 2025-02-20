@@ -184,9 +184,10 @@ cc_binary {
         "src/tool/pps",
         "subprojects/perfetto/sdk",
     ],
+    enabled: false,
     arch: {
-        x86: {
-            enabled: false,
+        x86_64: {
+            enabled: true,
         },
     },
 }
@@ -201,9 +202,10 @@ cc_library_static {
         "-Wno-non-virtual-dtor",
     ],
     local_include_dirs: ["subprojects/perfetto"],
+    enabled: false,
     arch: {
-        x86: {
-            enabled: false,
+        x86_64: {
+            enabled: true,
         },
     },
 }
@@ -321,9 +323,10 @@ cc_library_static {
         "src",
         "src/util",
     ],
+    enabled: false,
     arch: {
-        x86: {
-            enabled: false,
+        x86_64: {
+            enabled: true,
         },
     },
 }
@@ -529,9 +532,10 @@ cc_library_static {
         "subprojects/perfetto/sdk",
     ],
     header_libs: ["libdrm_headers"],
+    enabled: false,
     arch: {
-        x86: {
-            enabled: false,
+        x86_64: {
+            enabled: true,
         },
     },
 }
@@ -651,9 +655,10 @@ cc_library_static {
         "-Wno-non-virtual-dtor",
     ],
     local_include_dirs: ["src/util/blake3"],
+    enabled: false,
     arch: {
-        x86: {
-            enabled: false,
+        x86_64: {
+            enabled: true,
         },
     },
 }
@@ -779,9 +784,10 @@ cc_library_static {
         "subprojects/perfetto/sdk",
     ],
     header_libs: ["libdrm_headers"],
+    enabled: false,
     arch: {
-        x86: {
-            enabled: false,
+        x86_64: {
+            enabled: true,
         },
     },
 }
@@ -912,9 +918,10 @@ cc_library_static {
         "src/intel/perf",
         "subprojects/perfetto/sdk",
     ],
+    enabled: false,
     arch: {
-        x86: {
-            enabled: false,
+        x86_64: {
+            enabled: true,
         },
     },
 }
@@ -1037,9 +1044,10 @@ cc_library_static {
         "src/intel/isl",
         "subprojects/perfetto/sdk",
     ],
+    enabled: false,
     arch: {
-        x86: {
-            enabled: false,
+        x86_64: {
+            enabled: true,
         },
     },
 }
@@ -1162,9 +1170,10 @@ cc_library_static {
         "src/intel/isl",
         "subprojects/perfetto/sdk",
     ],
+    enabled: false,
     arch: {
-        x86: {
-            enabled: false,
+        x86_64: {
+            enabled: true,
         },
     },
 }
@@ -1295,9 +1304,10 @@ cc_library_static {
         "src/intel/isl",
         "subprojects/perfetto/sdk",
     ],
+    enabled: false,
     arch: {
-        x86: {
-            enabled: false,
+        x86_64: {
+            enabled: true,
         },
     },
 }
@@ -1428,9 +1438,10 @@ cc_library_static {
         "src/intel/isl",
         "subprojects/perfetto/sdk",
     ],
+    enabled: false,
     arch: {
-        x86: {
-            enabled: false,
+        x86_64: {
+            enabled: true,
         },
     },
 }
@@ -1560,9 +1571,10 @@ cc_library_static {
         "src/intel/isl",
         "subprojects/perfetto/sdk",
     ],
+    enabled: false,
     arch: {
-        x86: {
-            enabled: false,
+        x86_64: {
+            enabled: true,
         },
     },
 }
@@ -1693,9 +1705,10 @@ cc_library_static {
         "src/intel/isl",
         "subprojects/perfetto/sdk",
     ],
+    enabled: false,
     arch: {
-        x86: {
-            enabled: false,
+        x86_64: {
+            enabled: true,
         },
     },
 }
@@ -1826,9 +1839,10 @@ cc_library_static {
         "src/intel/isl",
         "subprojects/perfetto/sdk",
     ],
+    enabled: false,
     arch: {
-        x86: {
-            enabled: false,
+        x86_64: {
+            enabled: true,
         },
     },
 }
@@ -1958,9 +1972,10 @@ cc_library_static {
         "src/intel/isl",
         "subprojects/perfetto/sdk",
     ],
+    enabled: false,
     arch: {
-        x86: {
-            enabled: false,
+        x86_64: {
+            enabled: true,
         },
     },
 }
@@ -2091,9 +2106,10 @@ cc_library_static {
         "src/intel/isl",
         "subprojects/perfetto/sdk",
     ],
+    enabled: false,
     arch: {
-        x86: {
-            enabled: false,
+        x86_64: {
+            enabled: true,
         },
     },
 }
@@ -2224,9 +2240,10 @@ cc_library_static {
         "src/intel/isl",
         "subprojects/perfetto/sdk",
     ],
+    enabled: false,
     arch: {
-        x86: {
-            enabled: false,
+        x86_64: {
+            enabled: true,
         },
     },
 }
@@ -2357,9 +2374,10 @@ cc_library_static {
         "src/intel/isl",
         "subprojects/perfetto/sdk",
     ],
+    enabled: false,
     arch: {
-        x86: {
-            enabled: false,
+        x86_64: {
+            enabled: true,
         },
     },
 }
@@ -2490,9 +2508,10 @@ cc_library_static {
         "src/intel/isl",
         "subprojects/perfetto/sdk",
     ],
+    enabled: false,
     arch: {
-        x86: {
-            enabled: false,
+        x86_64: {
+            enabled: true,
         },
     },
 }
@@ -2623,9 +2642,10 @@ cc_library_static {
         "src/intel/isl",
         "subprojects/perfetto/sdk",
     ],
+    enabled: false,
     arch: {
-        x86: {
-            enabled: false,
+        x86_64: {
+            enabled: true,
         },
     },
 }
@@ -2755,9 +2775,10 @@ cc_library_static {
         "src/intel/isl",
         "subprojects/perfetto/sdk",
     ],
+    enabled: false,
     arch: {
-        x86: {
-            enabled: false,
+        x86_64: {
+            enabled: true,
         },
     },
 }
@@ -2888,9 +2909,10 @@ cc_library_static {
         "src/intel/isl",
         "subprojects/perfetto/sdk",
     ],
+    enabled: false,
     arch: {
-        x86: {
-            enabled: false,
+        x86_64: {
+            enabled: true,
         },
     },
 }
@@ -3017,9 +3039,10 @@ cc_library_static {
         "src/tool",
         "subprojects/perfetto/sdk",
     ],
+    enabled: false,
     arch: {
-        x86: {
-            enabled: false,
+        x86_64: {
+            enabled: true,
         },
     },
 }
@@ -3150,9 +3173,10 @@ cc_library_static {
         "subprojects/perfetto/sdk",
     ],
     header_libs: ["libdrm_headers"],
+    enabled: false,
     arch: {
-        x86: {
-            enabled: false,
+        x86_64: {
+            enabled: true,
         },
     },
 }
@@ -3296,9 +3320,10 @@ cc_library_static {
         "src/intel/genxml",
         "subprojects/perfetto/sdk",
     ],
+    enabled: false,
     arch: {
-        x86: {
-            enabled: false,
+        x86_64: {
+            enabled: true,
         },
     },
 }
@@ -3416,9 +3441,10 @@ cc_library_static {
         "src",
         "src/intel/common",
     ],
+    enabled: false,
     arch: {
-        x86: {
-            enabled: false,
+        x86_64: {
+            enabled: true,
         },
     },
 }
@@ -3534,9 +3560,10 @@ cc_library_static {
         "src",
         "src/c11/impl",
     ],
+    enabled: false,
     arch: {
-        x86: {
-            enabled: false,
+        x86_64: {
+            enabled: true,
         },
     },
 }
@@ -3682,9 +3709,10 @@ cc_library_shared {
         "src/mapi/shared-glapi",
         "subprojects/perfetto/sdk",
     ],
+    enabled: false,
     arch: {
-        x86: {
-            enabled: false,
+        x86_64: {
+            enabled: true,
         },
     },
 }
@@ -3812,9 +3840,10 @@ cc_library_shared {
         "src/mapi",
         "src/mapi/es2api",
     ],
+    enabled: false,
     arch: {
-        x86: {
-            enabled: false,
+        x86_64: {
+            enabled: true,
         },
     },
 }
@@ -3942,9 +3971,10 @@ cc_library_shared {
         "src/mapi",
         "src/mapi/es1api",
     ],
+    enabled: false,
     arch: {
-        x86: {
-            enabled: false,
+        x86_64: {
+            enabled: true,
         },
     },
 }
@@ -4149,9 +4179,10 @@ cc_library_shared {
         "src/vulkan/wsi",
         "subprojects/perfetto/sdk",
     ],
+    enabled: false,
     arch: {
-        x86: {
-            enabled: false,
+        x86_64: {
+            enabled: true,
         },
     },
 }
@@ -4286,9 +4317,10 @@ cc_library_static {
         "subprojects/perfetto/sdk",
     ],
     header_libs: ["libdrm_headers"],
+    enabled: false,
     arch: {
-        x86: {
-            enabled: false,
+        x86_64: {
+            enabled: true,
         },
     },
 }
@@ -4420,9 +4452,10 @@ cc_library_static {
         "src/vulkan/util",
         "subprojects/perfetto/sdk",
     ],
+    enabled: false,
     arch: {
-        x86: {
-            enabled: false,
+        x86_64: {
+            enabled: true,
         },
     },
 }
@@ -4571,9 +4604,10 @@ cc_library_static {
         "src/vulkan/util",
         "subprojects/perfetto/sdk",
     ],
+    enabled: false,
     arch: {
-        x86: {
-            enabled: false,
+        x86_64: {
+            enabled: true,
         },
     },
 }
@@ -4759,9 +4793,10 @@ cc_library_static {
         "subprojects/perfetto/sdk",
     ],
     header_libs: ["libdrm_headers"],
+    enabled: false,
     arch: {
-        x86: {
-            enabled: false,
+        x86_64: {
+            enabled: true,
         },
     },
 }
@@ -4891,9 +4926,10 @@ cc_library_static {
         "subprojects/perfetto/sdk",
     ],
     header_libs: ["libdrm_headers"],
+    enabled: false,
     arch: {
-        x86: {
-            enabled: false,
+        x86_64: {
+            enabled: true,
         },
     },
 }
@@ -5017,9 +5053,10 @@ cc_library_static {
         "src",
         "src/util/u_gralloc",
     ],
+    enabled: false,
     arch: {
-        x86: {
-            enabled: false,
+        x86_64: {
+            enabled: true,
         },
     },
 }
@@ -5142,9 +5179,10 @@ cc_library_static {
         "src/util",
         "subprojects/perfetto/sdk",
     ],
+    enabled: false,
     arch: {
-        x86: {
-            enabled: false,
+        x86_64: {
+            enabled: true,
         },
     },
 }
@@ -5305,9 +5343,10 @@ cc_library_static {
         "src/vulkan/wsi",
         "subprojects/perfetto/sdk",
     ],
+    enabled: false,
     arch: {
-        x86: {
-            enabled: false,
+        x86_64: {
+            enabled: true,
         },
     },
 }
@@ -5468,9 +5507,10 @@ cc_library_static {
         "src/vulkan/wsi",
         "subprojects/perfetto/sdk",
     ],
+    enabled: false,
     arch: {
-        x86: {
-            enabled: false,
+        x86_64: {
+            enabled: true,
         },
     },
 }
@@ -5631,9 +5671,10 @@ cc_library_static {
         "src/vulkan/wsi",
         "subprojects/perfetto/sdk",
     ],
+    enabled: false,
     arch: {
-        x86: {
-            enabled: false,
+        x86_64: {
+            enabled: true,
         },
     },
 }
@@ -5794,9 +5835,10 @@ cc_library_static {
         "src/vulkan/wsi",
         "subprojects/perfetto/sdk",
     ],
+    enabled: false,
     arch: {
-        x86: {
-            enabled: false,
+        x86_64: {
+            enabled: true,
         },
     },
 }
@@ -5957,9 +5999,10 @@ cc_library_static {
         "src/vulkan/wsi",
         "subprojects/perfetto/sdk",
     ],
+    enabled: false,
     arch: {
-        x86: {
-            enabled: false,
+        x86_64: {
+            enabled: true,
         },
     },
 }
@@ -6120,9 +6163,10 @@ cc_library_static {
         "src/vulkan/wsi",
         "subprojects/perfetto/sdk",
     ],
+    enabled: false,
     arch: {
-        x86: {
-            enabled: false,
+        x86_64: {
+            enabled: true,
         },
     },
 }
@@ -6330,9 +6374,10 @@ cc_library_static {
         "hwvulkan_headers",
         "libdrm_headers",
     ],
+    enabled: false,
     arch: {
-        x86: {
-            enabled: false,
+        x86_64: {
+            enabled: true,
         },
     },
 }
@@ -6462,9 +6507,10 @@ cc_library_static {
         "src/intel/ds",
         "subprojects/perfetto/sdk",
     ],
+    enabled: false,
     arch: {
-        x86: {
-            enabled: false,
+        x86_64: {
+            enabled: true,
         },
     },
 }
@@ -6475,9 +6521,10 @@ cc_library_static {
         "-Wno-error",
         "-Wno-non-virtual-dtor",
     ],
+    enabled: false,
     arch: {
-        x86: {
-            enabled: false,
+        x86_64: {
+            enabled: true,
         },
     },
 }
@@ -6600,9 +6647,10 @@ cc_library_static {
         "src/intel/decoder",
         "subprojects/perfetto/sdk",
     ],
+    enabled: false,
     arch: {
-        x86: {
-            enabled: false,
+        x86_64: {
+            enabled: true,
         },
     },
 }
@@ -6816,9 +6864,10 @@ cc_library_static {
         "src/intel/compiler",
         "subprojects/perfetto/sdk",
     ],
+    enabled: false,
     arch: {
-        x86: {
-            enabled: false,
+        x86_64: {
+            enabled: true,
         },
     },
 }
@@ -6951,9 +7000,10 @@ cc_library_static {
         "src/intel/genxml",
         "subprojects/perfetto/sdk",
     ],
+    enabled: false,
     arch: {
-        x86: {
-            enabled: false,
+        x86_64: {
+            enabled: true,
         },
     },
 }
@@ -7096,9 +7146,10 @@ cc_library_static {
         "src/mesa",
         "subprojects/perfetto/sdk",
     ],
+    enabled: false,
     arch: {
-        x86: {
-            enabled: false,
+        x86_64: {
+            enabled: true,
         },
     },
 }
@@ -7428,9 +7479,10 @@ cc_library_static {
         "src/compiler/nir",
         "subprojects/perfetto/sdk",
     ],
+    enabled: false,
     arch: {
-        x86: {
-            enabled: false,
+        x86_64: {
+            enabled: true,
         },
     },
 }
@@ -7552,9 +7604,10 @@ cc_library_static {
         "src",
         "src/compiler",
     ],
+    enabled: false,
     arch: {
-        x86: {
-            enabled: false,
+        x86_64: {
+            enabled: true,
         },
     },
 }
@@ -7755,9 +7808,10 @@ cc_library_shared {
         "src/mesa",
         "subprojects/perfetto/sdk",
     ],
+    enabled: false,
     arch: {
-        x86: {
-            enabled: false,
+        x86_64: {
+            enabled: true,
         },
     },
 }
@@ -7880,9 +7934,10 @@ cc_library_static {
         "src/mapi",
         "src/mesa",
     ],
+    enabled: false,
     arch: {
-        x86: {
-            enabled: false,
+        x86_64: {
+            enabled: true,
         },
     },
 }
@@ -8236,9 +8291,10 @@ cc_library_static {
         "src/mesa/main",
         "subprojects/perfetto/sdk",
     ],
+    enabled: false,
     arch: {
-        x86: {
-            enabled: false,
+        x86_64: {
+            enabled: true,
         },
     },
 }
@@ -8363,9 +8419,10 @@ cc_library_static {
         "subprojects/perfetto/sdk",
     ],
     header_libs: ["libdrm_headers"],
+    enabled: false,
     arch: {
-        x86: {
-            enabled: false,
+        x86_64: {
+            enabled: true,
         },
     },
 }
@@ -8376,9 +8433,10 @@ cc_library_static {
         "-Wno-error",
         "-Wno-non-virtual-dtor",
     ],
+    enabled: false,
     arch: {
-        x86: {
-            enabled: false,
+        x86_64: {
+            enabled: true,
         },
     },
 }
@@ -8594,9 +8652,10 @@ cc_library_static {
         "src/intel/compiler/elk",
         "subprojects/perfetto/sdk",
     ],
+    enabled: false,
     arch: {
-        x86: {
-            enabled: false,
+        x86_64: {
+            enabled: true,
         },
     },
 }
@@ -8729,9 +8788,10 @@ cc_library_static {
         "src/intel/genxml",
         "subprojects/perfetto/sdk",
     ],
+    enabled: false,
     arch: {
-        x86: {
-            enabled: false,
+        x86_64: {
+            enabled: true,
         },
     },
 }
@@ -8853,9 +8913,10 @@ cc_library_static {
         "src/gallium/winsys/sw/wrapper",
         "subprojects/perfetto/sdk",
     ],
+    enabled: false,
     arch: {
-        x86: {
-            enabled: false,
+        x86_64: {
+            enabled: true,
         },
     },
 }
@@ -8977,9 +9038,10 @@ cc_library_static {
         "src/gallium/winsys/sw/null",
         "subprojects/perfetto/sdk",
     ],
+    enabled: false,
     arch: {
-        x86: {
-            enabled: false,
+        x86_64: {
+            enabled: true,
         },
     },
 }
@@ -9102,9 +9164,10 @@ cc_library_static {
         "subprojects/perfetto/sdk",
     ],
     header_libs: ["libdrm_headers"],
+    enabled: false,
     arch: {
-        x86: {
-            enabled: false,
+        x86_64: {
+            enabled: true,
         },
     },
 }
@@ -9226,9 +9289,10 @@ cc_library_static {
         "src/gallium/winsys/sw/dri",
         "subprojects/perfetto/sdk",
     ],
+    enabled: false,
     arch: {
-        x86: {
-            enabled: false,
+        x86_64: {
+            enabled: true,
         },
     },
 }
@@ -9351,9 +9415,10 @@ cc_library_static {
         "src/gallium/winsys/iris/drm",
         "subprojects/perfetto/sdk",
     ],
+    enabled: false,
     arch: {
-        x86: {
-            enabled: false,
+        x86_64: {
+            enabled: true,
         },
     },
 }
@@ -9493,9 +9558,10 @@ cc_library_static {
         "subprojects/perfetto/sdk",
     ],
     header_libs: ["libdrm_headers"],
+    enabled: false,
     arch: {
-        x86: {
-            enabled: false,
+        x86_64: {
+            enabled: true,
         },
     },
 }
@@ -9639,9 +9705,10 @@ cc_library_static {
         "src/mesa",
         "subprojects/perfetto/sdk",
     ],
+    enabled: false,
     arch: {
-        x86: {
-            enabled: false,
+        x86_64: {
+            enabled: true,
         },
     },
 }
@@ -9785,9 +9852,10 @@ cc_library_static {
         "src/mesa",
         "subprojects/perfetto/sdk",
     ],
+    enabled: false,
     arch: {
-        x86: {
-            enabled: false,
+        x86_64: {
+            enabled: true,
         },
     },
 }
@@ -9931,9 +9999,10 @@ cc_library_static {
         "src/mesa",
         "subprojects/perfetto/sdk",
     ],
+    enabled: false,
     arch: {
-        x86: {
-            enabled: false,
+        x86_64: {
+            enabled: true,
         },
     },
 }
@@ -10077,9 +10146,10 @@ cc_library_static {
         "src/mesa",
         "subprojects/perfetto/sdk",
     ],
+    enabled: false,
     arch: {
-        x86: {
-            enabled: false,
+        x86_64: {
+            enabled: true,
         },
     },
 }
@@ -10223,9 +10293,10 @@ cc_library_static {
         "src/mesa",
         "subprojects/perfetto/sdk",
     ],
+    enabled: false,
     arch: {
-        x86: {
-            enabled: false,
+        x86_64: {
+            enabled: true,
         },
     },
 }
@@ -10369,9 +10440,10 @@ cc_library_static {
         "src/mesa",
         "subprojects/perfetto/sdk",
     ],
+    enabled: false,
     arch: {
-        x86: {
-            enabled: false,
+        x86_64: {
+            enabled: true,
         },
     },
 }
@@ -10515,9 +10587,10 @@ cc_library_static {
         "src/mesa",
         "subprojects/perfetto/sdk",
     ],
+    enabled: false,
     arch: {
-        x86: {
-            enabled: false,
+        x86_64: {
+            enabled: true,
         },
     },
 }
@@ -10686,9 +10759,10 @@ cc_library_static {
         "subprojects/perfetto/sdk",
     ],
     header_libs: ["libdrm_headers"],
+    enabled: false,
     arch: {
-        x86: {
-            enabled: false,
+        x86_64: {
+            enabled: true,
         },
     },
 }
@@ -10819,9 +10893,10 @@ cc_library_static {
         "subprojects/perfetto/sdk",
     ],
     header_libs: ["libdrm_headers"],
+    enabled: false,
     arch: {
-        x86: {
-            enabled: false,
+        x86_64: {
+            enabled: true,
         },
     },
 }
@@ -10964,9 +11039,10 @@ cc_library_static {
         "src/gallium/include",
         "subprojects/perfetto/sdk",
     ],
+    enabled: false,
     arch: {
-        x86: {
-            enabled: false,
+        x86_64: {
+            enabled: true,
         },
     },
 }
@@ -11247,9 +11323,10 @@ cc_library_static {
         "subprojects/perfetto/sdk",
     ],
     header_libs: ["libdrm_headers"],
+    enabled: false,
     arch: {
-        x86: {
-            enabled: false,
+        x86_64: {
+            enabled: true,
         },
     },
 }
@@ -11455,9 +11532,10 @@ cc_library_static {
         "src/mesa",
         "subprojects/perfetto/sdk",
     ],
+    enabled: false,
     arch: {
-        x86: {
-            enabled: false,
+        x86_64: {
+            enabled: true,
         },
     },
 }
@@ -11588,9 +11666,10 @@ cc_library_static {
         "src/mesa",
         "subprojects/perfetto/sdk",
     ],
+    enabled: false,
     arch: {
-        x86: {
-            enabled: false,
+        x86_64: {
+            enabled: true,
         },
     },
 }
@@ -11763,9 +11842,10 @@ cc_library_shared {
         "src/x11",
         "subprojects/perfetto/sdk",
     ],
+    enabled: false,
     arch: {
-        x86: {
-            enabled: false,
+        x86_64: {
+            enabled: true,
         },
     },
 }
@@ -11896,9 +11976,10 @@ cc_library_static {
         "subprojects/perfetto/sdk",
     ],
     header_libs: ["libdrm_headers"],
+    enabled: false,
     arch: {
-        x86: {
-            enabled: false,
+        x86_64: {
+            enabled: true,
         },
     },
 }
