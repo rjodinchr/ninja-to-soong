@@ -18,10 +18,15 @@ meson setup \
     -Dgallium-va=auto \
     -Dgallium-xa=disabled \
     -Dbuildtype=release \
-    -Dintel-clc=enabled \
+    -Dmesa-clc=enabled \
+    -Dinstall-mesa-clc=true \
     -Dstrip=true \
     --reconfigure \
     --wipe \
     "${BUILD_PATH}" \
     "${SRC_PATH}"
 meson compile -C "${BUILD_PATH}"
+
+mkdir -p "${BUILD_PATH}/bin"
+cp "${BUILD_PATH}/src/compiler/clc/mesa_clc"      "${BUILD_PATH}/bin"
+cp "${BUILD_PATH}/src/compiler/spirv/vtn_bindgen" "${BUILD_PATH}/bin"

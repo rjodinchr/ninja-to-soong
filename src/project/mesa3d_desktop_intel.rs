@@ -33,17 +33,17 @@ impl Project for Mesa3DDesktopIntel {
         let ndk_path = get_ndk_path(&ctx.temp_path)?;
         let build_path = ctx.temp_path.join(self.get_name());
 
-        let intel_clc_path = if !ctx.skip_build {
-            let intel_clc_build_path = ctx.temp_path.join("intel_clc");
+        let mesa_clc_path = if !ctx.skip_build {
+            let mesa_clc_build_path = ctx.temp_path.join("mesa_clc");
             execute_cmd!(
                 "bash",
                 [
-                    &path_to_string(self.get_test_path(ctx).join("build_intel_clc.sh")),
+                    &path_to_string(self.get_test_path(ctx).join("build_mesa_clc.sh")),
                     &path_to_string(&self.src_path),
-                    &path_to_string(&intel_clc_build_path)
+                    &path_to_string(&mesa_clc_build_path)
                 ]
             )?;
-            intel_clc_build_path.join("src/intel/compiler")
+            mesa_clc_build_path.join("bin")
         } else {
             self.get_test_path(ctx)
         };
@@ -55,7 +55,7 @@ impl Project for Mesa3DDesktopIntel {
                     &path_to_string(self.get_test_path(ctx).join("gen-ninja.sh")),
                     &path_to_string(&self.src_path),
                     &path_to_string(&build_path),
-                    &path_to_string(intel_clc_path),
+                    &path_to_string(mesa_clc_path),
                     &path_to_string(&ndk_path)
                 ]
             )?;

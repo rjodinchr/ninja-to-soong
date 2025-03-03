@@ -6,7 +6,7 @@ set -xe
 
 SRC_PATH="$1"
 BUILD_PATH="$2"
-INTEL_CLC_PATH="$3"
+MESA_CLC_PATH="$3"
 NDK_PATH="$4"
 
 SCRIPT_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
@@ -17,7 +17,7 @@ mkdir -p "${MESON_LOCAL_PATH}"
 ANDROID_PLATFORM="${ANDROID_PLATFORM}" NDK_PATH="${NDK_PATH}" \
 envsubst < "${SCRIPT_DIR}/${AOSP_X86_64}.template" > "${MESON_LOCAL_PATH}/${AOSP_X86_64}"
 
-PATH="${INTEL_CLC_PATH}:${PATH}" \
+PATH="${MESA_CLC_PATH}:${PATH}" \
 meson setup \
     --cross-file "${AOSP_X86_64}" \
     --libdir lib64 \
@@ -40,7 +40,7 @@ meson setup \
     -Dgallium-va=disabled \
     -Dgallium-xa=disabled \
     -Dbuildtype=release \
-    -Dintel-clc=system \
+    -Dmesa-clc=system \
     -Dintel-rt=enabled \
     -Dstrip=true \
     --reconfigure \
