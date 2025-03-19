@@ -156,6 +156,25 @@ impl Project for Mesa3DDesktopIntel {
         };
         let module = is_soc_specific(module);
 
+        let relative_install = |module: SoongModule| -> SoongModule {
+            for lib in [
+                "libGLESv1_CM_mesa.so.1.1.0",
+                "libGLESv2_mesa.so.2.0.0",
+                "libEGL_mesa.so.1.0.0",
+            ] {
+                if target.ends_with(lib) {
+                    return module
+                        .add_prop("relative_install_path", SoongProp::Str(String::from("egl")));
+                }
+            }
+            if target.ends_with("libvulkan_intel.so") {
+                return module
+                    .add_prop("relative_install_path", SoongProp::Str(String::from("hw")));
+            }
+            module
+        };
+        let module = relative_install(module);
+
         let mut libs = Vec::new();
         for lib in [
             "libgallium.a",

@@ -3694,6 +3694,7 @@ cc_library_shared {
         "src/mapi/es2api",
     ],
     soc_specific: true,
+    relative_install_path: "egl",
     enabled: false,
     arch: {
         x86_64: {
@@ -9390,6 +9391,7 @@ cc_library_shared {
         "src/mapi/es1api",
     ],
     soc_specific: true,
+    relative_install_path: "egl",
     enabled: false,
     arch: {
         x86_64: {
@@ -9599,6 +9601,7 @@ cc_library_shared {
         "subprojects/perfetto/sdk",
     ],
     soc_specific: true,
+    relative_install_path: "hw",
     enabled: false,
     arch: {
         x86_64: {
@@ -11850,6 +11853,7 @@ cc_library_shared {
         "subprojects/perfetto/sdk",
     ],
     soc_specific: true,
+    relative_install_path: "egl",
     header_libs: ["libnativebase_headers"],
     enabled: false,
     arch: {
