@@ -139,6 +139,42 @@ impl Project for Mesa3DDesktopIntel {
     }
 
     fn extend_module(&self, target: &Path, module: SoongModule) -> SoongModule {
+        let is_soc_specific = |module: SoongModule| -> SoongModule {
+            for lib in [
+                "libgallium_dri.so",
+                "libvulkan_intel.so",
+                "libGLESv1_CM_mesa.so.1.1.0",
+                "libGLESv2_mesa.so.2.0.0",
+                "libEGL_mesa.so.1.0.0",
+                "pps-producer",
+            ] {
+                if target.ends_with(lib) {
+                    return module.add_prop("soc_specific", SoongProp::Bool(true));
+                }
+            }
+            module
+        };
+        let module = is_soc_specific(module);
+
+        let relative_install = |module: SoongModule| -> SoongModule {
+            for lib in [
+                "libGLESv1_CM_mesa.so.1.1.0",
+                "libGLESv2_mesa.so.2.0.0",
+                "libEGL_mesa.so.1.0.0",
+            ] {
+                if target.ends_with(lib) {
+                    return module
+                        .add_prop("relative_install_path", SoongProp::Str(String::from("egl")));
+                }
+            }
+            if target.ends_with("libvulkan_intel.so") {
+                return module
+                    .add_prop("relative_install_path", SoongProp::Str(String::from("hw")));
+            }
+            module
+        };
+        let module = relative_install(module);
+
         let mut libs = Vec::new();
         for lib in [
             "libgallium.a",
@@ -163,6 +199,9 @@ impl Project for Mesa3DDesktopIntel {
         }
         if target.ends_with("libanv_common.a") {
             libs.push("hwvulkan_headers");
+        }
+        if target.ends_with("libEGL_mesa.so.1.0.0") {
+            libs.push("libnativebase_headers");
         }
         module
             .add_prop(

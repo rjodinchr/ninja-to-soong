@@ -184,6 +184,7 @@ cc_binary {
         "src/tool/pps",
         "subprojects/perfetto/sdk",
     ],
+    soc_specific: true,
     enabled: false,
     arch: {
         x86_64: {
@@ -3692,6 +3693,8 @@ cc_library_shared {
         "src/mapi",
         "src/mapi/es2api",
     ],
+    soc_specific: true,
+    relative_install_path: "egl",
     enabled: false,
     arch: {
         x86_64: {
@@ -3896,6 +3899,7 @@ cc_library_shared {
         "src/mesa",
         "subprojects/perfetto/sdk",
     ],
+    soc_specific: true,
     enabled: false,
     arch: {
         x86_64: {
@@ -9386,6 +9390,8 @@ cc_library_shared {
         "src/mapi",
         "src/mapi/es1api",
     ],
+    soc_specific: true,
+    relative_install_path: "egl",
     enabled: false,
     arch: {
         x86_64: {
@@ -9594,6 +9600,8 @@ cc_library_shared {
         "src/vulkan/wsi",
         "subprojects/perfetto/sdk",
     ],
+    soc_specific: true,
+    relative_install_path: "hw",
     enabled: false,
     arch: {
         x86_64: {
@@ -11844,6 +11852,9 @@ cc_library_shared {
         "src/x11",
         "subprojects/perfetto/sdk",
     ],
+    soc_specific: true,
+    relative_install_path: "egl",
+    header_libs: ["libnativebase_headers"],
     enabled: false,
     arch: {
         x86_64: {
