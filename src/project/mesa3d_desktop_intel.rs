@@ -265,8 +265,8 @@ impl Project for Mesa3DDesktopIntel {
             && (!inc.contains(&path_to_string(&subprojects))
                 || inc.contains(&path_to_string(&subprojects.join("perfetto"))))
     }
-    fn filter_link_flag(&self, _flag: &str) -> bool {
-        false
+    fn filter_link_flag(&self, flag: &str) -> bool {
+        flag == "-Wl,--build-id=sha1"
     }
     fn filter_gen_header(&self, _header: &Path) -> bool {
         false
