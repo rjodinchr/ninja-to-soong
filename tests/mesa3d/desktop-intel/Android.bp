@@ -3811,6 +3811,7 @@ cc_library_shared {
         "-Wno-error",
         "-Wno-non-virtual-dtor",
     ],
+    ldflags: ["-Wl,--build-id=sha1"],
     shared_libs: [
         "libcutils",
         "libdrm",
@@ -9510,6 +9511,7 @@ cc_library_shared {
         "-Wno-error",
         "-Wno-non-virtual-dtor",
     ],
+    ldflags: ["-Wl,--build-id=sha1"],
     shared_libs: [
         "libcutils",
         "libdrm",
