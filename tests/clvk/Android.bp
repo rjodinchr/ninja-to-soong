@@ -51,6 +51,7 @@ cc_library_shared {
     ],
     ldflags: ["-Wl,-Bsymbolic"],
     shared_libs: [
+        "liblog",
         "libvulkan",
         "libz",
     ],
