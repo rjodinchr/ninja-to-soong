@@ -68,7 +68,7 @@ impl Project for Angle {
         }
 
         Ok(SoongPackage::new(
-            "//visibility:public",
+            &["//visibility:public"],
             "angle_license",
             &["SPDX-license-identifier-Apache-2.0"],
             &["LICENSE"],

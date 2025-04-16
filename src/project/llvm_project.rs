@@ -11,7 +11,9 @@ impl Project for LlvmProject {
         "llvm-project"
     }
     fn get_android_path(&self, ctx: &Context) -> PathBuf {
-        ctx.android_path.join("external/opencl").join(self.get_name())
+        ctx.android_path
+            .join("external/opencl")
+            .join(self.get_name())
     }
     fn get_test_path(&self, ctx: &Context) -> PathBuf {
         ctx.test_path.join(self.get_name())
@@ -54,7 +56,7 @@ impl Project for LlvmProject {
         const CMAKE_GENERATED: &str = "cmake_generated";
         let cmake_generated_path = Path::new(CMAKE_GENERATED);
         let mut package = SoongPackage::new(
-            "//visibility:public",
+            &["//external/clspv", "//external/clvk"],
             "llvm-project_license",
             &["SPDX-license-identifier-Apache-2.0"],
             &["LICENSE.TXT"],

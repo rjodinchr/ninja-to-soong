@@ -9,7 +9,10 @@
 //
 
 package {
-    default_visibility: ["//visibility:public"],
+    default_visibility: [
+        "//external/clspv",
+        "//external/clvk",
+    ],
     default_applicable_licenses: ["llvm-project_license"],
 }
 

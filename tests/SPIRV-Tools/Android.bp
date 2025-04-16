@@ -9,7 +9,7 @@
 //
 
 package {
-    default_visibility: ["//visibility:public"],
+    default_visibility: ["//external/clvk"],
     default_applicable_licenses: ["SPIRV-Tools_license"],
 }
 
