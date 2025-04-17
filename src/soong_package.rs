@@ -15,7 +15,7 @@ pub struct SoongPackage {
 
 impl SoongPackage {
     pub fn new(
-        default_visibility: &str,
+        default_visibility: &[&str],
         license_module_name: &str,
         license_kinds: &[&str],
         license_text: &[&str],
@@ -25,7 +25,12 @@ impl SoongPackage {
                 SoongModule::new("package")
                     .add_prop(
                         "default_visibility",
-                        SoongProp::VecStr(vec![String::from(default_visibility)]),
+                        SoongProp::VecStr(
+                            default_visibility
+                                .into_iter()
+                                .map(|visibility| String::from(*visibility))
+                                .collect(),
+                        ),
                     )
                     .add_prop(
                         "default_applicable_licenses",

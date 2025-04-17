@@ -66,7 +66,7 @@ impl Project for Mesa3DDesktopIntel {
 
         const MESON_GENERATED: &str = "meson_generated";
         let mut package = SoongPackage::new(
-            "//visibility:public",
+            &["//visibility:public"],
             "mesa3d_desktop_intel_licenses",
             &[
                 "SPDX-license-identifier-MIT",

@@ -6,4 +6,4 @@ set -xe
 DEST="$1"
 SCRIPT_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
 
-bash "${SCRIPT_DIR}/../../utils/checkout.sh" https://github.com/kpet/clvk 5c59aa58b782ab3e06a8c8727bac50dac7e4282c "${DEST}/external/clvk"
+bash "${SCRIPT_DIR}/../../utils/checkout.sh" https://github.com/kpet/clvk a91d6a8092592f99971e6cd68fed8ecd57f19700 "${DEST}/external/clvk"

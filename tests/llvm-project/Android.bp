@@ -9,7 +9,10 @@
 //
 
 package {
-    default_visibility: ["//visibility:public"],
+    default_visibility: [
+        "//external/clspv",
+        "//external/clvk",
+    ],
     default_applicable_licenses: ["llvm-project_license"],
 }
 
@@ -40,6 +43,7 @@ cc_library_static {
 cc_library_static {
     name: "llvm-project_lib_libLLVMSupport_a",
     srcs: [
+        "llvm/lib/Support/AArch64BuildAttributes.cpp",
         "llvm/lib/Support/ABIBreak.cpp",
         "llvm/lib/Support/AMDGPUMetadata.cpp",
         "llvm/lib/Support/APFixedPoint.cpp",
@@ -47,7 +51,7 @@ cc_library_static {
         "llvm/lib/Support/APInt.cpp",
         "llvm/lib/Support/APSInt.cpp",
         "llvm/lib/Support/ARMAttributeParser.cpp",
-        "llvm/lib/Support/ARMBuildAttrs.cpp",
+        "llvm/lib/Support/ARMBuildAttributes.cpp",
         "llvm/lib/Support/ARMWinEH.cpp",
         "llvm/lib/Support/Allocator.cpp",
         "llvm/lib/Support/Atomic.cpp",
@@ -281,6 +285,7 @@ cc_library_static {
         "clang/lib/Sema/DeclSpec.cpp",
         "clang/lib/Sema/DelayedDiagnostic.cpp",
         "clang/lib/Sema/HLSLExternalSemaSource.cpp",
+        "clang/lib/Sema/HeuristicResolver.cpp",
         "clang/lib/Sema/IdentifierResolver.cpp",
         "clang/lib/Sema/JumpDiagnostics.cpp",
         "clang/lib/Sema/MultiplexExternalSemaSource.cpp",
@@ -331,6 +336,7 @@ cc_library_static {
         "clang/lib/Sema/SemaObjC.cpp",
         "clang/lib/Sema/SemaObjCProperty.cpp",
         "clang/lib/Sema/SemaOpenACC.cpp",
+        "clang/lib/Sema/SemaOpenACCClause.cpp",
         "clang/lib/Sema/SemaOpenCL.cpp",
         "clang/lib/Sema/SemaOpenMP.cpp",
         "clang/lib/Sema/SemaOverload.cpp",
@@ -562,6 +568,7 @@ cc_library_static {
         "llvm/lib/Transforms/Utils/LowerInvoke.cpp",
         "llvm/lib/Transforms/Utils/LowerMemIntrinsics.cpp",
         "llvm/lib/Transforms/Utils/LowerSwitch.cpp",
+        "llvm/lib/Transforms/Utils/LowerVectorIntrinsics.cpp",
         "llvm/lib/Transforms/Utils/MatrixUtils.cpp",
         "llvm/lib/Transforms/Utils/Mem2Reg.cpp",
         "llvm/lib/Transforms/Utils/MemoryOpRemark.cpp",
@@ -2333,6 +2340,7 @@ cc_library_static {
         "llvm/lib/Transforms/Vectorize/LoopVectorize.cpp",
         "llvm/lib/Transforms/Vectorize/SLPVectorizer.cpp",
         "llvm/lib/Transforms/Vectorize/SandboxVectorizer/DependencyGraph.cpp",
+        "llvm/lib/Transforms/Vectorize/SandboxVectorizer/InstrMaps.cpp",
         "llvm/lib/Transforms/Vectorize/SandboxVectorizer/Interval.cpp",
         "llvm/lib/Transforms/Vectorize/SandboxVectorizer/Legality.cpp",
         "llvm/lib/Transforms/Vectorize/SandboxVectorizer/Passes/BottomUpVec.cpp",
@@ -2341,6 +2349,7 @@ cc_library_static {
         "llvm/lib/Transforms/Vectorize/SandboxVectorizer/SandboxVectorizerPassBuilder.cpp",
         "llvm/lib/Transforms/Vectorize/SandboxVectorizer/Scheduler.cpp",
         "llvm/lib/Transforms/Vectorize/SandboxVectorizer/SeedCollector.cpp",
+        "llvm/lib/Transforms/Vectorize/SandboxVectorizer/VecUtils.cpp",
         "llvm/lib/Transforms/Vectorize/VPlan.cpp",
         "llvm/lib/Transforms/Vectorize/VPlanAnalysis.cpp",
         "llvm/lib/Transforms/Vectorize/VPlanHCFGBuilder.cpp",
@@ -2828,6 +2837,7 @@ cc_library_static {
         "llvm/lib/CodeGen/StackMaps.cpp",
         "llvm/lib/CodeGen/StackProtector.cpp",
         "llvm/lib/CodeGen/StackSlotColoring.cpp",
+        "llvm/lib/CodeGen/StaticDataSplitter.cpp",
         "llvm/lib/CodeGen/SwiftErrorValueTracking.cpp",
         "llvm/lib/CodeGen/SwitchLoweringUtils.cpp",
         "llvm/lib/CodeGen/TailDuplication.cpp",
