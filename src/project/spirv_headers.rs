@@ -23,7 +23,7 @@ impl Project for SpirvHeaders {
     ) -> Result<String, String> {
         let src_path = self.get_android_path(ctx);
         let mut package = SoongPackage::new(
-            "//visibility:public",
+            &["//external/SPIRV-Tools", "//external/clspv"],
             "SPIRV-Headers_license",
             &["SPDX-license-identifier-MIT"],
             &["LICENSE"],

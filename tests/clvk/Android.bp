@@ -9,7 +9,7 @@
 //
 
 package {
-    default_visibility: ["//visibility:public"],
+    default_visibility: ["//visibility:private"],
     default_applicable_licenses: ["clvk_license"],
 }
 
@@ -51,6 +51,7 @@ cc_library_shared {
     ],
     ldflags: ["-Wl,-Bsymbolic"],
     shared_libs: [
+        "liblog",
         "libvulkan",
         "libz",
     ],

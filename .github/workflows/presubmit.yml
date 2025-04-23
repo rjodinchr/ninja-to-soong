@@ -6,30 +6,31 @@ on:
   pull_request:
 
 jobs:
-  build:
-    name: Tests
+  format:
+    name: Code formatting check
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - name: Free space on runner
+      - name: Check format
+        shell: bash
         run: |
-          set +x
-          dpkg-query -Wf '${Installed-Size}\t${Package}\n' | sort -n | tail -n 100
-          df -h
-          sudo apt-get update
-          sudo apt-get remove -y '^dotnet-.*'
-          sudo apt-get remove -y '^temurin-.*'
-          sudo apt-get remove -y azure-cli google-cloud-cli microsoft-edge-stable google-chrome-stable firefox
-          sudo apt-get autoremove -y
-          sudo apt-get clean
-          sudo rm -rf /usr/share/dotnet/
-          sudo rm -rf /usr/local/share/powershell
-          sudo rm -rf /usr/local/share/chromium
-          sudo rm -rf /usr/local/lib/node_modules
-          dpkg-query -Wf '${Installed-Size}\t${Package}\n' | sort -n | tail -n 100
-          df -h
+          set -x
+          find -name *.rs -exec rustfmt {} \+
+          git diff --exit-code
+  build:
+    name: Tests ${{ matrix.project }}
+    needs: format
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        project: [clvk, mesa]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - name: Setup Ninja
         shell: bash
         run: |
@@ -39,10 +40,15 @@ jobs:
         shell: bash
         run: |
           set -x
-          shopt -s globstar
           echo "android=$(realpath ${{ github.workspace }}/../android)" >> $GITHUB_ENV
-          echo "key=$(git log -1 --format='%h' .github/workflows/*.yml tests/**/checkout.sh tests/**/gen-ninja.sh)" >> $GITHUB_ENV
           echo "tmp_dir=$(realpath ${{ github.workspace }}/../tmp)" >> $GITHUB_ENV
+          if [ "${{ matrix.project}}" == "clvk" ]; then
+            echo "key=$(git log -1 --format='%h' .github/workflows/*.yml tests/clvk/* tests/clspv/* tests/llvm-project/* tests/SPIRV-Tools/* tests/SPIRV-Headers/*)-clvk" >> $GITHUB_ENV
+            echo "projects=clvk clspv llvm-project SPIRV-Tools SPIRV-Headers" >> $GITHUB_ENV
+          elif [ "${{ matrix.project}}" == "mesa" ]; then
+            echo "key=$(git log -1 --format='%h' .github/workflows/*.yml tests/mesa3d/desktop-intel/*)-mesa" >> $GITHUB_ENV
+            echo "projects=mesa3d/desktop-intel" >> $GITHUB_ENV
+          fi
       - name: Get repositories from cache
         id: checkout-repositories
         uses: actions/cache@v4
@@ -50,22 +56,21 @@ jobs:
           path: ${{ env.tmp_dir }}
           key: ${{ env.key }}
       - name: Tests w/o cache
-        if: steps.checkout-repositories.outputs.cache-hit != 'true' 
+        if: steps.checkout-repositories.outputs.cache-hit != 'true'
         shell: bash
         env:
           N2S_TMP_PATH: ${{ env.tmp_dir }}
           N2S_NDK_PATH: ${{ env.android }}
         run: |
           set -x
-          shopt -s globstar
           mkdir -p "${{ env.android }}"
-          for checkout in tests/**/checkout.sh
+          for checkout in ${{ env.projects }}
           do
-            bash "${checkout}" "${{ env.android }}"
+            bash "tests/${checkout}/checkout.sh" "${{ env.android }}"
           done
-          PATH="${{ env.android }}/depot_tools:${PATH}" cargo run --release -- --skip-build --aosp-path "${{ env.android }}"
+          PATH="${{ env.android }}/depot_tools:${PATH}" cargo run --release -- --skip-build --aosp-path "${{ env.android }}" ${{ env.projects }}
       - name: Tests w/ cache
-        if: steps.checkout-repositories.outputs.cache-hit == 'true' 
+        if: steps.checkout-repositories.outputs.cache-hit == 'true'
         shell: bash
         env:
           N2S_TMP_PATH: ${{ env.tmp_dir }}
@@ -73,15 +78,9 @@ jobs:
         run: |
           set -x
           mkdir -p "${{ env.android }}"
-          PATH="${{ env.android }}/depot_tools:${PATH}" cargo run --release -- --skip-gen-ninja --aosp-path "${{ env.android }}"
+          PATH="${{ env.android }}/depot_tools:${PATH}" cargo run --release -- --skip-gen-ninja --aosp-path "${{ env.android }}" ${{ env.projects }}
       - name: Check generated files
         shell: bash
         run: |
           set -x
-          git diff --exit-code
-      - name: Check format
-        shell: bash
-        run: |
-          set -x
-          find -name *.rs -exec rustfmt {} \+
           git diff --exit-code
