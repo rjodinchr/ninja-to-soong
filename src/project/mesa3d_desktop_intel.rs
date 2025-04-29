@@ -25,11 +25,7 @@ impl Project for Mesa3DDesktopIntel {
         ctx: &Context,
         _projects_map: &ProjectsMap,
     ) -> Result<String, String> {
-        self.src_path = if let Ok(path) = std::env::var("N2S_MESA_PATH") {
-            PathBuf::from(path)
-        } else {
-            self.get_android_path(ctx)
-        };
+        self.src_path = self.get_android_path(ctx);
         let ndk_path = get_ndk_path(&ctx.temp_path)?;
         let build_path = ctx.temp_path.join(self.get_name());
 
