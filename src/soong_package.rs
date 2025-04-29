@@ -11,6 +11,7 @@ use crate::utils::*;
 pub struct SoongPackage {
     modules: Vec<SoongModule>,
     internals: SoongModuleGeneratorInternals,
+    raw_suffix: String,
 }
 
 impl SoongPackage {
@@ -70,6 +71,11 @@ impl SoongPackage {
         self
     }
 
+    pub fn add_raw_suffix(mut self, suffix: &str) -> SoongPackage {
+        self.raw_suffix = String::from(suffix);
+        self
+    }
+
     pub fn filter_local_include_dirs(&mut self, prefix: &str, files: &Vec<PathBuf>) {
         let mut set = std::collections::HashSet::new();
         for file in files {
@@ -114,6 +120,7 @@ impl SoongPackage {
         for module in self.modules {
             package += &module.print();
         }
+        package += &self.raw_suffix;
         package
     }
 

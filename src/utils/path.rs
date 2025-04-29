@@ -58,10 +58,11 @@ pub fn path_to_string_with_separator<P: AsRef<Path>>(path: P) -> String {
 }
 
 pub fn path_to_id(path: PathBuf) -> String {
-    path.to_str()
-        .unwrap_or_default()
-        .replace(MAIN_SEPARATOR_STR, "_")
-        .replace(".", "_")
+    let path = path.to_str().unwrap_or_default();
+    if path.starts_with("//") {
+        return String::from(path);
+    }
+    path.replace(MAIN_SEPARATOR_STR, "_").replace(".", "_")
 }
 
 pub fn file_stem(path: &Path) -> String {

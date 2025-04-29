@@ -216,7 +216,8 @@ where
         shared_libs.extend(self.get_libs(target.get_libs_shared(), &module_name));
         shared_libs.extend(self.project.extend_shared_libs(&target_name));
 
-        let mut module = SoongModule::new(name).add_prop("name", SoongProp::Str(module_name));
+        let mut module = SoongModule::new(&self.project.map_module_name(&target_name, name))
+            .add_prop("name", SoongProp::Str(module_name));
         if let Some(stem) = self.targets_to_gen.get_stem(&target_name) {
             module = module.add_prop("stem", SoongProp::Str(stem));
         }
