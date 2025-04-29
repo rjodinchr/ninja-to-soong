@@ -51,6 +51,7 @@ jobs:
           elif [ "${{ matrix.project}}" == "OpenCL-CTS" ]; then
             echo "key=$(git log -1 --format='%h' .github/workflows/*.yml tests/OpenCL-CTS/*.sh)-OpenCL-CTS" >> $GITHUB_ENV
             echo "projects=OpenCL-CTS" >> $GITHUB_ENV
+            echo "force_checkout=true" >> $GITHUB_ENV # needed to have "<OpenCL-CTS>/test_conformance/opencl_conformance_tests_full.csv" on disk
           fi
       - name: Get repositories from cache
         id: checkout-repositories
@@ -58,6 +59,16 @@ jobs:
         with:
           path: ${{ env.tmp_dir }}
           key: ${{ env.key }}
+      - name: Checkout
+        if: steps.checkout-repositories.outputs.cache-hit != 'true' || env.force_checkout == 'true'
+        shell: bash
+        run: |
+          set -x 
+          mkdir -p "${{ env.android }}"
+          for checkout in ${{ env.projects }}
+          do
+            bash "tests/${checkout}/checkout.sh" "${{ env.android }}"
+          done
       - name: Tests w/o cache
         if: steps.checkout-repositories.outputs.cache-hit != 'true'
         shell: bash
@@ -66,11 +77,6 @@ jobs:
           N2S_NDK_PATH: ${{ env.android }}
         run: |
           set -x
-          mkdir -p "${{ env.android }}"
-          for checkout in ${{ env.projects }}
-          do
-            bash "tests/${checkout}/checkout.sh" "${{ env.android }}"
-          done
           PATH="${{ env.android }}/depot_tools:${PATH}" cargo run --release -- --skip-build --aosp-path "${{ env.android }}" ${{ env.projects }}
       - name: Tests w/ cache
         if: steps.checkout-repositories.outputs.cache-hit == 'true'
@@ -80,7 +86,6 @@ jobs:
           N2S_NDK_PATH: ${{ env.android }}
         run: |
           set -x
-          mkdir -p "${{ env.android }}"
           PATH="${{ env.android }}/depot_tools:${PATH}" cargo run --release -- --skip-gen-ninja --aosp-path "${{ env.android }}" ${{ env.projects }}
       - name: Check generated files
         shell: bash
