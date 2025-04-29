@@ -18,6 +18,7 @@ define_ProjectId!(
     (Clspv, clspv),
     (LlvmProject, llvm_project),
     (Mesa3DDesktopIntel, mesa3d_desktop_intel),
+    (OpenclCts, opencl_cts),
     (SpirvHeaders, spirv_headers),
     (SpirvTools, spirv_tools)
 );
@@ -122,6 +123,9 @@ pub trait Project {
     }
     fn map_lib(&self, _lib: &Path) -> Option<PathBuf> {
         None
+    }
+    fn map_module_name(&self, _target: &Path, module_name: &str) -> String {
+        String::from(module_name)
     }
     // FILTER FUNCTIONS
     fn filter_cflag(&self, _cflag: &str) -> bool {

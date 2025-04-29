@@ -57,7 +57,7 @@
 | [SPIRV-Headers](https://github.com/KhronosGroup/SPIRV-Headers) | `CMake` | `clspv` & `SPIRV-Tools` dependencies |
 | [angle](https://github.com/google/angle) (WIP) | `GN` | `libEGL_angle.so`, `libGLESv2_angle.so`, `libGLESv1_CM_angle.so` |
 | [mesa](https://www.mesa3d.org/) | `meson` | `libgallium_dri.so`, `libglapi.so`, `libEGL_mesa.so`, `libGLESv2_mesa.so`, `libGLESv1_CM_mesa.so`, `libvulkan_${VENDOR}.so` |
-
+| [OpenCl-CTS](https://github.com/KhronosGroup/OpenCL-CTS) (WIP) | `CMake` | Every binary in `test_conformance/opencl_conformance_tests_full.csv` |
 ## Adding a project
 
 To add a project, create a `<project>.rs` implementing the `Project` trait under the `project` folder.

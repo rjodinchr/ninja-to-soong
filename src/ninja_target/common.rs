@@ -54,7 +54,7 @@ pub fn get_includes(includes: &str, build_path: &Path) -> Vec<PathBuf> {
         .split(" ")
         .map(|include| include.strip_prefix("-I").unwrap_or(include))
         .filter_map(|include| {
-            if include.is_empty() || include == "isystem" {
+            if include.is_empty() || include == "-isystem" {
                 return None;
             }
             Some(canonicalize_path(include, build_path))
