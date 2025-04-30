@@ -1,6 +1,8 @@
 // Copyright 2024 ninja-to-soong authors
 // SPDX-License-Identifier: Apache-2.0
 
+use crate::utils::*;
+
 pub enum CcLibraryHeaders {
     SpirvTools,
     SpirvHeaders,
@@ -18,7 +20,7 @@ impl CcLibraryHeaders {
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub enum SoongProp {
     Str(String),
     VecStr(Vec<String>),
@@ -26,7 +28,7 @@ pub enum SoongProp {
     Prop(Box<SoongNamedProp>),
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct SoongNamedProp {
     name: String,
     prop: SoongProp,
@@ -42,6 +44,10 @@ impl SoongNamedProp {
             name: String::from(name),
             prop,
         }
+    }
+
+    pub fn get_prop(&self) -> SoongProp {
+        self.prop.clone()
     }
 
     fn print(self, indent_level: usize) -> String {
@@ -110,19 +116,70 @@ impl SoongModule {
         self
     }
 
-    pub fn update_prop<F>(&mut self, name: &str, f: F)
+    pub fn add_props(mut self, props: Vec<SoongNamedProp>) -> SoongModule {
+        self.props.extend(props);
+        self
+    }
+
+    pub fn update_prop<F>(&mut self, name: &str, f: F) -> Result<(), String>
     where
-        F: Fn(SoongProp) -> SoongProp,
+        F: Fn(SoongProp) -> Result<SoongProp, String>,
     {
         for index in 0..self.props.len() {
             if self.props[index].name == name {
                 let prop = self.props.remove(index).prop;
-                let updated_prop = f(prop);
+                let updated_prop = f(prop)?;
                 self.props
                     .insert(index, SoongNamedProp::new(name, updated_prop));
-                return;
+                return Ok(());
             }
         }
+        Ok(())
+    }
+
+    pub fn filter_default(&mut self, default: &SoongModule) -> Result<(), String> {
+        let my_name = match self.get_prop("name").unwrap().prop {
+            SoongProp::Str(name) => name,
+            _ => return error!("Unexpected SoongProp 'name' in {default:#?}"),
+        };
+        for default_prop in &default.props {
+            let name = &default_prop.name;
+            match &default_prop.prop {
+                SoongProp::VecStr(default_vec_str) => {
+                    self.update_prop(name, |module_prop| match module_prop {
+                        SoongProp::VecStr(module_vec_str) => {
+                            if name != "defaults" {
+                                for str in default_vec_str {
+                                    if !module_vec_str.contains(str) {
+                                        return error!(
+                                            "Could not filter {name:#?} from {my_name:#?} because it does not contain {str:#?}"
+                                        );
+                                    }
+                                }
+                            }
+                            Ok(SoongProp::VecStr(
+                                module_vec_str
+                                    .into_iter()
+                                    .filter(|str| !default_vec_str.contains(str))
+                                    .collect::<Vec<_>>(),
+                            ))
+                        }
+                        prop => Ok(prop),
+                    })?
+                }
+                _ => (),
+            };
+        }
+        Ok(())
+    }
+
+    pub fn get_prop(&self, name: &str) -> Option<SoongNamedProp> {
+        for prop in &self.props {
+            if prop.name == name {
+                return Some(prop.clone());
+            }
+        }
+        None
     }
 
     pub fn print(self) -> String {

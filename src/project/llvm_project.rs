@@ -6,6 +6,9 @@ use super::*;
 #[derive(Default)]
 pub struct LlvmProject();
 
+const DEFAULTS: &str = "llvm-project-defaults";
+const RAW_DEFAULTS: &str = "llvm-project-raw-defaults";
+
 impl Project for LlvmProject {
     fn get_name(&self) -> &'static str {
         "llvm-project"
@@ -83,7 +86,22 @@ impl Project for LlvmProject {
                 String::from("clang/include"),
                 path_to_string(cmake_generated_path.join("tools/clang/include")),
             ],
-        ));
+        ))
+        .add_module(
+            SoongModule::new("cc_defaults")
+                .add_prop("name", SoongProp::Str(String::from(DEFAULTS)))
+                .add_prop(
+                    "local_include_dirs",
+                    SoongProp::VecStr(vec![
+                        String::from(CMAKE_GENERATED) + "/include",
+                        String::from("llvm/include"),
+                    ]),
+                )
+                .add_prop(
+                    "defaults",
+                    SoongProp::VecStr(vec![String::from(RAW_DEFAULTS)]),
+                ),
+        );
         for clang_header in Dep::ClangHeaders.get(projects_map)? {
             package = package.add_module(SoongModule::new_filegroup(
                 Dep::ClangHeaders.get_id(&clang_header, Path::new("clang"), &build_path),
@@ -118,26 +136,42 @@ impl Project for LlvmProject {
             ]
             .map(|dep| PathBuf::from(dep)),
         );
-        package.filter_local_include_dirs(CMAKE_GENERATED, &gen_deps);
+        package.filter_local_include_dirs(CMAKE_GENERATED, &gen_deps)?;
         common::copy_gen_deps(gen_deps, CMAKE_GENERATED, &build_path, ctx, self)?;
 
-        Ok(package.print())
+        package
+            .add_raw_suffix(&format!(
+                r#"
+cc_defaults {{
+    name: "{RAW_DEFAULTS}",
+    optimize_for_size: true,
+    cflags: [
+        "-Wno-error",
+        "-Wno-unreachable-code-loop-increment",
+    ],
+}}
+"#
+            ))
+            .print()
     }
 
     fn extend_module(&self, _target: &Path, module: SoongModule) -> SoongModule {
-        module.add_prop("optimize_for_size", SoongProp::Bool(true))
+        module.add_prop("defaults", SoongProp::VecStr(vec![String::from(DEFAULTS)]))
     }
     fn extend_cflags(&self, target: &Path) -> Vec<String> {
-        let mut cflags = vec!["-Wno-error", "-Wno-unreachable-code-loop-increment"];
         if target.ends_with("libLLVMSupport.a") {
-            cflags.extend([
+            [
                 "-DBLAKE3_NO_AVX512",
                 "-DBLAKE3_NO_AVX2",
                 "-DBLAKE3_NO_SSE41",
                 "-DBLAKE3_NO_SSE2",
-            ]);
+            ]
+            .into_iter()
+            .map(|flag| String::from(flag))
+            .collect()
+        } else {
+            Vec::new()
         }
-        cflags.into_iter().map(|flag| String::from(flag)).collect()
     }
     fn extend_shared_libs(&self, target: &Path) -> Vec<String> {
         if target.ends_with("libLLVMSupport.a") {

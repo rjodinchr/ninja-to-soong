@@ -60,7 +60,7 @@ impl Project for Clvk {
         )?;
         self.gen_libs = package.get_gen_libs();
 
-        Ok(package.print())
+        package.print()
     }
 
     fn get_deps(&self, dep: Dep) -> Vec<PathBuf> {

@@ -8,6 +8,9 @@ pub struct Mesa3DDesktopIntel {
     src_path: PathBuf,
 }
 
+const DEFAULTS: &str = "mesa3d-desktop-intel-defaults";
+const RAW_DEFAULTS: &str = "mesa3d-desktop-intel-raw-defaults";
+
 impl Project for Mesa3DDesktopIntel {
     fn get_name(&self) -> &'static str {
         "mesa3d/desktop-intel"
@@ -128,10 +131,33 @@ impl Project for Mesa3DDesktopIntel {
             .into_iter()
             .filter(|include| !include.starts_with("subprojects"))
             .collect();
-        package.filter_local_include_dirs(MESON_GENERATED, &gen_deps);
+        package.filter_local_include_dirs(MESON_GENERATED, &gen_deps)?;
         common::copy_gen_deps(gen_deps, MESON_GENERATED, &build_path, ctx, self)?;
 
-        Ok(package.print())
+        let default_module = SoongModule::new("cc_defaults")
+            .add_prop("name", SoongProp::Str(String::from(DEFAULTS)))
+            .add_props(package.get_props("mesa3d_desktop-intel_pps-producer", vec!["cflags"])?)
+            .add_prop(
+                "defaults",
+                SoongProp::VecStr(vec![String::from(RAW_DEFAULTS)]),
+            );
+
+        package
+            .add_module(default_module)
+            .add_raw_suffix(&format!(
+                r#"
+cc_defaults {{
+    name: "{RAW_DEFAULTS}",
+    enabled: false,
+    arch: {{
+        x86_64: {{
+            enabled: true,
+        }},
+    }},
+}}
+"#,
+            ))
+            .print()
     }
 
     fn extend_module(&self, target: &Path, module: SoongModule) -> SoongModule {
@@ -199,19 +225,26 @@ impl Project for Mesa3DDesktopIntel {
         if target.ends_with("libEGL_mesa.so.1.0.0") {
             libs.push("libnativebase_headers");
         }
-        module
-            .add_prop(
-                "header_libs",
-                SoongProp::VecStr(libs.into_iter().map(|lib| String::from(lib)).collect()),
+
+        let module = module.add_prop(
+            "header_libs",
+            SoongProp::VecStr(libs.into_iter().map(|lib| String::from(lib)).collect()),
+        );
+
+        if ![
+            "libintel_decoder_brw.a",
+            "libintel_decoder_elk.a",
+            "libperfetto.a",
+        ]
+        .contains(&file_name(target).as_str())
+        {
+            module.add_prop("defaults", SoongProp::VecStr(vec![String::from(DEFAULTS)]))
+        } else {
+            module.add_prop(
+                "defaults",
+                SoongProp::VecStr(vec![String::from(RAW_DEFAULTS)]),
             )
-            .add_prop("enabled", SoongProp::Bool(false))
-            .add_prop(
-                "arch",
-                SoongNamedProp::new_prop(
-                    "x86_64",
-                    SoongNamedProp::new_prop("enabled", SoongProp::Bool(true)),
-                ),
-            )
+        }
     }
     fn extend_cflags(&self, target: &Path) -> Vec<String> {
         let mut cflags = vec!["-Wno-non-virtual-dtor", "-Wno-error"];

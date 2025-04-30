@@ -82,3 +82,45 @@ pub fn file_name(path: &Path) -> String {
 pub fn strip_prefix<F: AsRef<Path>, P: AsRef<Path>>(from: F, prefix: P) -> PathBuf {
     PathBuf::from(from.as_ref().strip_prefix(prefix).unwrap_or(from.as_ref()))
 }
+
+pub fn wildcardize_path(path: &Path) -> PathBuf {
+    path.parent().unwrap().join(
+        String::from("*.")
+            + path
+                .extension()
+                .unwrap_or_default()
+                .to_str()
+                .unwrap_or_default(),
+    )
+}
+
+pub fn wildcardize_paths(paths: Vec<String>, src_path: &Path) -> Vec<String> {
+    let mut wildcardized_paths = Vec::new();
+    let mut paths = paths
+        .into_iter()
+        .map(|path| canonicalize_path(path, src_path))
+        .collect::<Vec<_>>();
+    'outer: while let Some(path) = paths.pop() {
+        let wildcard = wildcardize_path(&path);
+        let files = ls_regex(&wildcard);
+        if files.len() <= 1 {
+            wildcardized_paths.push(path_to_string(&path));
+            continue;
+        }
+        for file in &files {
+            if !paths.contains(&file) && file != &path {
+                wildcardized_paths.push(path_to_string(&path));
+                continue 'outer;
+            }
+        }
+        wildcardized_paths.push(path_to_string(wildcard));
+        paths = paths
+            .into_iter()
+            .filter(|path| !files.contains(&path))
+            .collect();
+    }
+    wildcardized_paths
+        .into_iter()
+        .map(|path| path_to_string(strip_prefix(path, src_path)))
+        .collect()
+}
