@@ -67,7 +67,7 @@ impl Project for Angle {
             )?;
         }
 
-        Ok(SoongPackage::new(
+        SoongPackage::new(
             &["//visibility:public"],
             "angle_license",
             &["SPDX-license-identifier-Apache-2.0"],
@@ -86,7 +86,7 @@ impl Project for Angle {
             None,
             self,
         )?
-        .print())
+        .print()
     }
 
     fn extend_module(&self, target: &Path, mut module: SoongModule) -> SoongModule {

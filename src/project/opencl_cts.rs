@@ -6,6 +6,9 @@ use super::*;
 #[derive(Default)]
 pub struct OpenclCts();
 
+const DEFAULTS: &str = "OpenCL-CTS-defaults";
+const RAW_DEFAULTS: &str = "OpenCL-CTS-raw-defaults";
+
 fn parse_test(line: &str) -> Option<String> {
     let split_comma = line.split(",");
     let Some(cmd) = split_comma.last() else {
@@ -98,57 +101,56 @@ impl Project for OpenclCts {
             &build_path,
             None,
             self,
-        )?
-        .add_raw_suffix(
-            r###"
-cc_defaults {
-    name: "ocl-defaults",
+        )?;
+        let default_module = SoongModule::new("cc_defaults")
+            .add_prop("name", SoongProp::Str(String::from(DEFAULTS)))
+            .add_props(
+                package.get_props("OpenCL-CTS-test_api", vec!["cflags", "local_include_dirs"])?,
+            )
+            .add_prop(
+                "defaults",
+                SoongProp::VecStr(vec![String::from(RAW_DEFAULTS)]),
+            );
+        package
+            .add_module(default_module)
+            .add_raw_suffix(&format!(
+                r#"
+cc_defaults {{
+    name: "{RAW_DEFAULTS}",
     header_libs: ["OpenCL-Headers"],
     compile_multilib: "64",
-    multilib: {
-        lib64: {
+    multilib: {{
+        lib64: {{
             suffix: "64",
-        },
-    },
+        }},
+    }},
     cflags: [
-        "-Wno-#warnings",
+        "-Wno-error",
         "-Wno-c++11-narrowing",
-        "-Wno-date-time",
-        "-Wno-deprecated-declarations",
-        "-Wno-format",
-        "-Wno-ignored-qualifiers",
-        "-Wno-implicit-fallthrough",
-        "-Wno-missing-braces",
-        "-Wno-missing-field-initializers",
         "-Wno-non-virtual-dtor",
-        "-Wno-overloaded-virtual",
-        "-Wno-reorder-ctor",
-        "-Wno-sometimes-uninitialized",
-        "-Wno-unused-parameter",
         "-fexceptions",
     ],
-}
+}}
 
-python_test_host {
+python_test_host {{
     name: "opencl_cts",
     main: "scripts/test_opencl_cts.py",
     srcs: ["scripts/test_opencl_cts.py"],
     data: ["scripts/test_opencl_cts.xml"],
     test_config: "scripts/test_opencl_cts.xml",
-    test_options: {
+    test_options: {{
         unit_test: false,
-    },
-}
+    }},
+}}
 
-python_test {
+python_test {{
     name: "run_conformance",
     main: "test_conformance/run_conformance.py",
     srcs: ["test_conformance/run_conformance.py"],
-}
-"###,
-        );
-
-        Ok(package.print())
+}}
+"#,
+            ))
+            .print()
     }
 
     fn extend_module(&self, target: &Path, mut module: SoongModule) -> SoongModule {
@@ -186,10 +188,7 @@ python_test {
         }
         module
             .add_prop("rtti", SoongProp::Bool(is_test_spir))
-            .add_prop(
-                "defaults",
-                SoongProp::VecStr(vec![String::from("ocl-defaults")]),
-            )
+            .add_prop("defaults", SoongProp::VecStr(vec![String::from(DEFAULTS)]))
     }
 
     fn map_lib(&self, lib: &Path) -> Option<PathBuf> {

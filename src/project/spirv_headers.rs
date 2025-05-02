@@ -40,6 +40,6 @@ impl Project for SpirvHeaders {
             ));
         }
 
-        Ok(package.print())
+        package.print()
     }
 }

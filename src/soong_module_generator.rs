@@ -228,7 +228,10 @@ where
             );
         }
         module = module
-            .add_prop("srcs", SoongProp::VecStr(sources))
+            .add_prop(
+                "srcs",
+                SoongProp::VecStr(wildcardize_paths(sources, &self.src_path)),
+            )
             .add_prop("cflags", SoongProp::VecStr(cflags))
             .add_prop("ldflags", SoongProp::VecStr(link_flags))
             .add_prop("shared_libs", SoongProp::VecStr(shared_libs))

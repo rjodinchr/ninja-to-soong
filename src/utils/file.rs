@@ -59,3 +59,17 @@ pub fn read_file(file_path: &Path) -> Result<String, String> {
         Err(err) => return error!("File::open({file_path:#?}) failed: '{err}'"),
     }
 }
+
+pub fn ls_regex(regex: &Path) -> Vec<PathBuf> {
+    let mut files = Vec::new();
+    let Ok(entries) = read_dir(regex.parent().unwrap()) else {
+        return files;
+    };
+    for entry in entries {
+        let path = entry.expect("Failed to read entry").path();
+        if regex == wildcardize_path(&path) {
+            files.push(path);
+        }
+    }
+    files
+}
