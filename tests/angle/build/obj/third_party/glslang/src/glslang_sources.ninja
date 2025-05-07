@@ -1,0 +1,153 @@
+defines = -DENABLE_SPIRV=1 -DENABLE_OPT=1 -DGLSLANG_OSINCLUDE_UNIX -D_GNU_SOURCE -D__ARM_NEON__=1 -DANDROID -D__ANDROID_UNAVAILABLE_SYMBOLS_ARE_WEAK__ -DHAVE_SYS_UIO_H -DANDROID_NDK_VERSION_ROLL=r28_1 -DCR_CLANG_REVISION=\"llvmorg-21-init-9266-g09006611-1\" -D_LIBCPP_HARDENING_MODE=_LIBCPP_HARDENING_MODE_NONE -DNDEBUG -DNVALGRIND -DDYNAMIC_ANNOTATIONS_ENABLED=0 -DENABLE_HLSL=1
+include_dirs = -Igen/third_party/glslang/src/include -I/ninja-to-soong-angle/third_party/spirv-tools/src/include -I/ninja-to-soong-angle -Igen -I/ninja-to-soong-angle/third_party/glslang/src
+cflags = -Wno-extra-semi -Wno-ignored-qualifiers -Wno-implicit-fallthrough -Wno-inconsistent-missing-override -Wno-missing-field-initializers -Wno-newline-eof -Wno-sign-compare -Wno-suggest-destructor-override -Wno-suggest-override -Wno-unused-variable -fno-delete-null-pointer-checks -fno-strict-overflow -fno-ident -fno-strict-aliasing -fstack-protector -funwind-tables -fPIC -fcolor-diagnostics -fmerge-all-constants -fno-sized-deallocation -fcrash-diagnostics-dir=/ninja-to-soong-angle/tools/clang/crashreports -mllvm -instcombine-lower-dbg-declare=0 -mllvm -split-threshold-for-reg-with-hint=0 -ffp-contract=off -fextend-variable-liveness=none -ffunction-sections -fno-short-enums -mbranch-protection=standard --target=aarch64-linux-android26 -mno-outline -Wno-builtin-macro-redefined -D__DATE__= -D__TIME__= -D__TIMESTAMP__= -ffile-compilation-dir=. -no-canonical-prefixes -ftrivial-auto-var-init=pattern -O2 -fdata-sections -ffunction-sections -fno-unique-section-names -fno-math-errno -fno-omit-frame-pointer -g0 -fvisibility=hidden -Wheader-hygiene -Wstring-conversion -Wtautological-overlap-compare -Wall -Wno-unused-variable -Wno-c++11-narrowing -Wno-unused-but-set-variable -Wunguarded-availability -Wno-missing-field-initializers -Wno-unused-parameter -Wno-psabi -Wloop-analysis -Wno-unneeded-internal-declaration -Wno-cast-function-type -Wno-thread-safety-reference-return -Wno-nontrivial-memcall -Werror -Wno-conversion
+cflags_cc = -std=c++20 -Wno-trigraphs -gsimple-template-names -fno-exceptions -fno-rtti --sysroot=/ninja-to-soong-angle/third_party/android_toolchain/ndk/toolchains/llvm/prebuilt/linux-x86_64/sysroot -fvisibility-inlines-hidden -Wno-invalid-offsetof -Wenum-compare-conditional -Wno-nullability-completeness
+label_name = glslang_sources
+root_out_dir = .
+target_out_dir = obj/third_party/glslang/src
+target_output_name = glslang_sources
+
+build phony/third_party/glslang/src/glslang_sources.inputdeps: phony phony/third_party/glslang/src/glslang_build_info phony/third_party/spirv-tools/src/spvtools_core_enums_unified1 phony/third_party/spirv-tools/src/spvtools_core_tables_unified1 phony/third_party/spirv-tools/src/spvtools_generators_inc phony/third_party/spirv-tools/src/spvtools_glsl_tables_glsl1-0 phony/third_party/spirv-tools/src/spvtools_language_header_cldebuginfo100 phony/third_party/spirv-tools/src/spvtools_language_header_debuginfo phony/third_party/spirv-tools/src/spvtools_language_header_vkdebuginfo100 phony/third_party/spirv-tools/src/spvtools_opencl_tables_opencl1-0 phony/third_party/spirv-tools/src/spvtools_vendor_tables_debuginfo phony/third_party/spirv-tools/src/spvtools_vendor_tables_nonsemantic.clspvreflection phony/third_party/spirv-tools/src/spvtools_vendor_tables_nonsemantic.shader.debuginfo.100 phony/third_party/spirv-tools/src/spvtools_vendor_tables_nonsemantic.vkspreflection phony/third_party/spirv-tools/src/spvtools_vendor_tables_opencl.debuginfo.100 phony/third_party/spirv-tools/src/spvtools_vendor_tables_spv-amd-gcn-shader phony/third_party/spirv-tools/src/spvtools_vendor_tables_spv-amd-shader-ballot phony/third_party/spirv-tools/src/spvtools_vendor_tables_spv-amd-shader-explicit-vertex-parameter phony/third_party/spirv-tools/src/spvtools_vendor_tables_spv-amd-shader-trinary-minmax
+build obj/third_party/glslang/src/glslang_sources/GlslangToSpv.o: cxx /ninja-to-soong-angle/third_party/glslang/src/SPIRV/GlslangToSpv.cpp || phony/third_party/glslang/src/glslang_sources.inputdeps
+  source_file_part = GlslangToSpv.cpp
+  source_name_part = GlslangToSpv
+build obj/third_party/glslang/src/glslang_sources/InReadableOrder.o: cxx /ninja-to-soong-angle/third_party/glslang/src/SPIRV/InReadableOrder.cpp || phony/third_party/glslang/src/glslang_sources.inputdeps
+  source_file_part = InReadableOrder.cpp
+  source_name_part = InReadableOrder
+build obj/third_party/glslang/src/glslang_sources/Logger.o: cxx /ninja-to-soong-angle/third_party/glslang/src/SPIRV/Logger.cpp || phony/third_party/glslang/src/glslang_sources.inputdeps
+  source_file_part = Logger.cpp
+  source_name_part = Logger
+build obj/third_party/glslang/src/glslang_sources/SPVRemapper.o: cxx /ninja-to-soong-angle/third_party/glslang/src/SPIRV/SPVRemapper.cpp || phony/third_party/glslang/src/glslang_sources.inputdeps
+  source_file_part = SPVRemapper.cpp
+  source_name_part = SPVRemapper
+build obj/third_party/glslang/src/glslang_sources/SpvBuilder.o: cxx /ninja-to-soong-angle/third_party/glslang/src/SPIRV/SpvBuilder.cpp || phony/third_party/glslang/src/glslang_sources.inputdeps
+  source_file_part = SpvBuilder.cpp
+  source_name_part = SpvBuilder
+build obj/third_party/glslang/src/glslang_sources/SpvPostProcess.o: cxx /ninja-to-soong-angle/third_party/glslang/src/SPIRV/SpvPostProcess.cpp || phony/third_party/glslang/src/glslang_sources.inputdeps
+  source_file_part = SpvPostProcess.cpp
+  source_name_part = SpvPostProcess
+build obj/third_party/glslang/src/glslang_sources/disassemble.o: cxx /ninja-to-soong-angle/third_party/glslang/src/SPIRV/disassemble.cpp || phony/third_party/glslang/src/glslang_sources.inputdeps
+  source_file_part = disassemble.cpp
+  source_name_part = disassemble
+build obj/third_party/glslang/src/glslang_sources/doc.o: cxx /ninja-to-soong-angle/third_party/glslang/src/SPIRV/doc.cpp || phony/third_party/glslang/src/glslang_sources.inputdeps
+  source_file_part = doc.cpp
+  source_name_part = doc
+build obj/third_party/glslang/src/glslang_sources/CodeGen.o: cxx /ninja-to-soong-angle/third_party/glslang/src/glslang/GenericCodeGen/CodeGen.cpp || phony/third_party/glslang/src/glslang_sources.inputdeps
+  source_file_part = CodeGen.cpp
+  source_name_part = CodeGen
+build obj/third_party/glslang/src/glslang_sources/Link.o: cxx /ninja-to-soong-angle/third_party/glslang/src/glslang/GenericCodeGen/Link.cpp || phony/third_party/glslang/src/glslang_sources.inputdeps
+  source_file_part = Link.cpp
+  source_name_part = Link
+build obj/third_party/glslang/src/glslang_sources/Constant.o: cxx /ninja-to-soong-angle/third_party/glslang/src/glslang/MachineIndependent/Constant.cpp || phony/third_party/glslang/src/glslang_sources.inputdeps
+  source_file_part = Constant.cpp
+  source_name_part = Constant
+build obj/third_party/glslang/src/glslang_sources/InfoSink.o: cxx /ninja-to-soong-angle/third_party/glslang/src/glslang/MachineIndependent/InfoSink.cpp || phony/third_party/glslang/src/glslang_sources.inputdeps
+  source_file_part = InfoSink.cpp
+  source_name_part = InfoSink
+build obj/third_party/glslang/src/glslang_sources/Initialize.o: cxx /ninja-to-soong-angle/third_party/glslang/src/glslang/MachineIndependent/Initialize.cpp || phony/third_party/glslang/src/glslang_sources.inputdeps
+  source_file_part = Initialize.cpp
+  source_name_part = Initialize
+build obj/third_party/glslang/src/glslang_sources/IntermTraverse.o: cxx /ninja-to-soong-angle/third_party/glslang/src/glslang/MachineIndependent/IntermTraverse.cpp || phony/third_party/glslang/src/glslang_sources.inputdeps
+  source_file_part = IntermTraverse.cpp
+  source_name_part = IntermTraverse
+build obj/third_party/glslang/src/glslang_sources/Intermediate.o: cxx /ninja-to-soong-angle/third_party/glslang/src/glslang/MachineIndependent/Intermediate.cpp || phony/third_party/glslang/src/glslang_sources.inputdeps
+  source_file_part = Intermediate.cpp
+  source_name_part = Intermediate
+build obj/third_party/glslang/src/glslang_sources/ParseContextBase.o: cxx /ninja-to-soong-angle/third_party/glslang/src/glslang/MachineIndependent/ParseContextBase.cpp || phony/third_party/glslang/src/glslang_sources.inputdeps
+  source_file_part = ParseContextBase.cpp
+  source_name_part = ParseContextBase
+build obj/third_party/glslang/src/glslang_sources/ParseHelper.o: cxx /ninja-to-soong-angle/third_party/glslang/src/glslang/MachineIndependent/ParseHelper.cpp || phony/third_party/glslang/src/glslang_sources.inputdeps
+  source_file_part = ParseHelper.cpp
+  source_name_part = ParseHelper
+build obj/third_party/glslang/src/glslang_sources/PoolAlloc.o: cxx /ninja-to-soong-angle/third_party/glslang/src/glslang/MachineIndependent/PoolAlloc.cpp || phony/third_party/glslang/src/glslang_sources.inputdeps
+  source_file_part = PoolAlloc.cpp
+  source_name_part = PoolAlloc
+build obj/third_party/glslang/src/glslang_sources/RemoveTree.o: cxx /ninja-to-soong-angle/third_party/glslang/src/glslang/MachineIndependent/RemoveTree.cpp || phony/third_party/glslang/src/glslang_sources.inputdeps
+  source_file_part = RemoveTree.cpp
+  source_name_part = RemoveTree
+build obj/third_party/glslang/src/glslang_sources/Scan.o: cxx /ninja-to-soong-angle/third_party/glslang/src/glslang/MachineIndependent/Scan.cpp || phony/third_party/glslang/src/glslang_sources.inputdeps
+  source_file_part = Scan.cpp
+  source_name_part = Scan
+build obj/third_party/glslang/src/glslang_sources/ShaderLang.o: cxx /ninja-to-soong-angle/third_party/glslang/src/glslang/MachineIndependent/ShaderLang.cpp || phony/third_party/glslang/src/glslang_sources.inputdeps
+  source_file_part = ShaderLang.cpp
+  source_name_part = ShaderLang
+build obj/third_party/glslang/src/glslang_sources/SpirvIntrinsics.o: cxx /ninja-to-soong-angle/third_party/glslang/src/glslang/MachineIndependent/SpirvIntrinsics.cpp || phony/third_party/glslang/src/glslang_sources.inputdeps
+  source_file_part = SpirvIntrinsics.cpp
+  source_name_part = SpirvIntrinsics
+build obj/third_party/glslang/src/glslang_sources/SymbolTable.o: cxx /ninja-to-soong-angle/third_party/glslang/src/glslang/MachineIndependent/SymbolTable.cpp || phony/third_party/glslang/src/glslang_sources.inputdeps
+  source_file_part = SymbolTable.cpp
+  source_name_part = SymbolTable
+build obj/third_party/glslang/src/glslang_sources/Versions.o: cxx /ninja-to-soong-angle/third_party/glslang/src/glslang/MachineIndependent/Versions.cpp || phony/third_party/glslang/src/glslang_sources.inputdeps
+  source_file_part = Versions.cpp
+  source_name_part = Versions
+build obj/third_party/glslang/src/glslang_sources/attribute.o: cxx /ninja-to-soong-angle/third_party/glslang/src/glslang/MachineIndependent/attribute.cpp || phony/third_party/glslang/src/glslang_sources.inputdeps
+  source_file_part = attribute.cpp
+  source_name_part = attribute
+build obj/third_party/glslang/src/glslang_sources/glslang_tab.o: cxx /ninja-to-soong-angle/third_party/glslang/src/glslang/MachineIndependent/glslang_tab.cpp || phony/third_party/glslang/src/glslang_sources.inputdeps
+  source_file_part = glslang_tab.cpp
+  source_name_part = glslang_tab
+build obj/third_party/glslang/src/glslang_sources/intermOut.o: cxx /ninja-to-soong-angle/third_party/glslang/src/glslang/MachineIndependent/intermOut.cpp || phony/third_party/glslang/src/glslang_sources.inputdeps
+  source_file_part = intermOut.cpp
+  source_name_part = intermOut
+build obj/third_party/glslang/src/glslang_sources/iomapper.o: cxx /ninja-to-soong-angle/third_party/glslang/src/glslang/MachineIndependent/iomapper.cpp || phony/third_party/glslang/src/glslang_sources.inputdeps
+  source_file_part = iomapper.cpp
+  source_name_part = iomapper
+build obj/third_party/glslang/src/glslang_sources/limits.o: cxx /ninja-to-soong-angle/third_party/glslang/src/glslang/MachineIndependent/limits.cpp || phony/third_party/glslang/src/glslang_sources.inputdeps
+  source_file_part = limits.cpp
+  source_name_part = limits
+build obj/third_party/glslang/src/glslang_sources/linkValidate.o: cxx /ninja-to-soong-angle/third_party/glslang/src/glslang/MachineIndependent/linkValidate.cpp || phony/third_party/glslang/src/glslang_sources.inputdeps
+  source_file_part = linkValidate.cpp
+  source_name_part = linkValidate
+build obj/third_party/glslang/src/glslang_sources/parseConst.o: cxx /ninja-to-soong-angle/third_party/glslang/src/glslang/MachineIndependent/parseConst.cpp || phony/third_party/glslang/src/glslang_sources.inputdeps
+  source_file_part = parseConst.cpp
+  source_name_part = parseConst
+build obj/third_party/glslang/src/glslang_sources/Pp.o: cxx /ninja-to-soong-angle/third_party/glslang/src/glslang/MachineIndependent/preprocessor/Pp.cpp || phony/third_party/glslang/src/glslang_sources.inputdeps
+  source_file_part = Pp.cpp
+  source_name_part = Pp
+build obj/third_party/glslang/src/glslang_sources/PpAtom.o: cxx /ninja-to-soong-angle/third_party/glslang/src/glslang/MachineIndependent/preprocessor/PpAtom.cpp || phony/third_party/glslang/src/glslang_sources.inputdeps
+  source_file_part = PpAtom.cpp
+  source_name_part = PpAtom
+build obj/third_party/glslang/src/glslang_sources/PpContext.o: cxx /ninja-to-soong-angle/third_party/glslang/src/glslang/MachineIndependent/preprocessor/PpContext.cpp || phony/third_party/glslang/src/glslang_sources.inputdeps
+  source_file_part = PpContext.cpp
+  source_name_part = PpContext
+build obj/third_party/glslang/src/glslang_sources/PpScanner.o: cxx /ninja-to-soong-angle/third_party/glslang/src/glslang/MachineIndependent/preprocessor/PpScanner.cpp || phony/third_party/glslang/src/glslang_sources.inputdeps
+  source_file_part = PpScanner.cpp
+  source_name_part = PpScanner
+build obj/third_party/glslang/src/glslang_sources/PpTokens.o: cxx /ninja-to-soong-angle/third_party/glslang/src/glslang/MachineIndependent/preprocessor/PpTokens.cpp || phony/third_party/glslang/src/glslang_sources.inputdeps
+  source_file_part = PpTokens.cpp
+  source_name_part = PpTokens
+build obj/third_party/glslang/src/glslang_sources/propagateNoContraction.o: cxx /ninja-to-soong-angle/third_party/glslang/src/glslang/MachineIndependent/propagateNoContraction.cpp || phony/third_party/glslang/src/glslang_sources.inputdeps
+  source_file_part = propagateNoContraction.cpp
+  source_name_part = propagateNoContraction
+build obj/third_party/glslang/src/glslang_sources/reflection.o: cxx /ninja-to-soong-angle/third_party/glslang/src/glslang/MachineIndependent/reflection.cpp || phony/third_party/glslang/src/glslang_sources.inputdeps
+  source_file_part = reflection.cpp
+  source_name_part = reflection
+build obj/third_party/glslang/src/glslang_sources/hlslAttributes.o: cxx /ninja-to-soong-angle/third_party/glslang/src/glslang/HLSL/hlslAttributes.cpp || phony/third_party/glslang/src/glslang_sources.inputdeps
+  source_file_part = hlslAttributes.cpp
+  source_name_part = hlslAttributes
+build obj/third_party/glslang/src/glslang_sources/hlslGrammar.o: cxx /ninja-to-soong-angle/third_party/glslang/src/glslang/HLSL/hlslGrammar.cpp || phony/third_party/glslang/src/glslang_sources.inputdeps
+  source_file_part = hlslGrammar.cpp
+  source_name_part = hlslGrammar
+build obj/third_party/glslang/src/glslang_sources/hlslOpMap.o: cxx /ninja-to-soong-angle/third_party/glslang/src/glslang/HLSL/hlslOpMap.cpp || phony/third_party/glslang/src/glslang_sources.inputdeps
+  source_file_part = hlslOpMap.cpp
+  source_name_part = hlslOpMap
+build obj/third_party/glslang/src/glslang_sources/hlslParseHelper.o: cxx /ninja-to-soong-angle/third_party/glslang/src/glslang/HLSL/hlslParseHelper.cpp || phony/third_party/glslang/src/glslang_sources.inputdeps
+  source_file_part = hlslParseHelper.cpp
+  source_name_part = hlslParseHelper
+build obj/third_party/glslang/src/glslang_sources/hlslParseables.o: cxx /ninja-to-soong-angle/third_party/glslang/src/glslang/HLSL/hlslParseables.cpp || phony/third_party/glslang/src/glslang_sources.inputdeps
+  source_file_part = hlslParseables.cpp
+  source_name_part = hlslParseables
+build obj/third_party/glslang/src/glslang_sources/hlslScanContext.o: cxx /ninja-to-soong-angle/third_party/glslang/src/glslang/HLSL/hlslScanContext.cpp || phony/third_party/glslang/src/glslang_sources.inputdeps
+  source_file_part = hlslScanContext.cpp
+  source_name_part = hlslScanContext
+build obj/third_party/glslang/src/glslang_sources/hlslTokenStream.o: cxx /ninja-to-soong-angle/third_party/glslang/src/glslang/HLSL/hlslTokenStream.cpp || phony/third_party/glslang/src/glslang_sources.inputdeps
+  source_file_part = hlslTokenStream.cpp
+  source_name_part = hlslTokenStream
+build obj/third_party/glslang/src/glslang_sources/SpvTools.o: cxx /ninja-to-soong-angle/third_party/glslang/src/SPIRV/SpvTools.cpp || phony/third_party/glslang/src/glslang_sources.inputdeps
+  source_file_part = SpvTools.cpp
+  source_name_part = SpvTools
+build obj/third_party/glslang/src/glslang_sources/ossource.o: cxx /ninja-to-soong-angle/third_party/glslang/src/glslang/OSDependent/Unix/ossource.cpp || phony/third_party/glslang/src/glslang_sources.inputdeps
+  source_file_part = ossource.cpp
+  source_name_part = ossource
+
+build phony/third_party/glslang/src/glslang_sources: phony obj/third_party/glslang/src/glslang_sources/GlslangToSpv.o obj/third_party/glslang/src/glslang_sources/InReadableOrder.o obj/third_party/glslang/src/glslang_sources/Logger.o obj/third_party/glslang/src/glslang_sources/SPVRemapper.o obj/third_party/glslang/src/glslang_sources/SpvBuilder.o obj/third_party/glslang/src/glslang_sources/SpvPostProcess.o obj/third_party/glslang/src/glslang_sources/disassemble.o obj/third_party/glslang/src/glslang_sources/doc.o obj/third_party/glslang/src/glslang_sources/CodeGen.o obj/third_party/glslang/src/glslang_sources/Link.o obj/third_party/glslang/src/glslang_sources/Constant.o obj/third_party/glslang/src/glslang_sources/InfoSink.o obj/third_party/glslang/src/glslang_sources/Initialize.o obj/third_party/glslang/src/glslang_sources/IntermTraverse.o obj/third_party/glslang/src/glslang_sources/Intermediate.o obj/third_party/glslang/src/glslang_sources/ParseContextBase.o obj/third_party/glslang/src/glslang_sources/ParseHelper.o obj/third_party/glslang/src/glslang_sources/PoolAlloc.o obj/third_party/glslang/src/glslang_sources/RemoveTree.o obj/third_party/glslang/src/glslang_sources/Scan.o obj/third_party/glslang/src/glslang_sources/ShaderLang.o obj/third_party/glslang/src/glslang_sources/SpirvIntrinsics.o obj/third_party/glslang/src/glslang_sources/SymbolTable.o obj/third_party/glslang/src/glslang_sources/Versions.o obj/third_party/glslang/src/glslang_sources/attribute.o obj/third_party/glslang/src/glslang_sources/glslang_tab.o obj/third_party/glslang/src/glslang_sources/intermOut.o obj/third_party/glslang/src/glslang_sources/iomapper.o obj/third_party/glslang/src/glslang_sources/limits.o obj/third_party/glslang/src/glslang_sources/linkValidate.o obj/third_party/glslang/src/glslang_sources/parseConst.o obj/third_party/glslang/src/glslang_sources/Pp.o obj/third_party/glslang/src/glslang_sources/PpAtom.o obj/third_party/glslang/src/glslang_sources/PpContext.o obj/third_party/glslang/src/glslang_sources/PpScanner.o obj/third_party/glslang/src/glslang_sources/PpTokens.o obj/third_party/glslang/src/glslang_sources/propagateNoContraction.o obj/third_party/glslang/src/glslang_sources/reflection.o obj/third_party/glslang/src/glslang_sources/hlslAttributes.o obj/third_party/glslang/src/glslang_sources/hlslGrammar.o obj/third_party/glslang/src/glslang_sources/hlslOpMap.o obj/third_party/glslang/src/glslang_sources/hlslParseHelper.o obj/third_party/glslang/src/glslang_sources/hlslParseables.o obj/third_party/glslang/src/glslang_sources/hlslScanContext.o obj/third_party/glslang/src/glslang_sources/hlslTokenStream.o obj/third_party/glslang/src/glslang_sources/SpvTools.o obj/third_party/glslang/src/glslang_sources/ossource.o || phony/third_party/glslang/src/glslang_build_info obj/third_party/spirv-tools/src/libspvtools_opt.a obj/third_party/spirv-tools/src/libspvtools_val.a obj/third_party/spirv-tools/src/libspvtools.a

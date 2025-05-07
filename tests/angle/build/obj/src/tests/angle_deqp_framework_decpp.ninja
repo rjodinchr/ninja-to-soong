@@ -1,0 +1,95 @@
+defines = -D_GNU_SOURCE -D__ARM_NEON__=1 -DANDROID -D__ANDROID_UNAVAILABLE_SYMBOLS_ARE_WEAK__ -DHAVE_SYS_UIO_H -DANDROID_NDK_VERSION_ROLL=r28_1 -DCR_CLANG_REVISION=\"llvmorg-21-init-9266-g09006611-1\" -D_LIBCPP_HARDENING_MODE=_LIBCPP_HARDENING_MODE_NONE -DNDEBUG -DNVALGRIND -DDYNAMIC_ANNOTATIONS_ENABLED=0 -DANGLE_ENABLE_SHARE_CONTEXT_LOCK=1 -DANGLE_USE_ANDROID_TLS_SLOT=1 -DANGLE_ENABLE_GLOBAL_MUTEX_RECURSION=1 -DANGLE_ENABLE_GLOBAL_MUTEX_LOAD_TIME_ALLOCATE=1 -DANGLE_ENABLE_CONTEXT_MUTEX=1 -DANGLE_ENABLE_CONTEXT_MUTEX_RECURSION=1 -DANGLE_TEST_ENABLE_SYSTEM_EGL -DDEQP_SUPPORT_GLES31=1 -DDEQP_SUPPORT_GLES3=1 -DDEQP_SUPPORT_GLES2=1 -DDEQP_SUPPORT_EGL=1 -DDEQP_TARGET_NAME=\"angle\" -DDEQP_GLES31_RUNTIME_LOAD=1 -DDEQP_GLES3_RUNTIME_LOAD=1 -DDEQP_GLES2_RUNTIME_LOAD=1 -DQP_SUPPORT_PNG=1 -D_HAS_EXCEPTIONS=1 -D_MBCS -DANGLE_DEQP_DATA_DIR=\"gen/vk_gl_cts_data/data\" -DDE_ANDROID_API=26 -D_XOPEN_SOURCE=600 -DDE_FENV_ACCESS_ON=_Pragma\(\"STDC\$ FENV_ACCESS\$ ON\"\)
+include_dirs = -I/ninja-to-soong-angle/include -I/ninja-to-soong-angle/src -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/executor -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/execserver -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/framework/platform/lnx -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/framework/platform/lnx/X11 -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/framework/platform/null -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/framework/platform/win32 -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/framework/xexml -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/modules/gles2 -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/modules/gles2/functional -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/modules/gles2/accuracy -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/modules/gles2/performance -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/modules/gles2/stress -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/modules/gles2/usecases -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/modules/gles3 -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/modules/gles3/functional -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/modules/gles3/accuracy -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/modules/gles3/performance -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/modules/gles3/stress -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/modules/gles3/usecases -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/modules/gles31 -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/modules/gles31/functional -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/modules/gles31/stress -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/modules/glusecases -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/modules/egl -I/ninja-to-soong-angle/third_party/glslang/src -I/ninja-to-soong-angle/third_party/spirv-tools/src -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/framework/platform/android -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/framework/delibs/decpp -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/framework/delibs/debase -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/framework/delibs/depool -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/framework/delibs/dethread -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/framework/delibs/deutil -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/framework/delibs/destream
+cflags = -Wno-nonportable-include-path -fno-delete-null-pointer-checks -fno-strict-overflow -fno-ident -fno-strict-aliasing -fstack-protector -funwind-tables -fPIC -fcolor-diagnostics -fmerge-all-constants -fno-sized-deallocation -fcrash-diagnostics-dir=/ninja-to-soong-angle/tools/clang/crashreports -mllvm -instcombine-lower-dbg-declare=0 -mllvm -split-threshold-for-reg-with-hint=0 -ffp-contract=off -fextend-variable-liveness=none -ffunction-sections -fno-short-enums -mbranch-protection=standard --target=aarch64-linux-android26 -mno-outline -Wno-builtin-macro-redefined -D__DATE__= -D__TIME__= -D__TIMESTAMP__= -ffile-compilation-dir=. -no-canonical-prefixes -ftrivial-auto-var-init=pattern -fno-omit-frame-pointer -g0 -fvisibility=hidden -Wheader-hygiene -Wstring-conversion -Wtautological-overlap-compare -O2 -fdata-sections -ffunction-sections -fno-unique-section-names -fno-math-errno -Wall -Wno-unused-variable -Wno-c++11-narrowing -Wno-unused-but-set-variable -Wunguarded-availability -Wno-missing-field-initializers -Wno-unused-parameter -Wno-psabi -Wloop-analysis -Wno-unneeded-internal-declaration -Wno-cast-function-type -Wno-thread-safety-reference-return -Wno-nontrivial-memcall -Werror
+cflags_cc = -Wno-self-assign -std=c++20 -Wno-trigraphs -gsimple-template-names --sysroot=/ninja-to-soong-angle/third_party/android_toolchain/ndk/toolchains/llvm/prebuilt/linux-x86_64/sysroot -fvisibility-inlines-hidden -Wno-sizeof-array-div -Wno-string-conversion -Wno-unused-function -Wno-unused-local-typedef -Wno-unused-result -fwrapv -fexceptions -Wno-invalid-offsetof -Wenum-compare-conditional -Wno-nullability-completeness
+label_name = angle_deqp_framework_decpp
+root_out_dir = .
+target_out_dir = obj/src/tests
+target_output_name = angle_deqp_framework_decpp
+
+build obj/src/tests/angle_deqp_framework_decpp/deAppendList.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/framework/delibs/decpp/deAppendList.cpp
+  source_file_part = deAppendList.cpp
+  source_name_part = deAppendList
+build obj/src/tests/angle_deqp_framework_decpp/deArrayBuffer.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/framework/delibs/decpp/deArrayBuffer.cpp
+  source_file_part = deArrayBuffer.cpp
+  source_name_part = deArrayBuffer
+build obj/src/tests/angle_deqp_framework_decpp/deArrayUtil.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/framework/delibs/decpp/deArrayUtil.cpp
+  source_file_part = deArrayUtil.cpp
+  source_name_part = deArrayUtil
+build obj/src/tests/angle_deqp_framework_decpp/deBlockBuffer.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/framework/delibs/decpp/deBlockBuffer.cpp
+  source_file_part = deBlockBuffer.cpp
+  source_name_part = deBlockBuffer
+build obj/src/tests/angle_deqp_framework_decpp/deCommandLine.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/framework/delibs/decpp/deCommandLine.cpp
+  source_file_part = deCommandLine.cpp
+  source_name_part = deCommandLine
+build obj/src/tests/angle_deqp_framework_decpp/deDefs.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/framework/delibs/decpp/deDefs.cpp
+  source_file_part = deDefs.cpp
+  source_name_part = deDefs
+build obj/src/tests/angle_deqp_framework_decpp/deDirectoryIterator.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/framework/delibs/decpp/deDirectoryIterator.cpp
+  source_file_part = deDirectoryIterator.cpp
+  source_name_part = deDirectoryIterator
+build obj/src/tests/angle_deqp_framework_decpp/deDynamicLibrary.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/framework/delibs/decpp/deDynamicLibrary.cpp
+  source_file_part = deDynamicLibrary.cpp
+  source_name_part = deDynamicLibrary
+build obj/src/tests/angle_deqp_framework_decpp/deFilePath.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/framework/delibs/decpp/deFilePath.cpp
+  source_file_part = deFilePath.cpp
+  source_name_part = deFilePath
+build obj/src/tests/angle_deqp_framework_decpp/deMemPool.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/framework/delibs/decpp/deMemPool.cpp
+  source_file_part = deMemPool.cpp
+  source_name_part = deMemPool
+build obj/src/tests/angle_deqp_framework_decpp/deMeta.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/framework/delibs/decpp/deMeta.cpp
+  source_file_part = deMeta.cpp
+  source_name_part = deMeta
+build obj/src/tests/angle_deqp_framework_decpp/deMutex.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/framework/delibs/decpp/deMutex.cpp
+  source_file_part = deMutex.cpp
+  source_name_part = deMutex
+build obj/src/tests/angle_deqp_framework_decpp/dePoolArray.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/framework/delibs/decpp/dePoolArray.cpp
+  source_file_part = dePoolArray.cpp
+  source_name_part = dePoolArray
+build obj/src/tests/angle_deqp_framework_decpp/dePoolString.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/framework/delibs/decpp/dePoolString.cpp
+  source_file_part = dePoolString.cpp
+  source_name_part = dePoolString
+build obj/src/tests/angle_deqp_framework_decpp/deProcess.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/framework/delibs/decpp/deProcess.cpp
+  source_file_part = deProcess.cpp
+  source_name_part = deProcess
+build obj/src/tests/angle_deqp_framework_decpp/deRandom.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/framework/delibs/decpp/deRandom.cpp
+  source_file_part = deRandom.cpp
+  source_name_part = deRandom
+build obj/src/tests/angle_deqp_framework_decpp/deRingBuffer.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/framework/delibs/decpp/deRingBuffer.cpp
+  source_file_part = deRingBuffer.cpp
+  source_name_part = deRingBuffer
+build obj/src/tests/angle_deqp_framework_decpp/deSTLUtil.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/framework/delibs/decpp/deSTLUtil.cpp
+  source_file_part = deSTLUtil.cpp
+  source_name_part = deSTLUtil
+build obj/src/tests/angle_deqp_framework_decpp/deSemaphore.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/framework/delibs/decpp/deSemaphore.cpp
+  source_file_part = deSemaphore.cpp
+  source_name_part = deSemaphore
+build obj/src/tests/angle_deqp_framework_decpp/deSha1.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/framework/delibs/decpp/deSha1.cpp
+  source_file_part = deSha1.cpp
+  source_name_part = deSha1
+build obj/src/tests/angle_deqp_framework_decpp/deSharedPtr.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/framework/delibs/decpp/deSharedPtr.cpp
+  source_file_part = deSharedPtr.cpp
+  source_name_part = deSharedPtr
+build obj/src/tests/angle_deqp_framework_decpp/deSocket.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/framework/delibs/decpp/deSocket.cpp
+  source_file_part = deSocket.cpp
+  source_name_part = deSocket
+build obj/src/tests/angle_deqp_framework_decpp/deSpinBarrier.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/framework/delibs/decpp/deSpinBarrier.cpp
+  source_file_part = deSpinBarrier.cpp
+  source_name_part = deSpinBarrier
+build obj/src/tests/angle_deqp_framework_decpp/deStringUtil.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/framework/delibs/decpp/deStringUtil.cpp
+  source_file_part = deStringUtil.cpp
+  source_name_part = deStringUtil
+build obj/src/tests/angle_deqp_framework_decpp/deThread.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/framework/delibs/decpp/deThread.cpp
+  source_file_part = deThread.cpp
+  source_name_part = deThread
+build obj/src/tests/angle_deqp_framework_decpp/deThreadLocal.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/framework/delibs/decpp/deThreadLocal.cpp
+  source_file_part = deThreadLocal.cpp
+  source_name_part = deThreadLocal
+build obj/src/tests/angle_deqp_framework_decpp/deThreadSafeRingBuffer.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/framework/delibs/decpp/deThreadSafeRingBuffer.cpp
+  source_file_part = deThreadSafeRingBuffer.cpp
+  source_name_part = deThreadSafeRingBuffer
+build obj/src/tests/angle_deqp_framework_decpp/deUniquePtr.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/framework/delibs/decpp/deUniquePtr.cpp
+  source_file_part = deUniquePtr.cpp
+  source_name_part = deUniquePtr
+
+build phony/src/tests/angle_deqp_framework_decpp: phony obj/src/tests/angle_deqp_framework_decpp/deAppendList.o obj/src/tests/angle_deqp_framework_decpp/deArrayBuffer.o obj/src/tests/angle_deqp_framework_decpp/deArrayUtil.o obj/src/tests/angle_deqp_framework_decpp/deBlockBuffer.o obj/src/tests/angle_deqp_framework_decpp/deCommandLine.o obj/src/tests/angle_deqp_framework_decpp/deDefs.o obj/src/tests/angle_deqp_framework_decpp/deDirectoryIterator.o obj/src/tests/angle_deqp_framework_decpp/deDynamicLibrary.o obj/src/tests/angle_deqp_framework_decpp/deFilePath.o obj/src/tests/angle_deqp_framework_decpp/deMemPool.o obj/src/tests/angle_deqp_framework_decpp/deMeta.o obj/src/tests/angle_deqp_framework_decpp/deMutex.o obj/src/tests/angle_deqp_framework_decpp/dePoolArray.o obj/src/tests/angle_deqp_framework_decpp/dePoolString.o obj/src/tests/angle_deqp_framework_decpp/deProcess.o obj/src/tests/angle_deqp_framework_decpp/deRandom.o obj/src/tests/angle_deqp_framework_decpp/deRingBuffer.o obj/src/tests/angle_deqp_framework_decpp/deSTLUtil.o obj/src/tests/angle_deqp_framework_decpp/deSemaphore.o obj/src/tests/angle_deqp_framework_decpp/deSha1.o obj/src/tests/angle_deqp_framework_decpp/deSharedPtr.o obj/src/tests/angle_deqp_framework_decpp/deSocket.o obj/src/tests/angle_deqp_framework_decpp/deSpinBarrier.o obj/src/tests/angle_deqp_framework_decpp/deStringUtil.o obj/src/tests/angle_deqp_framework_decpp/deThread.o obj/src/tests/angle_deqp_framework_decpp/deThreadLocal.o obj/src/tests/angle_deqp_framework_decpp/deThreadSafeRingBuffer.o obj/src/tests/angle_deqp_framework_decpp/deUniquePtr.o || phony/src/tests/angle_deqp_framework_debase phony/src/tests/angle_deqp_framework_delibs

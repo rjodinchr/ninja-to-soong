@@ -20,13 +20,13 @@ jobs:
           find -name *.rs -exec rustfmt {} \+
           git diff --exit-code
   build:
-    name: Tests ${{ matrix.project }}
+    name: Test ${{ matrix.project }}
     needs: format
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
-        project: [clvk, mesa, OpenCL-CTS]
+        project: [clvk, mesa, OpenCL-CTS, angle]
     steps:
       - uses: actions/checkout@v4
         with:
@@ -42,15 +42,18 @@ jobs:
           set -x
           echo "android=$(realpath ${{ github.workspace }}/../android)" >> $GITHUB_ENV
           echo "tmp_dir=$(realpath ${{ github.workspace }}/../tmp)" >> $GITHUB_ENV
-          if [ "${{ matrix.project}}" == "clvk" ]; then
+          if [ "${{ matrix.project }}" == "clvk" ]; then
             echo "key=$(git log -1 --format='%h' .github/workflows/*.yml tests/clvk/*.sh tests/clspv/*.sh tests/llvm-project/*.sh tests/SPIRV-Tools/*.sh tests/SPIRV-Headers/*.sh)-clvk" >> $GITHUB_ENV
             echo "projects=clvk clspv llvm-project SPIRV-Tools SPIRV-Headers" >> $GITHUB_ENV
-          elif [ "${{ matrix.project}}" == "mesa" ]; then
+          elif [ "${{ matrix.project }}" == "mesa" ]; then
             echo "key=$(git log -1 --format='%h' .github/workflows/*.yml tests/mesa3d/desktop-intel/*.sh)-mesa" >> $GITHUB_ENV
             echo "projects=mesa3d/desktop-intel" >> $GITHUB_ENV
-          elif [ "${{ matrix.project}}" == "OpenCL-CTS" ]; then
+          elif [ "${{ matrix.project }}" == "OpenCL-CTS" ]; then
             echo "key=$(git log -1 --format='%h' .github/workflows/*.yml tests/OpenCL-CTS/*.sh)-OpenCL-CTS" >> $GITHUB_ENV
             echo "projects=OpenCL-CTS" >> $GITHUB_ENV
+          elif [ "${{ matrix.project }}" == "angle" ]; then
+            echo "key=$(git log -1 --format='%h' .github/workflows/*.yml tests/angle/*.sh tests/angle/build)-angle" >> $GITHUB_ENV
+            echo "projects=angle" >> $GITHUB_ENV
           fi
       - name: Get repositories from cache
         id: checkout-repositories

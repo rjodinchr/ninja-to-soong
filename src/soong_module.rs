@@ -166,8 +166,29 @@ impl SoongModule {
                         }
                         prop => Ok(prop),
                     })?
-                }
-                _ => (),
+                },
+                SoongProp::Str(default_str) => {
+                    let find_index = || {
+                        for index in 0..self.props.len() {
+                            if &self.props[index].name == name && name != "name" {
+                                match self.props[index].get_prop() {
+                                    SoongProp::Str(module_str) => {
+                                        if default_str != &module_str {
+                                            return error!("Could not filter {name:#?} from {my_name:#?} because it is different than default ({default_str:#?} != {module_str:#?})")
+                                        }
+                                        return Ok(Some(index));
+                                    },
+                                    _ => return error!("Unexpected property"),
+                                }
+                            }
+                        }
+                        return Ok(None);
+                    };
+                    if let Some(index) = find_index()? {
+                        self.props.remove(index);
+                    }
+                },
+                _ => return error!("Unsupported property type to filter"),
             };
         }
         Ok(())

@@ -1,0 +1,68 @@
+defines = -D_GNU_SOURCE -D__ARM_NEON__=1 -DANDROID -D__ANDROID_UNAVAILABLE_SYMBOLS_ARE_WEAK__ -DHAVE_SYS_UIO_H -DANDROID_NDK_VERSION_ROLL=r28_1 -DCR_CLANG_REVISION=\"llvmorg-21-init-9266-g09006611-1\" -D_LIBCPP_HARDENING_MODE=_LIBCPP_HARDENING_MODE_NONE -DNDEBUG -DNVALGRIND -DDYNAMIC_ANNOTATIONS_ENABLED=0 -DANGLE_ENABLE_SHARE_CONTEXT_LOCK=1 -DANGLE_USE_ANDROID_TLS_SLOT=1 -DANGLE_ENABLE_GLOBAL_MUTEX_RECURSION=1 -DANGLE_ENABLE_GLOBAL_MUTEX_LOAD_TIME_ALLOCATE=1 -DANGLE_ENABLE_CONTEXT_MUTEX=1 -DANGLE_ENABLE_CONTEXT_MUTEX_RECURSION=1 -DANGLE_TEST_ENABLE_SYSTEM_EGL -DDEQP_SUPPORT_GLES31=1 -DDEQP_SUPPORT_GLES3=1 -DDEQP_SUPPORT_GLES2=1 -DDEQP_SUPPORT_EGL=1 -DDEQP_TARGET_NAME=\"angle\" -DDEQP_GLES31_RUNTIME_LOAD=1 -DDEQP_GLES3_RUNTIME_LOAD=1 -DDEQP_GLES2_RUNTIME_LOAD=1 -DQP_SUPPORT_PNG=1 -D_HAS_EXCEPTIONS=1 -D_MBCS -DANGLE_DEQP_DATA_DIR=\"gen/vk_gl_cts_data/data\" -DDE_ANDROID_API=26 -D_XOPEN_SOURCE=600 -DDE_FENV_ACCESS_ON=_Pragma\(\"STDC\$ FENV_ACCESS\$ ON\"\)
+include_dirs = -I/ninja-to-soong-angle/include -I/ninja-to-soong-angle/src -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/framework/egl -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/framework/egl/wrapper -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/framework/opengl -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/framework/opengl/simplereference -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/framework/opengl/wrapper -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/framework/common -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/framework/randomshaders -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/framework/referencerenderer -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/executor -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/execserver -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/framework/platform/lnx -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/framework/platform/lnx/X11 -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/framework/platform/null -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/framework/platform/win32 -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/framework/xexml -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/modules/gles2 -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/modules/gles2/functional -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/modules/gles2/accuracy -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/modules/gles2/performance -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/modules/gles2/stress -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/modules/gles2/usecases -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/modules/gles3 -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/modules/gles3/functional -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/modules/gles3/accuracy -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/modules/gles3/performance -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/modules/gles3/stress -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/modules/gles3/usecases -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/modules/gles31 -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/modules/gles31/functional -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/modules/gles31/stress -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/modules/glusecases -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/modules/egl -I/ninja-to-soong-angle/third_party/glslang/src -I/ninja-to-soong-angle/third_party/spirv-tools/src -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/framework/platform/android -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/framework/delibs/decpp -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/framework/delibs/debase -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/framework/delibs/depool -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/framework/delibs/dethread -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/framework/delibs/deutil -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/framework/delibs/destream -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/framework/qphelper -I/ninja-to-soong-angle/third_party/libpng/src
+cflags = -Wno-nonportable-include-path -fno-delete-null-pointer-checks -fno-strict-overflow -fno-ident -fno-strict-aliasing -fstack-protector -funwind-tables -fPIC -fcolor-diagnostics -fmerge-all-constants -fno-sized-deallocation -fcrash-diagnostics-dir=/ninja-to-soong-angle/tools/clang/crashreports -mllvm -instcombine-lower-dbg-declare=0 -mllvm -split-threshold-for-reg-with-hint=0 -ffp-contract=off -fextend-variable-liveness=none -ffunction-sections -fno-short-enums -mbranch-protection=standard --target=aarch64-linux-android26 -mno-outline -Wno-builtin-macro-redefined -D__DATE__= -D__TIME__= -D__TIMESTAMP__= -ffile-compilation-dir=. -no-canonical-prefixes -ftrivial-auto-var-init=pattern -fno-omit-frame-pointer -g0 -fvisibility=hidden -Wheader-hygiene -Wstring-conversion -Wtautological-overlap-compare -O2 -fdata-sections -ffunction-sections -fno-unique-section-names -fno-math-errno -Wall -Wno-unused-variable -Wno-c++11-narrowing -Wno-unused-but-set-variable -Wunguarded-availability -Wno-missing-field-initializers -Wno-unused-parameter -Wno-psabi -Wloop-analysis -Wno-unneeded-internal-declaration -Wno-cast-function-type -Wno-thread-safety-reference-return -Wno-nontrivial-memcall -Werror -Wno-tautological-constant-out-of-range-compare
+cflags_cc = -std=c++20 -Wno-trigraphs -gsimple-template-names --sysroot=/ninja-to-soong-angle/third_party/android_toolchain/ndk/toolchains/llvm/prebuilt/linux-x86_64/sysroot -fvisibility-inlines-hidden -Wno-sizeof-array-div -Wno-string-conversion -Wno-unused-function -Wno-unused-local-typedef -Wno-unused-result -fwrapv -fexceptions -Wno-invalid-offsetof -Wenum-compare-conditional -Wno-nullability-completeness
+label_name = angle_deqp_framework_egl
+root_out_dir = .
+target_out_dir = obj/src/tests
+target_output_name = angle_deqp_framework_egl
+
+build obj/src/tests/angle_deqp_framework_egl/egluCallLogWrapper.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/framework/egl/egluCallLogWrapper.cpp
+  source_file_part = egluCallLogWrapper.cpp
+  source_name_part = egluCallLogWrapper
+build obj/src/tests/angle_deqp_framework_egl/egluConfigFilter.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/framework/egl/egluConfigFilter.cpp
+  source_file_part = egluConfigFilter.cpp
+  source_name_part = egluConfigFilter
+build obj/src/tests/angle_deqp_framework_egl/egluConfigInfo.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/framework/egl/egluConfigInfo.cpp
+  source_file_part = egluConfigInfo.cpp
+  source_name_part = egluConfigInfo
+build obj/src/tests/angle_deqp_framework_egl/egluDefs.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/framework/egl/egluDefs.cpp
+  source_file_part = egluDefs.cpp
+  source_name_part = egluDefs
+build obj/src/tests/angle_deqp_framework_egl/egluGLContextFactory.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/framework/egl/egluGLContextFactory.cpp
+  source_file_part = egluGLContextFactory.cpp
+  source_name_part = egluGLContextFactory
+build obj/src/tests/angle_deqp_framework_egl/egluGLFunctionLoader.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/framework/egl/egluGLFunctionLoader.cpp
+  source_file_part = egluGLFunctionLoader.cpp
+  source_name_part = egluGLFunctionLoader
+build obj/src/tests/angle_deqp_framework_egl/egluGLUtil.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/framework/egl/egluGLUtil.cpp
+  source_file_part = egluGLUtil.cpp
+  source_name_part = egluGLUtil
+build obj/src/tests/angle_deqp_framework_egl/egluNativeDisplay.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/framework/egl/egluNativeDisplay.cpp
+  source_file_part = egluNativeDisplay.cpp
+  source_name_part = egluNativeDisplay
+build obj/src/tests/angle_deqp_framework_egl/egluNativePixmap.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/framework/egl/egluNativePixmap.cpp
+  source_file_part = egluNativePixmap.cpp
+  source_name_part = egluNativePixmap
+build obj/src/tests/angle_deqp_framework_egl/egluNativeWindow.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/framework/egl/egluNativeWindow.cpp
+  source_file_part = egluNativeWindow.cpp
+  source_name_part = egluNativeWindow
+build obj/src/tests/angle_deqp_framework_egl/egluPlatform.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/framework/egl/egluPlatform.cpp
+  source_file_part = egluPlatform.cpp
+  source_name_part = egluPlatform
+build obj/src/tests/angle_deqp_framework_egl/egluStaticESLibrary.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/framework/egl/egluStaticESLibrary.cpp
+  source_file_part = egluStaticESLibrary.cpp
+  source_name_part = egluStaticESLibrary
+build obj/src/tests/angle_deqp_framework_egl/egluStrUtil.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/framework/egl/egluStrUtil.cpp
+  source_file_part = egluStrUtil.cpp
+  source_name_part = egluStrUtil
+build obj/src/tests/angle_deqp_framework_egl/egluUnique.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/framework/egl/egluUnique.cpp
+  source_file_part = egluUnique.cpp
+  source_name_part = egluUnique
+build obj/src/tests/angle_deqp_framework_egl/egluUtil.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/framework/egl/egluUtil.cpp
+  source_file_part = egluUtil.cpp
+  source_name_part = egluUtil
+build obj/src/tests/angle_deqp_framework_egl/eglwDefs.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/framework/egl/wrapper/eglwDefs.cpp
+  source_file_part = eglwDefs.cpp
+  source_name_part = eglwDefs
+build obj/src/tests/angle_deqp_framework_egl/eglwFunctions.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/framework/egl/wrapper/eglwFunctions.cpp
+  source_file_part = eglwFunctions.cpp
+  source_name_part = eglwFunctions
+build obj/src/tests/angle_deqp_framework_egl/eglwLibrary.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/framework/egl/wrapper/eglwLibrary.cpp
+  source_file_part = eglwLibrary.cpp
+  source_name_part = eglwLibrary
+build obj/src/tests/angle_deqp_framework_egl/eglwWrapper.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/framework/egl/wrapper/eglwWrapper.cpp
+  source_file_part = eglwWrapper.cpp
+  source_name_part = eglwWrapper
+
+build phony/src/tests/angle_deqp_framework_egl: phony obj/src/tests/angle_deqp_framework_egl/egluCallLogWrapper.o obj/src/tests/angle_deqp_framework_egl/egluConfigFilter.o obj/src/tests/angle_deqp_framework_egl/egluConfigInfo.o obj/src/tests/angle_deqp_framework_egl/egluDefs.o obj/src/tests/angle_deqp_framework_egl/egluGLContextFactory.o obj/src/tests/angle_deqp_framework_egl/egluGLFunctionLoader.o obj/src/tests/angle_deqp_framework_egl/egluGLUtil.o obj/src/tests/angle_deqp_framework_egl/egluNativeDisplay.o obj/src/tests/angle_deqp_framework_egl/egluNativePixmap.o obj/src/tests/angle_deqp_framework_egl/egluNativeWindow.o obj/src/tests/angle_deqp_framework_egl/egluPlatform.o obj/src/tests/angle_deqp_framework_egl/egluStaticESLibrary.o obj/src/tests/angle_deqp_framework_egl/egluStrUtil.o obj/src/tests/angle_deqp_framework_egl/egluUnique.o obj/src/tests/angle_deqp_framework_egl/egluUtil.o obj/src/tests/angle_deqp_framework_egl/eglwDefs.o obj/src/tests/angle_deqp_framework_egl/eglwFunctions.o obj/src/tests/angle_deqp_framework_egl/eglwLibrary.o obj/src/tests/angle_deqp_framework_egl/eglwWrapper.o || phony/src/tests/angle_deqp_framework_opengl phony/src/tests/angle_deqp_framework_common phony/src/tests/angle_deqp_framework_decpp phony/src/tests/angle_deqp_framework_debase phony/src/tests/angle_deqp_framework_delibs phony/src/tests/angle_deqp_framework_qphelper obj/third_party/libpng/libpng.a obj/third_party/zlib/libchrome_zlib.a phony/third_party/zlib/zlib_adler32_simd phony/third_party/zlib/zlib_inflate_chunk_simd phony/third_party/zlib/zlib_arm_crc32 phony/third_party/cpu_features/ndk_compat phony/third_party/cpu_features/cpuinfo phony/src/tests/angle_deqp_framework_xexml
