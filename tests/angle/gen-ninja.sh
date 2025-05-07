@@ -4,8 +4,15 @@ set -xe
 
 [ $# -eq 2 ]
 
+SCRIPT_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
 SRC_PATH="$1"
 BUILD_PATH="$2"
+
+if [ -z "${N2S_ANGLE_PATH}" ]; then
+    mkdir -p "${BUILD_PATH}"
+    cp -r "${SCRIPT_DIR}/build/"* "${BUILD_PATH}"
+    exit 0
+fi
 
 cd "${SRC_PATH}"
 
@@ -43,3 +50,13 @@ gn args "${BUILD_PATH}" \
     build_angle_trace_tests=false \
     angle_test_enable_system_egl=true"
 gn gen "${BUILD_PATH}"
+
+REAL_SRC_PATH="$(grep -e '--root=' ${BUILD_PATH}/build.ninja | sed 's|^.*--root=\([^ ]*\) .*$|\1|')"
+shopt -s globstar
+rm -rf "${SCRIPT_DIR}/build"
+for file in ${BUILD_PATH}/**/*.ninja
+do
+    new_name=$(echo "${file}" | sed "s|${BUILD_PATH}|${SCRIPT_DIR}/build|")
+    mkdir -p "$(dirname ${new_name})"
+    sed "s|${REAL_SRC_PATH}|/ninja-to-soong-angle|g" "${file}" > "${new_name}"
+done

@@ -1,0 +1,158 @@
+defines = -DUSE_UDEV -DUSE_AURA=1 -DUSE_GLIB=1 -DUSE_OZONE=1 -D__STDC_CONSTANT_MACROS -D__STDC_FORMAT_MACROS -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_LARGEFILE64_SOURCE -D_GNU_SOURCE -DCR_CLANG_REVISION=\"llvmorg-20-init-16062-g091448e3-1\" -D_LIBCPP_HARDENING_MODE=_LIBCPP_HARDENING_MODE_EXTENSIVE -DCOMPONENT_BUILD -D_LIBCPP_INSTRUMENTED_WITH_ASAN=0 -DCR_LIBCXX_REVISION=74dd760826063f15ce4d373b31bc34d1c65e41c2 -DTMP_REBUILD_HACK -DCR_SYSROOT_KEY=20230611T210420Z-2 -D_DEBUG -DDYNAMIC_ANNOTATIONS_ENABLED=1 -DANGLE_IS_LINUX -DANGLE_ENABLE_SHARE_CONTEXT_LOCK=1 -DANGLE_ENABLE_CONTEXT_MUTEX=1 -DANGLE_USE_VULKAN_DISPLAY -DANGLE_USE_X11 -DANGLE_USE_WAYLAND -DANGLE_VULKAN_DISPLAY_MODE_HEADLESS -DANGLE_HAS_ASTCENC -DANGLE_DEBUG_LAYERS_ENABLED -DANGLE_OUTSIDE_WEBKIT -DANGLE_ENABLE_OPENGL -DANGLE_ENABLE_GL_DESKTOP_BACKEND -DANGLE_ENABLE_OPENGL_NULL -DANGLE_HAS_LIBDRM -DLIBANGLE_IMPLEMENTATION -DANGLE_ENABLE_OVERLAY=1 -DANGLE_PLATFORM_EXPORT= -DANGLE_USE_ABSEIL -DABSL_ALLOCATOR_NOTHROW=1 -DABSL_CONSUME_DLL -DABSL_FLAGS_STRIP_NAMES=0 -DANGLE_ENABLE_NULL -DANGLE_ENABLE_WGPU -DANGLE_ENABLE_VULKAN -DANGLE_ENABLE_SWIFTSHADER -DANGLE_ENABLE_VULKAN_VALIDATION_LAYERS -DANGLE_ENABLE_VULKAN_API_DUMP_LAYER -DANGLE_ENABLE_VULKAN_SHARED_RING_BUFFER_CMD_ALLOC=false -DANGLE_ENABLE_CRC_FOR_PIPELINE_CACHE -Dtypeof\(x\)=__typeof__\(x\) -DVK_USE_PLATFORM_XCB_KHR -DVK_USE_PLATFORM_WAYLAND_KHR
+include_dirs = -I/ninja-to-soong-angle/buildtools/third_party/libc++ -I/ninja-to-soong-angle/include -I/ninja-to-soong-angle/src -I/ninja-to-soong-angle/src/third_party/khronos -I/ninja-to-soong-angle/src/common/base -I/ninja-to-soong-angle/src/common/third_party/xxhash -I/ninja-to-soong-angle/third_party/abseil-cpp -I/ninja-to-soong-angle/third_party/wayland/egl -I/ninja-to-soong-angle/third_party/wayland/src -I/ninja-to-soong-angle/third_party/libdrm/src -I/ninja-to-soong-angle/third_party/libdrm/src/include -I/ninja-to-soong-angle/third_party/libdrm/src/include/drm -I/ninja-to-soong-angle/third_party/vulkan-headers/src/include
+cflags = -Wall -Wextra -Wimplicit-fallthrough -Wextra-semi -Wunreachable-code-aggressive -Wthread-safety -Wgnu -Wno-gnu-anonymous-struct -Wno-gnu-conditional-omitted-operand -Wno-gnu-include-next -Wno-gnu-label-as-value -Wno-gnu-redeclared-enum -Wno-gnu-statement-expression -Wno-gnu-zero-variadic-macro-arguments -Wno-zero-length-array -Wno-missing-field-initializers -Wno-unused-parameter -Wno-psabi -Wloop-analysis -Wno-unneeded-internal-declaration -Wno-cast-function-type -Wno-thread-safety-reference-return -Wno-nontrivial-memcall -Wshadow -Werror -fno-delete-null-pointer-checks -fwrapv -fno-ident -fno-strict-aliasing -fstack-protector -funwind-tables -fPIC -pthread -fcolor-diagnostics -fmerge-all-constants -fno-sized-deallocation -fcrash-diagnostics-dir=/ninja-to-soong-angle/tools/clang/crashreports -mllvm -instcombine-lower-dbg-declare=0 -mllvm -split-threshold-for-reg-with-hint=0 -ffp-contract=off -Wa,--crel,--allow-experimental-crel -fcomplete-member-pointers -m64 -msse3 -Wno-builtin-macro-redefined -D__DATE__= -D__TIME__= -D__TIMESTAMP__= -ffile-compilation-dir=. -no-canonical-prefixes -ftrivial-auto-var-init=pattern -O0 -fno-omit-frame-pointer -gdwarf-4 -g2 -gdwarf-aranges -gsplit-dwarf -ggnu-pubnames -Xclang -fuse-ctor-homing -fvisibility=hidden -Wheader-hygiene -Wstring-conversion -Wtautological-overlap-compare -Wexit-time-destructors -Wglobal-constructors -Wbad-function-cast -Wconditional-uninitialized -Wextra-semi-stmt -Wfloat-conversion -Winconsistent-missing-destructor-override -Wmissing-field-initializers -Wnewline-eof -Wnon-virtual-dtor -Wredundant-parens -Wreturn-std-move -Wshadow -Wshadow-field -Wtautological-type-limit-compare -Wundefined-reinterpret-cast -Wunneeded-internal-declaration -Wunused-but-set-variable -Wsuggest-destructor-override -Wsuggest-override -Wparentheses -Wrange-loop-analysis -Wstrict-prototypes -Wunreachable-code-aggressive -Wshorten-64-to-32 -Wno-\#pragma-messages -DMAJOR_IN_SYSMACROS=1 -Wno-unused-function -Wno-enum-conversion -Wno-unused-result -Wno-format -Wno-redundant-parens
+cflags_cc = -Wno-invalid-offsetof -Wenum-compare-conditional -Wno-c++11-narrowing-const-reference -Wno-missing-template-arg-list-after-template-kw -Wno-dangling-assignment-gsl -Wno-undefined-bool-conversion -Wno-tautological-undefined-compare -std=c++20 -Wno-trigraphs -gsimple-template-names -fno-exceptions -fno-rtti -nostdinc++ -isystem/ninja-to-soong-angle/third_party/libc++/src/include -isystem/ninja-to-soong-angle/third_party/libc++abi/src/include --sysroot=/ninja-to-soong-angle/build/linux/debian_bullseye_amd64-sysroot -fvisibility-inlines-hidden
+label_name = angle_gl_backend
+target_out_dir = obj/src/libANGLE/renderer/gl
+target_output_name = angle_gl_backend
+
+build phony/src/libANGLE/renderer/gl/angle_gl_backend.inputdeps: phony phony/build/chromeos_buildflags phony/third_party/libdrm/make_generated_static_table_fourcc
+build obj/src/libANGLE/renderer/gl/angle_gl_backend/BlitGL.o: cxx /ninja-to-soong-angle/src/libANGLE/renderer/gl/BlitGL.cpp || phony/src/libANGLE/renderer/gl/angle_gl_backend.inputdeps
+  source_file_part = BlitGL.cpp
+  source_name_part = BlitGL
+build obj/src/libANGLE/renderer/gl/angle_gl_backend/BufferGL.o: cxx /ninja-to-soong-angle/src/libANGLE/renderer/gl/BufferGL.cpp || phony/src/libANGLE/renderer/gl/angle_gl_backend.inputdeps
+  source_file_part = BufferGL.cpp
+  source_name_part = BufferGL
+build obj/src/libANGLE/renderer/gl/angle_gl_backend/ClearMultiviewGL.o: cxx /ninja-to-soong-angle/src/libANGLE/renderer/gl/ClearMultiviewGL.cpp || phony/src/libANGLE/renderer/gl/angle_gl_backend.inputdeps
+  source_file_part = ClearMultiviewGL.cpp
+  source_name_part = ClearMultiviewGL
+build obj/src/libANGLE/renderer/gl/angle_gl_backend/CompilerGL.o: cxx /ninja-to-soong-angle/src/libANGLE/renderer/gl/CompilerGL.cpp || phony/src/libANGLE/renderer/gl/angle_gl_backend.inputdeps
+  source_file_part = CompilerGL.cpp
+  source_name_part = CompilerGL
+build obj/src/libANGLE/renderer/gl/angle_gl_backend/ContextGL.o: cxx /ninja-to-soong-angle/src/libANGLE/renderer/gl/ContextGL.cpp || phony/src/libANGLE/renderer/gl/angle_gl_backend.inputdeps
+  source_file_part = ContextGL.cpp
+  source_name_part = ContextGL
+build obj/src/libANGLE/renderer/gl/angle_gl_backend/DispatchTableGL_autogen.o: cxx /ninja-to-soong-angle/src/libANGLE/renderer/gl/DispatchTableGL_autogen.cpp || phony/src/libANGLE/renderer/gl/angle_gl_backend.inputdeps
+  source_file_part = DispatchTableGL_autogen.cpp
+  source_name_part = DispatchTableGL_autogen
+build obj/src/libANGLE/renderer/gl/angle_gl_backend/DisplayGL.o: cxx /ninja-to-soong-angle/src/libANGLE/renderer/gl/DisplayGL.cpp || phony/src/libANGLE/renderer/gl/angle_gl_backend.inputdeps
+  source_file_part = DisplayGL.cpp
+  source_name_part = DisplayGL
+build obj/src/libANGLE/renderer/gl/angle_gl_backend/FenceNVGL.o: cxx /ninja-to-soong-angle/src/libANGLE/renderer/gl/FenceNVGL.cpp || phony/src/libANGLE/renderer/gl/angle_gl_backend.inputdeps
+  source_file_part = FenceNVGL.cpp
+  source_name_part = FenceNVGL
+build obj/src/libANGLE/renderer/gl/angle_gl_backend/FramebufferGL.o: cxx /ninja-to-soong-angle/src/libANGLE/renderer/gl/FramebufferGL.cpp || phony/src/libANGLE/renderer/gl/angle_gl_backend.inputdeps
+  source_file_part = FramebufferGL.cpp
+  source_name_part = FramebufferGL
+build obj/src/libANGLE/renderer/gl/angle_gl_backend/FunctionsGL.o: cxx /ninja-to-soong-angle/src/libANGLE/renderer/gl/FunctionsGL.cpp || phony/src/libANGLE/renderer/gl/angle_gl_backend.inputdeps
+  source_file_part = FunctionsGL.cpp
+  source_name_part = FunctionsGL
+build obj/src/libANGLE/renderer/gl/angle_gl_backend/ImageGL.o: cxx /ninja-to-soong-angle/src/libANGLE/renderer/gl/ImageGL.cpp || phony/src/libANGLE/renderer/gl/angle_gl_backend.inputdeps
+  source_file_part = ImageGL.cpp
+  source_name_part = ImageGL
+build obj/src/libANGLE/renderer/gl/angle_gl_backend/MemoryObjectGL.o: cxx /ninja-to-soong-angle/src/libANGLE/renderer/gl/MemoryObjectGL.cpp || phony/src/libANGLE/renderer/gl/angle_gl_backend.inputdeps
+  source_file_part = MemoryObjectGL.cpp
+  source_name_part = MemoryObjectGL
+build obj/src/libANGLE/renderer/gl/angle_gl_backend/ProgramExecutableGL.o: cxx /ninja-to-soong-angle/src/libANGLE/renderer/gl/ProgramExecutableGL.cpp || phony/src/libANGLE/renderer/gl/angle_gl_backend.inputdeps
+  source_file_part = ProgramExecutableGL.cpp
+  source_name_part = ProgramExecutableGL
+build obj/src/libANGLE/renderer/gl/angle_gl_backend/ProgramGL.o: cxx /ninja-to-soong-angle/src/libANGLE/renderer/gl/ProgramGL.cpp || phony/src/libANGLE/renderer/gl/angle_gl_backend.inputdeps
+  source_file_part = ProgramGL.cpp
+  source_name_part = ProgramGL
+build obj/src/libANGLE/renderer/gl/angle_gl_backend/ProgramPipelineGL.o: cxx /ninja-to-soong-angle/src/libANGLE/renderer/gl/ProgramPipelineGL.cpp || phony/src/libANGLE/renderer/gl/angle_gl_backend.inputdeps
+  source_file_part = ProgramPipelineGL.cpp
+  source_name_part = ProgramPipelineGL
+build obj/src/libANGLE/renderer/gl/angle_gl_backend/QueryGL.o: cxx /ninja-to-soong-angle/src/libANGLE/renderer/gl/QueryGL.cpp || phony/src/libANGLE/renderer/gl/angle_gl_backend.inputdeps
+  source_file_part = QueryGL.cpp
+  source_name_part = QueryGL
+build obj/src/libANGLE/renderer/gl/angle_gl_backend/RenderbufferGL.o: cxx /ninja-to-soong-angle/src/libANGLE/renderer/gl/RenderbufferGL.cpp || phony/src/libANGLE/renderer/gl/angle_gl_backend.inputdeps
+  source_file_part = RenderbufferGL.cpp
+  source_name_part = RenderbufferGL
+build obj/src/libANGLE/renderer/gl/angle_gl_backend/RendererGL.o: cxx /ninja-to-soong-angle/src/libANGLE/renderer/gl/RendererGL.cpp || phony/src/libANGLE/renderer/gl/angle_gl_backend.inputdeps
+  source_file_part = RendererGL.cpp
+  source_name_part = RendererGL
+build obj/src/libANGLE/renderer/gl/angle_gl_backend/SamplerGL.o: cxx /ninja-to-soong-angle/src/libANGLE/renderer/gl/SamplerGL.cpp || phony/src/libANGLE/renderer/gl/angle_gl_backend.inputdeps
+  source_file_part = SamplerGL.cpp
+  source_name_part = SamplerGL
+build obj/src/libANGLE/renderer/gl/angle_gl_backend/SemaphoreGL.o: cxx /ninja-to-soong-angle/src/libANGLE/renderer/gl/SemaphoreGL.cpp || phony/src/libANGLE/renderer/gl/angle_gl_backend.inputdeps
+  source_file_part = SemaphoreGL.cpp
+  source_name_part = SemaphoreGL
+build obj/src/libANGLE/renderer/gl/angle_gl_backend/ShaderGL.o: cxx /ninja-to-soong-angle/src/libANGLE/renderer/gl/ShaderGL.cpp || phony/src/libANGLE/renderer/gl/angle_gl_backend.inputdeps
+  source_file_part = ShaderGL.cpp
+  source_name_part = ShaderGL
+build obj/src/libANGLE/renderer/gl/angle_gl_backend/StateManagerGL.o: cxx /ninja-to-soong-angle/src/libANGLE/renderer/gl/StateManagerGL.cpp || phony/src/libANGLE/renderer/gl/angle_gl_backend.inputdeps
+  source_file_part = StateManagerGL.cpp
+  source_name_part = StateManagerGL
+build obj/src/libANGLE/renderer/gl/angle_gl_backend/SurfaceGL.o: cxx /ninja-to-soong-angle/src/libANGLE/renderer/gl/SurfaceGL.cpp || phony/src/libANGLE/renderer/gl/angle_gl_backend.inputdeps
+  source_file_part = SurfaceGL.cpp
+  source_name_part = SurfaceGL
+build obj/src/libANGLE/renderer/gl/angle_gl_backend/SyncGL.o: cxx /ninja-to-soong-angle/src/libANGLE/renderer/gl/SyncGL.cpp || phony/src/libANGLE/renderer/gl/angle_gl_backend.inputdeps
+  source_file_part = SyncGL.cpp
+  source_name_part = SyncGL
+build obj/src/libANGLE/renderer/gl/angle_gl_backend/TextureGL.o: cxx /ninja-to-soong-angle/src/libANGLE/renderer/gl/TextureGL.cpp || phony/src/libANGLE/renderer/gl/angle_gl_backend.inputdeps
+  source_file_part = TextureGL.cpp
+  source_name_part = TextureGL
+build obj/src/libANGLE/renderer/gl/angle_gl_backend/TransformFeedbackGL.o: cxx /ninja-to-soong-angle/src/libANGLE/renderer/gl/TransformFeedbackGL.cpp || phony/src/libANGLE/renderer/gl/angle_gl_backend.inputdeps
+  source_file_part = TransformFeedbackGL.cpp
+  source_name_part = TransformFeedbackGL
+build obj/src/libANGLE/renderer/gl/angle_gl_backend/VertexArrayGL.o: cxx /ninja-to-soong-angle/src/libANGLE/renderer/gl/VertexArrayGL.cpp || phony/src/libANGLE/renderer/gl/angle_gl_backend.inputdeps
+  source_file_part = VertexArrayGL.cpp
+  source_name_part = VertexArrayGL
+build obj/src/libANGLE/renderer/gl/angle_gl_backend/formatutilsgl.o: cxx /ninja-to-soong-angle/src/libANGLE/renderer/gl/formatutilsgl.cpp || phony/src/libANGLE/renderer/gl/angle_gl_backend.inputdeps
+  source_file_part = formatutilsgl.cpp
+  source_name_part = formatutilsgl
+build obj/src/libANGLE/renderer/gl/angle_gl_backend/renderergl_utils.o: cxx /ninja-to-soong-angle/src/libANGLE/renderer/gl/renderergl_utils.cpp || phony/src/libANGLE/renderer/gl/angle_gl_backend.inputdeps
+  source_file_part = renderergl_utils.cpp
+  source_name_part = renderergl_utils
+build obj/src/libANGLE/renderer/gl/angle_gl_backend/DisplayGLX.o: cxx /ninja-to-soong-angle/src/libANGLE/renderer/gl/glx/DisplayGLX.cpp || phony/src/libANGLE/renderer/gl/angle_gl_backend.inputdeps
+  source_file_part = DisplayGLX.cpp
+  source_name_part = DisplayGLX
+build obj/src/libANGLE/renderer/gl/angle_gl_backend/FunctionsGLX.o: cxx /ninja-to-soong-angle/src/libANGLE/renderer/gl/glx/FunctionsGLX.cpp || phony/src/libANGLE/renderer/gl/angle_gl_backend.inputdeps
+  source_file_part = FunctionsGLX.cpp
+  source_name_part = FunctionsGLX
+build obj/src/libANGLE/renderer/gl/angle_gl_backend/PbufferSurfaceGLX.o: cxx /ninja-to-soong-angle/src/libANGLE/renderer/gl/glx/PbufferSurfaceGLX.cpp || phony/src/libANGLE/renderer/gl/angle_gl_backend.inputdeps
+  source_file_part = PbufferSurfaceGLX.cpp
+  source_name_part = PbufferSurfaceGLX
+build obj/src/libANGLE/renderer/gl/angle_gl_backend/PixmapSurfaceGLX.o: cxx /ninja-to-soong-angle/src/libANGLE/renderer/gl/glx/PixmapSurfaceGLX.cpp || phony/src/libANGLE/renderer/gl/angle_gl_backend.inputdeps
+  source_file_part = PixmapSurfaceGLX.cpp
+  source_name_part = PixmapSurfaceGLX
+build obj/src/libANGLE/renderer/gl/angle_gl_backend/WindowSurfaceGLX.o: cxx /ninja-to-soong-angle/src/libANGLE/renderer/gl/glx/WindowSurfaceGLX.cpp || phony/src/libANGLE/renderer/gl/angle_gl_backend.inputdeps
+  source_file_part = WindowSurfaceGLX.cpp
+  source_name_part = WindowSurfaceGLX
+build obj/src/libANGLE/renderer/gl/angle_gl_backend/glx_utils.o: cxx /ninja-to-soong-angle/src/libANGLE/renderer/gl/glx/glx_utils.cpp || phony/src/libANGLE/renderer/gl/angle_gl_backend.inputdeps
+  source_file_part = glx_utils.cpp
+  source_name_part = glx_utils
+build obj/src/libANGLE/renderer/gl/angle_gl_backend/ContextEGL.o: cxx /ninja-to-soong-angle/src/libANGLE/renderer/gl/egl/ContextEGL.cpp || phony/src/libANGLE/renderer/gl/angle_gl_backend.inputdeps
+  source_file_part = ContextEGL.cpp
+  source_name_part = ContextEGL
+build obj/src/libANGLE/renderer/gl/angle_gl_backend/DeviceEGL.o: cxx /ninja-to-soong-angle/src/libANGLE/renderer/gl/egl/DeviceEGL.cpp || phony/src/libANGLE/renderer/gl/angle_gl_backend.inputdeps
+  source_file_part = DeviceEGL.cpp
+  source_name_part = DeviceEGL
+build obj/src/libANGLE/renderer/gl/angle_gl_backend/DisplayEGL.o: cxx /ninja-to-soong-angle/src/libANGLE/renderer/gl/egl/DisplayEGL.cpp || phony/src/libANGLE/renderer/gl/angle_gl_backend.inputdeps
+  source_file_part = DisplayEGL.cpp
+  source_name_part = DisplayEGL
+build obj/src/libANGLE/renderer/gl/angle_gl_backend/DmaBufImageSiblingEGL.o: cxx /ninja-to-soong-angle/src/libANGLE/renderer/gl/egl/DmaBufImageSiblingEGL.cpp || phony/src/libANGLE/renderer/gl/angle_gl_backend.inputdeps
+  source_file_part = DmaBufImageSiblingEGL.cpp
+  source_name_part = DmaBufImageSiblingEGL
+build obj/src/libANGLE/renderer/gl/angle_gl_backend/FunctionsEGL.o: cxx /ninja-to-soong-angle/src/libANGLE/renderer/gl/egl/FunctionsEGL.cpp || phony/src/libANGLE/renderer/gl/angle_gl_backend.inputdeps
+  source_file_part = FunctionsEGL.cpp
+  source_name_part = FunctionsEGL
+build obj/src/libANGLE/renderer/gl/angle_gl_backend/FunctionsEGLDL.o: cxx /ninja-to-soong-angle/src/libANGLE/renderer/gl/egl/FunctionsEGLDL.cpp || phony/src/libANGLE/renderer/gl/angle_gl_backend.inputdeps
+  source_file_part = FunctionsEGLDL.cpp
+  source_name_part = FunctionsEGLDL
+build obj/src/libANGLE/renderer/gl/angle_gl_backend/ImageEGL.o: cxx /ninja-to-soong-angle/src/libANGLE/renderer/gl/egl/ImageEGL.cpp || phony/src/libANGLE/renderer/gl/angle_gl_backend.inputdeps
+  source_file_part = ImageEGL.cpp
+  source_name_part = ImageEGL
+build obj/src/libANGLE/renderer/gl/angle_gl_backend/PbufferSurfaceEGL.o: cxx /ninja-to-soong-angle/src/libANGLE/renderer/gl/egl/PbufferSurfaceEGL.cpp || phony/src/libANGLE/renderer/gl/angle_gl_backend.inputdeps
+  source_file_part = PbufferSurfaceEGL.cpp
+  source_name_part = PbufferSurfaceEGL
+build obj/src/libANGLE/renderer/gl/angle_gl_backend/RendererEGL.o: cxx /ninja-to-soong-angle/src/libANGLE/renderer/gl/egl/RendererEGL.cpp || phony/src/libANGLE/renderer/gl/angle_gl_backend.inputdeps
+  source_file_part = RendererEGL.cpp
+  source_name_part = RendererEGL
+build obj/src/libANGLE/renderer/gl/angle_gl_backend/SurfaceEGL.o: cxx /ninja-to-soong-angle/src/libANGLE/renderer/gl/egl/SurfaceEGL.cpp || phony/src/libANGLE/renderer/gl/angle_gl_backend.inputdeps
+  source_file_part = SurfaceEGL.cpp
+  source_name_part = SurfaceEGL
+build obj/src/libANGLE/renderer/gl/angle_gl_backend/SyncEGL.o: cxx /ninja-to-soong-angle/src/libANGLE/renderer/gl/egl/SyncEGL.cpp || phony/src/libANGLE/renderer/gl/angle_gl_backend.inputdeps
+  source_file_part = SyncEGL.cpp
+  source_name_part = SyncEGL
+build obj/src/libANGLE/renderer/gl/angle_gl_backend/WindowSurfaceEGL.o: cxx /ninja-to-soong-angle/src/libANGLE/renderer/gl/egl/WindowSurfaceEGL.cpp || phony/src/libANGLE/renderer/gl/angle_gl_backend.inputdeps
+  source_file_part = WindowSurfaceEGL.cpp
+  source_name_part = WindowSurfaceEGL
+build obj/src/libANGLE/renderer/gl/angle_gl_backend/egl_utils.o: cxx /ninja-to-soong-angle/src/libANGLE/renderer/gl/egl/egl_utils.cpp || phony/src/libANGLE/renderer/gl/angle_gl_backend.inputdeps
+  source_file_part = egl_utils.cpp
+  source_name_part = egl_utils
+build obj/src/libANGLE/renderer/gl/angle_gl_backend/null_functions.o: cxx /ninja-to-soong-angle/src/libANGLE/renderer/gl/null_functions.cpp || phony/src/libANGLE/renderer/gl/angle_gl_backend.inputdeps
+  source_file_part = null_functions.cpp
+  source_name_part = null_functions
+
+build phony/src/libANGLE/renderer/gl/angle_gl_backend: phony obj/src/libANGLE/renderer/gl/angle_gl_backend/BlitGL.o obj/src/libANGLE/renderer/gl/angle_gl_backend/BufferGL.o obj/src/libANGLE/renderer/gl/angle_gl_backend/ClearMultiviewGL.o obj/src/libANGLE/renderer/gl/angle_gl_backend/CompilerGL.o obj/src/libANGLE/renderer/gl/angle_gl_backend/ContextGL.o obj/src/libANGLE/renderer/gl/angle_gl_backend/DispatchTableGL_autogen.o obj/src/libANGLE/renderer/gl/angle_gl_backend/DisplayGL.o obj/src/libANGLE/renderer/gl/angle_gl_backend/FenceNVGL.o obj/src/libANGLE/renderer/gl/angle_gl_backend/FramebufferGL.o obj/src/libANGLE/renderer/gl/angle_gl_backend/FunctionsGL.o obj/src/libANGLE/renderer/gl/angle_gl_backend/ImageGL.o obj/src/libANGLE/renderer/gl/angle_gl_backend/MemoryObjectGL.o obj/src/libANGLE/renderer/gl/angle_gl_backend/ProgramExecutableGL.o obj/src/libANGLE/renderer/gl/angle_gl_backend/ProgramGL.o obj/src/libANGLE/renderer/gl/angle_gl_backend/ProgramPipelineGL.o obj/src/libANGLE/renderer/gl/angle_gl_backend/QueryGL.o obj/src/libANGLE/renderer/gl/angle_gl_backend/RenderbufferGL.o obj/src/libANGLE/renderer/gl/angle_gl_backend/RendererGL.o obj/src/libANGLE/renderer/gl/angle_gl_backend/SamplerGL.o obj/src/libANGLE/renderer/gl/angle_gl_backend/SemaphoreGL.o obj/src/libANGLE/renderer/gl/angle_gl_backend/ShaderGL.o obj/src/libANGLE/renderer/gl/angle_gl_backend/StateManagerGL.o obj/src/libANGLE/renderer/gl/angle_gl_backend/SurfaceGL.o obj/src/libANGLE/renderer/gl/angle_gl_backend/SyncGL.o obj/src/libANGLE/renderer/gl/angle_gl_backend/TextureGL.o obj/src/libANGLE/renderer/gl/angle_gl_backend/TransformFeedbackGL.o obj/src/libANGLE/renderer/gl/angle_gl_backend/VertexArrayGL.o obj/src/libANGLE/renderer/gl/angle_gl_backend/formatutilsgl.o obj/src/libANGLE/renderer/gl/angle_gl_backend/renderergl_utils.o obj/src/libANGLE/renderer/gl/angle_gl_backend/DisplayGLX.o obj/src/libANGLE/renderer/gl/angle_gl_backend/FunctionsGLX.o obj/src/libANGLE/renderer/gl/angle_gl_backend/PbufferSurfaceGLX.o obj/src/libANGLE/renderer/gl/angle_gl_backend/PixmapSurfaceGLX.o obj/src/libANGLE/renderer/gl/angle_gl_backend/WindowSurfaceGLX.o obj/src/libANGLE/renderer/gl/angle_gl_backend/glx_utils.o obj/src/libANGLE/renderer/gl/angle_gl_backend/ContextEGL.o obj/src/libANGLE/renderer/gl/angle_gl_backend/DeviceEGL.o obj/src/libANGLE/renderer/gl/angle_gl_backend/DisplayEGL.o obj/src/libANGLE/renderer/gl/angle_gl_backend/DmaBufImageSiblingEGL.o obj/src/libANGLE/renderer/gl/angle_gl_backend/FunctionsEGL.o obj/src/libANGLE/renderer/gl/angle_gl_backend/FunctionsEGLDL.o obj/src/libANGLE/renderer/gl/angle_gl_backend/ImageEGL.o obj/src/libANGLE/renderer/gl/angle_gl_backend/PbufferSurfaceEGL.o obj/src/libANGLE/renderer/gl/angle_gl_backend/RendererEGL.o obj/src/libANGLE/renderer/gl/angle_gl_backend/SurfaceEGL.o obj/src/libANGLE/renderer/gl/angle_gl_backend/SyncEGL.o obj/src/libANGLE/renderer/gl/angle_gl_backend/WindowSurfaceEGL.o obj/src/libANGLE/renderer/gl/angle_gl_backend/egl_utils.o obj/src/libANGLE/renderer/gl/angle_gl_backend/null_functions.o || phony/libANGLE_headers obj/libangle_gpu_info_util.a obj/libangle_image_util.a phony/build/config/linux/libdrm/libdrm phony/src/common/linux/angle_dma_buf obj/libangle_common.a ./libthird_party_abseil-cpp_absl.so.TOC phony/xxhash phony/src/common/vulkan/angle_libvulkan_loader phony/src/common/vulkan/angle_vulkan_icd phony/src/common/vulkan/angle_vulkan_headers phony/src/third_party/volk/volk phony/src/third_party/libXNVCtrl/libXNVCtrl phony/angle_image_util_headers phony/third_party/astc-encoder/astcenc obj/third_party/libdrm/libdrm.a

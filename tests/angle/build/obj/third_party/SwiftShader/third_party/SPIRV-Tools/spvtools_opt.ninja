@@ -1,0 +1,365 @@
+defines = -DUSE_UDEV -DUSE_AURA=1 -DUSE_GLIB=1 -DUSE_OZONE=1 -D__STDC_CONSTANT_MACROS -D__STDC_FORMAT_MACROS -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_LARGEFILE64_SOURCE -D_GNU_SOURCE -DCR_CLANG_REVISION=\"llvmorg-20-init-16062-g091448e3-1\" -D_LIBCPP_HARDENING_MODE=_LIBCPP_HARDENING_MODE_EXTENSIVE -DCOMPONENT_BUILD -D_LIBCPP_INSTRUMENTED_WITH_ASAN=0 -DCR_LIBCXX_REVISION=74dd760826063f15ce4d373b31bc34d1c65e41c2 -DTMP_REBUILD_HACK -DCR_SYSROOT_KEY=20230611T210420Z-2 -D_DEBUG -DDYNAMIC_ANNOTATIONS_ENABLED=1
+include_dirs = -I/ninja-to-soong-angle -Igen -I/ninja-to-soong-angle/buildtools/third_party/libc++ -I/ninja-to-soong-angle/third_party/SwiftShader/third_party/SPIRV-Tools -I/ninja-to-soong-angle/third_party/SwiftShader/third_party/SPIRV-Headers/include -I/ninja-to-soong-angle/third_party/SwiftShader/third_party/SPIRV-Tools/include -Igen/third_party/SwiftShader/third_party/SPIRV-Tools
+cflags = -Wall -Wextra -Wimplicit-fallthrough -Wextra-semi -Wunreachable-code-aggressive -Wthread-safety -Wgnu -Wno-gnu-anonymous-struct -Wno-gnu-conditional-omitted-operand -Wno-gnu-include-next -Wno-gnu-label-as-value -Wno-gnu-redeclared-enum -Wno-gnu-statement-expression -Wno-gnu-zero-variadic-macro-arguments -Wno-zero-length-array -Wno-missing-field-initializers -Wno-unused-parameter -Wno-psabi -Wloop-analysis -Wno-unneeded-internal-declaration -Wno-cast-function-type -Wno-thread-safety-reference-return -Wno-nontrivial-memcall -Wshadow -Werror -fno-delete-null-pointer-checks -fwrapv -fno-ident -fno-strict-aliasing -fstack-protector -funwind-tables -fPIC -pthread -fcolor-diagnostics -fmerge-all-constants -fno-sized-deallocation -fcrash-diagnostics-dir=/ninja-to-soong-angle/tools/clang/crashreports -mllvm -instcombine-lower-dbg-declare=0 -mllvm -split-threshold-for-reg-with-hint=0 -ffp-contract=off -Wa,--crel,--allow-experimental-crel -fcomplete-member-pointers -m64 -msse3 -Wno-builtin-macro-redefined -D__DATE__= -D__TIME__= -D__TIMESTAMP__= -ffile-compilation-dir=. -no-canonical-prefixes -ftrivial-auto-var-init=pattern -O0 -fno-omit-frame-pointer -gdwarf-4 -g2 -gdwarf-aranges -gsplit-dwarf -ggnu-pubnames -Xclang -fuse-ctor-homing -fvisibility=hidden -Wheader-hygiene -Wstring-conversion -Wtautological-overlap-compare -Wno-implicit-fallthrough -Wno-newline-eof -Wno-unreachable-code-break -Wno-unreachable-code-return -std=c++17
+cflags_cc = -Wno-invalid-offsetof -Wenum-compare-conditional -Wno-c++11-narrowing-const-reference -Wno-missing-template-arg-list-after-template-kw -Wno-dangling-assignment-gsl -Wno-undefined-bool-conversion -Wno-tautological-undefined-compare -std=c++20 -Wno-trigraphs -gsimple-template-names -fno-exceptions -fno-rtti -nostdinc++ -isystem/ninja-to-soong-angle/third_party/libc++/src/include -isystem/ninja-to-soong-angle/third_party/libc++abi/src/include --sysroot=/ninja-to-soong-angle/build/linux/debian_bullseye_amd64-sysroot -fvisibility-inlines-hidden
+label_name = spvtools_opt
+target_out_dir = obj/third_party/SwiftShader/third_party/SPIRV-Tools
+target_output_name = libspvtools_opt
+
+build phony/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt.inputdeps: phony phony/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_core_enums_unified1 phony/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_core_tables_unified1 phony/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_generators_inc phony/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_glsl_tables_glsl1-0 phony/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_language_header_cldebuginfo100 phony/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_language_header_debuginfo phony/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_language_header_vkdebuginfo100 phony/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opencl_tables_opencl1-0 phony/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_vendor_tables_debuginfo phony/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_vendor_tables_nonsemantic.clspvreflection phony/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_vendor_tables_nonsemantic.shader.debuginfo.100 phony/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_vendor_tables_nonsemantic.vkspreflection phony/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_vendor_tables_opencl.debuginfo.100 phony/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_vendor_tables_spv-amd-gcn-shader phony/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_vendor_tables_spv-amd-shader-ballot phony/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_vendor_tables_spv-amd-shader-explicit-vertex-parameter phony/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_vendor_tables_spv-amd-shader-trinary-minmax
+build obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/aggressive_dead_code_elim_pass.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/third_party/SPIRV-Tools/source/opt/aggressive_dead_code_elim_pass.cpp || phony/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt.inputdeps
+  source_file_part = aggressive_dead_code_elim_pass.cpp
+  source_name_part = aggressive_dead_code_elim_pass
+build obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/amd_ext_to_khr.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/third_party/SPIRV-Tools/source/opt/amd_ext_to_khr.cpp || phony/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt.inputdeps
+  source_file_part = amd_ext_to_khr.cpp
+  source_name_part = amd_ext_to_khr
+build obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/analyze_live_input_pass.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/third_party/SPIRV-Tools/source/opt/analyze_live_input_pass.cpp || phony/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt.inputdeps
+  source_file_part = analyze_live_input_pass.cpp
+  source_name_part = analyze_live_input_pass
+build obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/basic_block.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/third_party/SPIRV-Tools/source/opt/basic_block.cpp || phony/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt.inputdeps
+  source_file_part = basic_block.cpp
+  source_name_part = basic_block
+build obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/block_merge_pass.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/third_party/SPIRV-Tools/source/opt/block_merge_pass.cpp || phony/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt.inputdeps
+  source_file_part = block_merge_pass.cpp
+  source_name_part = block_merge_pass
+build obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/block_merge_util.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/third_party/SPIRV-Tools/source/opt/block_merge_util.cpp || phony/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt.inputdeps
+  source_file_part = block_merge_util.cpp
+  source_name_part = block_merge_util
+build obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/build_module.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/third_party/SPIRV-Tools/source/opt/build_module.cpp || phony/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt.inputdeps
+  source_file_part = build_module.cpp
+  source_name_part = build_module
+build obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/ccp_pass.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/third_party/SPIRV-Tools/source/opt/ccp_pass.cpp || phony/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt.inputdeps
+  source_file_part = ccp_pass.cpp
+  source_name_part = ccp_pass
+build obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/cfg.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/third_party/SPIRV-Tools/source/opt/cfg.cpp || phony/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt.inputdeps
+  source_file_part = cfg.cpp
+  source_name_part = cfg
+build obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/cfg_cleanup_pass.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/third_party/SPIRV-Tools/source/opt/cfg_cleanup_pass.cpp || phony/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt.inputdeps
+  source_file_part = cfg_cleanup_pass.cpp
+  source_name_part = cfg_cleanup_pass
+build obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/code_sink.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/third_party/SPIRV-Tools/source/opt/code_sink.cpp || phony/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt.inputdeps
+  source_file_part = code_sink.cpp
+  source_name_part = code_sink
+build obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/combine_access_chains.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/third_party/SPIRV-Tools/source/opt/combine_access_chains.cpp || phony/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt.inputdeps
+  source_file_part = combine_access_chains.cpp
+  source_name_part = combine_access_chains
+build obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/compact_ids_pass.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/third_party/SPIRV-Tools/source/opt/compact_ids_pass.cpp || phony/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt.inputdeps
+  source_file_part = compact_ids_pass.cpp
+  source_name_part = compact_ids_pass
+build obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/composite.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/third_party/SPIRV-Tools/source/opt/composite.cpp || phony/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt.inputdeps
+  source_file_part = composite.cpp
+  source_name_part = composite
+build obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/const_folding_rules.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/third_party/SPIRV-Tools/source/opt/const_folding_rules.cpp || phony/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt.inputdeps
+  source_file_part = const_folding_rules.cpp
+  source_name_part = const_folding_rules
+build obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/constants.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/third_party/SPIRV-Tools/source/opt/constants.cpp || phony/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt.inputdeps
+  source_file_part = constants.cpp
+  source_name_part = constants
+build obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/control_dependence.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/third_party/SPIRV-Tools/source/opt/control_dependence.cpp || phony/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt.inputdeps
+  source_file_part = control_dependence.cpp
+  source_name_part = control_dependence
+build obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/convert_to_half_pass.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/third_party/SPIRV-Tools/source/opt/convert_to_half_pass.cpp || phony/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt.inputdeps
+  source_file_part = convert_to_half_pass.cpp
+  source_name_part = convert_to_half_pass
+build obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/convert_to_sampled_image_pass.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/third_party/SPIRV-Tools/source/opt/convert_to_sampled_image_pass.cpp || phony/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt.inputdeps
+  source_file_part = convert_to_sampled_image_pass.cpp
+  source_name_part = convert_to_sampled_image_pass
+build obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/copy_prop_arrays.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/third_party/SPIRV-Tools/source/opt/copy_prop_arrays.cpp || phony/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt.inputdeps
+  source_file_part = copy_prop_arrays.cpp
+  source_name_part = copy_prop_arrays
+build obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/dataflow.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/third_party/SPIRV-Tools/source/opt/dataflow.cpp || phony/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt.inputdeps
+  source_file_part = dataflow.cpp
+  source_name_part = dataflow
+build obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/dead_branch_elim_pass.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/third_party/SPIRV-Tools/source/opt/dead_branch_elim_pass.cpp || phony/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt.inputdeps
+  source_file_part = dead_branch_elim_pass.cpp
+  source_name_part = dead_branch_elim_pass
+build obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/dead_insert_elim_pass.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/third_party/SPIRV-Tools/source/opt/dead_insert_elim_pass.cpp || phony/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt.inputdeps
+  source_file_part = dead_insert_elim_pass.cpp
+  source_name_part = dead_insert_elim_pass
+build obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/dead_variable_elimination.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/third_party/SPIRV-Tools/source/opt/dead_variable_elimination.cpp || phony/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt.inputdeps
+  source_file_part = dead_variable_elimination.cpp
+  source_name_part = dead_variable_elimination
+build obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/debug_info_manager.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/third_party/SPIRV-Tools/source/opt/debug_info_manager.cpp || phony/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt.inputdeps
+  source_file_part = debug_info_manager.cpp
+  source_name_part = debug_info_manager
+build obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/decoration_manager.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/third_party/SPIRV-Tools/source/opt/decoration_manager.cpp || phony/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt.inputdeps
+  source_file_part = decoration_manager.cpp
+  source_name_part = decoration_manager
+build obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/def_use_manager.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/third_party/SPIRV-Tools/source/opt/def_use_manager.cpp || phony/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt.inputdeps
+  source_file_part = def_use_manager.cpp
+  source_name_part = def_use_manager
+build obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/desc_sroa.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/third_party/SPIRV-Tools/source/opt/desc_sroa.cpp || phony/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt.inputdeps
+  source_file_part = desc_sroa.cpp
+  source_name_part = desc_sroa
+build obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/desc_sroa_util.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/third_party/SPIRV-Tools/source/opt/desc_sroa_util.cpp || phony/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt.inputdeps
+  source_file_part = desc_sroa_util.cpp
+  source_name_part = desc_sroa_util
+build obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/dominator_analysis.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/third_party/SPIRV-Tools/source/opt/dominator_analysis.cpp || phony/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt.inputdeps
+  source_file_part = dominator_analysis.cpp
+  source_name_part = dominator_analysis
+build obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/dominator_tree.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/third_party/SPIRV-Tools/source/opt/dominator_tree.cpp || phony/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt.inputdeps
+  source_file_part = dominator_tree.cpp
+  source_name_part = dominator_tree
+build obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/eliminate_dead_constant_pass.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/third_party/SPIRV-Tools/source/opt/eliminate_dead_constant_pass.cpp || phony/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt.inputdeps
+  source_file_part = eliminate_dead_constant_pass.cpp
+  source_name_part = eliminate_dead_constant_pass
+build obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/eliminate_dead_functions_pass.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/third_party/SPIRV-Tools/source/opt/eliminate_dead_functions_pass.cpp || phony/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt.inputdeps
+  source_file_part = eliminate_dead_functions_pass.cpp
+  source_name_part = eliminate_dead_functions_pass
+build obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/eliminate_dead_functions_util.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/third_party/SPIRV-Tools/source/opt/eliminate_dead_functions_util.cpp || phony/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt.inputdeps
+  source_file_part = eliminate_dead_functions_util.cpp
+  source_name_part = eliminate_dead_functions_util
+build obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/eliminate_dead_io_components_pass.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/third_party/SPIRV-Tools/source/opt/eliminate_dead_io_components_pass.cpp || phony/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt.inputdeps
+  source_file_part = eliminate_dead_io_components_pass.cpp
+  source_name_part = eliminate_dead_io_components_pass
+build obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/eliminate_dead_members_pass.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/third_party/SPIRV-Tools/source/opt/eliminate_dead_members_pass.cpp || phony/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt.inputdeps
+  source_file_part = eliminate_dead_members_pass.cpp
+  source_name_part = eliminate_dead_members_pass
+build obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/eliminate_dead_output_stores_pass.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/third_party/SPIRV-Tools/source/opt/eliminate_dead_output_stores_pass.cpp || phony/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt.inputdeps
+  source_file_part = eliminate_dead_output_stores_pass.cpp
+  source_name_part = eliminate_dead_output_stores_pass
+build obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/feature_manager.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/third_party/SPIRV-Tools/source/opt/feature_manager.cpp || phony/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt.inputdeps
+  source_file_part = feature_manager.cpp
+  source_name_part = feature_manager
+build obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/fix_func_call_arguments.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/third_party/SPIRV-Tools/source/opt/fix_func_call_arguments.cpp || phony/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt.inputdeps
+  source_file_part = fix_func_call_arguments.cpp
+  source_name_part = fix_func_call_arguments
+build obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/fix_storage_class.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/third_party/SPIRV-Tools/source/opt/fix_storage_class.cpp || phony/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt.inputdeps
+  source_file_part = fix_storage_class.cpp
+  source_name_part = fix_storage_class
+build obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/flatten_decoration_pass.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/third_party/SPIRV-Tools/source/opt/flatten_decoration_pass.cpp || phony/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt.inputdeps
+  source_file_part = flatten_decoration_pass.cpp
+  source_name_part = flatten_decoration_pass
+build obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/fold.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/third_party/SPIRV-Tools/source/opt/fold.cpp || phony/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt.inputdeps
+  source_file_part = fold.cpp
+  source_name_part = fold
+build obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/fold_spec_constant_op_and_composite_pass.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/third_party/SPIRV-Tools/source/opt/fold_spec_constant_op_and_composite_pass.cpp || phony/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt.inputdeps
+  source_file_part = fold_spec_constant_op_and_composite_pass.cpp
+  source_name_part = fold_spec_constant_op_and_composite_pass
+build obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/folding_rules.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/third_party/SPIRV-Tools/source/opt/folding_rules.cpp || phony/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt.inputdeps
+  source_file_part = folding_rules.cpp
+  source_name_part = folding_rules
+build obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/freeze_spec_constant_value_pass.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/third_party/SPIRV-Tools/source/opt/freeze_spec_constant_value_pass.cpp || phony/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt.inputdeps
+  source_file_part = freeze_spec_constant_value_pass.cpp
+  source_name_part = freeze_spec_constant_value_pass
+build obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/function.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/third_party/SPIRV-Tools/source/opt/function.cpp || phony/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt.inputdeps
+  source_file_part = function.cpp
+  source_name_part = function
+build obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/graphics_robust_access_pass.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/third_party/SPIRV-Tools/source/opt/graphics_robust_access_pass.cpp || phony/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt.inputdeps
+  source_file_part = graphics_robust_access_pass.cpp
+  source_name_part = graphics_robust_access_pass
+build obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/if_conversion.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/third_party/SPIRV-Tools/source/opt/if_conversion.cpp || phony/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt.inputdeps
+  source_file_part = if_conversion.cpp
+  source_name_part = if_conversion
+build obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/inline_exhaustive_pass.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/third_party/SPIRV-Tools/source/opt/inline_exhaustive_pass.cpp || phony/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt.inputdeps
+  source_file_part = inline_exhaustive_pass.cpp
+  source_name_part = inline_exhaustive_pass
+build obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/inline_opaque_pass.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/third_party/SPIRV-Tools/source/opt/inline_opaque_pass.cpp || phony/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt.inputdeps
+  source_file_part = inline_opaque_pass.cpp
+  source_name_part = inline_opaque_pass
+build obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/inline_pass.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/third_party/SPIRV-Tools/source/opt/inline_pass.cpp || phony/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt.inputdeps
+  source_file_part = inline_pass.cpp
+  source_name_part = inline_pass
+build obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/inst_bindless_check_pass.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/third_party/SPIRV-Tools/source/opt/inst_bindless_check_pass.cpp || phony/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt.inputdeps
+  source_file_part = inst_bindless_check_pass.cpp
+  source_name_part = inst_bindless_check_pass
+build obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/inst_buff_addr_check_pass.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/third_party/SPIRV-Tools/source/opt/inst_buff_addr_check_pass.cpp || phony/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt.inputdeps
+  source_file_part = inst_buff_addr_check_pass.cpp
+  source_name_part = inst_buff_addr_check_pass
+build obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/inst_debug_printf_pass.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/third_party/SPIRV-Tools/source/opt/inst_debug_printf_pass.cpp || phony/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt.inputdeps
+  source_file_part = inst_debug_printf_pass.cpp
+  source_name_part = inst_debug_printf_pass
+build obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/instruction.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/third_party/SPIRV-Tools/source/opt/instruction.cpp || phony/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt.inputdeps
+  source_file_part = instruction.cpp
+  source_name_part = instruction
+build obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/instruction_list.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/third_party/SPIRV-Tools/source/opt/instruction_list.cpp || phony/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt.inputdeps
+  source_file_part = instruction_list.cpp
+  source_name_part = instruction_list
+build obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/instrument_pass.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/third_party/SPIRV-Tools/source/opt/instrument_pass.cpp || phony/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt.inputdeps
+  source_file_part = instrument_pass.cpp
+  source_name_part = instrument_pass
+build obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/interface_var_sroa.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/third_party/SPIRV-Tools/source/opt/interface_var_sroa.cpp || phony/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt.inputdeps
+  source_file_part = interface_var_sroa.cpp
+  source_name_part = interface_var_sroa
+build obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/interp_fixup_pass.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/third_party/SPIRV-Tools/source/opt/interp_fixup_pass.cpp || phony/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt.inputdeps
+  source_file_part = interp_fixup_pass.cpp
+  source_name_part = interp_fixup_pass
+build obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/invocation_interlock_placement_pass.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/third_party/SPIRV-Tools/source/opt/invocation_interlock_placement_pass.cpp || phony/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt.inputdeps
+  source_file_part = invocation_interlock_placement_pass.cpp
+  source_name_part = invocation_interlock_placement_pass
+build obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/ir_context.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/third_party/SPIRV-Tools/source/opt/ir_context.cpp || phony/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt.inputdeps
+  source_file_part = ir_context.cpp
+  source_name_part = ir_context
+build obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/ir_loader.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/third_party/SPIRV-Tools/source/opt/ir_loader.cpp || phony/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt.inputdeps
+  source_file_part = ir_loader.cpp
+  source_name_part = ir_loader
+build obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/licm_pass.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/third_party/SPIRV-Tools/source/opt/licm_pass.cpp || phony/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt.inputdeps
+  source_file_part = licm_pass.cpp
+  source_name_part = licm_pass
+build obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/liveness.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/third_party/SPIRV-Tools/source/opt/liveness.cpp || phony/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt.inputdeps
+  source_file_part = liveness.cpp
+  source_name_part = liveness
+build obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/local_access_chain_convert_pass.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/third_party/SPIRV-Tools/source/opt/local_access_chain_convert_pass.cpp || phony/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt.inputdeps
+  source_file_part = local_access_chain_convert_pass.cpp
+  source_name_part = local_access_chain_convert_pass
+build obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/local_redundancy_elimination.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/third_party/SPIRV-Tools/source/opt/local_redundancy_elimination.cpp || phony/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt.inputdeps
+  source_file_part = local_redundancy_elimination.cpp
+  source_name_part = local_redundancy_elimination
+build obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/local_single_block_elim_pass.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/third_party/SPIRV-Tools/source/opt/local_single_block_elim_pass.cpp || phony/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt.inputdeps
+  source_file_part = local_single_block_elim_pass.cpp
+  source_name_part = local_single_block_elim_pass
+build obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/local_single_store_elim_pass.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/third_party/SPIRV-Tools/source/opt/local_single_store_elim_pass.cpp || phony/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt.inputdeps
+  source_file_part = local_single_store_elim_pass.cpp
+  source_name_part = local_single_store_elim_pass
+build obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/loop_dependence.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/third_party/SPIRV-Tools/source/opt/loop_dependence.cpp || phony/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt.inputdeps
+  source_file_part = loop_dependence.cpp
+  source_name_part = loop_dependence
+build obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/loop_dependence_helpers.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/third_party/SPIRV-Tools/source/opt/loop_dependence_helpers.cpp || phony/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt.inputdeps
+  source_file_part = loop_dependence_helpers.cpp
+  source_name_part = loop_dependence_helpers
+build obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/loop_descriptor.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/third_party/SPIRV-Tools/source/opt/loop_descriptor.cpp || phony/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt.inputdeps
+  source_file_part = loop_descriptor.cpp
+  source_name_part = loop_descriptor
+build obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/loop_fission.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/third_party/SPIRV-Tools/source/opt/loop_fission.cpp || phony/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt.inputdeps
+  source_file_part = loop_fission.cpp
+  source_name_part = loop_fission
+build obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/loop_fusion.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/third_party/SPIRV-Tools/source/opt/loop_fusion.cpp || phony/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt.inputdeps
+  source_file_part = loop_fusion.cpp
+  source_name_part = loop_fusion
+build obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/loop_fusion_pass.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/third_party/SPIRV-Tools/source/opt/loop_fusion_pass.cpp || phony/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt.inputdeps
+  source_file_part = loop_fusion_pass.cpp
+  source_name_part = loop_fusion_pass
+build obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/loop_peeling.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/third_party/SPIRV-Tools/source/opt/loop_peeling.cpp || phony/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt.inputdeps
+  source_file_part = loop_peeling.cpp
+  source_name_part = loop_peeling
+build obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/loop_unroller.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/third_party/SPIRV-Tools/source/opt/loop_unroller.cpp || phony/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt.inputdeps
+  source_file_part = loop_unroller.cpp
+  source_name_part = loop_unroller
+build obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/loop_unswitch_pass.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/third_party/SPIRV-Tools/source/opt/loop_unswitch_pass.cpp || phony/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt.inputdeps
+  source_file_part = loop_unswitch_pass.cpp
+  source_name_part = loop_unswitch_pass
+build obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/loop_utils.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/third_party/SPIRV-Tools/source/opt/loop_utils.cpp || phony/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt.inputdeps
+  source_file_part = loop_utils.cpp
+  source_name_part = loop_utils
+build obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/mem_pass.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/third_party/SPIRV-Tools/source/opt/mem_pass.cpp || phony/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt.inputdeps
+  source_file_part = mem_pass.cpp
+  source_name_part = mem_pass
+build obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/merge_return_pass.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/third_party/SPIRV-Tools/source/opt/merge_return_pass.cpp || phony/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt.inputdeps
+  source_file_part = merge_return_pass.cpp
+  source_name_part = merge_return_pass
+build obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/modify_maximal_reconvergence.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/third_party/SPIRV-Tools/source/opt/modify_maximal_reconvergence.cpp || phony/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt.inputdeps
+  source_file_part = modify_maximal_reconvergence.cpp
+  source_name_part = modify_maximal_reconvergence
+build obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/module.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/third_party/SPIRV-Tools/source/opt/module.cpp || phony/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt.inputdeps
+  source_file_part = module.cpp
+  source_name_part = module
+build obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/optimizer.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/third_party/SPIRV-Tools/source/opt/optimizer.cpp || phony/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt.inputdeps
+  source_file_part = optimizer.cpp
+  source_name_part = optimizer
+build obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/pass.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/third_party/SPIRV-Tools/source/opt/pass.cpp || phony/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt.inputdeps
+  source_file_part = pass.cpp
+  source_name_part = pass
+build obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/pass_manager.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/third_party/SPIRV-Tools/source/opt/pass_manager.cpp || phony/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt.inputdeps
+  source_file_part = pass_manager.cpp
+  source_name_part = pass_manager
+build obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/private_to_local_pass.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/third_party/SPIRV-Tools/source/opt/private_to_local_pass.cpp || phony/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt.inputdeps
+  source_file_part = private_to_local_pass.cpp
+  source_name_part = private_to_local_pass
+build obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/propagator.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/third_party/SPIRV-Tools/source/opt/propagator.cpp || phony/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt.inputdeps
+  source_file_part = propagator.cpp
+  source_name_part = propagator
+build obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/reduce_load_size.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/third_party/SPIRV-Tools/source/opt/reduce_load_size.cpp || phony/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt.inputdeps
+  source_file_part = reduce_load_size.cpp
+  source_name_part = reduce_load_size
+build obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/redundancy_elimination.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/third_party/SPIRV-Tools/source/opt/redundancy_elimination.cpp || phony/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt.inputdeps
+  source_file_part = redundancy_elimination.cpp
+  source_name_part = redundancy_elimination
+build obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/register_pressure.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/third_party/SPIRV-Tools/source/opt/register_pressure.cpp || phony/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt.inputdeps
+  source_file_part = register_pressure.cpp
+  source_name_part = register_pressure
+build obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/relax_float_ops_pass.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/third_party/SPIRV-Tools/source/opt/relax_float_ops_pass.cpp || phony/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt.inputdeps
+  source_file_part = relax_float_ops_pass.cpp
+  source_name_part = relax_float_ops_pass
+build obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/remove_dontinline_pass.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/third_party/SPIRV-Tools/source/opt/remove_dontinline_pass.cpp || phony/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt.inputdeps
+  source_file_part = remove_dontinline_pass.cpp
+  source_name_part = remove_dontinline_pass
+build obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/remove_duplicates_pass.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/third_party/SPIRV-Tools/source/opt/remove_duplicates_pass.cpp || phony/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt.inputdeps
+  source_file_part = remove_duplicates_pass.cpp
+  source_name_part = remove_duplicates_pass
+build obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/remove_unused_interface_variables_pass.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/third_party/SPIRV-Tools/source/opt/remove_unused_interface_variables_pass.cpp || phony/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt.inputdeps
+  source_file_part = remove_unused_interface_variables_pass.cpp
+  source_name_part = remove_unused_interface_variables_pass
+build obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/replace_desc_array_access_using_var_index.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/third_party/SPIRV-Tools/source/opt/replace_desc_array_access_using_var_index.cpp || phony/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt.inputdeps
+  source_file_part = replace_desc_array_access_using_var_index.cpp
+  source_name_part = replace_desc_array_access_using_var_index
+build obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/replace_invalid_opc.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/third_party/SPIRV-Tools/source/opt/replace_invalid_opc.cpp || phony/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt.inputdeps
+  source_file_part = replace_invalid_opc.cpp
+  source_name_part = replace_invalid_opc
+build obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/scalar_analysis.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/third_party/SPIRV-Tools/source/opt/scalar_analysis.cpp || phony/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt.inputdeps
+  source_file_part = scalar_analysis.cpp
+  source_name_part = scalar_analysis
+build obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/scalar_analysis_simplification.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/third_party/SPIRV-Tools/source/opt/scalar_analysis_simplification.cpp || phony/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt.inputdeps
+  source_file_part = scalar_analysis_simplification.cpp
+  source_name_part = scalar_analysis_simplification
+build obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/scalar_replacement_pass.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/third_party/SPIRV-Tools/source/opt/scalar_replacement_pass.cpp || phony/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt.inputdeps
+  source_file_part = scalar_replacement_pass.cpp
+  source_name_part = scalar_replacement_pass
+build obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/set_spec_constant_default_value_pass.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/third_party/SPIRV-Tools/source/opt/set_spec_constant_default_value_pass.cpp || phony/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt.inputdeps
+  source_file_part = set_spec_constant_default_value_pass.cpp
+  source_name_part = set_spec_constant_default_value_pass
+build obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/simplification_pass.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/third_party/SPIRV-Tools/source/opt/simplification_pass.cpp || phony/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt.inputdeps
+  source_file_part = simplification_pass.cpp
+  source_name_part = simplification_pass
+build obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/spread_volatile_semantics.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/third_party/SPIRV-Tools/source/opt/spread_volatile_semantics.cpp || phony/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt.inputdeps
+  source_file_part = spread_volatile_semantics.cpp
+  source_name_part = spread_volatile_semantics
+build obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/ssa_rewrite_pass.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/third_party/SPIRV-Tools/source/opt/ssa_rewrite_pass.cpp || phony/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt.inputdeps
+  source_file_part = ssa_rewrite_pass.cpp
+  source_name_part = ssa_rewrite_pass
+build obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/strength_reduction_pass.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/third_party/SPIRV-Tools/source/opt/strength_reduction_pass.cpp || phony/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt.inputdeps
+  source_file_part = strength_reduction_pass.cpp
+  source_name_part = strength_reduction_pass
+build obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/strip_debug_info_pass.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/third_party/SPIRV-Tools/source/opt/strip_debug_info_pass.cpp || phony/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt.inputdeps
+  source_file_part = strip_debug_info_pass.cpp
+  source_name_part = strip_debug_info_pass
+build obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/strip_nonsemantic_info_pass.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/third_party/SPIRV-Tools/source/opt/strip_nonsemantic_info_pass.cpp || phony/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt.inputdeps
+  source_file_part = strip_nonsemantic_info_pass.cpp
+  source_name_part = strip_nonsemantic_info_pass
+build obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/struct_cfg_analysis.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/third_party/SPIRV-Tools/source/opt/struct_cfg_analysis.cpp || phony/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt.inputdeps
+  source_file_part = struct_cfg_analysis.cpp
+  source_name_part = struct_cfg_analysis
+build obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/switch_descriptorset_pass.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/third_party/SPIRV-Tools/source/opt/switch_descriptorset_pass.cpp || phony/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt.inputdeps
+  source_file_part = switch_descriptorset_pass.cpp
+  source_name_part = switch_descriptorset_pass
+build obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/trim_capabilities_pass.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/third_party/SPIRV-Tools/source/opt/trim_capabilities_pass.cpp || phony/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt.inputdeps
+  source_file_part = trim_capabilities_pass.cpp
+  source_name_part = trim_capabilities_pass
+build obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/type_manager.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/third_party/SPIRV-Tools/source/opt/type_manager.cpp || phony/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt.inputdeps
+  source_file_part = type_manager.cpp
+  source_name_part = type_manager
+build obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/types.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/third_party/SPIRV-Tools/source/opt/types.cpp || phony/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt.inputdeps
+  source_file_part = types.cpp
+  source_name_part = types
+build obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/unify_const_pass.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/third_party/SPIRV-Tools/source/opt/unify_const_pass.cpp || phony/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt.inputdeps
+  source_file_part = unify_const_pass.cpp
+  source_name_part = unify_const_pass
+build obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/upgrade_memory_model.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/third_party/SPIRV-Tools/source/opt/upgrade_memory_model.cpp || phony/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt.inputdeps
+  source_file_part = upgrade_memory_model.cpp
+  source_name_part = upgrade_memory_model
+build obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/value_number_table.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/third_party/SPIRV-Tools/source/opt/value_number_table.cpp || phony/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt.inputdeps
+  source_file_part = value_number_table.cpp
+  source_name_part = value_number_table
+build obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/vector_dce.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/third_party/SPIRV-Tools/source/opt/vector_dce.cpp || phony/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt.inputdeps
+  source_file_part = vector_dce.cpp
+  source_name_part = vector_dce
+build obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/workaround1209.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/third_party/SPIRV-Tools/source/opt/workaround1209.cpp || phony/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt.inputdeps
+  source_file_part = workaround1209.cpp
+  source_name_part = workaround1209
+build obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/wrap_opkill.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/third_party/SPIRV-Tools/source/opt/wrap_opkill.cpp || phony/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt.inputdeps
+  source_file_part = wrap_opkill.cpp
+  source_name_part = wrap_opkill
+
+build obj/third_party/SwiftShader/third_party/SPIRV-Tools/libspvtools_opt.a: alink obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/aggressive_dead_code_elim_pass.o obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/amd_ext_to_khr.o obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/analyze_live_input_pass.o obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/basic_block.o obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/block_merge_pass.o obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/block_merge_util.o obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/build_module.o obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/ccp_pass.o obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/cfg.o obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/cfg_cleanup_pass.o obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/code_sink.o obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/combine_access_chains.o obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/compact_ids_pass.o obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/composite.o obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/const_folding_rules.o obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/constants.o obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/control_dependence.o obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/convert_to_half_pass.o obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/convert_to_sampled_image_pass.o obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/copy_prop_arrays.o obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/dataflow.o obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/dead_branch_elim_pass.o obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/dead_insert_elim_pass.o obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/dead_variable_elimination.o obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/debug_info_manager.o obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/decoration_manager.o obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/def_use_manager.o obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/desc_sroa.o obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/desc_sroa_util.o obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/dominator_analysis.o obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/dominator_tree.o obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/eliminate_dead_constant_pass.o obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/eliminate_dead_functions_pass.o obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/eliminate_dead_functions_util.o obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/eliminate_dead_io_components_pass.o obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/eliminate_dead_members_pass.o obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/eliminate_dead_output_stores_pass.o obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/feature_manager.o obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/fix_func_call_arguments.o obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/fix_storage_class.o obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/flatten_decoration_pass.o obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/fold.o obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/fold_spec_constant_op_and_composite_pass.o obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/folding_rules.o obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/freeze_spec_constant_value_pass.o obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/function.o obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/graphics_robust_access_pass.o obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/if_conversion.o obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/inline_exhaustive_pass.o obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/inline_opaque_pass.o obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/inline_pass.o obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/inst_bindless_check_pass.o obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/inst_buff_addr_check_pass.o obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/inst_debug_printf_pass.o obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/instruction.o obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/instruction_list.o obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/instrument_pass.o obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/interface_var_sroa.o obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/interp_fixup_pass.o obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/invocation_interlock_placement_pass.o obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/ir_context.o obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/ir_loader.o obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/licm_pass.o obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/liveness.o obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/local_access_chain_convert_pass.o obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/local_redundancy_elimination.o obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/local_single_block_elim_pass.o obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/local_single_store_elim_pass.o obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/loop_dependence.o obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/loop_dependence_helpers.o obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/loop_descriptor.o obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/loop_fission.o obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/loop_fusion.o obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/loop_fusion_pass.o obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/loop_peeling.o obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/loop_unroller.o obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/loop_unswitch_pass.o obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/loop_utils.o obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/mem_pass.o obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/merge_return_pass.o obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/modify_maximal_reconvergence.o obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/module.o obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/optimizer.o obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/pass.o obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/pass_manager.o obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/private_to_local_pass.o obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/propagator.o obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/reduce_load_size.o obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/redundancy_elimination.o obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/register_pressure.o obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/relax_float_ops_pass.o obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/remove_dontinline_pass.o obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/remove_duplicates_pass.o obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/remove_unused_interface_variables_pass.o obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/replace_desc_array_access_using_var_index.o obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/replace_invalid_opc.o obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/scalar_analysis.o obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/scalar_analysis_simplification.o obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/scalar_replacement_pass.o obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/set_spec_constant_default_value_pass.o obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/simplification_pass.o obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/spread_volatile_semantics.o obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/ssa_rewrite_pass.o obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/strength_reduction_pass.o obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/strip_debug_info_pass.o obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/strip_nonsemantic_info_pass.o obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/struct_cfg_analysis.o obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/switch_descriptorset_pass.o obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/trim_capabilities_pass.o obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/type_manager.o obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/types.o obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/unify_const_pass.o obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/upgrade_memory_model.o obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/value_number_table.o obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/vector_dce.o obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/workaround1209.o obj/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_opt/wrap_opkill.o | /ninja-to-soong-angle/third_party/llvm-build/Release+Asserts/lib/clang/20/lib/x86_64-unknown-linux-gnu/libclang_rt.builtins.a || phony/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_language_header_cldebuginfo100 phony/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_language_header_vkdebuginfo100 obj/third_party/SwiftShader/third_party/SPIRV-Tools/libspvtools.a phony/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_language_header_debuginfo phony/third_party/SwiftShader/third_party/SPIRV-Tools/spvtools_vendor_tables_spv-amd-shader-ballot
+  arflags = -T -S
+  output_extension = .a
+  output_dir = obj/third_party/SwiftShader/third_party/SPIRV-Tools

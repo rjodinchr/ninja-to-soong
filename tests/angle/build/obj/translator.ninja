@@ -1,0 +1,372 @@
+defines = -DANGLE_ENABLE_VULKAN -D__STDC_CONSTANT_MACROS -D__STDC_FORMAT_MACROS -D_FORTIFY_SOURCE=2 -D_GNU_SOURCE -D__ARM_NEON__=1 -DANDROID -D__ANDROID_UNAVAILABLE_SYMBOLS_ARE_WEAK__ -DHAVE_SYS_UIO_H -DANDROID_NDK_VERSION_ROLL=r28_1 -DCR_CLANG_REVISION=\"llvmorg-21-init-9266-g09006611-1\" -D_LIBCPP_HARDENING_MODE=_LIBCPP_HARDENING_MODE_NONE -DNDEBUG -DNVALGRIND -DDYNAMIC_ANNOTATIONS_ENABLED=0 -DANGLE_ENABLE_SHARE_CONTEXT_LOCK=1 -DANGLE_USE_ANDROID_TLS_SLOT=1 -DANGLE_ENABLE_GLOBAL_MUTEX_RECURSION=1 -DANGLE_ENABLE_GLOBAL_MUTEX_LOAD_TIME_ALLOCATE=1 -DANGLE_ENABLE_CONTEXT_MUTEX=1 -DANGLE_ENABLE_CONTEXT_MUTEX_RECURSION=1 -DANGLE_TEST_ENABLE_SYSTEM_EGL -DANGLE_USE_ABSEIL -DABSL_ALLOCATOR_NOTHROW=1
+include_dirs = -I/ninja-to-soong-angle/include -I/ninja-to-soong-angle/src -I/ninja-to-soong-angle/src/common/base -I/ninja-to-soong-angle/src/common/third_party/xxhash -I/ninja-to-soong-angle/third_party/abseil-cpp -I/ninja-to-soong-angle/third_party/spirv-headers/src/include -I/ninja-to-soong-angle/third_party/spirv-tools/src/include
+cflags = -Wall -Wextra -Wimplicit-fallthrough -Wextra-semi -Wunreachable-code-aggressive -Wthread-safety -Wgnu -Wno-gnu-anonymous-struct -Wno-gnu-conditional-omitted-operand -Wno-gnu-include-next -Wno-gnu-label-as-value -Wno-gnu-redeclared-enum -Wno-gnu-statement-expression -Wno-gnu-zero-variadic-macro-arguments -Wno-zero-length-array -Wunguarded-availability -Wno-missing-field-initializers -Wno-unused-parameter -Wno-psabi -Wloop-analysis -Wno-unneeded-internal-declaration -Wno-cast-function-type -Wno-thread-safety-reference-return -Wno-nontrivial-memcall -Wshadow -Werror -fno-delete-null-pointer-checks -fno-strict-overflow -fno-ident -fno-strict-aliasing -fstack-protector -funwind-tables -fPIC -fcolor-diagnostics -fmerge-all-constants -fno-sized-deallocation -fcrash-diagnostics-dir=/ninja-to-soong-angle/tools/clang/crashreports -mllvm -instcombine-lower-dbg-declare=0 -mllvm -split-threshold-for-reg-with-hint=0 -ffp-contract=off -fextend-variable-liveness=none -ffunction-sections -fno-short-enums -mbranch-protection=standard --target=aarch64-linux-android26 -mno-outline -Wno-builtin-macro-redefined -D__DATE__= -D__TIME__= -D__TIMESTAMP__= -ffile-compilation-dir=. -no-canonical-prefixes -ftrivial-auto-var-init=pattern -fno-omit-frame-pointer -g0 -fvisibility=hidden -Wheader-hygiene -Wstring-conversion -Wtautological-overlap-compare -Wbad-function-cast -Wconditional-uninitialized -Wextra-semi-stmt -Wfloat-conversion -Winconsistent-missing-destructor-override -Wmissing-field-initializers -Wnewline-eof -Wnon-virtual-dtor -Wredundant-parens -Wreturn-std-move -Wshadow -Wshadow-field -Wtautological-type-limit-compare -Wundefined-reinterpret-cast -Wunneeded-internal-declaration -Wunused-but-set-variable -Wsuggest-destructor-override -Wsuggest-override -Wparentheses -Wrange-loop-analysis -Wstrict-prototypes -Wunreachable-code-aggressive -Wshorten-64-to-32 -O2 -fdata-sections -ffunction-sections -fno-unique-section-names -fno-math-errno
+cflags_cc = -Wno-invalid-offsetof -Wenum-compare-conditional -Wno-nullability-completeness -std=c++20 -Wno-trigraphs -gsimple-template-names -fno-exceptions -fno-rtti --sysroot=/ninja-to-soong-angle/third_party/android_toolchain/ndk/toolchains/llvm/prebuilt/linux-x86_64/sysroot -fvisibility-inlines-hidden
+label_name = translator
+root_out_dir = .
+target_out_dir = obj
+target_output_name = libtranslator
+
+build phony/translator.inputdeps: phony phony/angle_commit_id phony/angle_program_version_id phony/third_party/spirv-tools/src/spvtools_core_enums_unified1 phony/third_party/spirv-tools/src/spvtools_core_tables_unified1 phony/third_party/spirv-tools/src/spvtools_generators_inc phony/third_party/spirv-tools/src/spvtools_glsl_tables_glsl1-0 phony/third_party/spirv-tools/src/spvtools_language_header_cldebuginfo100 phony/third_party/spirv-tools/src/spvtools_language_header_debuginfo phony/third_party/spirv-tools/src/spvtools_language_header_vkdebuginfo100 phony/third_party/spirv-tools/src/spvtools_opencl_tables_opencl1-0 phony/third_party/spirv-tools/src/spvtools_vendor_tables_debuginfo phony/third_party/spirv-tools/src/spvtools_vendor_tables_nonsemantic.clspvreflection phony/third_party/spirv-tools/src/spvtools_vendor_tables_nonsemantic.shader.debuginfo.100 phony/third_party/spirv-tools/src/spvtools_vendor_tables_nonsemantic.vkspreflection phony/third_party/spirv-tools/src/spvtools_vendor_tables_opencl.debuginfo.100 phony/third_party/spirv-tools/src/spvtools_vendor_tables_spv-amd-gcn-shader phony/third_party/spirv-tools/src/spvtools_vendor_tables_spv-amd-shader-ballot phony/third_party/spirv-tools/src/spvtools_vendor_tables_spv-amd-shader-explicit-vertex-parameter phony/third_party/spirv-tools/src/spvtools_vendor_tables_spv-amd-shader-trinary-minmax
+build obj/translator/BaseTypes.o: cxx /ninja-to-soong-angle/src/compiler/translator/BaseTypes.cpp || phony/translator.inputdeps
+  source_file_part = BaseTypes.cpp
+  source_name_part = BaseTypes
+build obj/translator/BuiltInFunctionEmulator.o: cxx /ninja-to-soong-angle/src/compiler/translator/BuiltInFunctionEmulator.cpp || phony/translator.inputdeps
+  source_file_part = BuiltInFunctionEmulator.cpp
+  source_name_part = BuiltInFunctionEmulator
+build obj/translator/CallDAG.o: cxx /ninja-to-soong-angle/src/compiler/translator/CallDAG.cpp || phony/translator.inputdeps
+  source_file_part = CallDAG.cpp
+  source_name_part = CallDAG
+build obj/translator/CodeGen.o: cxx /ninja-to-soong-angle/src/compiler/translator/CodeGen.cpp || phony/translator.inputdeps
+  source_file_part = CodeGen.cpp
+  source_name_part = CodeGen
+build obj/translator/CollectVariables.o: cxx /ninja-to-soong-angle/src/compiler/translator/CollectVariables.cpp || phony/translator.inputdeps
+  source_file_part = CollectVariables.cpp
+  source_name_part = CollectVariables
+build obj/translator/Compiler.o: cxx /ninja-to-soong-angle/src/compiler/translator/Compiler.cpp || phony/translator.inputdeps
+  source_file_part = Compiler.cpp
+  source_name_part = Compiler
+build obj/translator/ConstantUnion.o: cxx /ninja-to-soong-angle/src/compiler/translator/ConstantUnion.cpp || phony/translator.inputdeps
+  source_file_part = ConstantUnion.cpp
+  source_name_part = ConstantUnion
+build obj/translator/Declarator.o: cxx /ninja-to-soong-angle/src/compiler/translator/Declarator.cpp || phony/translator.inputdeps
+  source_file_part = Declarator.cpp
+  source_name_part = Declarator
+build obj/translator/Diagnostics.o: cxx /ninja-to-soong-angle/src/compiler/translator/Diagnostics.cpp || phony/translator.inputdeps
+  source_file_part = Diagnostics.cpp
+  source_name_part = Diagnostics
+build obj/translator/DirectiveHandler.o: cxx /ninja-to-soong-angle/src/compiler/translator/DirectiveHandler.cpp || phony/translator.inputdeps
+  source_file_part = DirectiveHandler.cpp
+  source_name_part = DirectiveHandler
+build obj/translator/ExtensionBehavior.o: cxx /ninja-to-soong-angle/src/compiler/translator/ExtensionBehavior.cpp || phony/translator.inputdeps
+  source_file_part = ExtensionBehavior.cpp
+  source_name_part = ExtensionBehavior
+build obj/translator/FlagStd140Structs.o: cxx /ninja-to-soong-angle/src/compiler/translator/FlagStd140Structs.cpp || phony/translator.inputdeps
+  source_file_part = FlagStd140Structs.cpp
+  source_name_part = FlagStd140Structs
+build obj/translator/FunctionLookup.o: cxx /ninja-to-soong-angle/src/compiler/translator/FunctionLookup.cpp || phony/translator.inputdeps
+  source_file_part = FunctionLookup.cpp
+  source_name_part = FunctionLookup
+build obj/translator/HashNames.o: cxx /ninja-to-soong-angle/src/compiler/translator/HashNames.cpp || phony/translator.inputdeps
+  source_file_part = HashNames.cpp
+  source_name_part = HashNames
+build obj/translator/ImmutableStringBuilder.o: cxx /ninja-to-soong-angle/src/compiler/translator/ImmutableStringBuilder.cpp || phony/translator.inputdeps
+  source_file_part = ImmutableStringBuilder.cpp
+  source_name_part = ImmutableStringBuilder
+build obj/translator/InfoSink.o: cxx /ninja-to-soong-angle/src/compiler/translator/InfoSink.cpp || phony/translator.inputdeps
+  source_file_part = InfoSink.cpp
+  source_name_part = InfoSink
+build obj/translator/Initialize.o: cxx /ninja-to-soong-angle/src/compiler/translator/Initialize.cpp || phony/translator.inputdeps
+  source_file_part = Initialize.cpp
+  source_name_part = Initialize
+build obj/translator/InitializeDll.o: cxx /ninja-to-soong-angle/src/compiler/translator/InitializeDll.cpp || phony/translator.inputdeps
+  source_file_part = InitializeDll.cpp
+  source_name_part = InitializeDll
+build obj/translator/IntermNode.o: cxx /ninja-to-soong-angle/src/compiler/translator/IntermNode.cpp || phony/translator.inputdeps
+  source_file_part = IntermNode.cpp
+  source_name_part = IntermNode
+build obj/translator/IntermRebuild.o: cxx /ninja-to-soong-angle/src/compiler/translator/IntermRebuild.cpp || phony/translator.inputdeps
+  source_file_part = IntermRebuild.cpp
+  source_name_part = IntermRebuild
+build obj/translator/IsASTDepthBelowLimit.o: cxx /ninja-to-soong-angle/src/compiler/translator/IsASTDepthBelowLimit.cpp || phony/translator.inputdeps
+  source_file_part = IsASTDepthBelowLimit.cpp
+  source_name_part = IsASTDepthBelowLimit
+build obj/translator/Name.o: cxx /ninja-to-soong-angle/src/compiler/translator/Name.cpp || phony/translator.inputdeps
+  source_file_part = Name.cpp
+  source_name_part = Name
+build obj/translator/Operator.o: cxx /ninja-to-soong-angle/src/compiler/translator/Operator.cpp || phony/translator.inputdeps
+  source_file_part = Operator.cpp
+  source_name_part = Operator
+build obj/translator/OutputTree.o: cxx /ninja-to-soong-angle/src/compiler/translator/OutputTree.cpp || phony/translator.inputdeps
+  source_file_part = OutputTree.cpp
+  source_name_part = OutputTree
+build obj/translator/ParseContext.o: cxx /ninja-to-soong-angle/src/compiler/translator/ParseContext.cpp || phony/translator.inputdeps
+  source_file_part = ParseContext.cpp
+  source_name_part = ParseContext
+build obj/translator/PoolAlloc.o: cxx /ninja-to-soong-angle/src/compiler/translator/PoolAlloc.cpp || phony/translator.inputdeps
+  source_file_part = PoolAlloc.cpp
+  source_name_part = PoolAlloc
+build obj/translator/QualifierTypes.o: cxx /ninja-to-soong-angle/src/compiler/translator/QualifierTypes.cpp || phony/translator.inputdeps
+  source_file_part = QualifierTypes.cpp
+  source_name_part = QualifierTypes
+build obj/translator/ShaderLang.o: cxx /ninja-to-soong-angle/src/compiler/translator/ShaderLang.cpp || phony/translator.inputdeps
+  source_file_part = ShaderLang.cpp
+  source_name_part = ShaderLang
+build obj/translator/ShaderVars.o: cxx /ninja-to-soong-angle/src/compiler/translator/ShaderVars.cpp || phony/translator.inputdeps
+  source_file_part = ShaderVars.cpp
+  source_name_part = ShaderVars
+build obj/translator/Symbol.o: cxx /ninja-to-soong-angle/src/compiler/translator/Symbol.cpp || phony/translator.inputdeps
+  source_file_part = Symbol.cpp
+  source_name_part = Symbol
+build obj/translator/SymbolTable.o: cxx /ninja-to-soong-angle/src/compiler/translator/SymbolTable.cpp || phony/translator.inputdeps
+  source_file_part = SymbolTable.cpp
+  source_name_part = SymbolTable
+build obj/translator/SymbolUniqueId.o: cxx /ninja-to-soong-angle/src/compiler/translator/SymbolUniqueId.cpp || phony/translator.inputdeps
+  source_file_part = SymbolUniqueId.cpp
+  source_name_part = SymbolUniqueId
+build obj/translator/Types.o: cxx /ninja-to-soong-angle/src/compiler/translator/Types.cpp || phony/translator.inputdeps
+  source_file_part = Types.cpp
+  source_name_part = Types
+build obj/translator/ValidateAST.o: cxx /ninja-to-soong-angle/src/compiler/translator/ValidateAST.cpp || phony/translator.inputdeps
+  source_file_part = ValidateAST.cpp
+  source_name_part = ValidateAST
+build obj/translator/ValidateBarrierFunctionCall.o: cxx /ninja-to-soong-angle/src/compiler/translator/ValidateBarrierFunctionCall.cpp || phony/translator.inputdeps
+  source_file_part = ValidateBarrierFunctionCall.cpp
+  source_name_part = ValidateBarrierFunctionCall
+build obj/translator/ValidateClipCullDistance.o: cxx /ninja-to-soong-angle/src/compiler/translator/ValidateClipCullDistance.cpp || phony/translator.inputdeps
+  source_file_part = ValidateClipCullDistance.cpp
+  source_name_part = ValidateClipCullDistance
+build obj/translator/ValidateGlobalInitializer.o: cxx /ninja-to-soong-angle/src/compiler/translator/ValidateGlobalInitializer.cpp || phony/translator.inputdeps
+  source_file_part = ValidateGlobalInitializer.cpp
+  source_name_part = ValidateGlobalInitializer
+build obj/translator/ValidateLimitations.o: cxx /ninja-to-soong-angle/src/compiler/translator/ValidateLimitations.cpp || phony/translator.inputdeps
+  source_file_part = ValidateLimitations.cpp
+  source_name_part = ValidateLimitations
+build obj/translator/ValidateMaxParameters.o: cxx /ninja-to-soong-angle/src/compiler/translator/ValidateMaxParameters.cpp || phony/translator.inputdeps
+  source_file_part = ValidateMaxParameters.cpp
+  source_name_part = ValidateMaxParameters
+build obj/translator/ValidateOutputs.o: cxx /ninja-to-soong-angle/src/compiler/translator/ValidateOutputs.cpp || phony/translator.inputdeps
+  source_file_part = ValidateOutputs.cpp
+  source_name_part = ValidateOutputs
+build obj/translator/ValidateSwitch.o: cxx /ninja-to-soong-angle/src/compiler/translator/ValidateSwitch.cpp || phony/translator.inputdeps
+  source_file_part = ValidateSwitch.cpp
+  source_name_part = ValidateSwitch
+build obj/translator/ValidateTypeSizeLimitations.o: cxx /ninja-to-soong-angle/src/compiler/translator/ValidateTypeSizeLimitations.cpp || phony/translator.inputdeps
+  source_file_part = ValidateTypeSizeLimitations.cpp
+  source_name_part = ValidateTypeSizeLimitations
+build obj/translator/ValidateVaryingLocations.o: cxx /ninja-to-soong-angle/src/compiler/translator/ValidateVaryingLocations.cpp || phony/translator.inputdeps
+  source_file_part = ValidateVaryingLocations.cpp
+  source_name_part = ValidateVaryingLocations
+build obj/translator/VariablePacker.o: cxx /ninja-to-soong-angle/src/compiler/translator/VariablePacker.cpp || phony/translator.inputdeps
+  source_file_part = VariablePacker.cpp
+  source_name_part = VariablePacker
+build obj/translator/blocklayout.o: cxx /ninja-to-soong-angle/src/compiler/translator/blocklayout.cpp || phony/translator.inputdeps
+  source_file_part = blocklayout.cpp
+  source_name_part = blocklayout
+build obj/translator/glslang_lex_autogen.o: cxx /ninja-to-soong-angle/src/compiler/translator/glslang_lex_autogen.cpp || phony/translator.inputdeps
+  source_file_part = glslang_lex_autogen.cpp
+  source_name_part = glslang_lex_autogen
+build obj/translator/glslang_tab_autogen.o: cxx /ninja-to-soong-angle/src/compiler/translator/glslang_tab_autogen.cpp || phony/translator.inputdeps
+  source_file_part = glslang_tab_autogen.cpp
+  source_name_part = glslang_tab_autogen
+build obj/translator/ClampFragDepth.o: cxx /ninja-to-soong-angle/src/compiler/translator/tree_ops/ClampFragDepth.cpp || phony/translator.inputdeps
+  source_file_part = ClampFragDepth.cpp
+  source_name_part = ClampFragDepth
+build obj/translator/ClampIndirectIndices.o: cxx /ninja-to-soong-angle/src/compiler/translator/tree_ops/ClampIndirectIndices.cpp || phony/translator.inputdeps
+  source_file_part = ClampIndirectIndices.cpp
+  source_name_part = ClampIndirectIndices
+build obj/translator/ClampPointSize.o: cxx /ninja-to-soong-angle/src/compiler/translator/tree_ops/ClampPointSize.cpp || phony/translator.inputdeps
+  source_file_part = ClampPointSize.cpp
+  source_name_part = ClampPointSize
+build obj/translator/DeclareAndInitBuiltinsForInstancedMultiview.o: cxx /ninja-to-soong-angle/src/compiler/translator/tree_ops/DeclareAndInitBuiltinsForInstancedMultiview.cpp || phony/translator.inputdeps
+  source_file_part = DeclareAndInitBuiltinsForInstancedMultiview.cpp
+  source_name_part = DeclareAndInitBuiltinsForInstancedMultiview
+build obj/translator/DeclarePerVertexBlocks.o: cxx /ninja-to-soong-angle/src/compiler/translator/tree_ops/DeclarePerVertexBlocks.cpp || phony/translator.inputdeps
+  source_file_part = DeclarePerVertexBlocks.cpp
+  source_name_part = DeclarePerVertexBlocks
+build obj/translator/DeferGlobalInitializers.o: cxx /ninja-to-soong-angle/src/compiler/translator/tree_ops/DeferGlobalInitializers.cpp || phony/translator.inputdeps
+  source_file_part = DeferGlobalInitializers.cpp
+  source_name_part = DeferGlobalInitializers
+build obj/translator/EmulateGLFragColorBroadcast.o: cxx /ninja-to-soong-angle/src/compiler/translator/tree_ops/EmulateGLFragColorBroadcast.cpp || phony/translator.inputdeps
+  source_file_part = EmulateGLFragColorBroadcast.cpp
+  source_name_part = EmulateGLFragColorBroadcast
+build obj/translator/EmulateMultiDrawShaderBuiltins.o: cxx /ninja-to-soong-angle/src/compiler/translator/tree_ops/EmulateMultiDrawShaderBuiltins.cpp || phony/translator.inputdeps
+  source_file_part = EmulateMultiDrawShaderBuiltins.cpp
+  source_name_part = EmulateMultiDrawShaderBuiltins
+build obj/translator/FoldExpressions.o: cxx /ninja-to-soong-angle/src/compiler/translator/tree_ops/FoldExpressions.cpp || phony/translator.inputdeps
+  source_file_part = FoldExpressions.cpp
+  source_name_part = FoldExpressions
+build obj/translator/ForcePrecisionQualifier.o: cxx /ninja-to-soong-angle/src/compiler/translator/tree_ops/ForcePrecisionQualifier.cpp || phony/translator.inputdeps
+  source_file_part = ForcePrecisionQualifier.cpp
+  source_name_part = ForcePrecisionQualifier
+build obj/translator/InitializeVariables.o: cxx /ninja-to-soong-angle/src/compiler/translator/tree_ops/InitializeVariables.cpp || phony/translator.inputdeps
+  source_file_part = InitializeVariables.cpp
+  source_name_part = InitializeVariables
+build obj/translator/MonomorphizeUnsupportedFunctions.o: cxx /ninja-to-soong-angle/src/compiler/translator/tree_ops/MonomorphizeUnsupportedFunctions.cpp || phony/translator.inputdeps
+  source_file_part = MonomorphizeUnsupportedFunctions.cpp
+  source_name_part = MonomorphizeUnsupportedFunctions
+build obj/translator/PreTransformTextureCubeGradDerivatives.o: cxx /ninja-to-soong-angle/src/compiler/translator/tree_ops/PreTransformTextureCubeGradDerivatives.cpp || phony/translator.inputdeps
+  source_file_part = PreTransformTextureCubeGradDerivatives.cpp
+  source_name_part = PreTransformTextureCubeGradDerivatives
+build obj/translator/PruneEmptyCases.o: cxx /ninja-to-soong-angle/src/compiler/translator/tree_ops/PruneEmptyCases.cpp || phony/translator.inputdeps
+  source_file_part = PruneEmptyCases.cpp
+  source_name_part = PruneEmptyCases
+build obj/translator/PruneInfiniteLoops.o: cxx /ninja-to-soong-angle/src/compiler/translator/tree_ops/PruneInfiniteLoops.cpp || phony/translator.inputdeps
+  source_file_part = PruneInfiniteLoops.cpp
+  source_name_part = PruneInfiniteLoops
+build obj/translator/PruneNoOps.o: cxx /ninja-to-soong-angle/src/compiler/translator/tree_ops/PruneNoOps.cpp || phony/translator.inputdeps
+  source_file_part = PruneNoOps.cpp
+  source_name_part = PruneNoOps
+build obj/translator/RecordConstantPrecision.o: cxx /ninja-to-soong-angle/src/compiler/translator/tree_ops/RecordConstantPrecision.cpp || phony/translator.inputdeps
+  source_file_part = RecordConstantPrecision.cpp
+  source_name_part = RecordConstantPrecision
+build obj/translator/ReduceInterfaceBlocks.o: cxx /ninja-to-soong-angle/src/compiler/translator/tree_ops/ReduceInterfaceBlocks.cpp || phony/translator.inputdeps
+  source_file_part = ReduceInterfaceBlocks.cpp
+  source_name_part = ReduceInterfaceBlocks
+build obj/translator/RemoveArrayLengthMethod.o: cxx /ninja-to-soong-angle/src/compiler/translator/tree_ops/RemoveArrayLengthMethod.cpp || phony/translator.inputdeps
+  source_file_part = RemoveArrayLengthMethod.cpp
+  source_name_part = RemoveArrayLengthMethod
+build obj/translator/RemoveAtomicCounterBuiltins.o: cxx /ninja-to-soong-angle/src/compiler/translator/tree_ops/RemoveAtomicCounterBuiltins.cpp || phony/translator.inputdeps
+  source_file_part = RemoveAtomicCounterBuiltins.cpp
+  source_name_part = RemoveAtomicCounterBuiltins
+build obj/translator/RemoveDynamicIndexing.o: cxx /ninja-to-soong-angle/src/compiler/translator/tree_ops/RemoveDynamicIndexing.cpp || phony/translator.inputdeps
+  source_file_part = RemoveDynamicIndexing.cpp
+  source_name_part = RemoveDynamicIndexing
+build obj/translator/RemoveInactiveInterfaceVariables.o: cxx /ninja-to-soong-angle/src/compiler/translator/tree_ops/RemoveInactiveInterfaceVariables.cpp || phony/translator.inputdeps
+  source_file_part = RemoveInactiveInterfaceVariables.cpp
+  source_name_part = RemoveInactiveInterfaceVariables
+build obj/translator/RemoveInvariantDeclaration.o: cxx /ninja-to-soong-angle/src/compiler/translator/tree_ops/RemoveInvariantDeclaration.cpp || phony/translator.inputdeps
+  source_file_part = RemoveInvariantDeclaration.cpp
+  source_name_part = RemoveInvariantDeclaration
+build obj/translator/RemoveUnreferencedVariables.o: cxx /ninja-to-soong-angle/src/compiler/translator/tree_ops/RemoveUnreferencedVariables.cpp || phony/translator.inputdeps
+  source_file_part = RemoveUnreferencedVariables.cpp
+  source_name_part = RemoveUnreferencedVariables
+build obj/translator/RemoveUnusedFramebufferFetch.o: cxx /ninja-to-soong-angle/src/compiler/translator/tree_ops/RemoveUnusedFramebufferFetch.cpp || phony/translator.inputdeps
+  source_file_part = RemoveUnusedFramebufferFetch.cpp
+  source_name_part = RemoveUnusedFramebufferFetch
+build obj/translator/RescopeGlobalVariables.o: cxx /ninja-to-soong-angle/src/compiler/translator/tree_ops/RescopeGlobalVariables.cpp || phony/translator.inputdeps
+  source_file_part = RescopeGlobalVariables.cpp
+  source_name_part = RescopeGlobalVariables
+build obj/translator/RewriteArrayOfArrayOfOpaqueUniforms.o: cxx /ninja-to-soong-angle/src/compiler/translator/tree_ops/RewriteArrayOfArrayOfOpaqueUniforms.cpp || phony/translator.inputdeps
+  source_file_part = RewriteArrayOfArrayOfOpaqueUniforms.cpp
+  source_name_part = RewriteArrayOfArrayOfOpaqueUniforms
+build obj/translator/RewriteAtomicCounters.o: cxx /ninja-to-soong-angle/src/compiler/translator/tree_ops/RewriteAtomicCounters.cpp || phony/translator.inputdeps
+  source_file_part = RewriteAtomicCounters.cpp
+  source_name_part = RewriteAtomicCounters
+build obj/translator/RewriteDfdy.o: cxx /ninja-to-soong-angle/src/compiler/translator/tree_ops/RewriteDfdy.cpp || phony/translator.inputdeps
+  source_file_part = RewriteDfdy.cpp
+  source_name_part = RewriteDfdy
+build obj/translator/RewritePixelLocalStorage.o: cxx /ninja-to-soong-angle/src/compiler/translator/tree_ops/RewritePixelLocalStorage.cpp || phony/translator.inputdeps
+  source_file_part = RewritePixelLocalStorage.cpp
+  source_name_part = RewritePixelLocalStorage
+build obj/translator/RewriteStructSamplers.o: cxx /ninja-to-soong-angle/src/compiler/translator/tree_ops/RewriteStructSamplers.cpp || phony/translator.inputdeps
+  source_file_part = RewriteStructSamplers.cpp
+  source_name_part = RewriteStructSamplers
+build obj/translator/RewriteTexelFetchOffset.o: cxx /ninja-to-soong-angle/src/compiler/translator/tree_ops/RewriteTexelFetchOffset.cpp || phony/translator.inputdeps
+  source_file_part = RewriteTexelFetchOffset.cpp
+  source_name_part = RewriteTexelFetchOffset
+build obj/translator/ScalarizeVecAndMatConstructorArgs.o: cxx /ninja-to-soong-angle/src/compiler/translator/tree_ops/ScalarizeVecAndMatConstructorArgs.cpp || phony/translator.inputdeps
+  source_file_part = ScalarizeVecAndMatConstructorArgs.cpp
+  source_name_part = ScalarizeVecAndMatConstructorArgs
+build obj/translator/SeparateDeclarations.o: cxx /ninja-to-soong-angle/src/compiler/translator/tree_ops/SeparateDeclarations.cpp || phony/translator.inputdeps
+  source_file_part = SeparateDeclarations.cpp
+  source_name_part = SeparateDeclarations
+build obj/translator/SeparateStructFromUniformDeclarations.o: cxx /ninja-to-soong-angle/src/compiler/translator/tree_ops/SeparateStructFromUniformDeclarations.cpp || phony/translator.inputdeps
+  source_file_part = SeparateStructFromUniformDeclarations.cpp
+  source_name_part = SeparateStructFromUniformDeclarations
+build obj/translator/SimplifyLoopConditions.o: cxx /ninja-to-soong-angle/src/compiler/translator/tree_ops/SimplifyLoopConditions.cpp || phony/translator.inputdeps
+  source_file_part = SimplifyLoopConditions.cpp
+  source_name_part = SimplifyLoopConditions
+build obj/translator/SplitSequenceOperator.o: cxx /ninja-to-soong-angle/src/compiler/translator/tree_ops/SplitSequenceOperator.cpp || phony/translator.inputdeps
+  source_file_part = SplitSequenceOperator.cpp
+  source_name_part = SplitSequenceOperator
+build obj/translator/DriverUniform.o: cxx /ninja-to-soong-angle/src/compiler/translator/tree_util/DriverUniform.cpp || phony/translator.inputdeps
+  source_file_part = DriverUniform.cpp
+  source_name_part = DriverUniform
+build obj/translator/FindFunction.o: cxx /ninja-to-soong-angle/src/compiler/translator/tree_util/FindFunction.cpp || phony/translator.inputdeps
+  source_file_part = FindFunction.cpp
+  source_name_part = FindFunction
+build obj/translator/FindMain.o: cxx /ninja-to-soong-angle/src/compiler/translator/tree_util/FindMain.cpp || phony/translator.inputdeps
+  source_file_part = FindMain.cpp
+  source_name_part = FindMain
+build obj/translator/FindPreciseNodes.o: cxx /ninja-to-soong-angle/src/compiler/translator/tree_util/FindPreciseNodes.cpp || phony/translator.inputdeps
+  source_file_part = FindPreciseNodes.cpp
+  source_name_part = FindPreciseNodes
+build obj/translator/FindSymbolNode.o: cxx /ninja-to-soong-angle/src/compiler/translator/tree_util/FindSymbolNode.cpp || phony/translator.inputdeps
+  source_file_part = FindSymbolNode.cpp
+  source_name_part = FindSymbolNode
+build obj/translator/IntermNodePatternMatcher.o: cxx /ninja-to-soong-angle/src/compiler/translator/tree_util/IntermNodePatternMatcher.cpp || phony/translator.inputdeps
+  source_file_part = IntermNodePatternMatcher.cpp
+  source_name_part = IntermNodePatternMatcher
+build obj/translator/IntermNode_util.o: cxx /ninja-to-soong-angle/src/compiler/translator/tree_util/IntermNode_util.cpp || phony/translator.inputdeps
+  source_file_part = IntermNode_util.cpp
+  source_name_part = IntermNode_util
+build obj/translator/IntermTraverse.o: cxx /ninja-to-soong-angle/src/compiler/translator/tree_util/IntermTraverse.cpp || phony/translator.inputdeps
+  source_file_part = IntermTraverse.cpp
+  source_name_part = IntermTraverse
+build obj/translator/ReplaceArrayOfMatrixVarying.o: cxx /ninja-to-soong-angle/src/compiler/translator/tree_util/ReplaceArrayOfMatrixVarying.cpp || phony/translator.inputdeps
+  source_file_part = ReplaceArrayOfMatrixVarying.cpp
+  source_name_part = ReplaceArrayOfMatrixVarying
+build obj/translator/ReplaceClipCullDistanceVariable.o: cxx /ninja-to-soong-angle/src/compiler/translator/tree_util/ReplaceClipCullDistanceVariable.cpp || phony/translator.inputdeps
+  source_file_part = ReplaceClipCullDistanceVariable.cpp
+  source_name_part = ReplaceClipCullDistanceVariable
+build obj/translator/ReplaceShadowingVariables.o: cxx /ninja-to-soong-angle/src/compiler/translator/tree_util/ReplaceShadowingVariables.cpp || phony/translator.inputdeps
+  source_file_part = ReplaceShadowingVariables.cpp
+  source_name_part = ReplaceShadowingVariables
+build obj/translator/ReplaceVariable.o: cxx /ninja-to-soong-angle/src/compiler/translator/tree_util/ReplaceVariable.cpp || phony/translator.inputdeps
+  source_file_part = ReplaceVariable.cpp
+  source_name_part = ReplaceVariable
+build obj/translator/RewriteSampleMaskVariable.o: cxx /ninja-to-soong-angle/src/compiler/translator/tree_util/RewriteSampleMaskVariable.cpp || phony/translator.inputdeps
+  source_file_part = RewriteSampleMaskVariable.cpp
+  source_name_part = RewriteSampleMaskVariable
+build obj/translator/RunAtTheBeginningOfShader.o: cxx /ninja-to-soong-angle/src/compiler/translator/tree_util/RunAtTheBeginningOfShader.cpp || phony/translator.inputdeps
+  source_file_part = RunAtTheBeginningOfShader.cpp
+  source_name_part = RunAtTheBeginningOfShader
+build obj/translator/RunAtTheEndOfShader.o: cxx /ninja-to-soong-angle/src/compiler/translator/tree_util/RunAtTheEndOfShader.cpp || phony/translator.inputdeps
+  source_file_part = RunAtTheEndOfShader.cpp
+  source_name_part = RunAtTheEndOfShader
+build obj/translator/SpecializationConstant.o: cxx /ninja-to-soong-angle/src/compiler/translator/tree_util/SpecializationConstant.cpp || phony/translator.inputdeps
+  source_file_part = SpecializationConstant.cpp
+  source_name_part = SpecializationConstant
+build obj/translator/util.o: cxx /ninja-to-soong-angle/src/compiler/translator/util.cpp || phony/translator.inputdeps
+  source_file_part = util.cpp
+  source_name_part = util
+build obj/translator/ImmutableString_autogen.o: cxx /ninja-to-soong-angle/src/compiler/translator/ImmutableString_autogen.cpp || phony/translator.inputdeps
+  source_file_part = ImmutableString_autogen.cpp
+  source_name_part = ImmutableString_autogen
+build obj/translator/SymbolTable_autogen.o: cxx /ninja-to-soong-angle/src/compiler/translator/SymbolTable_autogen.cpp || phony/translator.inputdeps
+  source_file_part = SymbolTable_autogen.cpp
+  source_name_part = SymbolTable_autogen
+build obj/translator/BuildSPIRV.o: cxx /ninja-to-soong-angle/src/compiler/translator/spirv/BuildSPIRV.cpp || phony/translator.inputdeps
+  source_file_part = BuildSPIRV.cpp
+  source_name_part = BuildSPIRV
+build obj/translator/BuiltinsWorkaround.o: cxx /ninja-to-soong-angle/src/compiler/translator/spirv/BuiltinsWorkaround.cpp || phony/translator.inputdeps
+  source_file_part = BuiltinsWorkaround.cpp
+  source_name_part = BuiltinsWorkaround
+build obj/translator/OutputSPIRV.o: cxx /ninja-to-soong-angle/src/compiler/translator/spirv/OutputSPIRV.cpp || phony/translator.inputdeps
+  source_file_part = OutputSPIRV.cpp
+  source_name_part = OutputSPIRV
+build obj/translator/TranslatorSPIRV.o: cxx /ninja-to-soong-angle/src/compiler/translator/spirv/TranslatorSPIRV.cpp || phony/translator.inputdeps
+  source_file_part = TranslatorSPIRV.cpp
+  source_name_part = TranslatorSPIRV
+build obj/translator/ClampGLLayer.o: cxx /ninja-to-soong-angle/src/compiler/translator/tree_ops/spirv/ClampGLLayer.cpp || phony/translator.inputdeps
+  source_file_part = ClampGLLayer.cpp
+  source_name_part = ClampGLLayer
+build obj/translator/EmulateAdvancedBlendEquations.o: cxx /ninja-to-soong-angle/src/compiler/translator/tree_ops/spirv/EmulateAdvancedBlendEquations.cpp || phony/translator.inputdeps
+  source_file_part = EmulateAdvancedBlendEquations.cpp
+  source_name_part = EmulateAdvancedBlendEquations
+build obj/translator/EmulateDithering.o: cxx /ninja-to-soong-angle/src/compiler/translator/tree_ops/spirv/EmulateDithering.cpp || phony/translator.inputdeps
+  source_file_part = EmulateDithering.cpp
+  source_name_part = EmulateDithering
+build obj/translator/EmulateFragColorData.o: cxx /ninja-to-soong-angle/src/compiler/translator/tree_ops/spirv/EmulateFragColorData.cpp || phony/translator.inputdeps
+  source_file_part = EmulateFragColorData.cpp
+  source_name_part = EmulateFragColorData
+build obj/translator/EmulateFramebufferFetch.o: cxx /ninja-to-soong-angle/src/compiler/translator/tree_ops/spirv/EmulateFramebufferFetch.cpp || phony/translator.inputdeps
+  source_file_part = EmulateFramebufferFetch.cpp
+  source_name_part = EmulateFramebufferFetch
+build obj/translator/EmulateYUVBuiltIns.o: cxx /ninja-to-soong-angle/src/compiler/translator/tree_ops/spirv/EmulateYUVBuiltIns.cpp || phony/translator.inputdeps
+  source_file_part = EmulateYUVBuiltIns.cpp
+  source_name_part = EmulateYUVBuiltIns
+build obj/translator/FlagSamplersWithTexelFetch.o: cxx /ninja-to-soong-angle/src/compiler/translator/tree_ops/spirv/FlagSamplersWithTexelFetch.cpp || phony/translator.inputdeps
+  source_file_part = FlagSamplersWithTexelFetch.cpp
+  source_name_part = FlagSamplersWithTexelFetch
+build obj/translator/ReswizzleYUVOps.o: cxx /ninja-to-soong-angle/src/compiler/translator/tree_ops/spirv/ReswizzleYUVOps.cpp || phony/translator.inputdeps
+  source_file_part = ReswizzleYUVOps.cpp
+  source_name_part = ReswizzleYUVOps
+build obj/translator/RewriteInterpolateAtOffset.o: cxx /ninja-to-soong-angle/src/compiler/translator/tree_ops/spirv/RewriteInterpolateAtOffset.cpp || phony/translator.inputdeps
+  source_file_part = RewriteInterpolateAtOffset.cpp
+  source_name_part = RewriteInterpolateAtOffset
+build obj/translator/RewriteR32fImages.o: cxx /ninja-to-soong-angle/src/compiler/translator/tree_ops/spirv/RewriteR32fImages.cpp || phony/translator.inputdeps
+  source_file_part = RewriteR32fImages.cpp
+  source_name_part = RewriteR32fImages
+build obj/translator/OutputGLSLBase.o: cxx /ninja-to-soong-angle/src/compiler/translator/glsl/OutputGLSLBase.cpp || phony/translator.inputdeps
+  source_file_part = OutputGLSLBase.cpp
+  source_name_part = OutputGLSLBase
+build obj/translator/OutputGLSL.o: cxx /ninja-to-soong-angle/src/compiler/translator/glsl/OutputGLSL.cpp || phony/translator.inputdeps
+  source_file_part = OutputGLSL.cpp
+  source_name_part = OutputGLSL
+
+build obj/libtranslator.a: alink obj/translator/BaseTypes.o obj/translator/BuiltInFunctionEmulator.o obj/translator/CallDAG.o obj/translator/CodeGen.o obj/translator/CollectVariables.o obj/translator/Compiler.o obj/translator/ConstantUnion.o obj/translator/Declarator.o obj/translator/Diagnostics.o obj/translator/DirectiveHandler.o obj/translator/ExtensionBehavior.o obj/translator/FlagStd140Structs.o obj/translator/FunctionLookup.o obj/translator/HashNames.o obj/translator/ImmutableStringBuilder.o obj/translator/InfoSink.o obj/translator/Initialize.o obj/translator/InitializeDll.o obj/translator/IntermNode.o obj/translator/IntermRebuild.o obj/translator/IsASTDepthBelowLimit.o obj/translator/Name.o obj/translator/Operator.o obj/translator/OutputTree.o obj/translator/ParseContext.o obj/translator/PoolAlloc.o obj/translator/QualifierTypes.o obj/translator/ShaderLang.o obj/translator/ShaderVars.o obj/translator/Symbol.o obj/translator/SymbolTable.o obj/translator/SymbolUniqueId.o obj/translator/Types.o obj/translator/ValidateAST.o obj/translator/ValidateBarrierFunctionCall.o obj/translator/ValidateClipCullDistance.o obj/translator/ValidateGlobalInitializer.o obj/translator/ValidateLimitations.o obj/translator/ValidateMaxParameters.o obj/translator/ValidateOutputs.o obj/translator/ValidateSwitch.o obj/translator/ValidateTypeSizeLimitations.o obj/translator/ValidateVaryingLocations.o obj/translator/VariablePacker.o obj/translator/blocklayout.o obj/translator/glslang_lex_autogen.o obj/translator/glslang_tab_autogen.o obj/translator/ClampFragDepth.o obj/translator/ClampIndirectIndices.o obj/translator/ClampPointSize.o obj/translator/DeclareAndInitBuiltinsForInstancedMultiview.o obj/translator/DeclarePerVertexBlocks.o obj/translator/DeferGlobalInitializers.o obj/translator/EmulateGLFragColorBroadcast.o obj/translator/EmulateMultiDrawShaderBuiltins.o obj/translator/FoldExpressions.o obj/translator/ForcePrecisionQualifier.o obj/translator/InitializeVariables.o obj/translator/MonomorphizeUnsupportedFunctions.o obj/translator/PreTransformTextureCubeGradDerivatives.o obj/translator/PruneEmptyCases.o obj/translator/PruneInfiniteLoops.o obj/translator/PruneNoOps.o obj/translator/RecordConstantPrecision.o obj/translator/ReduceInterfaceBlocks.o obj/translator/RemoveArrayLengthMethod.o obj/translator/RemoveAtomicCounterBuiltins.o obj/translator/RemoveDynamicIndexing.o obj/translator/RemoveInactiveInterfaceVariables.o obj/translator/RemoveInvariantDeclaration.o obj/translator/RemoveUnreferencedVariables.o obj/translator/RemoveUnusedFramebufferFetch.o obj/translator/RescopeGlobalVariables.o obj/translator/RewriteArrayOfArrayOfOpaqueUniforms.o obj/translator/RewriteAtomicCounters.o obj/translator/RewriteDfdy.o obj/translator/RewritePixelLocalStorage.o obj/translator/RewriteStructSamplers.o obj/translator/RewriteTexelFetchOffset.o obj/translator/ScalarizeVecAndMatConstructorArgs.o obj/translator/SeparateDeclarations.o obj/translator/SeparateStructFromUniformDeclarations.o obj/translator/SimplifyLoopConditions.o obj/translator/SplitSequenceOperator.o obj/translator/DriverUniform.o obj/translator/FindFunction.o obj/translator/FindMain.o obj/translator/FindPreciseNodes.o obj/translator/FindSymbolNode.o obj/translator/IntermNodePatternMatcher.o obj/translator/IntermNode_util.o obj/translator/IntermTraverse.o obj/translator/ReplaceArrayOfMatrixVarying.o obj/translator/ReplaceClipCullDistanceVariable.o obj/translator/ReplaceShadowingVariables.o obj/translator/ReplaceVariable.o obj/translator/RewriteSampleMaskVariable.o obj/translator/RunAtTheBeginningOfShader.o obj/translator/RunAtTheEndOfShader.o obj/translator/SpecializationConstant.o obj/translator/util.o obj/translator/ImmutableString_autogen.o obj/translator/SymbolTable_autogen.o obj/translator/BuildSPIRV.o obj/translator/BuiltinsWorkaround.o obj/translator/OutputSPIRV.o obj/translator/TranslatorSPIRV.o obj/translator/ClampGLLayer.o obj/translator/EmulateAdvancedBlendEquations.o obj/translator/EmulateDithering.o obj/translator/EmulateFragColorData.o obj/translator/EmulateFramebufferFetch.o obj/translator/EmulateYUVBuiltIns.o obj/translator/FlagSamplersWithTexelFetch.o obj/translator/ReswizzleYUVOps.o obj/translator/RewriteInterpolateAtOffset.o obj/translator/RewriteR32fImages.o obj/translator/OutputGLSLBase.o obj/translator/OutputGLSL.o | /ninja-to-soong-angle/third_party/llvm-build/Release+Asserts/lib/clang/21/lib/linux/libclang_rt.builtins-aarch64-android.a || obj/libangle_common.a phony/angle_version_info obj/libangle_common_shader_state.a obj/libpreprocessor.a phony/src/common/spirv/angle_spirv_headers phony/src/common/spirv/angle_spirv_base phony/src/common/spirv/angle_spirv_builder obj/third_party/spirv-tools/src/libspvtools_val.a phony/third_party/abseil-cpp/absl/container/flat_hash_map phony/third_party/abseil-cpp/absl/container/hash_container_defaults phony/third_party/abseil-cpp/absl/container/hash_function_defaults phony/third_party/abseil-cpp/absl/hash/hash phony/third_party/abseil-cpp/absl/hash/city phony/third_party/abseil-cpp/absl/base/endian phony/third_party/abseil-cpp/absl/base/base phony/third_party/abseil-cpp/absl/base/log_severity phony/third_party/abseil-cpp/absl/base/raw_logging_internal phony/third_party/abseil-cpp/absl/base/spinlock_wait phony/third_party/abseil-cpp/absl/hash/low_level_hash phony/third_party/abseil-cpp/absl/numeric/int128 phony/third_party/abseil-cpp/absl/numeric/bits phony/third_party/abseil-cpp/absl/container/fixed_array phony/third_party/abseil-cpp/absl/base/throw_delegate phony/third_party/abseil-cpp/absl/strings/string_view phony/third_party/abseil-cpp/absl/strings/strings phony/third_party/abseil-cpp/absl/strings/charset phony/third_party/abseil-cpp/absl/strings/internal phony/third_party/abseil-cpp/absl/strings/cord phony/third_party/abseil-cpp/absl/strings/cord_internal phony/third_party/abseil-cpp/absl/container/inlined_vector phony/third_party/abseil-cpp/absl/container/inlined_vector_internal phony/third_party/abseil-cpp/absl/types/span phony/third_party/abseil-cpp/absl/crc/crc_cord_state phony/third_party/abseil-cpp/absl/crc/crc32c phony/third_party/abseil-cpp/absl/crc/cpu_detect phony/third_party/abseil-cpp/absl/crc/crc_internal phony/third_party/abseil-cpp/absl/strings/str_format phony/third_party/abseil-cpp/absl/strings/str_format_internal phony/third_party/abseil-cpp/absl/strings/cordz_info phony/third_party/abseil-cpp/absl/strings/cordz_functions phony/third_party/abseil-cpp/absl/profiling/exponential_biased phony/third_party/abseil-cpp/absl/strings/cordz_handle phony/third_party/abseil-cpp/absl/synchronization/synchronization phony/third_party/abseil-cpp/absl/synchronization/graphcycles_internal phony/third_party/abseil-cpp/absl/base/malloc_internal phony/third_party/abseil-cpp/absl/synchronization/kernel_timeout_internal phony/third_party/abseil-cpp/absl/time/time phony/third_party/abseil-cpp/absl/time/internal/cctz/civil_time phony/third_party/abseil-cpp/absl/time/internal/cctz/time_zone phony/third_party/abseil-cpp/absl/base/tracing_internal phony/third_party/abseil-cpp/absl/debugging/stacktrace phony/third_party/abseil-cpp/absl/debugging/debugging_internal phony/third_party/abseil-cpp/absl/debugging/symbolize phony/third_party/abseil-cpp/absl/debugging/demangle_internal phony/third_party/abseil-cpp/absl/debugging/demangle_rust phony/third_party/abseil-cpp/absl/debugging/decode_rust_punycode phony/third_party/abseil-cpp/absl/debugging/bounded_utf8_length_sequence phony/third_party/abseil-cpp/absl/debugging/utf8_for_code_point phony/third_party/abseil-cpp/absl/strings/cordz_update_scope phony/third_party/abseil-cpp/absl/container/raw_hash_map phony/third_party/abseil-cpp/absl/container/raw_hash_set phony/third_party/abseil-cpp/absl/container/hashtable_control_bytes phony/third_party/abseil-cpp/absl/container/hashtablez_sampler phony/third_party/abseil-cpp/absl/profiling/sample_recorder phony/third_party/abseil-cpp/absl/container/flat_hash_set phony/xxhash phony/angle_version obj/third_party/spirv-tools/src/libspvtools.a
+  arflags = -T -S
+  output_extension = .a
+  output_dir = obj

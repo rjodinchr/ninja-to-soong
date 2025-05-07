@@ -1,0 +1,678 @@
+defines = -DUSE_UDEV -DUSE_AURA=1 -DUSE_GLIB=1 -DUSE_OZONE=1 -D__STDC_CONSTANT_MACROS -D__STDC_FORMAT_MACROS -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_LARGEFILE64_SOURCE -D_GNU_SOURCE -DCR_CLANG_REVISION=\"llvmorg-20-init-16062-g091448e3-1\" -D_LIBCPP_HARDENING_MODE=_LIBCPP_HARDENING_MODE_EXTENSIVE -DCOMPONENT_BUILD -D_LIBCPP_INSTRUMENTED_WITH_ASAN=0 -DCR_LIBCXX_REVISION=74dd760826063f15ce4d373b31bc34d1c65e41c2 -DTMP_REBUILD_HACK -DCR_SYSROOT_KEY=20230611T210420Z-2 -D_DEBUG -DDYNAMIC_ANNOTATIONS_ENABLED=1 -DANGLE_IS_LINUX -DANGLE_ENABLE_SHARE_CONTEXT_LOCK=1 -DANGLE_ENABLE_CONTEXT_MUTEX=1 -DANGLE_USE_VULKAN_DISPLAY -DANGLE_USE_X11 -DANGLE_USE_WAYLAND -DANGLE_VULKAN_DISPLAY_MODE_HEADLESS -DANGLE_HAS_ASTCENC -DANGLE_DEBUG_LAYERS_ENABLED -DANGLE_OUTSIDE_WEBKIT -DANGLE_HAS_HISTOGRAMS=1 -DANGLE_TEST_ENABLE_RENDERDOC_CAPTURE -DLIBANGLE_IMPLEMENTATION -DANGLE_ENABLE_OVERLAY=1 -DANGLE_PLATFORM_EXPORT= -DANGLE_USE_ABSEIL -DABSL_ALLOCATOR_NOTHROW=1 -DABSL_CONSUME_DLL -DABSL_FLAGS_STRIP_NAMES=0 -DANGLE_ENABLE_OPENGL -DANGLE_ENABLE_GL_DESKTOP_BACKEND -DANGLE_ENABLE_OPENGL_NULL -DANGLE_HAS_LIBDRM -DANGLE_ENABLE_NULL -DANGLE_ENABLE_WGPU -DANGLE_ENABLE_VULKAN -DANGLE_ENABLE_SWIFTSHADER -DANGLE_ENABLE_VULKAN_VALIDATION_LAYERS -DANGLE_ENABLE_VULKAN_API_DUMP_LAYER -DANGLE_ENABLE_VULKAN_SHARED_RING_BUFFER_CMD_ALLOC=false -DANGLE_ENABLE_CRC_FOR_PIPELINE_CACHE -DGTEST_API_= -DGTEST_HAS_POSIX_RE=0 -DGTEST_LANG_CXX11=1 -DGTEST_HAS_TR1_TUPLE=0 -DUNIT_TEST -DRAPIDJSON_HAS_STDSTRING -DANGLE_EGL_LIBRARY_NAME=\"libEGL\" -DANGLE_GLESV2_LIBRARY_NAME=\"libGLESv2\" -DANGLE_MESA_EGL_LIBRARY_NAME=\"mesa/src/egl/libEGL\" -DANGLE_MESA_GLESV2_LIBRARY_NAME=\"mesa/src/mapi/es2api/libGLESv2\" -DANGLE_VULKAN_SECONDARIES_EGL_LIBRARY_NAME=\"libEGL_vulkan_secondaries\" -DANGLE_VULKAN_SECONDARIES_GLESV2_LIBRARY_NAME=\"libGLESv2_vulkan_secondaries\" -DGL_GLES_PROTOTYPES=0 -DEGL_EGL_PROTOTYPES=0 -DANGLE_USE_UTIL_LOADER -DANGLE_HAS_RAPIDJSON -DANGLE_USE_CUSTOM_LIBVULKAN -DANGLE_SHARED_LIBVULKAN=1 -DVK_USE_PLATFORM_XCB_KHR -DVK_USE_PLATFORM_WAYLAND_KHR -DGOOGLE_PROTOBUF_NO_RTTI -DGOOGLE_PROTOBUF_NO_STATIC_INITIALIZER -DGOOGLE_PROTOBUF_INTERNAL_DONATE_STEAL_INLINE=0 -DHAVE_PTHREAD -DPROTOBUF_USE_DLLS
+include_dirs = -I/ninja-to-soong-angle/src/tests -I/ninja-to-soong-angle/buildtools/third_party/libc++ -I/ninja-to-soong-angle/include -I/ninja-to-soong-angle/src -Igen -I/ninja-to-soong-angle/src/common/base -I/ninja-to-soong-angle/src/common/third_party/xxhash -I/ninja-to-soong-angle/third_party/abseil-cpp -I/ninja-to-soong-angle/src/third_party/khronos -I/ninja-to-soong-angle/third_party/wayland/egl -I/ninja-to-soong-angle/third_party/wayland/src -I/ninja-to-soong-angle -I/ninja-to-soong-angle/third_party/googletest/custom -I/ninja-to-soong-angle/third_party/googletest/src/googlemock/include -I/ninja-to-soong-angle/third_party/googletest/src/googletest/include -I/ninja-to-soong-angle/third_party/rapidjson/src/include -I/ninja-to-soong-angle/src/third_party/volk -I/ninja-to-soong-angle/third_party/vulkan-headers/src/include -I/ninja-to-soong-angle/third_party/catapult -I/ninja-to-soong-angle/third_party/protobuf/src
+cflags = -Wall -Wextra -Wimplicit-fallthrough -Wextra-semi -Wunreachable-code-aggressive -Wthread-safety -Wgnu -Wno-gnu-anonymous-struct -Wno-gnu-conditional-omitted-operand -Wno-gnu-include-next -Wno-gnu-label-as-value -Wno-gnu-redeclared-enum -Wno-gnu-statement-expression -Wno-gnu-zero-variadic-macro-arguments -Wno-zero-length-array -Wno-missing-field-initializers -Wno-unused-parameter -Wno-psabi -Wloop-analysis -Wno-unneeded-internal-declaration -Wno-cast-function-type -Wno-thread-safety-reference-return -Wno-nontrivial-memcall -Wshadow -Werror -fno-delete-null-pointer-checks -fwrapv -fno-ident -fno-strict-aliasing -fstack-protector -funwind-tables -fPIC -pthread -fcolor-diagnostics -fmerge-all-constants -fno-sized-deallocation -fcrash-diagnostics-dir=/ninja-to-soong-angle/tools/clang/crashreports -mllvm -instcombine-lower-dbg-declare=0 -mllvm -split-threshold-for-reg-with-hint=0 -ffp-contract=off -Wa,--crel,--allow-experimental-crel -fcomplete-member-pointers -m64 -msse3 -Wno-builtin-macro-redefined -D__DATE__= -D__TIME__= -D__TIMESTAMP__= -ffile-compilation-dir=. -no-canonical-prefixes -ftrivial-auto-var-init=pattern -O0 -fno-omit-frame-pointer -gdwarf-4 -g2 -gdwarf-aranges -gsplit-dwarf -ggnu-pubnames -Xclang -fuse-ctor-homing -fvisibility=hidden -Wheader-hygiene -Wstring-conversion -Wtautological-overlap-compare -Wno-inconsistent-missing-override -Wno-redundant-parens -DPROTOBUF_ALLOW_DEPRECATED=1
+cflags_cc = -Wno-invalid-offsetof -Wenum-compare-conditional -Wno-c++11-narrowing-const-reference -Wno-missing-template-arg-list-after-template-kw -Wno-dangling-assignment-gsl -Wno-undefined-bool-conversion -Wno-tautological-undefined-compare -std=c++20 -Wno-trigraphs -gsimple-template-names -fno-exceptions -fno-rtti -nostdinc++ -isystem/ninja-to-soong-angle/third_party/libc++/src/include -isystem/ninja-to-soong-angle/third_party/libc++abi/src/include --sysroot=/ninja-to-soong-angle/build/linux/debian_bullseye_amd64-sysroot -fvisibility-inlines-hidden
+label_name = angle_end2end_tests
+target_out_dir = obj/src/tests
+target_output_name = angle_end2end_tests
+
+build phony/src/tests/angle_end2end_tests.inputdeps: phony phony/angle_commit_id phony/angle_program_version_id phony/build/chromeos_buildflags phony/src/tests/angle_end2end_tests__runner phony/third_party/catapult/tracing/tracing/proto/histogram_proto_gen phony/third_party/spirv-tools/src/spvtools_core_enums_unified1 phony/third_party/spirv-tools/src/spvtools_core_tables_unified1 phony/third_party/spirv-tools/src/spvtools_generators_inc phony/third_party/spirv-tools/src/spvtools_glsl_tables_glsl1-0 phony/third_party/spirv-tools/src/spvtools_language_header_cldebuginfo100 phony/third_party/spirv-tools/src/spvtools_language_header_debuginfo phony/third_party/spirv-tools/src/spvtools_language_header_vkdebuginfo100 phony/third_party/spirv-tools/src/spvtools_opencl_tables_opencl1-0 phony/third_party/spirv-tools/src/spvtools_vendor_tables_debuginfo phony/third_party/spirv-tools/src/spvtools_vendor_tables_nonsemantic.clspvreflection phony/third_party/spirv-tools/src/spvtools_vendor_tables_nonsemantic.shader.debuginfo.100 phony/third_party/spirv-tools/src/spvtools_vendor_tables_nonsemantic.vkspreflection phony/third_party/spirv-tools/src/spvtools_vendor_tables_opencl.debuginfo.100 phony/third_party/spirv-tools/src/spvtools_vendor_tables_spv-amd-gcn-shader phony/third_party/spirv-tools/src/spvtools_vendor_tables_spv-amd-shader-ballot phony/third_party/spirv-tools/src/spvtools_vendor_tables_spv-amd-shader-explicit-vertex-parameter phony/third_party/spirv-tools/src/spvtools_vendor_tables_spv-amd-shader-trinary-minmax
+build obj/src/tests/angle_end2end_tests/CapturedTest.o: cxx /ninja-to-soong-angle/src/tests/capture_tests/CapturedTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = CapturedTest.cpp
+  source_name_part = CapturedTest
+build obj/src/tests/angle_end2end_tests/EGLAndroidFrameBufferTargetTest.o: cxx /ninja-to-soong-angle/src/tests/egl_tests/EGLAndroidFrameBufferTargetTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = EGLAndroidFrameBufferTargetTest.cpp
+  source_name_part = EGLAndroidFrameBufferTargetTest
+build obj/src/tests/angle_end2end_tests/EGLBackwardsCompatibleContextTest.o: cxx /ninja-to-soong-angle/src/tests/egl_tests/EGLBackwardsCompatibleContextTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = EGLBackwardsCompatibleContextTest.cpp
+  source_name_part = EGLBackwardsCompatibleContextTest
+build obj/src/tests/angle_end2end_tests/EGLBlobCacheTest.o: cxx /ninja-to-soong-angle/src/tests/egl_tests/EGLBlobCacheTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = EGLBlobCacheTest.cpp
+  source_name_part = EGLBlobCacheTest
+build obj/src/tests/angle_end2end_tests/EGLBufferAgeTest.o: cxx /ninja-to-soong-angle/src/tests/egl_tests/EGLBufferAgeTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = EGLBufferAgeTest.cpp
+  source_name_part = EGLBufferAgeTest
+build obj/src/tests/angle_end2end_tests/EGLChooseConfigTest.o: cxx /ninja-to-soong-angle/src/tests/egl_tests/EGLChooseConfigTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = EGLChooseConfigTest.cpp
+  source_name_part = EGLChooseConfigTest
+build obj/src/tests/angle_end2end_tests/EGLContextASANTest.o: cxx /ninja-to-soong-angle/src/tests/egl_tests/EGLContextASANTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = EGLContextASANTest.cpp
+  source_name_part = EGLContextASANTest
+build obj/src/tests/angle_end2end_tests/EGLContextCompatibilityTest.o: cxx /ninja-to-soong-angle/src/tests/egl_tests/EGLContextCompatibilityTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = EGLContextCompatibilityTest.cpp
+  source_name_part = EGLContextCompatibilityTest
+build obj/src/tests/angle_end2end_tests/EGLContextSharingTest.o: cxx /ninja-to-soong-angle/src/tests/egl_tests/EGLContextSharingTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = EGLContextSharingTest.cpp
+  source_name_part = EGLContextSharingTest
+build obj/src/tests/angle_end2end_tests/EGLCreateContextAttribsTest.o: cxx /ninja-to-soong-angle/src/tests/egl_tests/EGLCreateContextAttribsTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = EGLCreateContextAttribsTest.cpp
+  source_name_part = EGLCreateContextAttribsTest
+build obj/src/tests/angle_end2end_tests/EGLDebugTest.o: cxx /ninja-to-soong-angle/src/tests/egl_tests/EGLDebugTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = EGLDebugTest.cpp
+  source_name_part = EGLDebugTest
+build obj/src/tests/angle_end2end_tests/EGLDisplaySelectionTest.o: cxx /ninja-to-soong-angle/src/tests/egl_tests/EGLDisplaySelectionTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = EGLDisplaySelectionTest.cpp
+  source_name_part = EGLDisplaySelectionTest
+build obj/src/tests/angle_end2end_tests/EGLDisplayTest.o: cxx /ninja-to-soong-angle/src/tests/egl_tests/EGLDisplayTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = EGLDisplayTest.cpp
+  source_name_part = EGLDisplayTest
+build obj/src/tests/angle_end2end_tests/EGLLockSurface3Test.o: cxx /ninja-to-soong-angle/src/tests/egl_tests/EGLLockSurface3Test.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = EGLLockSurface3Test.cpp
+  source_name_part = EGLLockSurface3Test
+build obj/src/tests/angle_end2end_tests/EGLMemoryUsageReportTest.o: cxx /ninja-to-soong-angle/src/tests/egl_tests/EGLMemoryUsageReportTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = EGLMemoryUsageReportTest.cpp
+  source_name_part = EGLMemoryUsageReportTest
+build obj/src/tests/angle_end2end_tests/EGLMultiContextTest.o: cxx /ninja-to-soong-angle/src/tests/egl_tests/EGLMultiContextTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = EGLMultiContextTest.cpp
+  source_name_part = EGLMultiContextTest
+build obj/src/tests/angle_end2end_tests/EGLNoConfigContextTest.o: cxx /ninja-to-soong-angle/src/tests/egl_tests/EGLNoConfigContextTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = EGLNoConfigContextTest.cpp
+  source_name_part = EGLNoConfigContextTest
+build obj/src/tests/angle_end2end_tests/EGLNoErrorTest.o: cxx /ninja-to-soong-angle/src/tests/egl_tests/EGLNoErrorTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = EGLNoErrorTest.cpp
+  source_name_part = EGLNoErrorTest
+build obj/src/tests/angle_end2end_tests/EGLPreRotationTest.o: cxx /ninja-to-soong-angle/src/tests/egl_tests/EGLPreRotationTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = EGLPreRotationTest.cpp
+  source_name_part = EGLPreRotationTest
+build obj/src/tests/angle_end2end_tests/EGLPrintEGLinfoTest.o: cxx /ninja-to-soong-angle/src/tests/egl_tests/EGLPrintEGLinfoTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = EGLPrintEGLinfoTest.cpp
+  source_name_part = EGLPrintEGLinfoTest
+build obj/src/tests/angle_end2end_tests/EGLProgramCacheControlTest.o: cxx /ninja-to-soong-angle/src/tests/egl_tests/EGLProgramCacheControlTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = EGLProgramCacheControlTest.cpp
+  source_name_part = EGLProgramCacheControlTest
+build obj/src/tests/angle_end2end_tests/EGLProtectedContentTest.o: cxx /ninja-to-soong-angle/src/tests/egl_tests/EGLProtectedContentTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = EGLProtectedContentTest.cpp
+  source_name_part = EGLProtectedContentTest
+build obj/src/tests/angle_end2end_tests/EGLQueryContextTest.o: cxx /ninja-to-soong-angle/src/tests/egl_tests/EGLQueryContextTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = EGLQueryContextTest.cpp
+  source_name_part = EGLQueryContextTest
+build obj/src/tests/angle_end2end_tests/EGLReadinessCheckTest.o: cxx /ninja-to-soong-angle/src/tests/egl_tests/EGLReadinessCheckTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = EGLReadinessCheckTest.cpp
+  source_name_part = EGLReadinessCheckTest
+build obj/src/tests/angle_end2end_tests/EGLRecordableTest.o: cxx /ninja-to-soong-angle/src/tests/egl_tests/EGLRecordableTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = EGLRecordableTest.cpp
+  source_name_part = EGLRecordableTest
+build obj/src/tests/angle_end2end_tests/EGLRobustnessTest.o: cxx /ninja-to-soong-angle/src/tests/egl_tests/EGLRobustnessTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = EGLRobustnessTest.cpp
+  source_name_part = EGLRobustnessTest
+build obj/src/tests/angle_end2end_tests/EGLSurfaceTest.o: cxx /ninja-to-soong-angle/src/tests/egl_tests/EGLSurfaceTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = EGLSurfaceTest.cpp
+  source_name_part = EGLSurfaceTest
+build obj/src/tests/angle_end2end_tests/EGLSurfacelessContextTest.o: cxx /ninja-to-soong-angle/src/tests/egl_tests/EGLSurfacelessContextTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = EGLSurfacelessContextTest.cpp
+  source_name_part = EGLSurfacelessContextTest
+build obj/src/tests/angle_end2end_tests/EGLSyncTest.o: cxx /ninja-to-soong-angle/src/tests/egl_tests/EGLSyncTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = EGLSyncTest.cpp
+  source_name_part = EGLSyncTest
+build obj/src/tests/angle_end2end_tests/ActiveTextureCacheTest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/ActiveTextureCacheTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = ActiveTextureCacheTest.cpp
+  source_name_part = ActiveTextureCacheTest
+build obj/src/tests/angle_end2end_tests/AdvancedBlendTest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/AdvancedBlendTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = AdvancedBlendTest.cpp
+  source_name_part = AdvancedBlendTest
+build obj/src/tests/angle_end2end_tests/AtomicCounterBufferTest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/AtomicCounterBufferTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = AtomicCounterBufferTest.cpp
+  source_name_part = AtomicCounterBufferTest
+build obj/src/tests/angle_end2end_tests/AttributeLayoutTest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/AttributeLayoutTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = AttributeLayoutTest.cpp
+  source_name_part = AttributeLayoutTest
+build obj/src/tests/angle_end2end_tests/BPTCCompressedTextureTest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/BPTCCompressedTextureTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = BPTCCompressedTextureTest.cpp
+  source_name_part = BPTCCompressedTextureTest
+build obj/src/tests/angle_end2end_tests/BindGeneratesResourceTest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/BindGeneratesResourceTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = BindGeneratesResourceTest.cpp
+  source_name_part = BindGeneratesResourceTest
+build obj/src/tests/angle_end2end_tests/BindUniformLocationTest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/BindUniformLocationTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = BindUniformLocationTest.cpp
+  source_name_part = BindUniformLocationTest
+build obj/src/tests/angle_end2end_tests/BlendFuncExtendedTest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/BlendFuncExtendedTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = BlendFuncExtendedTest.cpp
+  source_name_part = BlendFuncExtendedTest
+build obj/src/tests/angle_end2end_tests/BlendIntegerTest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/BlendIntegerTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = BlendIntegerTest.cpp
+  source_name_part = BlendIntegerTest
+build obj/src/tests/angle_end2end_tests/BlendMinMaxTest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/BlendMinMaxTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = BlendMinMaxTest.cpp
+  source_name_part = BlendMinMaxTest
+build obj/src/tests/angle_end2end_tests/BlendPackedTest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/BlendPackedTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = BlendPackedTest.cpp
+  source_name_part = BlendPackedTest
+build obj/src/tests/angle_end2end_tests/BlitFramebufferANGLETest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/BlitFramebufferANGLETest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = BlitFramebufferANGLETest.cpp
+  source_name_part = BlitFramebufferANGLETest
+build obj/src/tests/angle_end2end_tests/BlobCacheTest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/BlobCacheTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = BlobCacheTest.cpp
+  source_name_part = BlobCacheTest
+build obj/src/tests/angle_end2end_tests/BufferDataTest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/BufferDataTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = BufferDataTest.cpp
+  source_name_part = BufferDataTest
+build obj/src/tests/angle_end2end_tests/BuiltinVariableTest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/BuiltinVariableTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = BuiltinVariableTest.cpp
+  source_name_part = BuiltinVariableTest
+build obj/src/tests/angle_end2end_tests/ClearTest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/ClearTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = ClearTest.cpp
+  source_name_part = ClearTest
+build obj/src/tests/angle_end2end_tests/ClientArraysTest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/ClientArraysTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = ClientArraysTest.cpp
+  source_name_part = ClientArraysTest
+build obj/src/tests/angle_end2end_tests/ClipControlTest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/ClipControlTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = ClipControlTest.cpp
+  source_name_part = ClipControlTest
+build obj/src/tests/angle_end2end_tests/ClipDistanceTest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/ClipDistanceTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = ClipDistanceTest.cpp
+  source_name_part = ClipDistanceTest
+build obj/src/tests/angle_end2end_tests/ColorMaskTest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/ColorMaskTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = ColorMaskTest.cpp
+  source_name_part = ColorMaskTest
+build obj/src/tests/angle_end2end_tests/CompressedTextureFormatsTest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/CompressedTextureFormatsTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = CompressedTextureFormatsTest.cpp
+  source_name_part = CompressedTextureFormatsTest
+build obj/src/tests/angle_end2end_tests/ComputeShaderTest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/ComputeShaderTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = ComputeShaderTest.cpp
+  source_name_part = ComputeShaderTest
+build obj/src/tests/angle_end2end_tests/ContextLostTest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/ContextLostTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = ContextLostTest.cpp
+  source_name_part = ContextLostTest
+build obj/src/tests/angle_end2end_tests/ContextNoErrorTest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/ContextNoErrorTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = ContextNoErrorTest.cpp
+  source_name_part = ContextNoErrorTest
+build obj/src/tests/angle_end2end_tests/CopyCompressedTextureTest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/CopyCompressedTextureTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = CopyCompressedTextureTest.cpp
+  source_name_part = CopyCompressedTextureTest
+build obj/src/tests/angle_end2end_tests/CopyTexImageTest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/CopyTexImageTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = CopyTexImageTest.cpp
+  source_name_part = CopyTexImageTest
+build obj/src/tests/angle_end2end_tests/CopyTexture3DTest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/CopyTexture3DTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = CopyTexture3DTest.cpp
+  source_name_part = CopyTexture3DTest
+build obj/src/tests/angle_end2end_tests/CopyTextureTest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/CopyTextureTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = CopyTextureTest.cpp
+  source_name_part = CopyTextureTest
+build obj/src/tests/angle_end2end_tests/CubeMapTextureTest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/CubeMapTextureTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = CubeMapTextureTest.cpp
+  source_name_part = CubeMapTextureTest
+build obj/src/tests/angle_end2end_tests/DXT1CompressedTextureTest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/DXT1CompressedTextureTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = DXT1CompressedTextureTest.cpp
+  source_name_part = DXT1CompressedTextureTest
+build obj/src/tests/angle_end2end_tests/DXTSRGBCompressedTextureTest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/DXTSRGBCompressedTextureTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = DXTSRGBCompressedTextureTest.cpp
+  source_name_part = DXTSRGBCompressedTextureTest
+build obj/src/tests/angle_end2end_tests/DebugMarkerTest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/DebugMarkerTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = DebugMarkerTest.cpp
+  source_name_part = DebugMarkerTest
+build obj/src/tests/angle_end2end_tests/DebugTest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/DebugTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = DebugTest.cpp
+  source_name_part = DebugTest
+build obj/src/tests/angle_end2end_tests/DepthStencilFormatsTest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/DepthStencilFormatsTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = DepthStencilFormatsTest.cpp
+  source_name_part = DepthStencilFormatsTest
+build obj/src/tests/angle_end2end_tests/DepthStencilTest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/DepthStencilTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = DepthStencilTest.cpp
+  source_name_part = DepthStencilTest
+build obj/src/tests/angle_end2end_tests/DepthWriteTest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/DepthWriteTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = DepthWriteTest.cpp
+  source_name_part = DepthWriteTest
+build obj/src/tests/angle_end2end_tests/DifferentStencilMasksTest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/DifferentStencilMasksTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = DifferentStencilMasksTest.cpp
+  source_name_part = DifferentStencilMasksTest
+build obj/src/tests/angle_end2end_tests/DiscardFramebufferEXTTest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/DiscardFramebufferEXTTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = DiscardFramebufferEXTTest.cpp
+  source_name_part = DiscardFramebufferEXTTest
+build obj/src/tests/angle_end2end_tests/DrawBaseVertexBaseInstanceTest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/DrawBaseVertexBaseInstanceTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = DrawBaseVertexBaseInstanceTest.cpp
+  source_name_part = DrawBaseVertexBaseInstanceTest
+build obj/src/tests/angle_end2end_tests/DrawBaseVertexVariantsTest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/DrawBaseVertexVariantsTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = DrawBaseVertexVariantsTest.cpp
+  source_name_part = DrawBaseVertexVariantsTest
+build obj/src/tests/angle_end2end_tests/DrawBuffersTest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/DrawBuffersTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = DrawBuffersTest.cpp
+  source_name_part = DrawBuffersTest
+build obj/src/tests/angle_end2end_tests/DrawElementsIndirectTest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/DrawElementsIndirectTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = DrawElementsIndirectTest.cpp
+  source_name_part = DrawElementsIndirectTest
+build obj/src/tests/angle_end2end_tests/DrawElementsTest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/DrawElementsTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = DrawElementsTest.cpp
+  source_name_part = DrawElementsTest
+build obj/src/tests/angle_end2end_tests/DrawRangeElementsTest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/DrawRangeElementsTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = DrawRangeElementsTest.cpp
+  source_name_part = DrawRangeElementsTest
+build obj/src/tests/angle_end2end_tests/EGLImageMECFriendlyTest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/EGLImageMECFriendlyTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = EGLImageMECFriendlyTest.cpp
+  source_name_part = EGLImageMECFriendlyTest
+build obj/src/tests/angle_end2end_tests/ETCTextureTest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/ETCTextureTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = ETCTextureTest.cpp
+  source_name_part = ETCTextureTest
+build obj/src/tests/angle_end2end_tests/ExternalBufferTest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/ExternalBufferTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = ExternalBufferTest.cpp
+  source_name_part = ExternalBufferTest
+build obj/src/tests/angle_end2end_tests/ExternalWrapTest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/ExternalWrapTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = ExternalWrapTest.cpp
+  source_name_part = ExternalWrapTest
+build obj/src/tests/angle_end2end_tests/FenceSyncTests.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/FenceSyncTests.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = FenceSyncTests.cpp
+  source_name_part = FenceSyncTests
+build obj/src/tests/angle_end2end_tests/FloatingPointSurfaceTest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/FloatingPointSurfaceTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = FloatingPointSurfaceTest.cpp
+  source_name_part = FloatingPointSurfaceTest
+build obj/src/tests/angle_end2end_tests/FragDepthTest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/FragDepthTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = FragDepthTest.cpp
+  source_name_part = FragDepthTest
+build obj/src/tests/angle_end2end_tests/FramebufferFetchTest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/FramebufferFetchTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = FramebufferFetchTest.cpp
+  source_name_part = FramebufferFetchTest
+build obj/src/tests/angle_end2end_tests/FramebufferMixedSamplesTest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/FramebufferMixedSamplesTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = FramebufferMixedSamplesTest.cpp
+  source_name_part = FramebufferMixedSamplesTest
+build obj/src/tests/angle_end2end_tests/FramebufferMultiviewTest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/FramebufferMultiviewTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = FramebufferMultiviewTest.cpp
+  source_name_part = FramebufferMultiviewTest
+build obj/src/tests/angle_end2end_tests/FramebufferRenderMipmapTest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/FramebufferRenderMipmapTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = FramebufferRenderMipmapTest.cpp
+  source_name_part = FramebufferRenderMipmapTest
+build obj/src/tests/angle_end2end_tests/FramebufferTest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/FramebufferTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = FramebufferTest.cpp
+  source_name_part = FramebufferTest
+build obj/src/tests/angle_end2end_tests/GLSLTest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/GLSLTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = GLSLTest.cpp
+  source_name_part = GLSLTest
+build obj/src/tests/angle_end2end_tests/GeometryShaderTest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/GeometryShaderTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = GeometryShaderTest.cpp
+  source_name_part = GeometryShaderTest
+build obj/src/tests/angle_end2end_tests/GetImageTest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/GetImageTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = GetImageTest.cpp
+  source_name_part = GetImageTest
+build obj/src/tests/angle_end2end_tests/GetTexLevelParameterTest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/GetTexLevelParameterTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = GetTexLevelParameterTest.cpp
+  source_name_part = GetTexLevelParameterTest
+build obj/src/tests/angle_end2end_tests/ImageTest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/ImageTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = ImageTest.cpp
+  source_name_part = ImageTest
+build obj/src/tests/angle_end2end_tests/IncompatibleTextureTest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/IncompatibleTextureTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = IncompatibleTextureTest.cpp
+  source_name_part = IncompatibleTextureTest
+build obj/src/tests/angle_end2end_tests/IncompleteTextureTest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/IncompleteTextureTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = IncompleteTextureTest.cpp
+  source_name_part = IncompleteTextureTest
+build obj/src/tests/angle_end2end_tests/IndexBufferOffsetTest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/IndexBufferOffsetTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = IndexBufferOffsetTest.cpp
+  source_name_part = IndexBufferOffsetTest
+build obj/src/tests/angle_end2end_tests/IndexedPointsTest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/IndexedPointsTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = IndexedPointsTest.cpp
+  source_name_part = IndexedPointsTest
+build obj/src/tests/angle_end2end_tests/InstancingTest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/InstancingTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = InstancingTest.cpp
+  source_name_part = InstancingTest
+build obj/src/tests/angle_end2end_tests/KTXCompressedTextureTest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/KTXCompressedTextureTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = KTXCompressedTextureTest.cpp
+  source_name_part = KTXCompressedTextureTest
+build obj/src/tests/angle_end2end_tests/LineLoopTest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/LineLoopTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = LineLoopTest.cpp
+  source_name_part = LineLoopTest
+build obj/src/tests/angle_end2end_tests/LinkAndRelinkTest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/LinkAndRelinkTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = LinkAndRelinkTest.cpp
+  source_name_part = LinkAndRelinkTest
+build obj/src/tests/angle_end2end_tests/MatrixTest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/MatrixTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = MatrixTest.cpp
+  source_name_part = MatrixTest
+build obj/src/tests/angle_end2end_tests/MaxTextureSizeTest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/MaxTextureSizeTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = MaxTextureSizeTest.cpp
+  source_name_part = MaxTextureSizeTest
+build obj/src/tests/angle_end2end_tests/MemoryBarrierTest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/MemoryBarrierTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = MemoryBarrierTest.cpp
+  source_name_part = MemoryBarrierTest
+build obj/src/tests/angle_end2end_tests/MemoryObjectTest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/MemoryObjectTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = MemoryObjectTest.cpp
+  source_name_part = MemoryObjectTest
+build obj/src/tests/angle_end2end_tests/MemorySizeTest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/MemorySizeTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = MemorySizeTest.cpp
+  source_name_part = MemorySizeTest
+build obj/src/tests/angle_end2end_tests/MipmapTest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/MipmapTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = MipmapTest.cpp
+  source_name_part = MipmapTest
+build obj/src/tests/angle_end2end_tests/MultiDrawTest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/MultiDrawTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = MultiDrawTest.cpp
+  source_name_part = MultiDrawTest
+build obj/src/tests/angle_end2end_tests/MultisampleCompatibilityTest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/MultisampleCompatibilityTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = MultisampleCompatibilityTest.cpp
+  source_name_part = MultisampleCompatibilityTest
+build obj/src/tests/angle_end2end_tests/MultisampleTest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/MultisampleTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = MultisampleTest.cpp
+  source_name_part = MultisampleTest
+build obj/src/tests/angle_end2end_tests/MultisampledRenderToTextureTest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/MultisampledRenderToTextureTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = MultisampledRenderToTextureTest.cpp
+  source_name_part = MultisampledRenderToTextureTest
+build obj/src/tests/angle_end2end_tests/MultithreadingTest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/MultithreadingTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = MultithreadingTest.cpp
+  source_name_part = MultithreadingTest
+build obj/src/tests/angle_end2end_tests/MultiviewDrawTest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/MultiviewDrawTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = MultiviewDrawTest.cpp
+  source_name_part = MultiviewDrawTest
+build obj/src/tests/angle_end2end_tests/ObjectAllocationTest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/ObjectAllocationTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = ObjectAllocationTest.cpp
+  source_name_part = ObjectAllocationTest
+build obj/src/tests/angle_end2end_tests/OcclusionQueriesTest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/OcclusionQueriesTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = OcclusionQueriesTest.cpp
+  source_name_part = OcclusionQueriesTest
+build obj/src/tests/angle_end2end_tests/PBOExtensionTest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/PBOExtensionTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = PBOExtensionTest.cpp
+  source_name_part = PBOExtensionTest
+build obj/src/tests/angle_end2end_tests/PVRTCCompressedTextureTest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/PVRTCCompressedTextureTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = PVRTCCompressedTextureTest.cpp
+  source_name_part = PVRTCCompressedTextureTest
+build obj/src/tests/angle_end2end_tests/PackUnpackTest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/PackUnpackTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = PackUnpackTest.cpp
+  source_name_part = PackUnpackTest
+build obj/src/tests/angle_end2end_tests/ParallelShaderCompileTest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/ParallelShaderCompileTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = ParallelShaderCompileTest.cpp
+  source_name_part = ParallelShaderCompileTest
+build obj/src/tests/angle_end2end_tests/PbufferTest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/PbufferTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = PbufferTest.cpp
+  source_name_part = PbufferTest
+build obj/src/tests/angle_end2end_tests/PixelLocalStorageTest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/PixelLocalStorageTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = PixelLocalStorageTest.cpp
+  source_name_part = PixelLocalStorageTest
+build obj/src/tests/angle_end2end_tests/PixmapTest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/PixmapTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = PixmapTest.cpp
+  source_name_part = PixmapTest
+build obj/src/tests/angle_end2end_tests/PointSpritesTest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/PointSpritesTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = PointSpritesTest.cpp
+  source_name_part = PointSpritesTest
+build obj/src/tests/angle_end2end_tests/PolygonModeTest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/PolygonModeTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = PolygonModeTest.cpp
+  source_name_part = PolygonModeTest
+build obj/src/tests/angle_end2end_tests/PolygonOffsetClampTest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/PolygonOffsetClampTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = PolygonOffsetClampTest.cpp
+  source_name_part = PolygonOffsetClampTest
+build obj/src/tests/angle_end2end_tests/ProgramBinaryTest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/ProgramBinaryTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = ProgramBinaryTest.cpp
+  source_name_part = ProgramBinaryTest
+build obj/src/tests/angle_end2end_tests/ProgramInterfaceTest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/ProgramInterfaceTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = ProgramInterfaceTest.cpp
+  source_name_part = ProgramInterfaceTest
+build obj/src/tests/angle_end2end_tests/ProgramParameterTest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/ProgramParameterTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = ProgramParameterTest.cpp
+  source_name_part = ProgramParameterTest
+build obj/src/tests/angle_end2end_tests/ProgramPipelineTest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/ProgramPipelineTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = ProgramPipelineTest.cpp
+  source_name_part = ProgramPipelineTest
+build obj/src/tests/angle_end2end_tests/ProvokingVertexTest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/ProvokingVertexTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = ProvokingVertexTest.cpp
+  source_name_part = ProvokingVertexTest
+build obj/src/tests/angle_end2end_tests/QueryObjectValidation.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/QueryObjectValidation.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = QueryObjectValidation.cpp
+  source_name_part = QueryObjectValidation
+build obj/src/tests/angle_end2end_tests/ReadOnlyFeedbackLoopTest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/ReadOnlyFeedbackLoopTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = ReadOnlyFeedbackLoopTest.cpp
+  source_name_part = ReadOnlyFeedbackLoopTest
+build obj/src/tests/angle_end2end_tests/ReadPixelsTest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/ReadPixelsTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = ReadPixelsTest.cpp
+  source_name_part = ReadPixelsTest
+build obj/src/tests/angle_end2end_tests/RenderbufferMultisampleTest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/RenderbufferMultisampleTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = RenderbufferMultisampleTest.cpp
+  source_name_part = RenderbufferMultisampleTest
+build obj/src/tests/angle_end2end_tests/RendererTest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/RendererTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = RendererTest.cpp
+  source_name_part = RendererTest
+build obj/src/tests/angle_end2end_tests/RequestExtensionTest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/RequestExtensionTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = RequestExtensionTest.cpp
+  source_name_part = RequestExtensionTest
+build obj/src/tests/angle_end2end_tests/RobustBufferAccessBehaviorTest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/RobustBufferAccessBehaviorTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = RobustBufferAccessBehaviorTest.cpp
+  source_name_part = RobustBufferAccessBehaviorTest
+build obj/src/tests/angle_end2end_tests/RobustClientMemoryTest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/RobustClientMemoryTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = RobustClientMemoryTest.cpp
+  source_name_part = RobustClientMemoryTest
+build obj/src/tests/angle_end2end_tests/RobustFragmentShaderOutputTest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/RobustFragmentShaderOutputTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = RobustFragmentShaderOutputTest.cpp
+  source_name_part = RobustFragmentShaderOutputTest
+build obj/src/tests/angle_end2end_tests/RobustResourceInitTest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/RobustResourceInitTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = RobustResourceInitTest.cpp
+  source_name_part = RobustResourceInitTest
+build obj/src/tests/angle_end2end_tests/S3TCTextureSizesTest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/S3TCTextureSizesTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = S3TCTextureSizesTest.cpp
+  source_name_part = S3TCTextureSizesTest
+build obj/src/tests/angle_end2end_tests/SRGBFramebufferTest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/SRGBFramebufferTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = SRGBFramebufferTest.cpp
+  source_name_part = SRGBFramebufferTest
+build obj/src/tests/angle_end2end_tests/SRGBTextureTest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/SRGBTextureTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = SRGBTextureTest.cpp
+  source_name_part = SRGBTextureTest
+build obj/src/tests/angle_end2end_tests/SampleVariablesTest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/SampleVariablesTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = SampleVariablesTest.cpp
+  source_name_part = SampleVariablesTest
+build obj/src/tests/angle_end2end_tests/SamplersTest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/SamplersTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = SamplersTest.cpp
+  source_name_part = SamplersTest
+build obj/src/tests/angle_end2end_tests/SemaphoreTest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/SemaphoreTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = SemaphoreTest.cpp
+  source_name_part = SemaphoreTest
+build obj/src/tests/angle_end2end_tests/ShaderAlgorithmTest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/ShaderAlgorithmTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = ShaderAlgorithmTest.cpp
+  source_name_part = ShaderAlgorithmTest
+build obj/src/tests/angle_end2end_tests/ShaderBinaryTest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/ShaderBinaryTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = ShaderBinaryTest.cpp
+  source_name_part = ShaderBinaryTest
+build obj/src/tests/angle_end2end_tests/ShaderInterpTest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/ShaderInterpTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = ShaderInterpTest.cpp
+  source_name_part = ShaderInterpTest
+build obj/src/tests/angle_end2end_tests/ShaderMultisampleInterpolation.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/ShaderMultisampleInterpolation.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = ShaderMultisampleInterpolation.cpp
+  source_name_part = ShaderMultisampleInterpolation
+build obj/src/tests/angle_end2end_tests/ShaderNonConstGlobalInitializerTest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/ShaderNonConstGlobalInitializerTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = ShaderNonConstGlobalInitializerTest.cpp
+  source_name_part = ShaderNonConstGlobalInitializerTest
+build obj/src/tests/angle_end2end_tests/ShaderOpTest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/ShaderOpTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = ShaderOpTest.cpp
+  source_name_part = ShaderOpTest
+build obj/src/tests/angle_end2end_tests/ShaderStorageBufferTest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/ShaderStorageBufferTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = ShaderStorageBufferTest.cpp
+  source_name_part = ShaderStorageBufferTest
+build obj/src/tests/angle_end2end_tests/ShadingRateQcomTest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/ShadingRateQcomTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = ShadingRateQcomTest.cpp
+  source_name_part = ShadingRateQcomTest
+build obj/src/tests/angle_end2end_tests/ShadowSamplerFunctionsTest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/ShadowSamplerFunctionsTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = ShadowSamplerFunctionsTest.cpp
+  source_name_part = ShadowSamplerFunctionsTest
+build obj/src/tests/angle_end2end_tests/SimpleOperationTest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/SimpleOperationTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = SimpleOperationTest.cpp
+  source_name_part = SimpleOperationTest
+build obj/src/tests/angle_end2end_tests/SixteenBppTextureTest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/SixteenBppTextureTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = SixteenBppTextureTest.cpp
+  source_name_part = SixteenBppTextureTest
+build obj/src/tests/angle_end2end_tests/StateChangeTest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/StateChangeTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = StateChangeTest.cpp
+  source_name_part = StateChangeTest
+build obj/src/tests/angle_end2end_tests/SwizzleTest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/SwizzleTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = SwizzleTest.cpp
+  source_name_part = SwizzleTest
+build obj/src/tests/angle_end2end_tests/SyncQueriesTest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/SyncQueriesTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = SyncQueriesTest.cpp
+  source_name_part = SyncQueriesTest
+build obj/src/tests/angle_end2end_tests/TextureExternalUpdateTest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/TextureExternalUpdateTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = TextureExternalUpdateTest.cpp
+  source_name_part = TextureExternalUpdateTest
+build obj/src/tests/angle_end2end_tests/TextureFixedRateCompressionTest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/TextureFixedRateCompressionTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = TextureFixedRateCompressionTest.cpp
+  source_name_part = TextureFixedRateCompressionTest
+build obj/src/tests/angle_end2end_tests/TextureMultisampleTest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/TextureMultisampleTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = TextureMultisampleTest.cpp
+  source_name_part = TextureMultisampleTest
+build obj/src/tests/angle_end2end_tests/TextureRectangleTest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/TextureRectangleTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = TextureRectangleTest.cpp
+  source_name_part = TextureRectangleTest
+build obj/src/tests/angle_end2end_tests/TextureTest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/TextureTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = TextureTest.cpp
+  source_name_part = TextureTest
+build obj/src/tests/angle_end2end_tests/TextureUploadFormatTest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/TextureUploadFormatTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = TextureUploadFormatTest.cpp
+  source_name_part = TextureUploadFormatTest
+build obj/src/tests/angle_end2end_tests/TiledRenderingTest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/TiledRenderingTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = TiledRenderingTest.cpp
+  source_name_part = TiledRenderingTest
+build obj/src/tests/angle_end2end_tests/TimerQueriesTest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/TimerQueriesTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = TimerQueriesTest.cpp
+  source_name_part = TimerQueriesTest
+build obj/src/tests/angle_end2end_tests/TransformFeedbackTest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/TransformFeedbackTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = TransformFeedbackTest.cpp
+  source_name_part = TransformFeedbackTest
+build obj/src/tests/angle_end2end_tests/UniformBufferTest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/UniformBufferTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = UniformBufferTest.cpp
+  source_name_part = UniformBufferTest
+build obj/src/tests/angle_end2end_tests/UniformTest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/UniformTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = UniformTest.cpp
+  source_name_part = UniformTest
+build obj/src/tests/angle_end2end_tests/UnpackAlignmentTest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/UnpackAlignmentTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = UnpackAlignmentTest.cpp
+  source_name_part = UnpackAlignmentTest
+build obj/src/tests/angle_end2end_tests/UnpackRowLength.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/UnpackRowLength.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = UnpackRowLength.cpp
+  source_name_part = UnpackRowLength
+build obj/src/tests/angle_end2end_tests/VertexAttributeTest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/VertexAttributeTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = VertexAttributeTest.cpp
+  source_name_part = VertexAttributeTest
+build obj/src/tests/angle_end2end_tests/ViewportTest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/ViewportTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = ViewportTest.cpp
+  source_name_part = ViewportTest
+build obj/src/tests/angle_end2end_tests/VulkanPerformanceCounterTest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/VulkanPerformanceCounterTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = VulkanPerformanceCounterTest.cpp
+  source_name_part = VulkanPerformanceCounterTest
+build obj/src/tests/angle_end2end_tests/WEBGLVideoTextureTest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/WEBGLVideoTextureTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = WEBGLVideoTextureTest.cpp
+  source_name_part = WEBGLVideoTextureTest
+build obj/src/tests/angle_end2end_tests/WebGLCompatibilityTest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/WebGLCompatibilityTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = WebGLCompatibilityTest.cpp
+  source_name_part = WebGLCompatibilityTest
+build obj/src/tests/angle_end2end_tests/WebGLCompressedTextureAvailabilityTest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/WebGLCompressedTextureAvailabilityTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = WebGLCompressedTextureAvailabilityTest.cpp
+  source_name_part = WebGLCompressedTextureAvailabilityTest
+build obj/src/tests/angle_end2end_tests/WebGLFramebufferTest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/WebGLFramebufferTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = WebGLFramebufferTest.cpp
+  source_name_part = WebGLFramebufferTest
+build obj/src/tests/angle_end2end_tests/WebGLReadOutsideFramebufferTest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/WebGLReadOutsideFramebufferTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = WebGLReadOutsideFramebufferTest.cpp
+  source_name_part = WebGLReadOutsideFramebufferTest
+build obj/src/tests/angle_end2end_tests/AlphaFuncTest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/gles1/AlphaFuncTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = AlphaFuncTest.cpp
+  source_name_part = AlphaFuncTest
+build obj/src/tests/angle_end2end_tests/BGRATextureTest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/gles1/BGRATextureTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = BGRATextureTest.cpp
+  source_name_part = BGRATextureTest
+build obj/src/tests/angle_end2end_tests/BasicDrawTest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/gles1/BasicDrawTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = BasicDrawTest.cpp
+  source_name_part = BasicDrawTest
+build obj/src/tests/angle_end2end_tests/BootAnimationTest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/gles1/BootAnimationTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = BootAnimationTest.cpp
+  source_name_part = BootAnimationTest
+build obj/src/tests/angle_end2end_tests/ClientActiveTextureTest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/gles1/ClientActiveTextureTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = ClientActiveTextureTest.cpp
+  source_name_part = ClientActiveTextureTest
+build obj/src/tests/angle_end2end_tests/ClientStateEnable.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/gles1/ClientStateEnable.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = ClientStateEnable.cpp
+  source_name_part = ClientStateEnable
+build obj/src/tests/angle_end2end_tests/ClipPlaneTest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/gles1/ClipPlaneTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = ClipPlaneTest.cpp
+  source_name_part = ClipPlaneTest
+build obj/src/tests/angle_end2end_tests/ColorMaterialTest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/gles1/ColorMaterialTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = ColorMaterialTest.cpp
+  source_name_part = ColorMaterialTest
+build obj/src/tests/angle_end2end_tests/CurrentColorTest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/gles1/CurrentColorTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = CurrentColorTest.cpp
+  source_name_part = CurrentColorTest
+build obj/src/tests/angle_end2end_tests/CurrentNormalTest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/gles1/CurrentNormalTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = CurrentNormalTest.cpp
+  source_name_part = CurrentNormalTest
+build obj/src/tests/angle_end2end_tests/CurrentTextureCoordsTest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/gles1/CurrentTextureCoordsTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = CurrentTextureCoordsTest.cpp
+  source_name_part = CurrentTextureCoordsTest
+build obj/src/tests/angle_end2end_tests/DrawTextureTest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/gles1/DrawTextureTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = DrawTextureTest.cpp
+  source_name_part = DrawTextureTest
+build obj/src/tests/angle_end2end_tests/FogTest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/gles1/FogTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = FogTest.cpp
+  source_name_part = FogTest
+build obj/src/tests/angle_end2end_tests/FramebufferObjectTest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/gles1/FramebufferObjectTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = FramebufferObjectTest.cpp
+  source_name_part = FramebufferObjectTest
+build obj/src/tests/angle_end2end_tests/LightsTest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/gles1/LightsTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = LightsTest.cpp
+  source_name_part = LightsTest
+build obj/src/tests/angle_end2end_tests/MaterialsTest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/gles1/MaterialsTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = MaterialsTest.cpp
+  source_name_part = MaterialsTest
+build obj/src/tests/angle_end2end_tests/MatrixBuiltinsTest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/gles1/MatrixBuiltinsTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = MatrixBuiltinsTest.cpp
+  source_name_part = MatrixBuiltinsTest
+build obj/src/tests/angle_end2end_tests/MatrixLoadTest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/gles1/MatrixLoadTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = MatrixLoadTest.cpp
+  source_name_part = MatrixLoadTest
+build obj/src/tests/angle_end2end_tests/MatrixModeTest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/gles1/MatrixModeTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = MatrixModeTest.cpp
+  source_name_part = MatrixModeTest
+build obj/src/tests/angle_end2end_tests/MatrixMultTest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/gles1/MatrixMultTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = MatrixMultTest.cpp
+  source_name_part = MatrixMultTest
+build obj/src/tests/angle_end2end_tests/MatrixStackTest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/gles1/MatrixStackTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = MatrixStackTest.cpp
+  source_name_part = MatrixStackTest
+build obj/src/tests/angle_end2end_tests/PalettedTextureTest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/gles1/PalettedTextureTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = PalettedTextureTest.cpp
+  source_name_part = PalettedTextureTest
+build obj/src/tests/angle_end2end_tests/PointParameterTest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/gles1/PointParameterTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = PointParameterTest.cpp
+  source_name_part = PointParameterTest
+build obj/src/tests/angle_end2end_tests/PointSpriteTest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/gles1/PointSpriteTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = PointSpriteTest.cpp
+  source_name_part = PointSpriteTest
+build obj/src/tests/angle_end2end_tests/QueryTest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/gles1/QueryTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = QueryTest.cpp
+  source_name_part = QueryTest
+build obj/src/tests/angle_end2end_tests/ShadeModelTest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/gles1/ShadeModelTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = ShadeModelTest.cpp
+  source_name_part = ShadeModelTest
+build obj/src/tests/angle_end2end_tests/TextureEnvTest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/gles1/TextureEnvTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = TextureEnvTest.cpp
+  source_name_part = TextureEnvTest
+build obj/src/tests/angle_end2end_tests/TextureParameterTest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/gles1/TextureParameterTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = TextureParameterTest.cpp
+  source_name_part = TextureParameterTest
+build obj/src/tests/angle_end2end_tests/TextureTargetEnableTest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/gles1/TextureTargetEnableTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = TextureTargetEnableTest.cpp
+  source_name_part = TextureTargetEnableTest
+build obj/src/tests/angle_end2end_tests/VertexPointerTest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/gles1/VertexPointerTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = VertexPointerTest.cpp
+  source_name_part = VertexPointerTest
+build obj/src/tests/angle_end2end_tests/GPUTestExpectationsTest.o: cxx /ninja-to-soong-angle/src/tests/test_expectations/GPUTestExpectationsTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = GPUTestExpectationsTest.cpp
+  source_name_part = GPUTestExpectationsTest
+build obj/src/tests/angle_end2end_tests/ANGLETest.o: cxx /ninja-to-soong-angle/src/tests/test_utils/ANGLETest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = ANGLETest.cpp
+  source_name_part = ANGLETest
+build obj/src/tests/angle_end2end_tests/MultiviewTest.o: cxx /ninja-to-soong-angle/src/tests/test_utils/MultiviewTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = MultiviewTest.cpp
+  source_name_part = MultiviewTest
+build obj/src/tests/angle_end2end_tests/system_info_util.o: cxx /ninja-to-soong-angle/src/tests/test_utils/system_info_util.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = system_info_util.cpp
+  source_name_part = system_info_util
+build obj/src/tests/angle_end2end_tests/angle_end2end_tests_main.o: cxx /ninja-to-soong-angle/src/tests/angle_end2end_tests_main.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = angle_end2end_tests_main.cpp
+  source_name_part = angle_end2end_tests_main
+build obj/src/tests/angle_end2end_tests/EGLX11VisualTest.o: cxx /ninja-to-soong-angle/src/tests/egl_tests/EGLX11VisualTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = EGLX11VisualTest.cpp
+  source_name_part = EGLX11VisualTest
+build obj/src/tests/angle_end2end_tests/EGLWaylandTest.o: cxx /ninja-to-soong-angle/src/tests/egl_tests/EGLWaylandTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = EGLWaylandTest.cpp
+  source_name_part = EGLWaylandTest
+build obj/src/tests/angle_end2end_tests/VulkanExternalImageTest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/VulkanExternalImageTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = VulkanExternalImageTest.cpp
+  source_name_part = VulkanExternalImageTest
+build obj/src/tests/angle_end2end_tests/VulkanImageTest.o: cxx /ninja-to-soong-angle/src/tests/gl_tests/VulkanImageTest.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = VulkanImageTest.cpp
+  source_name_part = VulkanImageTest
+build obj/src/tests/angle_end2end_tests/VulkanHelper.o: cxx /ninja-to-soong-angle/src/tests/test_utils/VulkanHelper.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = VulkanHelper.cpp
+  source_name_part = VulkanHelper
+build obj/src/tests/angle_end2end_tests/TestSuite.o: cxx /ninja-to-soong-angle/src/tests/test_utils/runner/TestSuite.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = TestSuite.cpp
+  source_name_part = TestSuite
+build obj/src/tests/angle_end2end_tests/HistogramWriter.o: cxx /ninja-to-soong-angle/src/tests/test_utils/runner/HistogramWriter.cpp | /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/src/tests/angle_end2end_tests.inputdeps
+  source_file_part = HistogramWriter.cpp
+  source_name_part = HistogramWriter
+
+build ./angle_end2end_tests: link obj/src/tests/angle_end2end_tests/CapturedTest.o obj/src/tests/angle_end2end_tests/EGLAndroidFrameBufferTargetTest.o obj/src/tests/angle_end2end_tests/EGLBackwardsCompatibleContextTest.o obj/src/tests/angle_end2end_tests/EGLBlobCacheTest.o obj/src/tests/angle_end2end_tests/EGLBufferAgeTest.o obj/src/tests/angle_end2end_tests/EGLChooseConfigTest.o obj/src/tests/angle_end2end_tests/EGLContextASANTest.o obj/src/tests/angle_end2end_tests/EGLContextCompatibilityTest.o obj/src/tests/angle_end2end_tests/EGLContextSharingTest.o obj/src/tests/angle_end2end_tests/EGLCreateContextAttribsTest.o obj/src/tests/angle_end2end_tests/EGLDebugTest.o obj/src/tests/angle_end2end_tests/EGLDisplaySelectionTest.o obj/src/tests/angle_end2end_tests/EGLDisplayTest.o obj/src/tests/angle_end2end_tests/EGLLockSurface3Test.o obj/src/tests/angle_end2end_tests/EGLMemoryUsageReportTest.o obj/src/tests/angle_end2end_tests/EGLMultiContextTest.o obj/src/tests/angle_end2end_tests/EGLNoConfigContextTest.o obj/src/tests/angle_end2end_tests/EGLNoErrorTest.o obj/src/tests/angle_end2end_tests/EGLPreRotationTest.o obj/src/tests/angle_end2end_tests/EGLPrintEGLinfoTest.o obj/src/tests/angle_end2end_tests/EGLProgramCacheControlTest.o obj/src/tests/angle_end2end_tests/EGLProtectedContentTest.o obj/src/tests/angle_end2end_tests/EGLQueryContextTest.o obj/src/tests/angle_end2end_tests/EGLReadinessCheckTest.o obj/src/tests/angle_end2end_tests/EGLRecordableTest.o obj/src/tests/angle_end2end_tests/EGLRobustnessTest.o obj/src/tests/angle_end2end_tests/EGLSurfaceTest.o obj/src/tests/angle_end2end_tests/EGLSurfacelessContextTest.o obj/src/tests/angle_end2end_tests/EGLSyncTest.o obj/src/tests/angle_end2end_tests/ActiveTextureCacheTest.o obj/src/tests/angle_end2end_tests/AdvancedBlendTest.o obj/src/tests/angle_end2end_tests/AtomicCounterBufferTest.o obj/src/tests/angle_end2end_tests/AttributeLayoutTest.o obj/src/tests/angle_end2end_tests/BPTCCompressedTextureTest.o obj/src/tests/angle_end2end_tests/BindGeneratesResourceTest.o obj/src/tests/angle_end2end_tests/BindUniformLocationTest.o obj/src/tests/angle_end2end_tests/BlendFuncExtendedTest.o obj/src/tests/angle_end2end_tests/BlendIntegerTest.o obj/src/tests/angle_end2end_tests/BlendMinMaxTest.o obj/src/tests/angle_end2end_tests/BlendPackedTest.o obj/src/tests/angle_end2end_tests/BlitFramebufferANGLETest.o obj/src/tests/angle_end2end_tests/BlobCacheTest.o obj/src/tests/angle_end2end_tests/BufferDataTest.o obj/src/tests/angle_end2end_tests/BuiltinVariableTest.o obj/src/tests/angle_end2end_tests/ClearTest.o obj/src/tests/angle_end2end_tests/ClientArraysTest.o obj/src/tests/angle_end2end_tests/ClipControlTest.o obj/src/tests/angle_end2end_tests/ClipDistanceTest.o obj/src/tests/angle_end2end_tests/ColorMaskTest.o obj/src/tests/angle_end2end_tests/CompressedTextureFormatsTest.o obj/src/tests/angle_end2end_tests/ComputeShaderTest.o obj/src/tests/angle_end2end_tests/ContextLostTest.o obj/src/tests/angle_end2end_tests/ContextNoErrorTest.o obj/src/tests/angle_end2end_tests/CopyCompressedTextureTest.o obj/src/tests/angle_end2end_tests/CopyTexImageTest.o obj/src/tests/angle_end2end_tests/CopyTexture3DTest.o obj/src/tests/angle_end2end_tests/CopyTextureTest.o obj/src/tests/angle_end2end_tests/CubeMapTextureTest.o obj/src/tests/angle_end2end_tests/DXT1CompressedTextureTest.o obj/src/tests/angle_end2end_tests/DXTSRGBCompressedTextureTest.o obj/src/tests/angle_end2end_tests/DebugMarkerTest.o obj/src/tests/angle_end2end_tests/DebugTest.o obj/src/tests/angle_end2end_tests/DepthStencilFormatsTest.o obj/src/tests/angle_end2end_tests/DepthStencilTest.o obj/src/tests/angle_end2end_tests/DepthWriteTest.o obj/src/tests/angle_end2end_tests/DifferentStencilMasksTest.o obj/src/tests/angle_end2end_tests/DiscardFramebufferEXTTest.o obj/src/tests/angle_end2end_tests/DrawBaseVertexBaseInstanceTest.o obj/src/tests/angle_end2end_tests/DrawBaseVertexVariantsTest.o obj/src/tests/angle_end2end_tests/DrawBuffersTest.o obj/src/tests/angle_end2end_tests/DrawElementsIndirectTest.o obj/src/tests/angle_end2end_tests/DrawElementsTest.o obj/src/tests/angle_end2end_tests/DrawRangeElementsTest.o obj/src/tests/angle_end2end_tests/EGLImageMECFriendlyTest.o obj/src/tests/angle_end2end_tests/ETCTextureTest.o obj/src/tests/angle_end2end_tests/ExternalBufferTest.o obj/src/tests/angle_end2end_tests/ExternalWrapTest.o obj/src/tests/angle_end2end_tests/FenceSyncTests.o obj/src/tests/angle_end2end_tests/FloatingPointSurfaceTest.o obj/src/tests/angle_end2end_tests/FragDepthTest.o obj/src/tests/angle_end2end_tests/FramebufferFetchTest.o obj/src/tests/angle_end2end_tests/FramebufferMixedSamplesTest.o obj/src/tests/angle_end2end_tests/FramebufferMultiviewTest.o obj/src/tests/angle_end2end_tests/FramebufferRenderMipmapTest.o obj/src/tests/angle_end2end_tests/FramebufferTest.o obj/src/tests/angle_end2end_tests/GLSLTest.o obj/src/tests/angle_end2end_tests/GeometryShaderTest.o obj/src/tests/angle_end2end_tests/GetImageTest.o obj/src/tests/angle_end2end_tests/GetTexLevelParameterTest.o obj/src/tests/angle_end2end_tests/ImageTest.o obj/src/tests/angle_end2end_tests/IncompatibleTextureTest.o obj/src/tests/angle_end2end_tests/IncompleteTextureTest.o obj/src/tests/angle_end2end_tests/IndexBufferOffsetTest.o obj/src/tests/angle_end2end_tests/IndexedPointsTest.o obj/src/tests/angle_end2end_tests/InstancingTest.o obj/src/tests/angle_end2end_tests/KTXCompressedTextureTest.o obj/src/tests/angle_end2end_tests/LineLoopTest.o obj/src/tests/angle_end2end_tests/LinkAndRelinkTest.o obj/src/tests/angle_end2end_tests/MatrixTest.o obj/src/tests/angle_end2end_tests/MaxTextureSizeTest.o obj/src/tests/angle_end2end_tests/MemoryBarrierTest.o obj/src/tests/angle_end2end_tests/MemoryObjectTest.o obj/src/tests/angle_end2end_tests/MemorySizeTest.o obj/src/tests/angle_end2end_tests/MipmapTest.o obj/src/tests/angle_end2end_tests/MultiDrawTest.o obj/src/tests/angle_end2end_tests/MultisampleCompatibilityTest.o obj/src/tests/angle_end2end_tests/MultisampleTest.o obj/src/tests/angle_end2end_tests/MultisampledRenderToTextureTest.o obj/src/tests/angle_end2end_tests/MultithreadingTest.o obj/src/tests/angle_end2end_tests/MultiviewDrawTest.o obj/src/tests/angle_end2end_tests/ObjectAllocationTest.o obj/src/tests/angle_end2end_tests/OcclusionQueriesTest.o obj/src/tests/angle_end2end_tests/PBOExtensionTest.o obj/src/tests/angle_end2end_tests/PVRTCCompressedTextureTest.o obj/src/tests/angle_end2end_tests/PackUnpackTest.o obj/src/tests/angle_end2end_tests/ParallelShaderCompileTest.o obj/src/tests/angle_end2end_tests/PbufferTest.o obj/src/tests/angle_end2end_tests/PixelLocalStorageTest.o obj/src/tests/angle_end2end_tests/PixmapTest.o obj/src/tests/angle_end2end_tests/PointSpritesTest.o obj/src/tests/angle_end2end_tests/PolygonModeTest.o obj/src/tests/angle_end2end_tests/PolygonOffsetClampTest.o obj/src/tests/angle_end2end_tests/ProgramBinaryTest.o obj/src/tests/angle_end2end_tests/ProgramInterfaceTest.o obj/src/tests/angle_end2end_tests/ProgramParameterTest.o obj/src/tests/angle_end2end_tests/ProgramPipelineTest.o obj/src/tests/angle_end2end_tests/ProvokingVertexTest.o obj/src/tests/angle_end2end_tests/QueryObjectValidation.o obj/src/tests/angle_end2end_tests/ReadOnlyFeedbackLoopTest.o obj/src/tests/angle_end2end_tests/ReadPixelsTest.o obj/src/tests/angle_end2end_tests/RenderbufferMultisampleTest.o obj/src/tests/angle_end2end_tests/RendererTest.o obj/src/tests/angle_end2end_tests/RequestExtensionTest.o obj/src/tests/angle_end2end_tests/RobustBufferAccessBehaviorTest.o obj/src/tests/angle_end2end_tests/RobustClientMemoryTest.o obj/src/tests/angle_end2end_tests/RobustFragmentShaderOutputTest.o obj/src/tests/angle_end2end_tests/RobustResourceInitTest.o obj/src/tests/angle_end2end_tests/S3TCTextureSizesTest.o obj/src/tests/angle_end2end_tests/SRGBFramebufferTest.o obj/src/tests/angle_end2end_tests/SRGBTextureTest.o obj/src/tests/angle_end2end_tests/SampleVariablesTest.o obj/src/tests/angle_end2end_tests/SamplersTest.o obj/src/tests/angle_end2end_tests/SemaphoreTest.o obj/src/tests/angle_end2end_tests/ShaderAlgorithmTest.o obj/src/tests/angle_end2end_tests/ShaderBinaryTest.o obj/src/tests/angle_end2end_tests/ShaderInterpTest.o obj/src/tests/angle_end2end_tests/ShaderMultisampleInterpolation.o obj/src/tests/angle_end2end_tests/ShaderNonConstGlobalInitializerTest.o obj/src/tests/angle_end2end_tests/ShaderOpTest.o obj/src/tests/angle_end2end_tests/ShaderStorageBufferTest.o obj/src/tests/angle_end2end_tests/ShadingRateQcomTest.o obj/src/tests/angle_end2end_tests/ShadowSamplerFunctionsTest.o obj/src/tests/angle_end2end_tests/SimpleOperationTest.o obj/src/tests/angle_end2end_tests/SixteenBppTextureTest.o obj/src/tests/angle_end2end_tests/StateChangeTest.o obj/src/tests/angle_end2end_tests/SwizzleTest.o obj/src/tests/angle_end2end_tests/SyncQueriesTest.o obj/src/tests/angle_end2end_tests/TextureExternalUpdateTest.o obj/src/tests/angle_end2end_tests/TextureFixedRateCompressionTest.o obj/src/tests/angle_end2end_tests/TextureMultisampleTest.o obj/src/tests/angle_end2end_tests/TextureRectangleTest.o obj/src/tests/angle_end2end_tests/TextureTest.o obj/src/tests/angle_end2end_tests/TextureUploadFormatTest.o obj/src/tests/angle_end2end_tests/TiledRenderingTest.o obj/src/tests/angle_end2end_tests/TimerQueriesTest.o obj/src/tests/angle_end2end_tests/TransformFeedbackTest.o obj/src/tests/angle_end2end_tests/UniformBufferTest.o obj/src/tests/angle_end2end_tests/UniformTest.o obj/src/tests/angle_end2end_tests/UnpackAlignmentTest.o obj/src/tests/angle_end2end_tests/UnpackRowLength.o obj/src/tests/angle_end2end_tests/VertexAttributeTest.o obj/src/tests/angle_end2end_tests/ViewportTest.o obj/src/tests/angle_end2end_tests/VulkanPerformanceCounterTest.o obj/src/tests/angle_end2end_tests/WEBGLVideoTextureTest.o obj/src/tests/angle_end2end_tests/WebGLCompatibilityTest.o obj/src/tests/angle_end2end_tests/WebGLCompressedTextureAvailabilityTest.o obj/src/tests/angle_end2end_tests/WebGLFramebufferTest.o obj/src/tests/angle_end2end_tests/WebGLReadOutsideFramebufferTest.o obj/src/tests/angle_end2end_tests/AlphaFuncTest.o obj/src/tests/angle_end2end_tests/BGRATextureTest.o obj/src/tests/angle_end2end_tests/BasicDrawTest.o obj/src/tests/angle_end2end_tests/BootAnimationTest.o obj/src/tests/angle_end2end_tests/ClientActiveTextureTest.o obj/src/tests/angle_end2end_tests/ClientStateEnable.o obj/src/tests/angle_end2end_tests/ClipPlaneTest.o obj/src/tests/angle_end2end_tests/ColorMaterialTest.o obj/src/tests/angle_end2end_tests/CurrentColorTest.o obj/src/tests/angle_end2end_tests/CurrentNormalTest.o obj/src/tests/angle_end2end_tests/CurrentTextureCoordsTest.o obj/src/tests/angle_end2end_tests/DrawTextureTest.o obj/src/tests/angle_end2end_tests/FogTest.o obj/src/tests/angle_end2end_tests/FramebufferObjectTest.o obj/src/tests/angle_end2end_tests/LightsTest.o obj/src/tests/angle_end2end_tests/MaterialsTest.o obj/src/tests/angle_end2end_tests/MatrixBuiltinsTest.o obj/src/tests/angle_end2end_tests/MatrixLoadTest.o obj/src/tests/angle_end2end_tests/MatrixModeTest.o obj/src/tests/angle_end2end_tests/MatrixMultTest.o obj/src/tests/angle_end2end_tests/MatrixStackTest.o obj/src/tests/angle_end2end_tests/PalettedTextureTest.o obj/src/tests/angle_end2end_tests/PointParameterTest.o obj/src/tests/angle_end2end_tests/PointSpriteTest.o obj/src/tests/angle_end2end_tests/QueryTest.o obj/src/tests/angle_end2end_tests/ShadeModelTest.o obj/src/tests/angle_end2end_tests/TextureEnvTest.o obj/src/tests/angle_end2end_tests/TextureParameterTest.o obj/src/tests/angle_end2end_tests/TextureTargetEnableTest.o obj/src/tests/angle_end2end_tests/VertexPointerTest.o obj/src/tests/angle_end2end_tests/GPUTestExpectationsTest.o obj/src/tests/angle_end2end_tests/ANGLETest.o obj/src/tests/angle_end2end_tests/MultiviewTest.o obj/src/tests/angle_end2end_tests/system_info_util.o obj/src/tests/angle_end2end_tests/angle_end2end_tests_main.o obj/src/tests/angle_end2end_tests/EGLX11VisualTest.o obj/src/tests/angle_end2end_tests/EGLWaylandTest.o obj/src/tests/angle_end2end_tests/VulkanExternalImageTest.o obj/src/tests/angle_end2end_tests/VulkanImageTest.o obj/src/tests/angle_end2end_tests/VulkanHelper.o obj/src/tests/angle_end2end_tests/TestSuite.o obj/src/tests/angle_end2end_tests/HistogramWriter.o obj/util/angle_test_utils/Timer.o obj/util/angle_test_utils/test_utils.o obj/util/angle_test_utils/crash_handler_posix.o obj/util/angle_test_utils/test_utils_posix.o obj/third_party/googletest/gmock/gmock-cardinalities.o obj/third_party/googletest/gmock/gmock-internal-utils.o obj/third_party/googletest/gmock/gmock-matchers.o obj/third_party/googletest/gmock/gmock-spec-builders.o obj/third_party/googletest/gmock/gmock.o obj/third_party/googletest/gtest/chrome_custom_temp_dir.o obj/third_party/googletest/gtest/gtest_port_wrapper.o obj/third_party/googletest/gtest/gtest-death-test.o obj/third_party/googletest/gtest/gtest-filepath.o obj/third_party/googletest/gtest/gtest-matchers.o obj/third_party/googletest/gtest/gtest-printers.o obj/third_party/googletest/gtest/gtest-test-part.o obj/third_party/googletest/gtest/gtest-typed-test.o obj/third_party/googletest/gtest/gtest.o obj/src/tests/angle_common_test_utils_shared/MultiThreadSteps.o obj/src/tests/angle_common_test_utils_shared/RenderDoc.o obj/src/tests/angle_common_test_utils_shared/angle_test_configs.o obj/src/tests/angle_common_test_utils_shared/angle_test_instantiate.o obj/src/tests/angle_common_test_utils_shared/angle_test_platform.o obj/angle_gl_enum_utils/gl_enum_utils.o obj/angle_gl_enum_utils/gl_enum_utils_autogen.o obj/angle_json_serializer/JsonSerializer.o obj/third_party/catapult/tracing/tracing/histogram/histogram.o obj/third_party/catapult/tracing/tracing/histogram/running_statistics.o obj/third_party/catapult/tracing/tracing/reserved_infos/reserved_infos.o obj/xxhash/xxhash.o obj/src/common/vulkan/angle_libvulkan_loader/libvulkan_loader.o obj/src/common/vulkan/angle_vulkan_icd/vulkan_icd.o obj/src/third_party/volk/volk/volk.o obj/src/third_party/libXNVCtrl/libXNVCtrl/NVCtrl.o obj/third_party/astc-encoder/astcenc/astcenc_averages_and_directions.o obj/third_party/astc-encoder/astcenc/astcenc_block_sizes.o obj/third_party/astc-encoder/astcenc/astcenc_color_quantize.o obj/third_party/astc-encoder/astcenc/astcenc_color_unquantize.o obj/third_party/astc-encoder/astcenc/astcenc_compress_symbolic.o obj/third_party/astc-encoder/astcenc/astcenc_compute_variance.o obj/third_party/astc-encoder/astcenc/astcenc_decompress_symbolic.o obj/third_party/astc-encoder/astcenc/astcenc_diagnostic_trace.o obj/third_party/astc-encoder/astcenc/astcenc_entry.o obj/third_party/astc-encoder/astcenc/astcenc_find_best_partitioning.o obj/third_party/astc-encoder/astcenc/astcenc_ideal_endpoints_and_weights.o obj/third_party/astc-encoder/astcenc/astcenc_image.o obj/third_party/astc-encoder/astcenc/astcenc_integer_sequence.o obj/third_party/astc-encoder/astcenc/astcenc_mathlib.o obj/third_party/astc-encoder/astcenc/astcenc_mathlib_softfloat.o obj/third_party/astc-encoder/astcenc/astcenc_partition_tables.o obj/third_party/astc-encoder/astcenc/astcenc_percentile_tables.o obj/third_party/astc-encoder/astcenc/astcenc_pick_best_endpoint_format.o obj/third_party/astc-encoder/astcenc/astcenc_platform_isa_detection.o obj/third_party/astc-encoder/astcenc/astcenc_quantization.o obj/third_party/astc-encoder/astcenc/astcenc_symbolic_physical.o obj/third_party/astc-encoder/astcenc/astcenc_weight_align.o obj/third_party/astc-encoder/astcenc/astcenc_weight_quant_xfer_tables.o obj/angle_version_info/angle_version_info.o obj/src/common/spirv/angle_spirv_base/angle_spirv_utils.o obj/src/common/spirv/angle_spirv_builder/spirv_instruction_builder_autogen.o obj/libangle_common.a obj/src/tests/libangle_test_expectations.a obj/testing/gtest/libgtest.a obj/libangle_image_util.a obj/libtranslator.a obj/libangle_gpu_info_util.a obj/libangle_common_shader_state.a obj/libpreprocessor.a obj/third_party/spirv-tools/src/libspvtools_val.a obj/third_party/spirv-tools/src/libspvtools.a obj/third_party/catapult/tracing/tracing/proto/libhistogram_proto.a | ./libthird_party_abseil-cpp_absl.so.TOC ./libangle_util.so.TOC ./libthird_party_protobuf_protobuf_lite.so.TOC ./libc++.so.TOC /ninja-to-soong-angle/third_party/llvm-build/Release+Asserts/lib/clang/20/lib/x86_64-unknown-linux-gnu/libclang_rt.builtins.a /ninja-to-soong-angle/third_party/catapult/tracing/tracing/proto/histogram.proto || phony/util/angle_test_utils phony/testing/gmock/gmock phony/third_party/googletest/gmock phony/third_party/googletest/gtest phony/src/tests/angle_common_test_utils_shared phony/angle_gl_enum_utils phony/angle_json_serializer phony/src/common/vulkan/vulkan phony/third_party/catapult/tracing/tracing/histogram phony/third_party/catapult/tracing/tracing/reserved_infos phony/src/tests/angle_end2end_tests__runner phony/build/config/executable_deps phony/xxhash phony/src/common/vulkan/angle_libvulkan_loader phony/src/common/vulkan/angle_vulkan_icd phony/src/common/vulkan/angle_vulkan_headers phony/src/third_party/volk/volk phony/src/third_party/libXNVCtrl/libXNVCtrl phony/angle_image_util_headers phony/third_party/astc-encoder/astcenc phony/angle_version_info phony/angle_version phony/src/common/spirv/angle_spirv_headers phony/src/common/spirv/angle_spirv_base phony/src/common/spirv/angle_spirv_builder phony/angle
+  ldflags = -Werror -fuse-ld=lld -Wl,--fatal-warnings -Wl,--build-id=fast -fPIC -Wl,-z,noexecstack -Wl,-z,relro -Wl,--color-diagnostics -Wl,--undefined-version -Wl,--no-call-graph-profile-sort -m64 -no-canonical-prefixes -Wl,--gdb-index -Wl,-z,defs -Wl,--as-needed -nostdlib++ --sysroot=/ninja-to-soong-angle/build/linux/debian_bullseye_amd64-sysroot -rdynamic -pie -Wl,--disable-new-dtags -Wl,-rpath=\$$ORIGIN
+  libs = /ninja-to-soong-angle/third_party/llvm-build/Release+Asserts/lib/clang/20/lib/x86_64-unknown-linux-gnu/libclang_rt.builtins.a -ldl -lpthread -lrt -lwayland-client -lwayland-egl -lX11 -lXi -lXext -lpci -lxcb
+  frameworks =
+  swiftmodules =
+  output_extension =
+  output_dir = .
+  solibs = ./libthird_party_abseil-cpp_absl.so ./libangle_util.so ./libthird_party_protobuf_protobuf_lite.so ./libc++.so

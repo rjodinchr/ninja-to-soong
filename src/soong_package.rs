@@ -122,7 +122,7 @@ impl SoongPackage {
                     module.filter_default(default_module)?;
                 }
             }
-            _ => return error!(""),
+            _ => return error!("Unexpected property"),
         }
         Ok(module)
     }

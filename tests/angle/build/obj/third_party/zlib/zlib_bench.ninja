@@ -1,0 +1,20 @@
+defines = -D_GNU_SOURCE -D__ARM_NEON__=1 -DANDROID -D__ANDROID_UNAVAILABLE_SYMBOLS_ARE_WEAK__ -DHAVE_SYS_UIO_H -DANDROID_NDK_VERSION_ROLL=r28_1 -DCR_CLANG_REVISION=\"llvmorg-21-init-9266-g09006611-1\" -D_LIBCPP_HARDENING_MODE=_LIBCPP_HARDENING_MODE_NONE -DNDEBUG -DNVALGRIND -DDYNAMIC_ANNOTATIONS_ENABLED=0
+include_dirs = -I/ninja-to-soong-angle/third_party/zlib -I/ninja-to-soong-angle -Igen
+cflags = -fno-delete-null-pointer-checks -fno-strict-overflow -fno-ident -fno-strict-aliasing -fstack-protector -funwind-tables -fPIC -fcolor-diagnostics -fmerge-all-constants -fno-sized-deallocation -fcrash-diagnostics-dir=/ninja-to-soong-angle/tools/clang/crashreports -mllvm -instcombine-lower-dbg-declare=0 -mllvm -split-threshold-for-reg-with-hint=0 -ffp-contract=off -fextend-variable-liveness=none -ffunction-sections -fno-short-enums -mbranch-protection=standard --target=aarch64-linux-android26 -mno-outline -Wno-builtin-macro-redefined -D__DATE__= -D__TIME__= -D__TIMESTAMP__= -ffile-compilation-dir=. -no-canonical-prefixes -ftrivial-auto-var-init=pattern -fno-omit-frame-pointer -g0 -fvisibility=hidden -Wheader-hygiene -Wstring-conversion -Wtautological-overlap-compare -O3 -fdata-sections -ffunction-sections -fno-unique-section-names -fno-math-errno -Wall -Wno-unused-variable -Wno-c++11-narrowing -Wno-unused-but-set-variable -Wunguarded-availability -Wno-missing-field-initializers -Wno-unused-parameter -Wno-psabi -Wloop-analysis -Wno-unneeded-internal-declaration -Wno-cast-function-type -Wno-thread-safety-reference-return -Wno-nontrivial-memcall -Werror
+cflags_cc = -std=c++20 -Wno-trigraphs -gsimple-template-names -fno-exceptions -fno-rtti --sysroot=/ninja-to-soong-angle/third_party/android_toolchain/ndk/toolchains/llvm/prebuilt/linux-x86_64/sysroot -fvisibility-inlines-hidden -Wno-invalid-offsetof -Wenum-compare-conditional -Wno-nullability-completeness
+label_name = zlib_bench
+root_out_dir = .
+target_out_dir = obj/third_party/zlib
+target_output_name = zlib_bench
+
+build obj/third_party/zlib/zlib_bench/zlib_bench.o: cxx /ninja-to-soong-angle/third_party/zlib/contrib/bench/zlib_bench.cc
+  source_file_part = zlib_bench.cc
+  source_name_part = zlib_bench
+
+build ./zlib_bench ./exe.unstripped/zlib_bench: link obj/third_party/zlib/zlib_bench/zlib_bench.o obj/third_party/zlib/zlib_adler32_simd/adler32_simd.o obj/third_party/zlib/zlib_inflate_chunk_simd/inffast_chunk.o obj/third_party/zlib/zlib_inflate_chunk_simd/inflate.o obj/third_party/zlib/zlib_arm_crc32/crc32_simd.o obj/third_party/cpu_features/ndk_compat/cpu-features.o obj/third_party/cpu_features/cpuinfo/filesystem.o obj/third_party/cpu_features/cpuinfo/hwcaps.o obj/third_party/cpu_features/cpuinfo/stack_line_reader.o obj/third_party/cpu_features/cpuinfo/string_view.o obj/third_party/cpu_features/cpuinfo/impl_aarch64_linux_or_android.o obj/third_party/zlib/libchrome_zlib.a | /ninja-to-soong-angle/third_party/llvm-build/Release+Asserts/lib/clang/21/lib/linux/libclang_rt.builtins-aarch64-android.a || phony/third_party/zlib/zlib_adler32_simd phony/third_party/zlib/zlib_inflate_chunk_simd phony/third_party/zlib/zlib_arm_crc32 phony/third_party/cpu_features/ndk_compat phony/third_party/cpu_features/cpuinfo
+  ldflags = -fuse-ld=lld -Wl,--fatal-warnings -Wl,--build-id=fast -fPIC -Wl,-z,noexecstack -Wl,-z,relro -Wl,-z,now -Wl,--icf=all -Wl,--color-diagnostics -Wl,--no-rosegment -Wl,--undefined-version -Wl,--no-call-graph-profile-sort -Wl,--exclude-libs=libvpx_assembly_arm.a -Wl,-z,max-page-size=16384 --target=aarch64-linux-android26 -Wl,-mllvm,-enable-machine-outliner=never -no-canonical-prefixes -Wl,-z,defs -Wl,--as-needed --unwindlib=none --sysroot=/ninja-to-soong-angle/third_party/android_toolchain/ndk/toolchains/llvm/prebuilt/linux-x86_64/sysroot -pie -Bdynamic -Wl,-z,nocopyreloc -Wl,-z,force-bti -Wl,--warn-shared-textrel -Wl,--gc-sections -Werror
+  libs = /ninja-to-soong-angle/third_party/llvm-build/Release+Asserts/lib/clang/21/lib/linux/libclang_rt.builtins-aarch64-android.a -ldl -lm
+  frameworks =
+  swiftmodules =
+  output_extension =
+  output_dir = .

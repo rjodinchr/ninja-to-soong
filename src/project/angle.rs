@@ -9,6 +9,14 @@ pub struct Angle {
     build_path: PathBuf,
 }
 
+const DEFAULTS: &str = "angle-common-defaults";
+const VENDOR_DEFAULTS: &str = "angle_vendor_cc_defaults";
+
+const TARGET_SDK_VERSION: u32 = 35;
+const MIN_SDK_VERSION: u32 = 28;
+
+const TARGETS: [&str; 3] = ["libEGL_angle", "libGLESv2_angle", "libGLESv1_CM_angle"];
+
 impl Angle {
     fn filter_path(&self, src: &Path) -> bool {
         for ignore_path in [
@@ -51,7 +59,7 @@ impl Project for Angle {
         self.src_path = if let Ok(path) = std::env::var("N2S_ANGLE_PATH") {
             PathBuf::from(path)
         } else {
-            self.get_android_path(ctx)
+            PathBuf::from("/ninja-to-soong-angle")
         };
         self.build_path = ctx.temp_path.join(self.get_name());
         let ndk_path = self.src_path.join("third_party/android_toolchain/ndk");
@@ -67,29 +75,256 @@ impl Project for Angle {
             )?;
         }
 
-        SoongPackage::new(
+        let targets_so = TARGETS
+            .iter()
+            .map(|target| (String::from("./") + target + ".so", String::from(*target)))
+            .collect::<Vec<_>>();
+        let mut targets = targets_so
+            .iter()
+            .map(|(target_so, target)| NinjaTargetToGen(target_so, Some(target), None))
+            .collect::<Vec<_>>();
+        targets.push(NinjaTargetToGen(
+            "./libangle_end2end_tests__library.so",
+            Some("libangle_end2end_tests__library"),
+            None,
+        ));
+        let package = SoongPackage::new(
             &["//visibility:public"],
-            "angle_license",
-            &["SPDX-license-identifier-Apache-2.0"],
-            &["LICENSE"],
+            "external_angle_license",
+            &[
+                "SPDX-license-identifier-Apache-2.0",
+                "SPDX-license-identifier-BSD",
+                "SPDX-license-identifier-GPL",
+                "SPDX-license-identifier-GPL-2.0",
+                "SPDX-license-identifier-GPL-3.0",
+                "SPDX-license-identifier-LGPL",
+                "SPDX-license-identifier-MIT",
+                "SPDX-license-identifier-Zlib",
+                "legacy_unencumbered",
+            ],
+            &[
+                "LICENSE",
+                "src/common/third_party/xxhash/LICENSE",
+                "src/libANGLE/renderer/vulkan/shaders/src/third_party/ffx_spd/LICENSE",
+                "src/tests/test_utils/third_party/LICENSE",
+                "src/third_party/libXNVCtrl/LICENSE",
+                "src/third_party/volk/LICENSE.md",
+                "third_party/abseil-cpp/LICENSE",
+                "third_party/android_system_sdk/LICENSE",
+                "third_party/bazel/LICENSE",
+                "third_party/colorama/LICENSE",
+                "third_party/glslang/LICENSE",
+                "third_party/glslang/src/LICENSE.txt",
+                "third_party/proguard/LICENSE",
+                "third_party/r8/LICENSE",
+                "third_party/spirv-headers/LICENSE",
+                "third_party/spirv-headers/src/LICENSE",
+                "third_party/spirv-tools/LICENSE",
+                "third_party/spirv-tools/src/LICENSE",
+                "third_party/spirv-tools/src/utils/vscode/src/lsp/LICENSE",
+                "third_party/turbine/LICENSE",
+                "third_party/vulkan-headers/LICENSE.txt",
+                "third_party/vulkan-headers/src/LICENSE.md",
+                "third_party/vulkan_memory_allocator/LICENSE.txt",
+                "tools/flex-bison/third_party/m4sugar/LICENSE",
+                "tools/flex-bison/third_party/skeletons/LICENSE",
+                "util/windows/third_party/StackWalker/LICENSE",
+            ],
         )
         .generate(
-            NinjaTargetsToGenMap::from(&[
-                NinjaTargetToGen("./libEGL_angle.so", Some("libEGL_angle"), None),
-                NinjaTargetToGen("./libGLESv2_angle.so", Some("libGLESv2_angle"), None),
-                NinjaTargetToGen("./libGLESv1_CM_angle.so", Some("libGLESv1_CM_angle"), None),
-            ]),
+            NinjaTargetsToGenMap::from(&targets),
             parse_build_ninja::<GnNinjaTarget>(&self.build_path)?,
             &self.src_path,
             &ndk_path,
             &self.build_path,
             None,
             self,
-        )?
-        .print()
+        )?;
+
+        let default_module = SoongModule::new("cc_defaults")
+            .add_prop("name", SoongProp::Str(String::from(DEFAULTS)))
+            .add_props(package.get_props(
+                "angle_obj_libpreprocessor_a",
+                vec!["cflags", "local_include_dirs", "shared_libs", "stl"],
+            )?);
+
+        package
+            .add_module(default_module)
+            .add_raw_suffix(&format!(
+                r#"
+soong_config_module_type {{
+    name: "angle_config_cc_defaults",
+    module_type: "cc_defaults",
+    config_namespace: "angle",
+    bool_variables: [
+        "angle_in_vendor",
+    ],
+    properties: [
+        "target.android.relative_install_path",
+        "vendor",
+    ],
+}}
+
+soong_config_bool_variable {{
+    name: "angle_in_vendor",
+}}
+
+angle_config_cc_defaults {{
+    name: "{VENDOR_DEFAULTS}",
+    vendor: false,
+    target: {{
+        android: {{
+            relative_install_path: "",
+        }},
+    }},
+    soong_config_variables: {{
+        angle_in_vendor: {{
+            vendor: true,
+            target: {{
+                android: {{
+                    relative_install_path: "egl",
+                }},
+            }},
+        }},
+    }},
+}}
+
+filegroup {{
+    name: "ANGLE_srcs",
+    srcs: [
+        "src/android_system_settings/src/com/android/angle/MainActivity.java",
+        "src/android_system_settings/src/com/android/angle/common/AngleRuleHelper.java",
+        "src/android_system_settings/src/com/android/angle/common/GlobalSettings.java",
+        "src/android_system_settings/src/com/android/angle/common/MainFragment.java",
+        "src/android_system_settings/src/com/android/angle/common/Receiver.java",
+        "src/android_system_settings/src/com/android/angle/common/SearchProvider.java",
+    ],
+}}
+
+prebuilt_etc {{
+    name: "android.software.angle.xml",
+    src: "android/android.software.angle.xml",
+    product_specific: true,
+    sub_dir: "permissions",
+}}
+
+java_defaults {{
+    name: "ANGLE_java_defaults",
+    sdk_version: "system_current",
+    target_sdk_version: "{TARGET_SDK_VERSION}",
+    min_sdk_version: "{MIN_SDK_VERSION}",
+    compile_multilib: "both",
+    use_embedded_native_libs: true,
+    jni_libs: [
+{}
+    ],
+    aaptflags: [
+        "--extra-packages com.android.angle.common",
+        "-0 .json",
+    ],
+    srcs: [
+        ":ANGLE_srcs",
+    ],
+    privileged: true,
+    product_specific: true,
+    owner: "google",
+    required: [
+        "android.software.angle.xml",
+    ],
+}}
+
+android_library {{
+    name: "ANGLE_library",
+    sdk_version: "system_current",
+    target_sdk_version: "{TARGET_SDK_VERSION}",
+    min_sdk_version: "{MIN_SDK_VERSION}",
+    resource_dirs: [
+        "src/android_system_settings/res",
+    ],
+    asset_dirs: [
+        "src/android_system_settings/assets",
+    ],
+    aaptflags: [
+        "-0 .json",
+    ],
+    manifest: "src/android_system_settings/src/com/android/angle/AndroidManifest.xml",
+    static_libs: [
+        "androidx.preference_preference",
+    ],
+}}
+
+android_app {{
+    name: "ANGLE",
+    defaults: [
+        "ANGLE_java_defaults",
+    ],
+    manifest: "src/android_system_settings/src/com/android/angle/AndroidManifest.xml",
+    static_libs: [
+        "ANGLE_library",
+    ],
+    optimize: {{
+        enabled: true,
+        shrink: true,
+        proguard_compatibility: false,
+    }},
+    asset_dirs: [
+        "src/android_system_settings/assets",
+    ],
+}}
+
+java_defaults {{
+    name: "ANGLE_java_settings_defaults",
+    sdk_version: "system_current",
+    target_sdk_version: "{TARGET_SDK_VERSION}",
+    min_sdk_version: "{MIN_SDK_VERSION}",
+    compile_multilib: "both",
+    use_embedded_native_libs: true,
+    aaptflags: [
+        "--extra-packages com.android.angle.common",
+        "-0 .json",
+    ],
+    srcs: [
+        ":ANGLE_srcs",
+    ],
+    privileged: true,
+    product_specific: true,
+    owner: "google",
+    required: [
+        "android.software.angle.xml",
+    ],
+}}
+
+android_app {{
+    name: "ANGLE_settings",
+    defaults: [
+        "ANGLE_java_settings_defaults",
+    ],
+    manifest: "src/android_system_settings/src/com/android/angle/AndroidManifest.xml",
+    static_libs: [
+        "ANGLE_library",
+    ],
+    optimize: {{
+        enabled: true,
+        shrink: true,
+        proguard_compatibility: false,
+    }},
+    asset_dirs: [
+        "src/android_system_settings/assets",
+    ],
+}}
+        "#,
+                TARGETS
+                    .iter()
+                    .map(|target| String::from("        \"") + target + "\",")
+                    .collect::<Vec<_>>()
+                    .join("\n")
+            ))
+            .print()
     }
 
     fn extend_module(&self, target: &Path, mut module: SoongModule) -> SoongModule {
+        let target_name_holder = file_name(target);
+        let target_name = &target_name_holder.as_str();
         if target.ends_with("libtranslator.a") {
             module = module.add_prop(
                 "header_libs",
@@ -99,7 +334,15 @@ impl Project for Angle {
                 ]),
             );
         }
+        let mut defaults = Vec::new();
+        if !["libGLESv1_CM_angle.so", "libgtest.a"].contains(target_name) {
+            defaults.push(String::from(DEFAULTS));
+        }
+        if TARGETS.contains(target_name) {
+            defaults.push(String::from(VENDOR_DEFAULTS));
+        }
         module
+            .add_prop("defaults", SoongProp::VecStr(defaults))
             .add_prop("stl", SoongProp::Str(String::from("libc++_static")))
             .add_prop(
                 "arch",
@@ -113,7 +356,12 @@ impl Project for Angle {
             )
     }
     fn extend_cflags(&self, _target: &Path) -> Vec<String> {
-        vec![String::from("-Wno-nullability-completeness")]
+        vec![
+            String::from("-Wno-nullability-completeness"),
+            String::from("-O2"),
+            String::from("-fno-stack-protector"),
+            String::from("-fno-unwind-tables"),
+        ]
     }
     fn extend_shared_libs(&self, target: &Path) -> Vec<String> {
         if target.starts_with("obj") {

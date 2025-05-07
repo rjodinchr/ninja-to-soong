@@ -1,0 +1,16 @@
+defines = -DMANGLE_JPEG_NAMES -DUSE_UDEV -DUSE_AURA=1 -DUSE_GLIB=1 -DUSE_OZONE=1 -D__STDC_CONSTANT_MACROS -D__STDC_FORMAT_MACROS -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_LARGEFILE64_SOURCE -D_GNU_SOURCE -DCR_CLANG_REVISION=\"llvmorg-20-init-16062-g091448e3-1\" -D_LIBCPP_HARDENING_MODE=_LIBCPP_HARDENING_MODE_EXTENSIVE -DCOMPONENT_BUILD -D_LIBCPP_INSTRUMENTED_WITH_ASAN=0 -DCR_LIBCXX_REVISION=74dd760826063f15ce4d373b31bc34d1c65e41c2 -DTMP_REBUILD_HACK -DCR_SYSROOT_KEY=20230611T210420Z-2 -D_DEBUG -DDYNAMIC_ANNOTATIONS_ENABLED=1
+include_dirs = -I/ninja-to-soong-angle/third_party/libjpeg_turbo -I/ninja-to-soong-angle -Igen -I/ninja-to-soong-angle/buildtools/third_party/libc++
+cflags = -Wall -Wextra -Wimplicit-fallthrough -Wextra-semi -Wunreachable-code-aggressive -Wthread-safety -Wgnu -Wno-gnu-anonymous-struct -Wno-gnu-conditional-omitted-operand -Wno-gnu-include-next -Wno-gnu-label-as-value -Wno-gnu-redeclared-enum -Wno-gnu-statement-expression -Wno-gnu-zero-variadic-macro-arguments -Wno-zero-length-array -Wno-missing-field-initializers -Wno-unused-parameter -Wno-psabi -Wloop-analysis -Wno-unneeded-internal-declaration -Wno-cast-function-type -Wno-thread-safety-reference-return -Wno-nontrivial-memcall -Wshadow -Werror -fno-delete-null-pointer-checks -fwrapv -fno-ident -fno-strict-aliasing -fstack-protector -funwind-tables -fPIC -pthread -fcolor-diagnostics -fmerge-all-constants -fno-sized-deallocation -fcrash-diagnostics-dir=/ninja-to-soong-angle/tools/clang/crashreports -mllvm -instcombine-lower-dbg-declare=0 -mllvm -split-threshold-for-reg-with-hint=0 -ffp-contract=off -Wa,--crel,--allow-experimental-crel -fcomplete-member-pointers -m64 -msse3 -Wno-builtin-macro-redefined -D__DATE__= -D__TIME__= -D__TIMESTAMP__= -ffile-compilation-dir=. -no-canonical-prefixes -ftrivial-auto-var-init=pattern -O0 -fno-omit-frame-pointer -gdwarf-4 -g2 -gdwarf-aranges -gsplit-dwarf -ggnu-pubnames -Xclang -fuse-ctor-homing -fvisibility=hidden -Wheader-hygiene -Wstring-conversion -Wtautological-overlap-compare
+cflags_c = -std=c11 --sysroot=/ninja-to-soong-angle/build/linux/debian_bullseye_amd64-sysroot
+label_name = simd
+target_out_dir = obj/third_party/libjpeg_turbo
+target_output_name = libsimd
+
+build obj/third_party/libjpeg_turbo/simd/jsimd.o: cc /ninja-to-soong-angle/third_party/libjpeg_turbo/simd/x86_64/jsimd.c
+  source_file_part = jsimd.c
+  source_name_part = jsimd
+
+build obj/third_party/libjpeg_turbo/libsimd.a: alink obj/third_party/libjpeg_turbo/simd/jsimd.o | /ninja-to-soong-angle/third_party/llvm-build/Release+Asserts/lib/clang/20/lib/x86_64-unknown-linux-gnu/libclang_rt.builtins.a || obj/third_party/libjpeg_turbo/libsimd_asm.a
+  arflags = -T -S
+  output_extension = .a
+  output_dir = obj/third_party/libjpeg_turbo
