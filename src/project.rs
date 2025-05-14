@@ -18,6 +18,7 @@ define_ProjectId!(
     (Clspv, clspv),
     (LlvmProject, llvm_project),
     (Mesa3DDesktopIntel, mesa3d_desktop_intel),
+    (Mesa3DDesktopPanVK, mesa3d_desktop_panvk),
     (OpenclCts, opencl_cts),
     (SpirvHeaders, spirv_headers),
     (SpirvTools, spirv_tools)
