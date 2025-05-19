@@ -1222,7 +1222,10 @@ cc_library_static {
 cc_library_static {
     name: "mesa3d_desktop-panvk_src_compiler_nir_libnir_a",
     srcs: [
-        "meson_generated/src/compiler/nir/*.c",
+        "meson_generated/src/compiler/nir/nir_constant_expressions.c",
+        "meson_generated/src/compiler/nir/nir_intrinsics.c",
+        "meson_generated/src/compiler/nir/nir_opcodes.c",
+        "meson_generated/src/compiler/nir/nir_opt_algebraic.c",
         "src/compiler/nir/*.c",
     ],
     local_include_dirs: [
@@ -1270,7 +1273,8 @@ cc_library_shared {
     name: "mesa3d_desktop-panvk_libvulkan_panfrost",
     stem: "vulkan.panfrost",
     srcs: [
-        "meson_generated/src/panfrost/vulkan/*.c",
+        "meson_generated/src/panfrost/vulkan/panvk_entrypoints.c",
+        "meson_generated/src/panfrost/vulkan/panvk_tracepoints.c",
         "src/panfrost/vulkan/panvk_android.c",
         "src/panfrost/vulkan/panvk_buffer.c",
         "src/panfrost/vulkan/panvk_cmd_pool.c",
@@ -1427,7 +1431,9 @@ cc_library_static {
 cc_library_static {
     name: "mesa3d_desktop-panvk_src_vulkan_util_libvulkan_util_a",
     srcs: [
-        "meson_generated/src/vulkan/util/*.c",
+        "meson_generated/src/vulkan/util/vk_dispatch_table.c",
+        "meson_generated/src/vulkan/util/vk_enum_to_str.c",
+        "meson_generated/src/vulkan/util/vk_extensions.c",
         "src/vulkan/util/*.c",
     ],
     cflags: ["-DVK_USE_PLATFORM_ANDROID_KHR"],
@@ -1493,7 +1499,15 @@ cc_library_static {
 cc_library_static {
     name: "mesa3d_desktop-panvk_src_vulkan_runtime_libvulkan_lite_runtime_a",
     srcs: [
-        "meson_generated/src/vulkan/runtime/*.c",
+        "meson_generated/src/vulkan/runtime/vk_cmd_enqueue_entrypoints.c",
+        "meson_generated/src/vulkan/runtime/vk_cmd_queue.c",
+        "meson_generated/src/vulkan/runtime/vk_common_entrypoints.c",
+        "meson_generated/src/vulkan/runtime/vk_dispatch_trampolines.c",
+        "meson_generated/src/vulkan/runtime/vk_format_info.c",
+        "meson_generated/src/vulkan/runtime/vk_physical_device_features.c",
+        "meson_generated/src/vulkan/runtime/vk_physical_device_properties.c",
+        "meson_generated/src/vulkan/runtime/vk_physical_device_spirv_caps.c",
+        "meson_generated/src/vulkan/runtime/vk_synchronization_helpers.c",
         "src/vulkan/runtime/rmv/*.c",
         "src/vulkan/runtime/vk_android.c",
         "src/vulkan/runtime/vk_blend.c",
@@ -2007,7 +2021,8 @@ cc_library_static {
 cc_library_static {
     name: "mesa3d_desktop-panvk_src_compiler_spirv_libvtn_a",
     srcs: [
-        "meson_generated/src/compiler/spirv/*.c",
+        "meson_generated/src/compiler/spirv/spirv_info.c",
+        "meson_generated/src/compiler/spirv/vtn_gather_types.c",
         "src/compiler/spirv/gl_spirv.c",
         "src/compiler/spirv/spirv_to_nir.c",
         "src/compiler/spirv/vtn_alu.c",
