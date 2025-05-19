@@ -19,6 +19,20 @@ pub struct Context {
 }
 
 impl Context {
+    fn get_partial_matching_project(projects_map: &ProjectsMap, target: &str) -> Option<ProjectId> {
+        for (project_id, project) in projects_map.iter() {
+            if project
+                .get_name()
+                .to_lowercase()
+                .contains(&target.to_lowercase())
+            {
+                print_info!("Could not find perfect match for {target:#?}, but found partial match with {:#?}", project.get_name());
+                return Some(*project_id);
+            }
+        }
+        None
+    }
+
     pub fn parse_args(projects_map: &ProjectsMap) -> Result<Self, String> {
         const AOSP_PATH: &str = "--aosp-path";
         const CLEAN_TMP: &str = "--clean-tmp";
@@ -81,7 +95,10 @@ OPTIONS:
                 }
                 project => match project_name_to_id.get(project) {
                     Some(project) => ctx.projects_to_generate.push_back(*project),
-                    None => return Err(format!("Unknown project '{project}'")),
+                    None => match Self::get_partial_matching_project(projects_map, project) {
+                        Some(project) => ctx.projects_to_generate.push_back(project),
+                        None => return Err(format!("Unknown project '{project}'")),
+                    },
                 },
             }
         }
