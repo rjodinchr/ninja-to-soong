@@ -30,3 +30,30 @@ pub fn copy_gen_deps(
     }
     Ok(())
 }
+
+pub fn clean_gen_deps(
+    gen_deps: &Vec<PathBuf>,
+    build_path: &Path,
+    ctx: &Context,
+) -> Result<(), String> {
+    if !ctx.copy_to_aosp {
+        return Ok(());
+    }
+    for gen_dep in gen_deps {
+        let file_path = build_path.join(gen_dep);
+        let file_extension = file_path.extension().unwrap().to_str().unwrap();
+        if !["c", "cpp", "h"].contains(&file_extension) {
+            continue;
+        }
+        write_file(
+            &file_path,
+            &read_file(&file_path)?
+                .lines()
+                .into_iter()
+                .filter(|line| !line.starts_with("#line"))
+                .collect::<Vec<&str>>()
+                .join("\n"),
+        )?;
+    }
+    Ok(())
+}
