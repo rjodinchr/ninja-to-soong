@@ -99,6 +99,7 @@ impl Project for Mesa3DDesktopPanVK {
             .filter(|include| !include.starts_with("subprojects"))
             .collect();
         package.filter_local_include_dirs(MESON_GENERATED, &gen_deps)?;
+        common::clean_gen_deps(&gen_deps, &build_path, ctx)?;
         common::copy_gen_deps(gen_deps, MESON_GENERATED, &build_path, ctx, self)?;
 
         let default_module = SoongModule::new("cc_defaults")
