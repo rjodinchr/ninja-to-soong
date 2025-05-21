@@ -1,0 +1,68 @@
+defines = -DPNG_ARM_NEON_OPT=2 -DPNG_ARM_NEON_IMPLEMENTATION=1 -D_GNU_SOURCE -DANDROID -D__ANDROID_UNAVAILABLE_SYMBOLS_ARE_WEAK__ -DHAVE_SYS_UIO_H -DANDROID_NDK_VERSION_ROLL=r28_1 -DCR_CLANG_REVISION=\"llvmorg-21-init-9266-g09006611-1\" -D_LIBCPP_HARDENING_MODE=_LIBCPP_HARDENING_MODE_NONE -DNDEBUG -DNVALGRIND -DDYNAMIC_ANNOTATIONS_ENABLED=0
+include_dirs = -I/ninja-to-soong-angle -Igen -I/ninja-to-soong-angle/third_party/libpng/src -I/ninja-to-soong-angle/third_party/zlib
+cflags = -fno-delete-null-pointer-checks -fno-strict-overflow -fno-ident -fno-strict-aliasing -fstack-protector -funwind-tables -fPIC -fcolor-diagnostics -fmerge-all-constants -fno-sized-deallocation -fcrash-diagnostics-dir=/ninja-to-soong-angle/tools/clang/crashreports -mllvm -instcombine-lower-dbg-declare=0 -mllvm -split-threshold-for-reg-with-hint=0 -ffp-contract=off -fextend-variable-liveness=none -ffunction-sections -fno-short-enums --target=arm-linux-androideabi26 -march=armv7-a -mfloat-abi=softfp -Wno-builtin-macro-redefined -D__DATE__= -D__TIME__= -D__TIMESTAMP__= -ffile-compilation-dir=. -no-canonical-prefixes -mfpu=neon -mthumb -ftrivial-auto-var-init=pattern -Os -fdata-sections -ffunction-sections -fno-unique-section-names -fno-math-errno -mllvm -enable-ml-inliner=release -mllvm -ml-inliner-model-selector=arm32-size -fomit-frame-pointer -g0 -fvisibility=hidden -Wheader-hygiene -Wstring-conversion -Wtautological-overlap-compare -Wall -Wno-unused-variable -Wno-c++11-narrowing -Wno-unused-but-set-variable -Wunguarded-availability -Wno-missing-field-initializers -Wno-unused-parameter -Wno-psabi -Wloop-analysis -Wno-unneeded-internal-declaration -Wno-cast-function-type -Wno-thread-safety-reference-return -Wno-nontrivial-memcall -Werror -Wno-tautological-constant-out-of-range-compare
+cflags_c = -std=c11 --sysroot=/ninja-to-soong-angle/third_party/android_toolchain/ndk/toolchains/llvm/prebuilt/linux-x86_64/sysroot
+label_name = libpng
+root_out_dir = .
+target_out_dir = obj/third_party/libpng
+target_output_name = libpng
+
+build obj/third_party/libpng/libpng/png.o: cc /ninja-to-soong-angle/third_party/libpng/src/png.c
+  source_file_part = png.c
+  source_name_part = png
+build obj/third_party/libpng/libpng/pngerror.o: cc /ninja-to-soong-angle/third_party/libpng/src/pngerror.c
+  source_file_part = pngerror.c
+  source_name_part = pngerror
+build obj/third_party/libpng/libpng/pngget.o: cc /ninja-to-soong-angle/third_party/libpng/src/pngget.c
+  source_file_part = pngget.c
+  source_name_part = pngget
+build obj/third_party/libpng/libpng/pngmem.o: cc /ninja-to-soong-angle/third_party/libpng/src/pngmem.c
+  source_file_part = pngmem.c
+  source_name_part = pngmem
+build obj/third_party/libpng/libpng/pngpread.o: cc /ninja-to-soong-angle/third_party/libpng/src/pngpread.c
+  source_file_part = pngpread.c
+  source_name_part = pngpread
+build obj/third_party/libpng/libpng/pngread.o: cc /ninja-to-soong-angle/third_party/libpng/src/pngread.c
+  source_file_part = pngread.c
+  source_name_part = pngread
+build obj/third_party/libpng/libpng/pngrio.o: cc /ninja-to-soong-angle/third_party/libpng/src/pngrio.c
+  source_file_part = pngrio.c
+  source_name_part = pngrio
+build obj/third_party/libpng/libpng/pngrtran.o: cc /ninja-to-soong-angle/third_party/libpng/src/pngrtran.c
+  source_file_part = pngrtran.c
+  source_name_part = pngrtran
+build obj/third_party/libpng/libpng/pngrutil.o: cc /ninja-to-soong-angle/third_party/libpng/src/pngrutil.c
+  source_file_part = pngrutil.c
+  source_name_part = pngrutil
+build obj/third_party/libpng/libpng/pngset.o: cc /ninja-to-soong-angle/third_party/libpng/src/pngset.c
+  source_file_part = pngset.c
+  source_name_part = pngset
+build obj/third_party/libpng/libpng/pngtrans.o: cc /ninja-to-soong-angle/third_party/libpng/src/pngtrans.c
+  source_file_part = pngtrans.c
+  source_name_part = pngtrans
+build obj/third_party/libpng/libpng/pngwio.o: cc /ninja-to-soong-angle/third_party/libpng/src/pngwio.c
+  source_file_part = pngwio.c
+  source_name_part = pngwio
+build obj/third_party/libpng/libpng/pngwrite.o: cc /ninja-to-soong-angle/third_party/libpng/src/pngwrite.c
+  source_file_part = pngwrite.c
+  source_name_part = pngwrite
+build obj/third_party/libpng/libpng/pngwtran.o: cc /ninja-to-soong-angle/third_party/libpng/src/pngwtran.c
+  source_file_part = pngwtran.c
+  source_name_part = pngwtran
+build obj/third_party/libpng/libpng/pngwutil.o: cc /ninja-to-soong-angle/third_party/libpng/src/pngwutil.c
+  source_file_part = pngwutil.c
+  source_name_part = pngwutil
+build obj/third_party/libpng/libpng/arm_init.o: cc /ninja-to-soong-angle/third_party/libpng/src/arm/arm_init.c
+  source_file_part = arm_init.c
+  source_name_part = arm_init
+build obj/third_party/libpng/libpng/filter_neon_intrinsics.o: cc /ninja-to-soong-angle/third_party/libpng/src/arm/filter_neon_intrinsics.c
+  source_file_part = filter_neon_intrinsics.c
+  source_name_part = filter_neon_intrinsics
+build obj/third_party/libpng/libpng/palette_neon_intrinsics.o: cc /ninja-to-soong-angle/third_party/libpng/src/arm/palette_neon_intrinsics.c
+  source_file_part = palette_neon_intrinsics.c
+  source_name_part = palette_neon_intrinsics
+
+build obj/third_party/libpng/libpng.a: alink obj/third_party/libpng/libpng/png.o obj/third_party/libpng/libpng/pngerror.o obj/third_party/libpng/libpng/pngget.o obj/third_party/libpng/libpng/pngmem.o obj/third_party/libpng/libpng/pngpread.o obj/third_party/libpng/libpng/pngread.o obj/third_party/libpng/libpng/pngrio.o obj/third_party/libpng/libpng/pngrtran.o obj/third_party/libpng/libpng/pngrutil.o obj/third_party/libpng/libpng/pngset.o obj/third_party/libpng/libpng/pngtrans.o obj/third_party/libpng/libpng/pngwio.o obj/third_party/libpng/libpng/pngwrite.o obj/third_party/libpng/libpng/pngwtran.o obj/third_party/libpng/libpng/pngwutil.o obj/third_party/libpng/libpng/arm_init.o obj/third_party/libpng/libpng/filter_neon_intrinsics.o obj/third_party/libpng/libpng/palette_neon_intrinsics.o | /ninja-to-soong-angle/third_party/llvm-build/Release+Asserts/lib/clang/21/lib/linux/libclang_rt.builtins-arm-android.a || obj/third_party/zlib/libchrome_zlib.a phony/third_party/zlib/zlib_adler32_simd phony/third_party/zlib/zlib_inflate_chunk_simd phony/third_party/zlib/zlib_arm_crc32 phony/third_party/cpu_features/ndk_compat phony/third_party/cpu_features/cpuinfo
+  arflags = -T -S
+  output_extension = .a
+  output_dir = obj/third_party/libpng

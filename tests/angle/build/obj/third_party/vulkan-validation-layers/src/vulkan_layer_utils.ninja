@@ -1,8 +1,0 @@
-defines = -DUSE_UDEV -DUSE_AURA=1 -DUSE_GLIB=1 -DUSE_OZONE=1 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_LARGEFILE64_SOURCE -D_GNU_SOURCE -DCR_CLANG_REVISION=\"llvmorg-20-init-16062-g091448e3-1\" -D_LIBCPP_HARDENING_MODE=_LIBCPP_HARDENING_MODE_EXTENSIVE -DCOMPONENT_BUILD -D_LIBCPP_INSTRUMENTED_WITH_ASAN=0 -DCR_LIBCXX_REVISION=74dd760826063f15ce4d373b31bc34d1c65e41c2 -DTMP_REBUILD_HACK -DCR_SYSROOT_KEY=20230611T210420Z-2 -D_DEBUG -DDYNAMIC_ANNOTATIONS_ENABLED=1 -DVK_ENABLE_BETA_EXTENSIONS -DVK_USE_PLATFORM_XCB_KHR -DVK_USE_PLATFORM_WAYLAND_KHR
-include_dirs = -I/ninja-to-soong-angle/third_party/vulkan-validation-layers/src/layers -I/ninja-to-soong-angle/third_party/vulkan-validation-layers/src/layers/external -I/ninja-to-soong-angle/third_party/vulkan-validation-layers/src/layers/vulkan -I/ninja-to-soong-angle -Igen -I/ninja-to-soong-angle/buildtools/third_party/libc++ -I/ninja-to-soong-angle/third_party/vulkan-headers/src/include -I/ninja-to-soong-angle/third_party/vulkan-utility-libraries/src/include
-label_name = vulkan_layer_utils
-target_out_dir = obj/third_party/vulkan-validation-layers/src
-target_output_name = vulkan_layer_utils
-
-
-build phony/third_party/vulkan-validation-layers/src/vulkan_layer_utils: phony || obj/third_party/vulkan-utility-libraries/src/libvulkan_layer_settings.a

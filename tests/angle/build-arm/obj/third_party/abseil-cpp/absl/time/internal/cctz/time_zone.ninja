@@ -1,0 +1,38 @@
+defines = -D_GNU_SOURCE -DANDROID -D__ANDROID_UNAVAILABLE_SYMBOLS_ARE_WEAK__ -DHAVE_SYS_UIO_H -DANDROID_NDK_VERSION_ROLL=r28_1 -DCR_CLANG_REVISION=\"llvmorg-21-init-9266-g09006611-1\" -D_LIBCPP_HARDENING_MODE=_LIBCPP_HARDENING_MODE_NONE -DNDEBUG -DNVALGRIND -DDYNAMIC_ANNOTATIONS_ENABLED=0 -DABSL_ALLOCATOR_NOTHROW=1
+include_dirs = -I/ninja-to-soong-angle -Igen -I/ninja-to-soong-angle/third_party/abseil-cpp
+cflags = -fno-delete-null-pointer-checks -fno-strict-overflow -fno-ident -fno-strict-aliasing -fstack-protector -funwind-tables -fPIC -fcolor-diagnostics -fmerge-all-constants -fno-sized-deallocation -fcrash-diagnostics-dir=/ninja-to-soong-angle/tools/clang/crashreports -mllvm -instcombine-lower-dbg-declare=0 -mllvm -split-threshold-for-reg-with-hint=0 -ffp-contract=off -fextend-variable-liveness=none -ffunction-sections -fno-short-enums --target=arm-linux-androideabi26 -march=armv7-a -mfloat-abi=softfp -Wno-builtin-macro-redefined -D__DATE__= -D__TIME__= -D__TIMESTAMP__= -ffile-compilation-dir=. -no-canonical-prefixes -mfpu=neon -mthumb -ftrivial-auto-var-init=pattern -Os -fdata-sections -ffunction-sections -fno-unique-section-names -fno-math-errno -mllvm -enable-ml-inliner=release -mllvm -ml-inliner-model-selector=arm32-size -fomit-frame-pointer -g0 -fvisibility=hidden -Wheader-hygiene -Wstring-conversion -Wtautological-overlap-compare -Wall -Wno-unused-variable -Wno-c++11-narrowing -Wno-unused-but-set-variable -Wunguarded-availability -Wno-missing-field-initializers -Wno-unused-parameter -Wno-psabi -Wloop-analysis -Wno-unneeded-internal-declaration -Wno-cast-function-type -Wno-thread-safety-reference-return -Wno-nontrivial-memcall -Werror -Wimplicit-int-conversion -Wshorten-64-to-32 -Wsign-compare -Wsign-conversion -Wtautological-unsigned-zero-compare
+cflags_cc = -std=c++20 -Wno-trigraphs -gsimple-template-names -fno-exceptions -fno-rtti --sysroot=/ninja-to-soong-angle/third_party/android_toolchain/ndk/toolchains/llvm/prebuilt/linux-x86_64/sysroot -fvisibility-inlines-hidden -Wno-invalid-offsetof -Wenum-compare-conditional -Wno-nullability-completeness -Wbool-conversion -Wconstant-conversion -Wenum-conversion -Wint-conversion -Wliteral-conversion -Wnon-literal-null-conversion -Wnull-conversion -Wobjc-literal-conversion -Wstring-conversion -Wbitfield-enum-conversion
+label_name = time_zone
+root_out_dir = .
+target_out_dir = obj/third_party/abseil-cpp/absl/time/internal/cctz
+target_output_name = time_zone
+
+build obj/third_party/abseil-cpp/absl/time/internal/cctz/time_zone/time_zone_fixed.o: cxx /ninja-to-soong-angle/third_party/abseil-cpp/absl/time/internal/cctz/src/time_zone_fixed.cc
+  source_file_part = time_zone_fixed.cc
+  source_name_part = time_zone_fixed
+build obj/third_party/abseil-cpp/absl/time/internal/cctz/time_zone/time_zone_format.o: cxx /ninja-to-soong-angle/third_party/abseil-cpp/absl/time/internal/cctz/src/time_zone_format.cc
+  source_file_part = time_zone_format.cc
+  source_name_part = time_zone_format
+build obj/third_party/abseil-cpp/absl/time/internal/cctz/time_zone/time_zone_if.o: cxx /ninja-to-soong-angle/third_party/abseil-cpp/absl/time/internal/cctz/src/time_zone_if.cc
+  source_file_part = time_zone_if.cc
+  source_name_part = time_zone_if
+build obj/third_party/abseil-cpp/absl/time/internal/cctz/time_zone/time_zone_impl.o: cxx /ninja-to-soong-angle/third_party/abseil-cpp/absl/time/internal/cctz/src/time_zone_impl.cc
+  source_file_part = time_zone_impl.cc
+  source_name_part = time_zone_impl
+build obj/third_party/abseil-cpp/absl/time/internal/cctz/time_zone/time_zone_info.o: cxx /ninja-to-soong-angle/third_party/abseil-cpp/absl/time/internal/cctz/src/time_zone_info.cc
+  source_file_part = time_zone_info.cc
+  source_name_part = time_zone_info
+build obj/third_party/abseil-cpp/absl/time/internal/cctz/time_zone/time_zone_libc.o: cxx /ninja-to-soong-angle/third_party/abseil-cpp/absl/time/internal/cctz/src/time_zone_libc.cc
+  source_file_part = time_zone_libc.cc
+  source_name_part = time_zone_libc
+build obj/third_party/abseil-cpp/absl/time/internal/cctz/time_zone/time_zone_lookup.o: cxx /ninja-to-soong-angle/third_party/abseil-cpp/absl/time/internal/cctz/src/time_zone_lookup.cc
+  source_file_part = time_zone_lookup.cc
+  source_name_part = time_zone_lookup
+build obj/third_party/abseil-cpp/absl/time/internal/cctz/time_zone/time_zone_posix.o: cxx /ninja-to-soong-angle/third_party/abseil-cpp/absl/time/internal/cctz/src/time_zone_posix.cc
+  source_file_part = time_zone_posix.cc
+  source_name_part = time_zone_posix
+build obj/third_party/abseil-cpp/absl/time/internal/cctz/time_zone/zone_info_source.o: cxx /ninja-to-soong-angle/third_party/abseil-cpp/absl/time/internal/cctz/src/zone_info_source.cc
+  source_file_part = zone_info_source.cc
+  source_name_part = zone_info_source
+
+build phony/third_party/abseil-cpp/absl/time/internal/cctz/time_zone: phony obj/third_party/abseil-cpp/absl/time/internal/cctz/time_zone/time_zone_fixed.o obj/third_party/abseil-cpp/absl/time/internal/cctz/time_zone/time_zone_format.o obj/third_party/abseil-cpp/absl/time/internal/cctz/time_zone/time_zone_if.o obj/third_party/abseil-cpp/absl/time/internal/cctz/time_zone/time_zone_impl.o obj/third_party/abseil-cpp/absl/time/internal/cctz/time_zone/time_zone_info.o obj/third_party/abseil-cpp/absl/time/internal/cctz/time_zone/time_zone_libc.o obj/third_party/abseil-cpp/absl/time/internal/cctz/time_zone/time_zone_lookup.o obj/third_party/abseil-cpp/absl/time/internal/cctz/time_zone/time_zone_posix.o obj/third_party/abseil-cpp/absl/time/internal/cctz/time_zone/zone_info_source.o || phony/third_party/abseil-cpp/absl/time/internal/cctz/civil_time

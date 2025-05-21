@@ -243,14 +243,7 @@ where
         Ok(self.project.extend_module(&target_name, module))
     }
 
-    fn get_cmd(
-        &self,
-        rule_cmd: NinjaRuleCmd,
-        inputs: Vec<PathBuf>,
-        outputs: &Vec<PathBuf>,
-        deps: Vec<(PathBuf, String)>,
-    ) -> String {
-        let mut cmd = rule_cmd.command;
+    fn get_tool(&self, mut cmd: String, inputs: &mut Vec<PathBuf>) -> (String, String) {
         while let Some(index) = cmd.find("python") {
             let begin = str::from_utf8(&cmd.as_bytes()[0..index])
                 .unwrap()
@@ -265,6 +258,34 @@ where
             };
         }
         cmd = cmd.replace(&path_to_string_with_separator(self.build_path), "");
+        let tool_location = String::from("$(location) ");
+        let (tool, cmd) = if let Some((tool, cmd)) = cmd.split_once(" ") {
+            (String::from(tool), tool_location + cmd)
+        } else {
+            (String::from(cmd), tool_location)
+        };
+        for idx in 0..inputs.len() {
+            if path_to_string(&inputs[idx]) == tool {
+                inputs.remove(idx);
+                break;
+            }
+        }
+        (
+            path_to_string(strip_prefix(
+                canonicalize_path(&tool, self.build_path),
+                self.src_path,
+            )),
+            cmd,
+        )
+    }
+    fn get_cmd(
+        &self,
+        mut cmd: String,
+        rule_cmd: NinjaRuleCmd,
+        inputs: Vec<PathBuf>,
+        outputs: &Vec<PathBuf>,
+        deps: Vec<(PathBuf, String)>,
+    ) -> String {
         for output in outputs {
             let marker = "<output>";
             let replace_output = path_to_string(self.project.map_cmd_output(output));
@@ -273,13 +294,13 @@ where
                 .replace(&format!(" {0}", file_name(output)), &format!(" {marker}"))
                 .replace(marker, &format!("$(location {replace_output})"));
         }
-        for input in inputs {
+        for input in &inputs {
             let replace_input = path_to_string(strip_prefix(
-                canonicalize_path(&input, self.build_path),
+                canonicalize_path(input, self.build_path),
                 self.src_path,
             ));
             cmd = cmd.replace(
-                &path_to_string(&input),
+                &path_to_string(input),
                 &format!("$(location {replace_input})"),
             )
         }
@@ -290,25 +311,33 @@ where
             )
         }
         if let Some((rsp_file, rsp_content)) = rule_cmd.rsp_info {
-            let rsp = format!("$(genDir)/{rsp_file}");
-            cmd = format!(
-                "echo \\\"{0}\\\" > {rsp} && {cmd}",
-                rsp_content
-                    .split(" ")
-                    .filter_map(|file| {
-                        if file.is_empty() {
-                            return None;
-                        }
+            let rsp_inputs = rsp_content
+                .split(" ")
+                .filter_map(|file| {
+                    if file.is_empty() {
+                        return None;
+                    }
+                    Some(PathBuf::from(file))
+                })
+                .collect::<Vec<PathBuf>>();
+            let rsp_inputs_string = if inputs == rsp_inputs {
+                String::from("$(in)")
+            } else {
+                rsp_inputs
+                    .iter()
+                    .map(|file| {
                         let file_path = path_to_string(strip_prefix(
                             canonicalize_path(file, self.build_path),
                             self.src_path,
                         ));
-                        Some(format!("$(location {file_path})"))
+                        format!("$(location {file_path})")
                     })
                     .collect::<Vec<String>>()
                     .join(" ")
-            )
-            .replace("${rspfile}", &rsp);
+            };
+            let rsp = format!("$(genDir)/{rsp_file}");
+            cmd = format!("echo \\\"{rsp_inputs_string}\\\" > {rsp} && {cmd}")
+                .replace("${rspfile}", &rsp);
         }
         cmd
     }
@@ -341,6 +370,7 @@ where
         let mut deps = Vec::new();
         inputs.extend(self.get_cmd_inputs(target.get_inputs().clone(), &mut deps));
         inputs.extend(self.get_cmd_inputs(target.get_implicit_deps().clone(), &mut deps));
+        let (tool, cmd) = self.get_tool(rule_cmd.command.clone(), &mut inputs);
         let mut sources = inputs
             .iter()
             .map(|input| {
@@ -355,7 +385,7 @@ where
             self.internals.deps.push(dep.clone());
         }
         let target_outputs = target.get_outputs();
-        let cmd = self.get_cmd(rule_cmd, inputs, target_outputs, deps);
+        let cmd = self.get_cmd(cmd, rule_cmd, inputs, target_outputs, deps);
         let outputs = target_outputs
             .iter()
             .map(|output| path_to_string(self.project.map_cmd_output(output)))
@@ -367,5 +397,6 @@ where
             .add_prop("cmd", SoongProp::Str(cmd))
             .add_prop("srcs", SoongProp::VecStr(sources))
             .add_prop("out", SoongProp::VecStr(outputs))
+            .add_prop("tool_files", SoongProp::VecStr(vec![tool]))
     }
 }

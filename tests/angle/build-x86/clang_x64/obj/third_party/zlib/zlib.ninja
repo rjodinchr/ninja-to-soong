@@ -1,0 +1,58 @@
+defines = -DUSE_UDEV -DUSE_AURA=1 -DUSE_OZONE=1 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_LARGEFILE64_SOURCE -D_GNU_SOURCE -DCR_CLANG_REVISION=\"llvmorg-21-init-9266-g09006611-1\" -D_LIBCPP_HARDENING_MODE=_LIBCPP_HARDENING_MODE_EXTENSIVE -D_LIBCPP_DISABLE_VISIBILITY_ANNOTATIONS -D_LIBCXXABI_DISABLE_VISIBILITY_ANNOTATIONS -D_LIBCPP_INSTRUMENTED_WITH_ASAN=0 -DCR_LIBCXX_REVISION=62724eb55f2ad7389088265952b1bb62cb89c73b -DCR_SYSROOT_KEY=20250129T203412Z-1 -DNDEBUG -DNVALGRIND -DDYNAMIC_ANNOTATIONS_ENABLED=0 -DZLIB_IMPLEMENTATION -DADLER32_SIMD_SSSE3 -DX86_NOT_WINDOWS -DINFLATE_CHUNK_SIMD_SSE2 -DINFLATE_CHUNK_READ_64LE -DDEFLATE_SLIDE_HASH_SSE2 -DCRC32_SIMD_SSE42_PCLMUL
+include_dirs = -I/ninja-to-soong-angle -Iclang_x64/gen -I/ninja-to-soong-angle/buildtools/third_party/libc++ -I/ninja-to-soong-angle/third_party/zlib
+cflags = -fno-delete-null-pointer-checks -fno-strict-overflow -fno-ident -fno-strict-aliasing -fstack-protector -funwind-tables -fPIC -pthread -fcolor-diagnostics -fmerge-all-constants -fno-sized-deallocation -fcrash-diagnostics-dir=/ninja-to-soong-angle/tools/clang/crashreports -mllvm -instcombine-lower-dbg-declare=0 -mllvm -split-threshold-for-reg-with-hint=0 -ffp-contract=off -Wa,--crel,--allow-experimental-crel -fextend-variable-liveness=none -fcomplete-member-pointers -m64 -msse3 -Wno-builtin-macro-redefined -D__DATE__= -D__TIME__= -D__TIMESTAMP__= -ffile-compilation-dir=. -no-canonical-prefixes -ftrivial-auto-var-init=pattern -O2 -fdata-sections -ffunction-sections -fno-unique-section-names -fno-math-errno -fno-omit-frame-pointer -g0 -fvisibility=hidden -Wheader-hygiene -Wstring-conversion -Wtautological-overlap-compare -Wall -Wno-unused-variable -Wno-c++11-narrowing -Wno-unused-but-set-variable -Wno-missing-field-initializers -Wno-unused-parameter -Wno-psabi -Wloop-analysis -Wno-unneeded-internal-declaration -Wno-cast-function-type -Wno-thread-safety-reference-return -Wno-nontrivial-memcall -Werror -O3 -fdata-sections -ffunction-sections -fno-unique-section-names -fno-math-errno -Wno-incompatible-pointer-types -Wunused-variable
+cflags_c = -std=c11 --sysroot=/ninja-to-soong-angle/build/linux/debian_bullseye_amd64-sysroot
+label_name = zlib
+target_out_dir = clang_x64/obj/third_party/zlib
+target_output_name = libchrome_zlib
+
+build clang_x64/obj/third_party/zlib/zlib/adler32.o: clang_x64_cc /ninja-to-soong-angle/third_party/zlib/adler32.c
+  source_file_part = adler32.c
+  source_name_part = adler32
+build clang_x64/obj/third_party/zlib/zlib/compress.o: clang_x64_cc /ninja-to-soong-angle/third_party/zlib/compress.c
+  source_file_part = compress.c
+  source_name_part = compress
+build clang_x64/obj/third_party/zlib/zlib/cpu_features.o: clang_x64_cc /ninja-to-soong-angle/third_party/zlib/cpu_features.c
+  source_file_part = cpu_features.c
+  source_name_part = cpu_features
+build clang_x64/obj/third_party/zlib/zlib/crc32.o: clang_x64_cc /ninja-to-soong-angle/third_party/zlib/crc32.c
+  source_file_part = crc32.c
+  source_name_part = crc32
+build clang_x64/obj/third_party/zlib/zlib/deflate.o: clang_x64_cc /ninja-to-soong-angle/third_party/zlib/deflate.c
+  source_file_part = deflate.c
+  source_name_part = deflate
+build clang_x64/obj/third_party/zlib/zlib/gzclose.o: clang_x64_cc /ninja-to-soong-angle/third_party/zlib/gzclose.c
+  source_file_part = gzclose.c
+  source_name_part = gzclose
+build clang_x64/obj/third_party/zlib/zlib/gzlib.o: clang_x64_cc /ninja-to-soong-angle/third_party/zlib/gzlib.c
+  source_file_part = gzlib.c
+  source_name_part = gzlib
+build clang_x64/obj/third_party/zlib/zlib/gzread.o: clang_x64_cc /ninja-to-soong-angle/third_party/zlib/gzread.c
+  source_file_part = gzread.c
+  source_name_part = gzread
+build clang_x64/obj/third_party/zlib/zlib/gzwrite.o: clang_x64_cc /ninja-to-soong-angle/third_party/zlib/gzwrite.c
+  source_file_part = gzwrite.c
+  source_name_part = gzwrite
+build clang_x64/obj/third_party/zlib/zlib/infback.o: clang_x64_cc /ninja-to-soong-angle/third_party/zlib/infback.c
+  source_file_part = infback.c
+  source_name_part = infback
+build clang_x64/obj/third_party/zlib/zlib/inffast.o: clang_x64_cc /ninja-to-soong-angle/third_party/zlib/inffast.c
+  source_file_part = inffast.c
+  source_name_part = inffast
+build clang_x64/obj/third_party/zlib/zlib/inftrees.o: clang_x64_cc /ninja-to-soong-angle/third_party/zlib/inftrees.c
+  source_file_part = inftrees.c
+  source_name_part = inftrees
+build clang_x64/obj/third_party/zlib/zlib/trees.o: clang_x64_cc /ninja-to-soong-angle/third_party/zlib/trees.c
+  source_file_part = trees.c
+  source_name_part = trees
+build clang_x64/obj/third_party/zlib/zlib/uncompr.o: clang_x64_cc /ninja-to-soong-angle/third_party/zlib/uncompr.c
+  source_file_part = uncompr.c
+  source_name_part = uncompr
+build clang_x64/obj/third_party/zlib/zlib/zutil.o: clang_x64_cc /ninja-to-soong-angle/third_party/zlib/zutil.c
+  source_file_part = zutil.c
+  source_name_part = zutil
+
+build clang_x64/obj/third_party/zlib/libchrome_zlib.a: clang_x64_alink clang_x64/obj/third_party/zlib/zlib/adler32.o clang_x64/obj/third_party/zlib/zlib/compress.o clang_x64/obj/third_party/zlib/zlib/cpu_features.o clang_x64/obj/third_party/zlib/zlib/crc32.o clang_x64/obj/third_party/zlib/zlib/deflate.o clang_x64/obj/third_party/zlib/zlib/gzclose.o clang_x64/obj/third_party/zlib/zlib/gzlib.o clang_x64/obj/third_party/zlib/zlib/gzread.o clang_x64/obj/third_party/zlib/zlib/gzwrite.o clang_x64/obj/third_party/zlib/zlib/infback.o clang_x64/obj/third_party/zlib/zlib/inffast.o clang_x64/obj/third_party/zlib/zlib/inftrees.o clang_x64/obj/third_party/zlib/zlib/trees.o clang_x64/obj/third_party/zlib/zlib/uncompr.o clang_x64/obj/third_party/zlib/zlib/zutil.o | /ninja-to-soong-angle/third_party/llvm-build/Release+Asserts/lib/clang/21/lib/x86_64-unknown-linux-gnu/libclang_rt.builtins.a || clang_x64/phony/third_party/zlib/zlib_adler32_simd clang_x64/phony/third_party/zlib/zlib_inflate_chunk_simd clang_x64/phony/third_party/zlib/zlib_crc32_simd
+  arflags = -T -S
+  output_extension = .a
+  output_dir = clang_x64/obj/third_party/zlib

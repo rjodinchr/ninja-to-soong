@@ -1,0 +1,82 @@
+rule clang_x64_cxx_module
+  command =  /ninja-to-soong-angle/third_party/llvm-build/Release+Asserts/bin/clang++ -MMD -MF ${out}.d ${defines} ${include_dirs} ${cflags} ${cflags_cc} ${module_deps_no_self} -fmodule-name=${label_name} -c -x c++ -Xclang -emit-module ${in} -o ${out}
+  description = CXX_MODULE ${out}
+  depfile = ${out}.d
+  deps = gcc
+rule clang_x64_link
+  command = "python3" "/ninja-to-soong-angle/build/toolchain/gcc_link_wrapper.py" --output="${output_dir}/${target_output_name}${output_extension}" -- /ninja-to-soong-angle/third_party/llvm-build/Release+Asserts/bin/clang++ ${ldflags} -o "${output_dir}/${target_output_name}${output_extension}" -Wl,--start-group @"${output_dir}/${target_output_name}${output_extension}.rsp" -Wl,--end-group  ${solibs} ${libs} -Wl,--start-group ${rlibs} -Wl,--end-group 
+  description = LINK ${output_dir}/${target_output_name}${output_extension}
+  rspfile = ${output_dir}/${target_output_name}${output_extension}.rsp
+  rspfile_content = ${in}
+  pool = build_toolchain_link_pool
+rule clang_x64_cxx
+  command =  /ninja-to-soong-angle/third_party/llvm-build/Release+Asserts/bin/clang++ -MMD -MF ${out}.d ${defines} ${include_dirs} ${cflags} ${cflags_cc} ${module_deps_no_self} -c ${in} -o ${out}
+  description = CXX ${out}
+  depfile = ${out}.d
+  deps = gcc
+rule clang_x64_solink
+  command = "python3" "/ninja-to-soong-angle/build/toolchain/gcc_solink_wrapper.py" --readelf="/ninja-to-soong-angle/third_party/llvm-build/Release+Asserts/bin/llvm-readelf" --nm="/ninja-to-soong-angle/third_party/llvm-build/Release+Asserts/bin/llvm-nm"  --sofile="${output_dir}/${target_output_name}${output_extension}" --tocfile="${output_dir}/${target_output_name}${output_extension}.TOC" --output="${output_dir}/${target_output_name}${output_extension}" -- /ninja-to-soong-angle/third_party/llvm-build/Release+Asserts/bin/clang++ -shared -Wl,-soname="${target_output_name}${output_extension}" ${ldflags} -o "${output_dir}/${target_output_name}${output_extension}" @"${output_dir}/${target_output_name}${output_extension}.rsp" ${rlibs} 
+  description = SOLINK ${output_dir}/${target_output_name}${output_extension}
+  rspfile = ${output_dir}/${target_output_name}${output_extension}.rsp
+  rspfile_content = -Wl,--whole-archive ${in} ${solibs} -Wl,--no-whole-archive ${libs}
+  pool = build_toolchain_link_pool
+  restat = 1
+rule clang_x64_stamp
+  command = touch ${out}
+  description = STAMP ${out}
+rule clang_x64_solink_module
+  command = /ninja-to-soong-angle/third_party/llvm-build/Release+Asserts/bin/clang++ -shared ${ldflags} -o "${output_dir}/${target_output_name}${output_extension}" -Wl,-soname="${target_output_name}${output_extension}" @"${output_dir}/${target_output_name}${output_extension}.rsp"
+  description = SOLINK_MODULE ${output_dir}/${target_output_name}${output_extension}
+  rspfile = ${output_dir}/${target_output_name}${output_extension}.rsp
+  rspfile_content = -Wl,--whole-archive ${in} ${solibs} -Wl,--no-whole-archive ${libs} ${rlibs}
+  pool = build_toolchain_link_pool
+rule clang_x64_alink
+  command = rm -f ${out} && "/ninja-to-soong-angle/third_party/llvm-build/Release+Asserts/bin/llvm-ar" ${arflags} -r -c -D ${out} @"${out}.rsp"
+  description = AR ${out}
+  rspfile = ${out}.rsp
+  rspfile_content = ${in}
+rule clang_x64_cc
+  command =  /ninja-to-soong-angle/third_party/llvm-build/Release+Asserts/bin/clang -MMD -MF ${out}.d ${defines} ${include_dirs} ${cflags} ${cflags_c} -c ${in} -o ${out}
+  description = CC ${out}
+  depfile = ${out}.d
+  deps = gcc
+rule clang_x64_asm
+  command = /ninja-to-soong-angle/third_party/llvm-build/Release+Asserts/bin/clang -MMD -MF ${out}.d ${defines} ${include_dirs} ${asmflags} -c ${in} -o ${out}
+  description = ASM ${out}
+  depfile = ${out}.d
+  deps = gcc
+rule clang_x64_copy
+  command = ln -f ${in} ${out} 2>/dev/null || (rm -rf ${out} && cp -af ${in} ${out})
+  description = COPY ${in} ${out}
+
+build clang_x64/phony/build/config/common_deps: phony clang_x64/phony/buildtools/third_party/libc++/libc++
+build clang_x64/phony/build/config/executable_deps: phony clang_x64/phony/build/config/common_deps
+subninja clang_x64/obj/buildtools/third_party/libc++/_Builtin_float.ninja
+subninja clang_x64/obj/buildtools/third_party/libc++/_Builtin_inttypes.ninja
+subninja clang_x64/obj/buildtools/third_party/libc++/_Builtin_limits.ninja
+subninja clang_x64/obj/buildtools/third_party/libc++/_Builtin_stdalign.ninja
+subninja clang_x64/obj/buildtools/third_party/libc++/_Builtin_stdarg.ninja
+subninja clang_x64/obj/buildtools/third_party/libc++/_Builtin_stddef.ninja
+subninja clang_x64/obj/buildtools/third_party/libc++/_Builtin_stdint.ninja
+subninja clang_x64/obj/buildtools/third_party/libc++/libc++.ninja
+subninja clang_x64/obj/buildtools/third_party/libc++/std.ninja
+subninja clang_x64/obj/buildtools/third_party/libc++/std_config.ninja
+subninja clang_x64/obj/buildtools/third_party/libc++/std_core.ninja
+subninja clang_x64/obj/buildtools/third_party/libc++/std_ctype_h.ninja
+subninja clang_x64/obj/buildtools/third_party/libc++/std_errno_h.ninja
+subninja clang_x64/obj/buildtools/third_party/libc++/std_fenv_h.ninja
+subninja clang_x64/obj/buildtools/third_party/libc++/std_float_h.ninja
+subninja clang_x64/obj/buildtools/third_party/libc++/std_inttypes_h.ninja
+subninja clang_x64/obj/buildtools/third_party/libc++/std_math_h.ninja
+subninja clang_x64/obj/buildtools/third_party/libc++/std_private_mbstate_t.ninja
+subninja clang_x64/obj/buildtools/third_party/libc++/std_string_h.ninja
+subninja clang_x64/obj/buildtools/third_party/libc++/std_uchar_h.ninja
+subninja clang_x64/obj/buildtools/third_party/libc++/std_wctype_h.ninja
+subninja clang_x64/obj/buildtools/third_party/libc++abi/libc++abi.ninja
+subninja clang_x64/obj/third_party/ijar/ijar.ninja
+subninja clang_x64/obj/third_party/zlib/zlib.ninja
+subninja clang_x64/obj/third_party/zlib/zlib_adler32_simd.ninja
+subninja clang_x64/obj/third_party/zlib/zlib_common_headers.ninja
+subninja clang_x64/obj/third_party/zlib/zlib_crc32_simd.ninja
+subninja clang_x64/obj/third_party/zlib/zlib_inflate_chunk_simd.ninja
+subninja clang_x64/obj/third_party/zlib/zlib_slide_hash_simd.ninja

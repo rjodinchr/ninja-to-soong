@@ -1,0 +1,40 @@
+defines = -DUSE_UDEV -DUSE_AURA=1 -DUSE_GLIB=1 -DUSE_OZONE=1 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_LARGEFILE64_SOURCE -D_GNU_SOURCE -DCR_CLANG_REVISION=\"llvmorg-21-init-9266-g09006611-1\" -D_LIBCPP_HARDENING_MODE=_LIBCPP_HARDENING_MODE_EXTENSIVE -DCOMPONENT_BUILD -D_LIBCPP_INSTRUMENTED_WITH_ASAN=0 -DCR_LIBCXX_REVISION=62724eb55f2ad7389088265952b1bb62cb89c73b -DCR_SYSROOT_KEY=20250129T203412Z-1 -D_DEBUG -DDYNAMIC_ANNOTATIONS_ENABLED=1 -DGOOGLE_PROTOBUF_NO_RTTI -DHAVE_PTHREAD -DABSL_CONSUME_DLL -DABSL_FLAGS_STRIP_NAMES=0
+include_dirs = -I/ninja-to-soong-angle -Igen -I/ninja-to-soong-angle/buildtools/third_party/libc++ -I/ninja-to-soong-angle/third_party/protobuf/third_party/utf8_range -I/ninja-to-soong-angle/third_party/protobuf/src -I/ninja-to-soong-angle/third_party/abseil-cpp
+cflags = -fno-delete-null-pointer-checks -fno-strict-overflow -fno-ident -fno-strict-aliasing -fstack-protector -funwind-tables -fPIC -pthread -fcolor-diagnostics -fmerge-all-constants -fno-sized-deallocation -fcrash-diagnostics-dir=/ninja-to-soong-angle/tools/clang/crashreports -mllvm -instcombine-lower-dbg-declare=0 -mllvm -split-threshold-for-reg-with-hint=0 -ffp-contract=off -Wa,--crel,--allow-experimental-crel -fextend-variable-liveness=none -fcomplete-member-pointers -m64 -msse3 -Wno-builtin-macro-redefined -D__DATE__= -D__TIME__= -D__TIMESTAMP__= -ffile-compilation-dir=. -no-canonical-prefixes -ftrivial-auto-var-init=pattern -O0 -fno-omit-frame-pointer -gdwarf-4 -g2 -gdwarf-aranges -gsplit-dwarf -ggnu-pubnames -Xclang -fuse-ctor-homing -fvisibility=hidden -Wheader-hygiene -Wstring-conversion -Wtautological-overlap-compare -Wall -Wno-unused-variable -Wno-c++11-narrowing -Wno-unused-but-set-variable -Wno-missing-field-initializers -Wno-unused-parameter -Wno-psabi -Wloop-analysis -Wno-unneeded-internal-declaration -Wno-cast-function-type -Wno-thread-safety-reference-return -Wno-nontrivial-memcall -Werror -Wno-deprecated-this-capture
+cflags_cc = -std=c++20 -Wno-trigraphs -gsimple-template-names -fno-exceptions -fno-rtti -nostdinc++ -isystem/ninja-to-soong-angle/third_party/libc++/src/include -isystem/ninja-to-soong-angle/third_party/libc++abi/src/include --sysroot=/ninja-to-soong-angle/build/linux/debian_bullseye_amd64-sysroot -fvisibility-inlines-hidden -Wno-invalid-offsetof -Wenum-compare-conditional -Wno-nullability-completeness
+label_name = protoc_lib
+target_out_dir = obj/third_party/protobuf
+target_output_name = libprotoc_lib
+
+build obj/third_party/protobuf/protoc_lib/code_generator.o: cxx /ninja-to-soong-angle/third_party/protobuf/src/google/protobuf/compiler/code_generator.cc || phony/build/chromeos_buildflags
+  source_file_part = code_generator.cc
+  source_name_part = code_generator
+build obj/third_party/protobuf/protoc_lib/code_generator_lite.o: cxx /ninja-to-soong-angle/third_party/protobuf/src/google/protobuf/compiler/code_generator_lite.cc || phony/build/chromeos_buildflags
+  source_file_part = code_generator_lite.cc
+  source_name_part = code_generator_lite
+build obj/third_party/protobuf/protoc_lib/command_line_interface.o: cxx /ninja-to-soong-angle/third_party/protobuf/src/google/protobuf/compiler/command_line_interface.cc || phony/build/chromeos_buildflags
+  source_file_part = command_line_interface.cc
+  source_name_part = command_line_interface
+build obj/third_party/protobuf/protoc_lib/plugin.o: cxx /ninja-to-soong-angle/third_party/protobuf/src/google/protobuf/compiler/plugin.cc || phony/build/chromeos_buildflags
+  source_file_part = plugin.cc
+  source_name_part = plugin
+build obj/third_party/protobuf/protoc_lib/plugin.pb.o: cxx /ninja-to-soong-angle/third_party/protobuf/src/google/protobuf/compiler/plugin.pb.cc || phony/build/chromeos_buildflags
+  source_file_part = plugin.pb.cc
+  source_name_part = plugin.pb
+build obj/third_party/protobuf/protoc_lib/retention.o: cxx /ninja-to-soong-angle/third_party/protobuf/src/google/protobuf/compiler/retention.cc || phony/build/chromeos_buildflags
+  source_file_part = retention.cc
+  source_name_part = retention
+build obj/third_party/protobuf/protoc_lib/subprocess.o: cxx /ninja-to-soong-angle/third_party/protobuf/src/google/protobuf/compiler/subprocess.cc || phony/build/chromeos_buildflags
+  source_file_part = subprocess.cc
+  source_name_part = subprocess
+build obj/third_party/protobuf/protoc_lib/versions.o: cxx /ninja-to-soong-angle/third_party/protobuf/src/google/protobuf/compiler/versions.cc || phony/build/chromeos_buildflags
+  source_file_part = versions.cc
+  source_name_part = versions
+build obj/third_party/protobuf/protoc_lib/zip_writer.o: cxx /ninja-to-soong-angle/third_party/protobuf/src/google/protobuf/compiler/zip_writer.cc || phony/build/chromeos_buildflags
+  source_file_part = zip_writer.cc
+  source_name_part = zip_writer
+
+build obj/third_party/protobuf/libprotoc_lib.a: alink obj/third_party/protobuf/protoc_lib/code_generator.o obj/third_party/protobuf/protoc_lib/code_generator_lite.o obj/third_party/protobuf/protoc_lib/command_line_interface.o obj/third_party/protobuf/protoc_lib/plugin.o obj/third_party/protobuf/protoc_lib/plugin.pb.o obj/third_party/protobuf/protoc_lib/retention.o obj/third_party/protobuf/protoc_lib/subprocess.o obj/third_party/protobuf/protoc_lib/versions.o obj/third_party/protobuf/protoc_lib/zip_writer.o | /ninja-to-soong-angle/third_party/llvm-build/Release+Asserts/lib/clang/21/lib/x86_64-unknown-linux-gnu/libclang_rt.builtins.a || obj/third_party/protobuf/libprotobuf_full.a phony/third_party/protobuf/protoc_cpp phony/third_party/protobuf/protoc_java phony/third_party/protobuf/protoc_java_all_headers phony/third_party/protobuf/protoc_java_full phony/third_party/protobuf/protoc_java_lite phony/third_party/protobuf/protoc_python ./libthird_party_abseil-cpp_absl.so.TOC phony/third_party/protobuf/utf8_range
+  arflags = -T -S
+  output_extension = .a
+  output_dir = obj/third_party/protobuf

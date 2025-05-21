@@ -1,0 +1,288 @@
+defines = -D__STDC_CONSTANT_MACROS -D__STDC_FORMAT_MACROS -D_FORTIFY_SOURCE=2 -D_GNU_SOURCE -DANDROID -D__ANDROID_UNAVAILABLE_SYMBOLS_ARE_WEAK__ -DHAVE_SYS_UIO_H -DANDROID_NDK_VERSION_ROLL=r28_1 -DCR_CLANG_REVISION=\"llvmorg-21-init-9266-g09006611-1\" -D_LIBCPP_HARDENING_MODE=_LIBCPP_HARDENING_MODE_NONE -DNDEBUG -DNVALGRIND -DDYNAMIC_ANNOTATIONS_ENABLED=0 -DANGLE_ENABLE_SHARE_CONTEXT_LOCK=1 -DANGLE_USE_ANDROID_TLS_SLOT=1 -DANGLE_ENABLE_GLOBAL_MUTEX_RECURSION=1 -DANGLE_ENABLE_GLOBAL_MUTEX_LOAD_TIME_ALLOCATE=1 -DANGLE_ENABLE_CONTEXT_MUTEX=1 -DANGLE_ENABLE_CONTEXT_MUTEX_RECURSION=1 -DANGLE_TEST_ENABLE_SYSTEM_EGL -DLIBANGLE_IMPLEMENTATION -DANGLE_EXPOSE_NON_CONFORMANT_EXTENSIONS_AND_VERSIONS -DANGLE_ENABLE_VULKAN -DANGLE_ENABLE_CRC_FOR_PIPELINE_CACHE -DANGLE_USE_ABSEIL -DABSL_ALLOCATOR_NOTHROW=1
+include_dirs = -I/ninja-to-soong-angle/include -I/ninja-to-soong-angle/src -I/ninja-to-soong-angle/src/common/base -I/ninja-to-soong-angle/src/common/third_party/xxhash -I/ninja-to-soong-angle/third_party/abseil-cpp -I/ninja-to-soong-angle/third_party/zlib/google -I/ninja-to-soong-angle/third_party/zlib
+cflags = -Wall -Wextra -Wimplicit-fallthrough -Wextra-semi -Wunreachable-code-aggressive -Wthread-safety -Wgnu -Wno-gnu-anonymous-struct -Wno-gnu-conditional-omitted-operand -Wno-gnu-include-next -Wno-gnu-label-as-value -Wno-gnu-redeclared-enum -Wno-gnu-statement-expression -Wno-gnu-zero-variadic-macro-arguments -Wno-zero-length-array -Wunguarded-availability -Wno-missing-field-initializers -Wno-unused-parameter -Wno-psabi -Wloop-analysis -Wno-unneeded-internal-declaration -Wno-cast-function-type -Wno-thread-safety-reference-return -Wno-nontrivial-memcall -Wshadow -Werror -fno-delete-null-pointer-checks -fno-strict-overflow -fno-ident -fno-strict-aliasing -fstack-protector -funwind-tables -fPIC -fcolor-diagnostics -fmerge-all-constants -fno-sized-deallocation -fcrash-diagnostics-dir=/ninja-to-soong-angle/tools/clang/crashreports -mllvm -instcombine-lower-dbg-declare=0 -mllvm -split-threshold-for-reg-with-hint=0 -ffp-contract=off -fextend-variable-liveness=none -ffunction-sections -fno-short-enums --target=arm-linux-androideabi26 -march=armv7-a -mfloat-abi=softfp -Wno-builtin-macro-redefined -D__DATE__= -D__TIME__= -D__TIMESTAMP__= -ffile-compilation-dir=. -no-canonical-prefixes -mfpu=neon -mthumb -ftrivial-auto-var-init=pattern -fomit-frame-pointer -g0 -fvisibility=hidden -Wheader-hygiene -Wstring-conversion -Wtautological-overlap-compare -Wbad-function-cast -Wconditional-uninitialized -Wextra-semi-stmt -Wfloat-conversion -Winconsistent-missing-destructor-override -Wmissing-field-initializers -Wnewline-eof -Wnon-virtual-dtor -Wredundant-parens -Wreturn-std-move -Wshadow -Wshadow-field -Wtautological-type-limit-compare -Wundefined-reinterpret-cast -Wunneeded-internal-declaration -Wunused-but-set-variable -Wsuggest-destructor-override -Wsuggest-override -Wparentheses -Wrange-loop-analysis -Wstrict-prototypes -Wunreachable-code-aggressive -Wshorten-64-to-32 -O2 -fdata-sections -ffunction-sections -fno-unique-section-names -fno-math-errno
+cflags_cc = -Wno-invalid-offsetof -Wenum-compare-conditional -Wno-nullability-completeness -std=c++20 -Wno-trigraphs -gsimple-template-names -fno-exceptions -fno-rtti --sysroot=/ninja-to-soong-angle/third_party/android_toolchain/ndk/toolchains/llvm/prebuilt/linux-x86_64/sysroot -fvisibility-inlines-hidden
+label_name = libANGLE_no_vulkan
+root_out_dir = .
+target_out_dir = obj
+target_output_name = libANGLE_no_vulkan
+
+build phony/libANGLE_no_vulkan.inputdeps: phony phony/angle_commit_id phony/angle_program_version_id phony/third_party/spirv-tools/src/spvtools_core_enums_unified1 phony/third_party/spirv-tools/src/spvtools_core_tables_unified1 phony/third_party/spirv-tools/src/spvtools_generators_inc phony/third_party/spirv-tools/src/spvtools_glsl_tables_glsl1-0 phony/third_party/spirv-tools/src/spvtools_language_header_cldebuginfo100 phony/third_party/spirv-tools/src/spvtools_language_header_debuginfo phony/third_party/spirv-tools/src/spvtools_language_header_vkdebuginfo100 phony/third_party/spirv-tools/src/spvtools_opencl_tables_opencl1-0 phony/third_party/spirv-tools/src/spvtools_vendor_tables_debuginfo phony/third_party/spirv-tools/src/spvtools_vendor_tables_nonsemantic.clspvreflection phony/third_party/spirv-tools/src/spvtools_vendor_tables_nonsemantic.shader.debuginfo.100 phony/third_party/spirv-tools/src/spvtools_vendor_tables_nonsemantic.vkspreflection phony/third_party/spirv-tools/src/spvtools_vendor_tables_opencl.debuginfo.100 phony/third_party/spirv-tools/src/spvtools_vendor_tables_spv-amd-gcn-shader phony/third_party/spirv-tools/src/spvtools_vendor_tables_spv-amd-shader-ballot phony/third_party/spirv-tools/src/spvtools_vendor_tables_spv-amd-shader-explicit-vertex-parameter phony/third_party/spirv-tools/src/spvtools_vendor_tables_spv-amd-shader-trinary-minmax
+build obj/libANGLE_no_vulkan/AttributeMap.o: cxx /ninja-to-soong-angle/src/libANGLE/AttributeMap.cpp || phony/libANGLE_no_vulkan.inputdeps
+  source_file_part = AttributeMap.cpp
+  source_name_part = AttributeMap
+build obj/libANGLE_no_vulkan/BlobCache.o: cxx /ninja-to-soong-angle/src/libANGLE/BlobCache.cpp || phony/libANGLE_no_vulkan.inputdeps
+  source_file_part = BlobCache.cpp
+  source_name_part = BlobCache
+build obj/libANGLE_no_vulkan/Buffer.o: cxx /ninja-to-soong-angle/src/libANGLE/Buffer.cpp || phony/libANGLE_no_vulkan.inputdeps
+  source_file_part = Buffer.cpp
+  source_name_part = Buffer
+build obj/libANGLE_no_vulkan/Caps.o: cxx /ninja-to-soong-angle/src/libANGLE/Caps.cpp || phony/libANGLE_no_vulkan.inputdeps
+  source_file_part = Caps.cpp
+  source_name_part = Caps
+build obj/libANGLE_no_vulkan/Compiler.o: cxx /ninja-to-soong-angle/src/libANGLE/Compiler.cpp || phony/libANGLE_no_vulkan.inputdeps
+  source_file_part = Compiler.cpp
+  source_name_part = Compiler
+build obj/libANGLE_no_vulkan/Config.o: cxx /ninja-to-soong-angle/src/libANGLE/Config.cpp || phony/libANGLE_no_vulkan.inputdeps
+  source_file_part = Config.cpp
+  source_name_part = Config
+build obj/libANGLE_no_vulkan/Context.o: cxx /ninja-to-soong-angle/src/libANGLE/Context.cpp || phony/libANGLE_no_vulkan.inputdeps
+  source_file_part = Context.cpp
+  source_name_part = Context
+build obj/libANGLE_no_vulkan/ContextMutex.o: cxx /ninja-to-soong-angle/src/libANGLE/ContextMutex.cpp || phony/libANGLE_no_vulkan.inputdeps
+  source_file_part = ContextMutex.cpp
+  source_name_part = ContextMutex
+build obj/libANGLE_no_vulkan/Context_gles_1_0.o: cxx /ninja-to-soong-angle/src/libANGLE/Context_gles_1_0.cpp || phony/libANGLE_no_vulkan.inputdeps
+  source_file_part = Context_gles_1_0.cpp
+  source_name_part = Context_gles_1_0
+build obj/libANGLE_no_vulkan/Debug.o: cxx /ninja-to-soong-angle/src/libANGLE/Debug.cpp || phony/libANGLE_no_vulkan.inputdeps
+  source_file_part = Debug.cpp
+  source_name_part = Debug
+build obj/libANGLE_no_vulkan/Device.o: cxx /ninja-to-soong-angle/src/libANGLE/Device.cpp || phony/libANGLE_no_vulkan.inputdeps
+  source_file_part = Device.cpp
+  source_name_part = Device
+build obj/libANGLE_no_vulkan/Display.o: cxx /ninja-to-soong-angle/src/libANGLE/Display.cpp || phony/libANGLE_no_vulkan.inputdeps
+  source_file_part = Display.cpp
+  source_name_part = Display
+build obj/libANGLE_no_vulkan/EGLSync.o: cxx /ninja-to-soong-angle/src/libANGLE/EGLSync.cpp || phony/libANGLE_no_vulkan.inputdeps
+  source_file_part = EGLSync.cpp
+  source_name_part = EGLSync
+build obj/libANGLE_no_vulkan/Error.o: cxx /ninja-to-soong-angle/src/libANGLE/Error.cpp || phony/libANGLE_no_vulkan.inputdeps
+  source_file_part = Error.cpp
+  source_name_part = Error
+build obj/libANGLE_no_vulkan/Fence.o: cxx /ninja-to-soong-angle/src/libANGLE/Fence.cpp || phony/libANGLE_no_vulkan.inputdeps
+  source_file_part = Fence.cpp
+  source_name_part = Fence
+build obj/libANGLE_no_vulkan/Framebuffer.o: cxx /ninja-to-soong-angle/src/libANGLE/Framebuffer.cpp || phony/libANGLE_no_vulkan.inputdeps
+  source_file_part = Framebuffer.cpp
+  source_name_part = Framebuffer
+build obj/libANGLE_no_vulkan/FramebufferAttachment.o: cxx /ninja-to-soong-angle/src/libANGLE/FramebufferAttachment.cpp || phony/libANGLE_no_vulkan.inputdeps
+  source_file_part = FramebufferAttachment.cpp
+  source_name_part = FramebufferAttachment
+build obj/libANGLE_no_vulkan/GLES1Renderer.o: cxx /ninja-to-soong-angle/src/libANGLE/GLES1Renderer.cpp || phony/libANGLE_no_vulkan.inputdeps
+  source_file_part = GLES1Renderer.cpp
+  source_name_part = GLES1Renderer
+build obj/libANGLE_no_vulkan/GLES1State.o: cxx /ninja-to-soong-angle/src/libANGLE/GLES1State.cpp || phony/libANGLE_no_vulkan.inputdeps
+  source_file_part = GLES1State.cpp
+  source_name_part = GLES1State
+build obj/libANGLE_no_vulkan/GlobalMutex.o: cxx /ninja-to-soong-angle/src/libANGLE/GlobalMutex.cpp || phony/libANGLE_no_vulkan.inputdeps
+  source_file_part = GlobalMutex.cpp
+  source_name_part = GlobalMutex
+build obj/libANGLE_no_vulkan/HandleAllocator.o: cxx /ninja-to-soong-angle/src/libANGLE/HandleAllocator.cpp || phony/libANGLE_no_vulkan.inputdeps
+  source_file_part = HandleAllocator.cpp
+  source_name_part = HandleAllocator
+build obj/libANGLE_no_vulkan/Image.o: cxx /ninja-to-soong-angle/src/libANGLE/Image.cpp || phony/libANGLE_no_vulkan.inputdeps
+  source_file_part = Image.cpp
+  source_name_part = Image
+build obj/libANGLE_no_vulkan/ImageIndex.o: cxx /ninja-to-soong-angle/src/libANGLE/ImageIndex.cpp || phony/libANGLE_no_vulkan.inputdeps
+  source_file_part = ImageIndex.cpp
+  source_name_part = ImageIndex
+build obj/libANGLE_no_vulkan/IndexRangeCache.o: cxx /ninja-to-soong-angle/src/libANGLE/IndexRangeCache.cpp || phony/libANGLE_no_vulkan.inputdeps
+  source_file_part = IndexRangeCache.cpp
+  source_name_part = IndexRangeCache
+build obj/libANGLE_no_vulkan/LoggingAnnotator.o: cxx /ninja-to-soong-angle/src/libANGLE/LoggingAnnotator.cpp || phony/libANGLE_no_vulkan.inputdeps
+  source_file_part = LoggingAnnotator.cpp
+  source_name_part = LoggingAnnotator
+build obj/libANGLE_no_vulkan/MemoryObject.o: cxx /ninja-to-soong-angle/src/libANGLE/MemoryObject.cpp || phony/libANGLE_no_vulkan.inputdeps
+  source_file_part = MemoryObject.cpp
+  source_name_part = MemoryObject
+build obj/libANGLE_no_vulkan/MemoryProgramCache.o: cxx /ninja-to-soong-angle/src/libANGLE/MemoryProgramCache.cpp || phony/libANGLE_no_vulkan.inputdeps
+  source_file_part = MemoryProgramCache.cpp
+  source_name_part = MemoryProgramCache
+build obj/libANGLE_no_vulkan/MemoryShaderCache.o: cxx /ninja-to-soong-angle/src/libANGLE/MemoryShaderCache.cpp || phony/libANGLE_no_vulkan.inputdeps
+  source_file_part = MemoryShaderCache.cpp
+  source_name_part = MemoryShaderCache
+build obj/libANGLE_no_vulkan/Observer.o: cxx /ninja-to-soong-angle/src/libANGLE/Observer.cpp || phony/libANGLE_no_vulkan.inputdeps
+  source_file_part = Observer.cpp
+  source_name_part = Observer
+build obj/libANGLE_no_vulkan/Overlay.o: cxx /ninja-to-soong-angle/src/libANGLE/Overlay.cpp || phony/libANGLE_no_vulkan.inputdeps
+  source_file_part = Overlay.cpp
+  source_name_part = Overlay
+build obj/libANGLE_no_vulkan/OverlayWidgets.o: cxx /ninja-to-soong-angle/src/libANGLE/OverlayWidgets.cpp || phony/libANGLE_no_vulkan.inputdeps
+  source_file_part = OverlayWidgets.cpp
+  source_name_part = OverlayWidgets
+build obj/libANGLE_no_vulkan/Overlay_autogen.o: cxx /ninja-to-soong-angle/src/libANGLE/Overlay_autogen.cpp || phony/libANGLE_no_vulkan.inputdeps
+  source_file_part = Overlay_autogen.cpp
+  source_name_part = Overlay_autogen
+build obj/libANGLE_no_vulkan/Overlay_font_autogen.o: cxx /ninja-to-soong-angle/src/libANGLE/Overlay_font_autogen.cpp || phony/libANGLE_no_vulkan.inputdeps
+  source_file_part = Overlay_font_autogen.cpp
+  source_name_part = Overlay_font_autogen
+build obj/libANGLE_no_vulkan/PixelLocalStorage.o: cxx /ninja-to-soong-angle/src/libANGLE/PixelLocalStorage.cpp || phony/libANGLE_no_vulkan.inputdeps
+  source_file_part = PixelLocalStorage.cpp
+  source_name_part = PixelLocalStorage
+build obj/libANGLE_no_vulkan/Platform.o: cxx /ninja-to-soong-angle/src/libANGLE/Platform.cpp || phony/libANGLE_no_vulkan.inputdeps
+  source_file_part = Platform.cpp
+  source_name_part = Platform
+build obj/libANGLE_no_vulkan/Program.o: cxx /ninja-to-soong-angle/src/libANGLE/Program.cpp || phony/libANGLE_no_vulkan.inputdeps
+  source_file_part = Program.cpp
+  source_name_part = Program
+build obj/libANGLE_no_vulkan/ProgramExecutable.o: cxx /ninja-to-soong-angle/src/libANGLE/ProgramExecutable.cpp || phony/libANGLE_no_vulkan.inputdeps
+  source_file_part = ProgramExecutable.cpp
+  source_name_part = ProgramExecutable
+build obj/libANGLE_no_vulkan/ProgramLinkedResources.o: cxx /ninja-to-soong-angle/src/libANGLE/ProgramLinkedResources.cpp || phony/libANGLE_no_vulkan.inputdeps
+  source_file_part = ProgramLinkedResources.cpp
+  source_name_part = ProgramLinkedResources
+build obj/libANGLE_no_vulkan/ProgramPipeline.o: cxx /ninja-to-soong-angle/src/libANGLE/ProgramPipeline.cpp || phony/libANGLE_no_vulkan.inputdeps
+  source_file_part = ProgramPipeline.cpp
+  source_name_part = ProgramPipeline
+build obj/libANGLE_no_vulkan/Query.o: cxx /ninja-to-soong-angle/src/libANGLE/Query.cpp || phony/libANGLE_no_vulkan.inputdeps
+  source_file_part = Query.cpp
+  source_name_part = Query
+build obj/libANGLE_no_vulkan/Renderbuffer.o: cxx /ninja-to-soong-angle/src/libANGLE/Renderbuffer.cpp || phony/libANGLE_no_vulkan.inputdeps
+  source_file_part = Renderbuffer.cpp
+  source_name_part = Renderbuffer
+build obj/libANGLE_no_vulkan/ResourceManager.o: cxx /ninja-to-soong-angle/src/libANGLE/ResourceManager.cpp || phony/libANGLE_no_vulkan.inputdeps
+  source_file_part = ResourceManager.cpp
+  source_name_part = ResourceManager
+build obj/libANGLE_no_vulkan/Sampler.o: cxx /ninja-to-soong-angle/src/libANGLE/Sampler.cpp || phony/libANGLE_no_vulkan.inputdeps
+  source_file_part = Sampler.cpp
+  source_name_part = Sampler
+build obj/libANGLE_no_vulkan/Semaphore.o: cxx /ninja-to-soong-angle/src/libANGLE/Semaphore.cpp || phony/libANGLE_no_vulkan.inputdeps
+  source_file_part = Semaphore.cpp
+  source_name_part = Semaphore
+build obj/libANGLE_no_vulkan/Shader.o: cxx /ninja-to-soong-angle/src/libANGLE/Shader.cpp || phony/libANGLE_no_vulkan.inputdeps
+  source_file_part = Shader.cpp
+  source_name_part = Shader
+build obj/libANGLE_no_vulkan/ShareGroup.o: cxx /ninja-to-soong-angle/src/libANGLE/ShareGroup.cpp || phony/libANGLE_no_vulkan.inputdeps
+  source_file_part = ShareGroup.cpp
+  source_name_part = ShareGroup
+build obj/libANGLE_no_vulkan/State.o: cxx /ninja-to-soong-angle/src/libANGLE/State.cpp || phony/libANGLE_no_vulkan.inputdeps
+  source_file_part = State.cpp
+  source_name_part = State
+build obj/libANGLE_no_vulkan/Stream.o: cxx /ninja-to-soong-angle/src/libANGLE/Stream.cpp || phony/libANGLE_no_vulkan.inputdeps
+  source_file_part = Stream.cpp
+  source_name_part = Stream
+build obj/libANGLE_no_vulkan/Surface.o: cxx /ninja-to-soong-angle/src/libANGLE/Surface.cpp || phony/libANGLE_no_vulkan.inputdeps
+  source_file_part = Surface.cpp
+  source_name_part = Surface
+build obj/libANGLE_no_vulkan/Texture.o: cxx /ninja-to-soong-angle/src/libANGLE/Texture.cpp || phony/libANGLE_no_vulkan.inputdeps
+  source_file_part = Texture.cpp
+  source_name_part = Texture
+build obj/libANGLE_no_vulkan/Thread.o: cxx /ninja-to-soong-angle/src/libANGLE/Thread.cpp || phony/libANGLE_no_vulkan.inputdeps
+  source_file_part = Thread.cpp
+  source_name_part = Thread
+build obj/libANGLE_no_vulkan/TransformFeedback.o: cxx /ninja-to-soong-angle/src/libANGLE/TransformFeedback.cpp || phony/libANGLE_no_vulkan.inputdeps
+  source_file_part = TransformFeedback.cpp
+  source_name_part = TransformFeedback
+build obj/libANGLE_no_vulkan/Uniform.o: cxx /ninja-to-soong-angle/src/libANGLE/Uniform.cpp || phony/libANGLE_no_vulkan.inputdeps
+  source_file_part = Uniform.cpp
+  source_name_part = Uniform
+build obj/libANGLE_no_vulkan/VaryingPacking.o: cxx /ninja-to-soong-angle/src/libANGLE/VaryingPacking.cpp || phony/libANGLE_no_vulkan.inputdeps
+  source_file_part = VaryingPacking.cpp
+  source_name_part = VaryingPacking
+build obj/libANGLE_no_vulkan/VertexArray.o: cxx /ninja-to-soong-angle/src/libANGLE/VertexArray.cpp || phony/libANGLE_no_vulkan.inputdeps
+  source_file_part = VertexArray.cpp
+  source_name_part = VertexArray
+build obj/libANGLE_no_vulkan/VertexAttribute.o: cxx /ninja-to-soong-angle/src/libANGLE/VertexAttribute.cpp || phony/libANGLE_no_vulkan.inputdeps
+  source_file_part = VertexAttribute.cpp
+  source_name_part = VertexAttribute
+build obj/libANGLE_no_vulkan/angletypes.o: cxx /ninja-to-soong-angle/src/libANGLE/angletypes.cpp || phony/libANGLE_no_vulkan.inputdeps
+  source_file_part = angletypes.cpp
+  source_name_part = angletypes
+build obj/libANGLE_no_vulkan/es3_copy_conversion_table_autogen.o: cxx /ninja-to-soong-angle/src/libANGLE/es3_copy_conversion_table_autogen.cpp || phony/libANGLE_no_vulkan.inputdeps
+  source_file_part = es3_copy_conversion_table_autogen.cpp
+  source_name_part = es3_copy_conversion_table_autogen
+build obj/libANGLE_no_vulkan/format_map_autogen.o: cxx /ninja-to-soong-angle/src/libANGLE/format_map_autogen.cpp || phony/libANGLE_no_vulkan.inputdeps
+  source_file_part = format_map_autogen.cpp
+  source_name_part = format_map_autogen
+build obj/libANGLE_no_vulkan/formatutils.o: cxx /ninja-to-soong-angle/src/libANGLE/formatutils.cpp || phony/libANGLE_no_vulkan.inputdeps
+  source_file_part = formatutils.cpp
+  source_name_part = formatutils
+build obj/libANGLE_no_vulkan/gles_extensions_autogen.o: cxx /ninja-to-soong-angle/src/libANGLE/gles_extensions_autogen.cpp || phony/libANGLE_no_vulkan.inputdeps
+  source_file_part = gles_extensions_autogen.cpp
+  source_name_part = gles_extensions_autogen
+build obj/libANGLE_no_vulkan/queryconversions.o: cxx /ninja-to-soong-angle/src/libANGLE/queryconversions.cpp || phony/libANGLE_no_vulkan.inputdeps
+  source_file_part = queryconversions.cpp
+  source_name_part = queryconversions
+build obj/libANGLE_no_vulkan/queryutils.o: cxx /ninja-to-soong-angle/src/libANGLE/queryutils.cpp || phony/libANGLE_no_vulkan.inputdeps
+  source_file_part = queryutils.cpp
+  source_name_part = queryutils
+build obj/libANGLE_no_vulkan/BufferImpl.o: cxx /ninja-to-soong-angle/src/libANGLE/renderer/BufferImpl.cpp || phony/libANGLE_no_vulkan.inputdeps
+  source_file_part = BufferImpl.cpp
+  source_name_part = BufferImpl
+build obj/libANGLE_no_vulkan/ContextImpl.o: cxx /ninja-to-soong-angle/src/libANGLE/renderer/ContextImpl.cpp || phony/libANGLE_no_vulkan.inputdeps
+  source_file_part = ContextImpl.cpp
+  source_name_part = ContextImpl
+build obj/libANGLE_no_vulkan/DeviceImpl.o: cxx /ninja-to-soong-angle/src/libANGLE/renderer/DeviceImpl.cpp || phony/libANGLE_no_vulkan.inputdeps
+  source_file_part = DeviceImpl.cpp
+  source_name_part = DeviceImpl
+build obj/libANGLE_no_vulkan/DisplayImpl.o: cxx /ninja-to-soong-angle/src/libANGLE/renderer/DisplayImpl.cpp || phony/libANGLE_no_vulkan.inputdeps
+  source_file_part = DisplayImpl.cpp
+  source_name_part = DisplayImpl
+build obj/libANGLE_no_vulkan/EGLReusableSync.o: cxx /ninja-to-soong-angle/src/libANGLE/renderer/EGLReusableSync.cpp || phony/libANGLE_no_vulkan.inputdeps
+  source_file_part = EGLReusableSync.cpp
+  source_name_part = EGLReusableSync
+build obj/libANGLE_no_vulkan/EGLSyncImpl.o: cxx /ninja-to-soong-angle/src/libANGLE/renderer/EGLSyncImpl.cpp || phony/libANGLE_no_vulkan.inputdeps
+  source_file_part = EGLSyncImpl.cpp
+  source_name_part = EGLSyncImpl
+build obj/libANGLE_no_vulkan/Format_table_autogen.o: cxx /ninja-to-soong-angle/src/libANGLE/renderer/Format_table_autogen.cpp || phony/libANGLE_no_vulkan.inputdeps
+  source_file_part = Format_table_autogen.cpp
+  source_name_part = Format_table_autogen
+build obj/libANGLE_no_vulkan/FramebufferImpl.o: cxx /ninja-to-soong-angle/src/libANGLE/renderer/FramebufferImpl.cpp || phony/libANGLE_no_vulkan.inputdeps
+  source_file_part = FramebufferImpl.cpp
+  source_name_part = FramebufferImpl
+build obj/libANGLE_no_vulkan/ImageImpl.o: cxx /ninja-to-soong-angle/src/libANGLE/renderer/ImageImpl.cpp || phony/libANGLE_no_vulkan.inputdeps
+  source_file_part = ImageImpl.cpp
+  source_name_part = ImageImpl
+build obj/libANGLE_no_vulkan/ProgramImpl.o: cxx /ninja-to-soong-angle/src/libANGLE/renderer/ProgramImpl.cpp || phony/libANGLE_no_vulkan.inputdeps
+  source_file_part = ProgramImpl.cpp
+  source_name_part = ProgramImpl
+build obj/libANGLE_no_vulkan/ProgramPipelineImpl.o: cxx /ninja-to-soong-angle/src/libANGLE/renderer/ProgramPipelineImpl.cpp || phony/libANGLE_no_vulkan.inputdeps
+  source_file_part = ProgramPipelineImpl.cpp
+  source_name_part = ProgramPipelineImpl
+build obj/libANGLE_no_vulkan/QueryImpl.o: cxx /ninja-to-soong-angle/src/libANGLE/renderer/QueryImpl.cpp || phony/libANGLE_no_vulkan.inputdeps
+  source_file_part = QueryImpl.cpp
+  source_name_part = QueryImpl
+build obj/libANGLE_no_vulkan/RenderbufferImpl.o: cxx /ninja-to-soong-angle/src/libANGLE/renderer/RenderbufferImpl.cpp || phony/libANGLE_no_vulkan.inputdeps
+  source_file_part = RenderbufferImpl.cpp
+  source_name_part = RenderbufferImpl
+build obj/libANGLE_no_vulkan/ShaderImpl.o: cxx /ninja-to-soong-angle/src/libANGLE/renderer/ShaderImpl.cpp || phony/libANGLE_no_vulkan.inputdeps
+  source_file_part = ShaderImpl.cpp
+  source_name_part = ShaderImpl
+build obj/libANGLE_no_vulkan/SurfaceImpl.o: cxx /ninja-to-soong-angle/src/libANGLE/renderer/SurfaceImpl.cpp || phony/libANGLE_no_vulkan.inputdeps
+  source_file_part = SurfaceImpl.cpp
+  source_name_part = SurfaceImpl
+build obj/libANGLE_no_vulkan/TextureImpl.o: cxx /ninja-to-soong-angle/src/libANGLE/renderer/TextureImpl.cpp || phony/libANGLE_no_vulkan.inputdeps
+  source_file_part = TextureImpl.cpp
+  source_name_part = TextureImpl
+build obj/libANGLE_no_vulkan/TransformFeedbackImpl.o: cxx /ninja-to-soong-angle/src/libANGLE/renderer/TransformFeedbackImpl.cpp || phony/libANGLE_no_vulkan.inputdeps
+  source_file_part = TransformFeedbackImpl.cpp
+  source_name_part = TransformFeedbackImpl
+build obj/libANGLE_no_vulkan/VertexArrayImpl.o: cxx /ninja-to-soong-angle/src/libANGLE/renderer/VertexArrayImpl.cpp || phony/libANGLE_no_vulkan.inputdeps
+  source_file_part = VertexArrayImpl.cpp
+  source_name_part = VertexArrayImpl
+build obj/libANGLE_no_vulkan/driver_utils.o: cxx /ninja-to-soong-angle/src/libANGLE/renderer/driver_utils.cpp || phony/libANGLE_no_vulkan.inputdeps
+  source_file_part = driver_utils.cpp
+  source_name_part = driver_utils
+build obj/libANGLE_no_vulkan/load_functions_table_autogen.o: cxx /ninja-to-soong-angle/src/libANGLE/renderer/load_functions_table_autogen.cpp || phony/libANGLE_no_vulkan.inputdeps
+  source_file_part = load_functions_table_autogen.cpp
+  source_name_part = load_functions_table_autogen
+build obj/libANGLE_no_vulkan/renderer_utils.o: cxx /ninja-to-soong-angle/src/libANGLE/renderer/renderer_utils.cpp || phony/libANGLE_no_vulkan.inputdeps
+  source_file_part = renderer_utils.cpp
+  source_name_part = renderer_utils
+build obj/libANGLE_no_vulkan/validationEGL.o: cxx /ninja-to-soong-angle/src/libANGLE/validationEGL.cpp || phony/libANGLE_no_vulkan.inputdeps
+  source_file_part = validationEGL.cpp
+  source_name_part = validationEGL
+build obj/libANGLE_no_vulkan/validationES.o: cxx /ninja-to-soong-angle/src/libANGLE/validationES.cpp || phony/libANGLE_no_vulkan.inputdeps
+  source_file_part = validationES.cpp
+  source_name_part = validationES
+build obj/libANGLE_no_vulkan/validationES1.o: cxx /ninja-to-soong-angle/src/libANGLE/validationES1.cpp || phony/libANGLE_no_vulkan.inputdeps
+  source_file_part = validationES1.cpp
+  source_name_part = validationES1
+build obj/libANGLE_no_vulkan/validationES2.o: cxx /ninja-to-soong-angle/src/libANGLE/validationES2.cpp || phony/libANGLE_no_vulkan.inputdeps
+  source_file_part = validationES2.cpp
+  source_name_part = validationES2
+build obj/libANGLE_no_vulkan/validationES3.o: cxx /ninja-to-soong-angle/src/libANGLE/validationES3.cpp || phony/libANGLE_no_vulkan.inputdeps
+  source_file_part = validationES3.cpp
+  source_name_part = validationES3
+build obj/libANGLE_no_vulkan/validationES31.o: cxx /ninja-to-soong-angle/src/libANGLE/validationES31.cpp || phony/libANGLE_no_vulkan.inputdeps
+  source_file_part = validationES31.cpp
+  source_name_part = validationES31
+build obj/libANGLE_no_vulkan/validationES32.o: cxx /ninja-to-soong-angle/src/libANGLE/validationES32.cpp || phony/libANGLE_no_vulkan.inputdeps
+  source_file_part = validationES32.cpp
+  source_name_part = validationES32
+build obj/libANGLE_no_vulkan/validationESEXT.o: cxx /ninja-to-soong-angle/src/libANGLE/validationESEXT.cpp || phony/libANGLE_no_vulkan.inputdeps
+  source_file_part = validationESEXT.cpp
+  source_name_part = validationESEXT
+
+build phony/libANGLE_no_vulkan: phony obj/libANGLE_no_vulkan/AttributeMap.o obj/libANGLE_no_vulkan/BlobCache.o obj/libANGLE_no_vulkan/Buffer.o obj/libANGLE_no_vulkan/Caps.o obj/libANGLE_no_vulkan/Compiler.o obj/libANGLE_no_vulkan/Config.o obj/libANGLE_no_vulkan/Context.o obj/libANGLE_no_vulkan/ContextMutex.o obj/libANGLE_no_vulkan/Context_gles_1_0.o obj/libANGLE_no_vulkan/Debug.o obj/libANGLE_no_vulkan/Device.o obj/libANGLE_no_vulkan/Display.o obj/libANGLE_no_vulkan/EGLSync.o obj/libANGLE_no_vulkan/Error.o obj/libANGLE_no_vulkan/Fence.o obj/libANGLE_no_vulkan/Framebuffer.o obj/libANGLE_no_vulkan/FramebufferAttachment.o obj/libANGLE_no_vulkan/GLES1Renderer.o obj/libANGLE_no_vulkan/GLES1State.o obj/libANGLE_no_vulkan/GlobalMutex.o obj/libANGLE_no_vulkan/HandleAllocator.o obj/libANGLE_no_vulkan/Image.o obj/libANGLE_no_vulkan/ImageIndex.o obj/libANGLE_no_vulkan/IndexRangeCache.o obj/libANGLE_no_vulkan/LoggingAnnotator.o obj/libANGLE_no_vulkan/MemoryObject.o obj/libANGLE_no_vulkan/MemoryProgramCache.o obj/libANGLE_no_vulkan/MemoryShaderCache.o obj/libANGLE_no_vulkan/Observer.o obj/libANGLE_no_vulkan/Overlay.o obj/libANGLE_no_vulkan/OverlayWidgets.o obj/libANGLE_no_vulkan/Overlay_autogen.o obj/libANGLE_no_vulkan/Overlay_font_autogen.o obj/libANGLE_no_vulkan/PixelLocalStorage.o obj/libANGLE_no_vulkan/Platform.o obj/libANGLE_no_vulkan/Program.o obj/libANGLE_no_vulkan/ProgramExecutable.o obj/libANGLE_no_vulkan/ProgramLinkedResources.o obj/libANGLE_no_vulkan/ProgramPipeline.o obj/libANGLE_no_vulkan/Query.o obj/libANGLE_no_vulkan/Renderbuffer.o obj/libANGLE_no_vulkan/ResourceManager.o obj/libANGLE_no_vulkan/Sampler.o obj/libANGLE_no_vulkan/Semaphore.o obj/libANGLE_no_vulkan/Shader.o obj/libANGLE_no_vulkan/ShareGroup.o obj/libANGLE_no_vulkan/State.o obj/libANGLE_no_vulkan/Stream.o obj/libANGLE_no_vulkan/Surface.o obj/libANGLE_no_vulkan/Texture.o obj/libANGLE_no_vulkan/Thread.o obj/libANGLE_no_vulkan/TransformFeedback.o obj/libANGLE_no_vulkan/Uniform.o obj/libANGLE_no_vulkan/VaryingPacking.o obj/libANGLE_no_vulkan/VertexArray.o obj/libANGLE_no_vulkan/VertexAttribute.o obj/libANGLE_no_vulkan/angletypes.o obj/libANGLE_no_vulkan/es3_copy_conversion_table_autogen.o obj/libANGLE_no_vulkan/format_map_autogen.o obj/libANGLE_no_vulkan/formatutils.o obj/libANGLE_no_vulkan/gles_extensions_autogen.o obj/libANGLE_no_vulkan/queryconversions.o obj/libANGLE_no_vulkan/queryutils.o obj/libANGLE_no_vulkan/BufferImpl.o obj/libANGLE_no_vulkan/ContextImpl.o obj/libANGLE_no_vulkan/DeviceImpl.o obj/libANGLE_no_vulkan/DisplayImpl.o obj/libANGLE_no_vulkan/EGLReusableSync.o obj/libANGLE_no_vulkan/EGLSyncImpl.o obj/libANGLE_no_vulkan/Format_table_autogen.o obj/libANGLE_no_vulkan/FramebufferImpl.o obj/libANGLE_no_vulkan/ImageImpl.o obj/libANGLE_no_vulkan/ProgramImpl.o obj/libANGLE_no_vulkan/ProgramPipelineImpl.o obj/libANGLE_no_vulkan/QueryImpl.o obj/libANGLE_no_vulkan/RenderbufferImpl.o obj/libANGLE_no_vulkan/ShaderImpl.o obj/libANGLE_no_vulkan/SurfaceImpl.o obj/libANGLE_no_vulkan/TextureImpl.o obj/libANGLE_no_vulkan/TransformFeedbackImpl.o obj/libANGLE_no_vulkan/VertexArrayImpl.o obj/libANGLE_no_vulkan/driver_utils.o obj/libANGLE_no_vulkan/load_functions_table_autogen.o obj/libANGLE_no_vulkan/renderer_utils.o obj/libANGLE_no_vulkan/validationEGL.o obj/libANGLE_no_vulkan/validationES.o obj/libANGLE_no_vulkan/validationES1.o obj/libANGLE_no_vulkan/validationES2.o obj/libANGLE_no_vulkan/validationES3.o obj/libANGLE_no_vulkan/validationES31.o obj/libANGLE_no_vulkan/validationES32.o obj/libANGLE_no_vulkan/validationESEXT.o || obj/libangle_common.a obj/libangle_common_shader_state.a obj/libangle_gpu_info_util.a obj/libangle_image_util.a phony/angle_version_info phony/libANGLE_headers obj/libtranslator.a phony/angle_compression phony/third_party/abseil-cpp/absl/container/flat_hash_map phony/third_party/abseil-cpp/absl/container/hash_container_defaults phony/third_party/abseil-cpp/absl/container/hash_function_defaults phony/third_party/abseil-cpp/absl/hash/hash phony/third_party/abseil-cpp/absl/hash/city phony/third_party/abseil-cpp/absl/base/endian phony/third_party/abseil-cpp/absl/base/base phony/third_party/abseil-cpp/absl/base/log_severity phony/third_party/abseil-cpp/absl/base/raw_logging_internal phony/third_party/abseil-cpp/absl/base/spinlock_wait phony/third_party/abseil-cpp/absl/hash/low_level_hash phony/third_party/abseil-cpp/absl/numeric/int128 phony/third_party/abseil-cpp/absl/numeric/bits phony/third_party/abseil-cpp/absl/container/fixed_array phony/third_party/abseil-cpp/absl/base/throw_delegate phony/third_party/abseil-cpp/absl/strings/string_view phony/third_party/abseil-cpp/absl/strings/strings phony/third_party/abseil-cpp/absl/strings/charset phony/third_party/abseil-cpp/absl/strings/internal phony/third_party/abseil-cpp/absl/strings/cord phony/third_party/abseil-cpp/absl/strings/cord_internal phony/third_party/abseil-cpp/absl/container/inlined_vector phony/third_party/abseil-cpp/absl/container/inlined_vector_internal phony/third_party/abseil-cpp/absl/types/span phony/third_party/abseil-cpp/absl/crc/crc_cord_state phony/third_party/abseil-cpp/absl/crc/crc32c phony/third_party/abseil-cpp/absl/crc/cpu_detect phony/third_party/abseil-cpp/absl/crc/crc_internal phony/third_party/abseil-cpp/absl/strings/str_format phony/third_party/abseil-cpp/absl/strings/str_format_internal phony/third_party/abseil-cpp/absl/strings/cordz_info phony/third_party/abseil-cpp/absl/strings/cordz_functions phony/third_party/abseil-cpp/absl/profiling/exponential_biased phony/third_party/abseil-cpp/absl/strings/cordz_handle phony/third_party/abseil-cpp/absl/synchronization/synchronization phony/third_party/abseil-cpp/absl/synchronization/graphcycles_internal phony/third_party/abseil-cpp/absl/base/malloc_internal phony/third_party/abseil-cpp/absl/synchronization/kernel_timeout_internal phony/third_party/abseil-cpp/absl/time/time phony/third_party/abseil-cpp/absl/time/internal/cctz/civil_time phony/third_party/abseil-cpp/absl/time/internal/cctz/time_zone phony/third_party/abseil-cpp/absl/base/tracing_internal phony/third_party/abseil-cpp/absl/debugging/stacktrace phony/third_party/abseil-cpp/absl/debugging/debugging_internal phony/third_party/abseil-cpp/absl/debugging/symbolize phony/third_party/abseil-cpp/absl/debugging/demangle_internal phony/third_party/abseil-cpp/absl/debugging/demangle_rust phony/third_party/abseil-cpp/absl/debugging/decode_rust_punycode phony/third_party/abseil-cpp/absl/debugging/bounded_utf8_length_sequence phony/third_party/abseil-cpp/absl/debugging/utf8_for_code_point phony/third_party/abseil-cpp/absl/strings/cordz_update_scope phony/third_party/abseil-cpp/absl/container/raw_hash_map phony/third_party/abseil-cpp/absl/container/raw_hash_set phony/third_party/abseil-cpp/absl/container/hashtable_control_bytes phony/third_party/abseil-cpp/absl/container/hashtablez_sampler phony/third_party/abseil-cpp/absl/profiling/sample_recorder phony/third_party/abseil-cpp/absl/container/flat_hash_set phony/xxhash phony/src/common/vulkan/angle_libvulkan_loader phony/src/common/vulkan/angle_vulkan_icd phony/src/common/vulkan/angle_vulkan_headers phony/src/third_party/volk/volk phony/angle_image_util_headers phony/angle_version obj/libpreprocessor.a phony/src/common/spirv/angle_spirv_headers phony/src/common/spirv/angle_spirv_base phony/src/common/spirv/angle_spirv_builder obj/third_party/spirv-tools/src/libspvtools_val.a obj/third_party/spirv-tools/src/libspvtools.a obj/third_party/zlib/google/libcompression_utils_portable.a obj/third_party/zlib/libchrome_zlib.a phony/third_party/zlib/zlib_adler32_simd phony/third_party/zlib/zlib_inflate_chunk_simd phony/third_party/zlib/zlib_arm_crc32 phony/third_party/cpu_features/ndk_compat phony/third_party/cpu_features/cpuinfo

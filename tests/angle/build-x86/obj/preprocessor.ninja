@@ -1,0 +1,47 @@
+defines = -D__STDC_CONSTANT_MACROS -D__STDC_FORMAT_MACROS -D_FORTIFY_SOURCE=2 -D_GNU_SOURCE -DANDROID -D__ANDROID_UNAVAILABLE_SYMBOLS_ARE_WEAK__ -DHAVE_SYS_UIO_H -DANDROID_NDK_VERSION_ROLL=r28_1 -DCR_CLANG_REVISION=\"llvmorg-21-init-9266-g09006611-1\" -D_LIBCPP_HARDENING_MODE=_LIBCPP_HARDENING_MODE_NONE -DNDEBUG -DNVALGRIND -DDYNAMIC_ANNOTATIONS_ENABLED=0 -DANGLE_ENABLE_SHARE_CONTEXT_LOCK=1 -DANGLE_USE_ANDROID_TLS_SLOT=1 -DANGLE_ENABLE_GLOBAL_MUTEX_RECURSION=1 -DANGLE_ENABLE_GLOBAL_MUTEX_LOAD_TIME_ALLOCATE=1 -DANGLE_ENABLE_CONTEXT_MUTEX=1 -DANGLE_ENABLE_CONTEXT_MUTEX_RECURSION=1 -DANGLE_TEST_ENABLE_SYSTEM_EGL -DANGLE_USE_ABSEIL -DABSL_ALLOCATOR_NOTHROW=1
+include_dirs = -I/ninja-to-soong-angle/include -I/ninja-to-soong-angle/src -I/ninja-to-soong-angle/src/common/base -I/ninja-to-soong-angle/src/common/third_party/xxhash -I/ninja-to-soong-angle/third_party/abseil-cpp
+cflags = -Wall -Wextra -Wimplicit-fallthrough -Wextra-semi -Wunreachable-code-aggressive -Wthread-safety -Wgnu -Wno-gnu-anonymous-struct -Wno-gnu-conditional-omitted-operand -Wno-gnu-include-next -Wno-gnu-label-as-value -Wno-gnu-redeclared-enum -Wno-gnu-statement-expression -Wno-gnu-zero-variadic-macro-arguments -Wno-zero-length-array -Wunguarded-availability -Wno-missing-field-initializers -Wno-unused-parameter -Wno-psabi -Wloop-analysis -Wno-unneeded-internal-declaration -Wno-cast-function-type -Wno-thread-safety-reference-return -Wno-nontrivial-memcall -Wshadow -Werror -fno-delete-null-pointer-checks -fno-strict-overflow -fno-ident -fno-strict-aliasing -fstack-protector -funwind-tables -fPIC -fcolor-diagnostics -fmerge-all-constants -fno-sized-deallocation -fcrash-diagnostics-dir=/ninja-to-soong-angle/tools/clang/crashreports -mllvm -instcombine-lower-dbg-declare=0 -mllvm -split-threshold-for-reg-with-hint=0 -ffp-contract=off -fextend-variable-liveness=none -ffunction-sections -fno-short-enums --target=i686-linux-android26 -m32 -mfpmath=sse -msse3 -Wno-builtin-macro-redefined -D__DATE__= -D__TIME__= -D__TIMESTAMP__= -ffile-compilation-dir=. -no-canonical-prefixes -ftrivial-auto-var-init=pattern -fno-omit-frame-pointer -momit-leaf-frame-pointer -g0 -fvisibility=hidden -Wheader-hygiene -Wstring-conversion -Wtautological-overlap-compare -Wbad-function-cast -Wconditional-uninitialized -Wextra-semi-stmt -Wfloat-conversion -Winconsistent-missing-destructor-override -Wmissing-field-initializers -Wnewline-eof -Wnon-virtual-dtor -Wredundant-parens -Wreturn-std-move -Wshadow -Wshadow-field -Wtautological-type-limit-compare -Wundefined-reinterpret-cast -Wunneeded-internal-declaration -Wunused-but-set-variable -Wsuggest-destructor-override -Wsuggest-override -Wparentheses -Wrange-loop-analysis -Wstrict-prototypes -Wunreachable-code-aggressive -Wshorten-64-to-32 -O2 -fdata-sections -ffunction-sections -fno-unique-section-names -fno-math-errno -Wno-unreachable-code-break
+cflags_cc = -Wno-invalid-offsetof -Wenum-compare-conditional -Wno-nullability-completeness -std=c++20 -Wno-trigraphs -gsimple-template-names -fno-exceptions -fno-rtti --sysroot=/ninja-to-soong-angle/third_party/android_toolchain/ndk/toolchains/llvm/prebuilt/linux-x86_64/sysroot -fvisibility-inlines-hidden
+label_name = preprocessor
+root_out_dir = .
+target_out_dir = obj
+target_output_name = libpreprocessor
+
+build obj/preprocessor/DiagnosticsBase.o: cxx /ninja-to-soong-angle/src/compiler/preprocessor/DiagnosticsBase.cpp
+  source_file_part = DiagnosticsBase.cpp
+  source_name_part = DiagnosticsBase
+build obj/preprocessor/DirectiveHandlerBase.o: cxx /ninja-to-soong-angle/src/compiler/preprocessor/DirectiveHandlerBase.cpp
+  source_file_part = DirectiveHandlerBase.cpp
+  source_name_part = DirectiveHandlerBase
+build obj/preprocessor/DirectiveParser.o: cxx /ninja-to-soong-angle/src/compiler/preprocessor/DirectiveParser.cpp
+  source_file_part = DirectiveParser.cpp
+  source_name_part = DirectiveParser
+build obj/preprocessor/Input.o: cxx /ninja-to-soong-angle/src/compiler/preprocessor/Input.cpp
+  source_file_part = Input.cpp
+  source_name_part = Input
+build obj/preprocessor/Lexer.o: cxx /ninja-to-soong-angle/src/compiler/preprocessor/Lexer.cpp
+  source_file_part = Lexer.cpp
+  source_name_part = Lexer
+build obj/preprocessor/Macro.o: cxx /ninja-to-soong-angle/src/compiler/preprocessor/Macro.cpp
+  source_file_part = Macro.cpp
+  source_name_part = Macro
+build obj/preprocessor/MacroExpander.o: cxx /ninja-to-soong-angle/src/compiler/preprocessor/MacroExpander.cpp
+  source_file_part = MacroExpander.cpp
+  source_name_part = MacroExpander
+build obj/preprocessor/Preprocessor.o: cxx /ninja-to-soong-angle/src/compiler/preprocessor/Preprocessor.cpp
+  source_file_part = Preprocessor.cpp
+  source_name_part = Preprocessor
+build obj/preprocessor/Token.o: cxx /ninja-to-soong-angle/src/compiler/preprocessor/Token.cpp
+  source_file_part = Token.cpp
+  source_name_part = Token
+build obj/preprocessor/preprocessor_lex_autogen.o: cxx /ninja-to-soong-angle/src/compiler/preprocessor/preprocessor_lex_autogen.cpp
+  source_file_part = preprocessor_lex_autogen.cpp
+  source_name_part = preprocessor_lex_autogen
+build obj/preprocessor/preprocessor_tab_autogen.o: cxx /ninja-to-soong-angle/src/compiler/preprocessor/preprocessor_tab_autogen.cpp
+  source_file_part = preprocessor_tab_autogen.cpp
+  source_name_part = preprocessor_tab_autogen
+
+build obj/libpreprocessor.a: alink obj/preprocessor/DiagnosticsBase.o obj/preprocessor/DirectiveHandlerBase.o obj/preprocessor/DirectiveParser.o obj/preprocessor/Input.o obj/preprocessor/Lexer.o obj/preprocessor/Macro.o obj/preprocessor/MacroExpander.o obj/preprocessor/Preprocessor.o obj/preprocessor/Token.o obj/preprocessor/preprocessor_lex_autogen.o obj/preprocessor/preprocessor_tab_autogen.o | /ninja-to-soong-angle/third_party/llvm-build/Release+Asserts/lib/clang/21/lib/linux/libclang_rt.builtins-i686-android.a || obj/libangle_common.a phony/third_party/abseil-cpp/absl/container/flat_hash_map phony/third_party/abseil-cpp/absl/container/hash_container_defaults phony/third_party/abseil-cpp/absl/container/hash_function_defaults phony/third_party/abseil-cpp/absl/hash/hash phony/third_party/abseil-cpp/absl/hash/city phony/third_party/abseil-cpp/absl/base/endian phony/third_party/abseil-cpp/absl/base/base phony/third_party/abseil-cpp/absl/base/log_severity phony/third_party/abseil-cpp/absl/base/raw_logging_internal phony/third_party/abseil-cpp/absl/base/spinlock_wait phony/third_party/abseil-cpp/absl/hash/low_level_hash phony/third_party/abseil-cpp/absl/numeric/int128 phony/third_party/abseil-cpp/absl/numeric/bits phony/third_party/abseil-cpp/absl/container/fixed_array phony/third_party/abseil-cpp/absl/base/throw_delegate phony/third_party/abseil-cpp/absl/strings/string_view phony/third_party/abseil-cpp/absl/strings/strings phony/third_party/abseil-cpp/absl/strings/charset phony/third_party/abseil-cpp/absl/strings/internal phony/third_party/abseil-cpp/absl/strings/cord phony/third_party/abseil-cpp/absl/strings/cord_internal phony/third_party/abseil-cpp/absl/container/inlined_vector phony/third_party/abseil-cpp/absl/container/inlined_vector_internal phony/third_party/abseil-cpp/absl/types/span phony/third_party/abseil-cpp/absl/crc/crc_cord_state phony/third_party/abseil-cpp/absl/crc/crc32c phony/third_party/abseil-cpp/absl/crc/cpu_detect phony/third_party/abseil-cpp/absl/crc/crc_internal phony/third_party/abseil-cpp/absl/strings/str_format phony/third_party/abseil-cpp/absl/strings/str_format_internal phony/third_party/abseil-cpp/absl/strings/cordz_info phony/third_party/abseil-cpp/absl/strings/cordz_functions phony/third_party/abseil-cpp/absl/profiling/exponential_biased phony/third_party/abseil-cpp/absl/strings/cordz_handle phony/third_party/abseil-cpp/absl/synchronization/synchronization phony/third_party/abseil-cpp/absl/synchronization/graphcycles_internal phony/third_party/abseil-cpp/absl/base/malloc_internal phony/third_party/abseil-cpp/absl/synchronization/kernel_timeout_internal phony/third_party/abseil-cpp/absl/time/time phony/third_party/abseil-cpp/absl/time/internal/cctz/civil_time phony/third_party/abseil-cpp/absl/time/internal/cctz/time_zone phony/third_party/abseil-cpp/absl/base/tracing_internal phony/third_party/abseil-cpp/absl/debugging/stacktrace phony/third_party/abseil-cpp/absl/debugging/debugging_internal phony/third_party/abseil-cpp/absl/debugging/symbolize phony/third_party/abseil-cpp/absl/debugging/demangle_internal phony/third_party/abseil-cpp/absl/debugging/demangle_rust phony/third_party/abseil-cpp/absl/debugging/decode_rust_punycode phony/third_party/abseil-cpp/absl/debugging/bounded_utf8_length_sequence phony/third_party/abseil-cpp/absl/debugging/utf8_for_code_point phony/third_party/abseil-cpp/absl/strings/cordz_update_scope phony/third_party/abseil-cpp/absl/container/raw_hash_map phony/third_party/abseil-cpp/absl/container/raw_hash_set phony/third_party/abseil-cpp/absl/container/hashtable_control_bytes phony/third_party/abseil-cpp/absl/container/hashtablez_sampler phony/third_party/abseil-cpp/absl/profiling/sample_recorder phony/third_party/abseil-cpp/absl/container/flat_hash_set phony/xxhash
+  arflags = -T -S
+  output_extension = .a
+  output_dir = obj

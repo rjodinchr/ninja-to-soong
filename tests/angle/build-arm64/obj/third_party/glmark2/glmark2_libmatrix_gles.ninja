@@ -1,0 +1,25 @@
+defines = -DUSE_UDEV -DUSE_AURA=1 -DUSE_GLIB=1 -DUSE_OZONE=1 -D__STDC_CONSTANT_MACROS -D__STDC_FORMAT_MACROS -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_LARGEFILE64_SOURCE -D_GNU_SOURCE -DCR_CLANG_REVISION=\"llvmorg-21-init-9266-g09006611-1\" -D_LIBCPP_HARDENING_MODE=_LIBCPP_HARDENING_MODE_EXTENSIVE -DCOMPONENT_BUILD -D_LIBCPP_INSTRUMENTED_WITH_ASAN=0 -DCR_LIBCXX_REVISION=62724eb55f2ad7389088265952b1bb62cb89c73b -DCR_SYSROOT_KEY=20250129T203412Z-1 -D_DEBUG -DDYNAMIC_ANNOTATIONS_ENABLED=1 -DGLMARK_DATA_PATH=\"/ninja-to-soong-angle/third_party/glmark2/src/data\" -DGLMARK2_USE_GLESv2
+include_dirs = -I/ninja-to-soong-angle -Igen -I/ninja-to-soong-angle/buildtools/third_party/libc++ -I/ninja-to-soong-angle/third_party/glmark2/src/src/libmatrix -I/ninja-to-soong-angle/third_party/glmark2/src/src -I/ninja-to-soong-angle/third_party/glmark2/src/src/glad/include
+cflags = -Wall -Wextra -Wimplicit-fallthrough -Wextra-semi -Wunreachable-code-aggressive -Wthread-safety -Wgnu -Wno-gnu-anonymous-struct -Wno-gnu-conditional-omitted-operand -Wno-gnu-include-next -Wno-gnu-label-as-value -Wno-gnu-redeclared-enum -Wno-gnu-statement-expression -Wno-gnu-zero-variadic-macro-arguments -Wno-zero-length-array -Wno-missing-field-initializers -Wno-unused-parameter -Wno-psabi -Wloop-analysis -Wno-unneeded-internal-declaration -Wno-cast-function-type -Wno-thread-safety-reference-return -Wno-nontrivial-memcall -Wshadow -Werror -fno-delete-null-pointer-checks -fno-strict-overflow -fno-ident -fno-strict-aliasing -fstack-protector -funwind-tables -fPIC -pthread -fcolor-diagnostics -fmerge-all-constants -fno-sized-deallocation -fcrash-diagnostics-dir=/ninja-to-soong-angle/tools/clang/crashreports -mllvm -instcombine-lower-dbg-declare=0 -mllvm -split-threshold-for-reg-with-hint=0 -ffp-contract=off -Wa,--crel,--allow-experimental-crel -fextend-variable-liveness=none -fcomplete-member-pointers -m64 -msse3 -Wno-builtin-macro-redefined -D__DATE__= -D__TIME__= -D__TIMESTAMP__= -ffile-compilation-dir=. -no-canonical-prefixes -ftrivial-auto-var-init=pattern -O0 -fno-omit-frame-pointer -gdwarf-4 -g2 -gdwarf-aranges -gsplit-dwarf -ggnu-pubnames -Xclang -fuse-ctor-homing -fvisibility=hidden -Wheader-hygiene -Wstring-conversion -Wtautological-overlap-compare -Wno-shadow
+cflags_cc = -Wno-implicit-fallthrough -Wno-invalid-offsetof -Wenum-compare-conditional -Wno-nullability-completeness -std=c++20 -Wno-trigraphs -gsimple-template-names -fno-rtti -nostdinc++ -isystem/ninja-to-soong-angle/third_party/libc++/src/include -isystem/ninja-to-soong-angle/third_party/libc++abi/src/include --sysroot=/ninja-to-soong-angle/build/linux/debian_bullseye_amd64-sysroot -fvisibility-inlines-hidden -fexceptions
+label_name = glmark2_libmatrix_gles
+target_out_dir = obj/third_party/glmark2
+target_output_name = glmark2_libmatrix_gles
+
+build obj/third_party/glmark2/glmark2_libmatrix_gles/log.o: cxx /ninja-to-soong-angle/third_party/glmark2/src/src/libmatrix/log.cc
+  source_file_part = log.cc
+  source_name_part = log
+build obj/third_party/glmark2/glmark2_libmatrix_gles/mat.o: cxx /ninja-to-soong-angle/third_party/glmark2/src/src/libmatrix/mat.cc
+  source_file_part = mat.cc
+  source_name_part = mat
+build obj/third_party/glmark2/glmark2_libmatrix_gles/program.o: cxx /ninja-to-soong-angle/third_party/glmark2/src/src/libmatrix/program.cc
+  source_file_part = program.cc
+  source_name_part = program
+build obj/third_party/glmark2/glmark2_libmatrix_gles/shader-source.o: cxx /ninja-to-soong-angle/third_party/glmark2/src/src/libmatrix/shader-source.cc
+  source_file_part = shader-source.cc
+  source_name_part = shader-source
+build obj/third_party/glmark2/glmark2_libmatrix_gles/util.o: cxx /ninja-to-soong-angle/third_party/glmark2/src/src/libmatrix/util.cc
+  source_file_part = util.cc
+  source_name_part = util
+
+build phony/third_party/glmark2/glmark2_libmatrix_gles: phony obj/third_party/glmark2/glmark2_libmatrix_gles/log.o obj/third_party/glmark2/glmark2_libmatrix_gles/mat.o obj/third_party/glmark2/glmark2_libmatrix_gles/program.o obj/third_party/glmark2/glmark2_libmatrix_gles/shader-source.o obj/third_party/glmark2/glmark2_libmatrix_gles/util.o || phony/third_party/glmark2/glmark2_gles phony/third_party/glmark2/glmark2_glad_gles

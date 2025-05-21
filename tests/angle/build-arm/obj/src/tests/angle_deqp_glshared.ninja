@@ -1,0 +1,110 @@
+defines = -D_GNU_SOURCE -DANDROID -D__ANDROID_UNAVAILABLE_SYMBOLS_ARE_WEAK__ -DHAVE_SYS_UIO_H -DANDROID_NDK_VERSION_ROLL=r28_1 -DCR_CLANG_REVISION=\"llvmorg-21-init-9266-g09006611-1\" -D_LIBCPP_HARDENING_MODE=_LIBCPP_HARDENING_MODE_NONE -DNDEBUG -DNVALGRIND -DDYNAMIC_ANNOTATIONS_ENABLED=0 -DANGLE_ENABLE_SHARE_CONTEXT_LOCK=1 -DANGLE_USE_ANDROID_TLS_SLOT=1 -DANGLE_ENABLE_GLOBAL_MUTEX_RECURSION=1 -DANGLE_ENABLE_GLOBAL_MUTEX_LOAD_TIME_ALLOCATE=1 -DANGLE_ENABLE_CONTEXT_MUTEX=1 -DANGLE_ENABLE_CONTEXT_MUTEX_RECURSION=1 -DANGLE_TEST_ENABLE_SYSTEM_EGL -DDEQP_SUPPORT_GLES31=1 -DDEQP_SUPPORT_GLES3=1 -DDEQP_SUPPORT_GLES2=1 -DDEQP_SUPPORT_EGL=1 -DDEQP_TARGET_NAME=\"angle\" -DDEQP_GLES31_RUNTIME_LOAD=1 -DDEQP_GLES3_RUNTIME_LOAD=1 -DDEQP_GLES2_RUNTIME_LOAD=1 -DQP_SUPPORT_PNG=1 -D_HAS_EXCEPTIONS=1 -D_MBCS -DANGLE_DEQP_DATA_DIR=\"gen/vk_gl_cts_data/data\" -DDE_ANDROID_API=26 -D_XOPEN_SOURCE=600 -DDE_FENV_ACCESS_ON=
+include_dirs = -I/ninja-to-soong-angle/include -I/ninja-to-soong-angle/src -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/modules/glshared -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/framework/egl/wrapper -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/framework/opengl -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/framework/opengl/simplereference -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/framework/opengl/wrapper -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/framework/common -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/framework/randomshaders -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/framework/referencerenderer -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/executor -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/execserver -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/framework/platform/lnx -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/framework/platform/lnx/X11 -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/framework/platform/null -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/framework/platform/win32 -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/framework/xexml -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/modules/gles2 -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/modules/gles2/functional -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/modules/gles2/accuracy -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/modules/gles2/performance -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/modules/gles2/stress -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/modules/gles2/usecases -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/modules/gles3 -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/modules/gles3/functional -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/modules/gles3/accuracy -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/modules/gles3/performance -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/modules/gles3/stress -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/modules/gles3/usecases -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/modules/gles31 -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/modules/gles31/functional -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/modules/gles31/stress -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/modules/glusecases -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/modules/egl -I/ninja-to-soong-angle/third_party/glslang/src -I/ninja-to-soong-angle/third_party/spirv-tools/src -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/framework/platform/android -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/framework/delibs/decpp -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/framework/delibs/debase -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/framework/delibs/depool -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/framework/delibs/dethread -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/framework/delibs/deutil -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/framework/delibs/destream -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/framework/qphelper -I/ninja-to-soong-angle/third_party/libpng/src
+cflags = -Wno-nonportable-include-path -fno-delete-null-pointer-checks -fno-strict-overflow -fno-ident -fno-strict-aliasing -fstack-protector -funwind-tables -fPIC -fcolor-diagnostics -fmerge-all-constants -fno-sized-deallocation -fcrash-diagnostics-dir=/ninja-to-soong-angle/tools/clang/crashreports -mllvm -instcombine-lower-dbg-declare=0 -mllvm -split-threshold-for-reg-with-hint=0 -ffp-contract=off -fextend-variable-liveness=none -ffunction-sections -fno-short-enums --target=arm-linux-androideabi26 -march=armv7-a -mfloat-abi=softfp -Wno-builtin-macro-redefined -D__DATE__= -D__TIME__= -D__TIMESTAMP__= -ffile-compilation-dir=. -no-canonical-prefixes -mfpu=neon -mthumb -ftrivial-auto-var-init=pattern -fomit-frame-pointer -g0 -fvisibility=hidden -Wheader-hygiene -Wstring-conversion -Wtautological-overlap-compare -O2 -fdata-sections -ffunction-sections -fno-unique-section-names -fno-math-errno -Wall -Wno-unused-variable -Wno-c++11-narrowing -Wno-unused-but-set-variable -Wunguarded-availability -Wno-missing-field-initializers -Wno-unused-parameter -Wno-psabi -Wloop-analysis -Wno-unneeded-internal-declaration -Wno-cast-function-type -Wno-thread-safety-reference-return -Wno-nontrivial-memcall -Werror -Wno-tautological-constant-out-of-range-compare
+cflags_cc = -std=c++20 -Wno-trigraphs -gsimple-template-names --sysroot=/ninja-to-soong-angle/third_party/android_toolchain/ndk/toolchains/llvm/prebuilt/linux-x86_64/sysroot -fvisibility-inlines-hidden -Wno-sizeof-array-div -Wno-string-conversion -Wno-unused-function -Wno-unused-local-typedef -Wno-unused-result -fwrapv -fexceptions -Wno-invalid-offsetof -Wenum-compare-conditional -Wno-nullability-completeness
+label_name = angle_deqp_glshared
+root_out_dir = .
+target_out_dir = obj/src/tests
+target_output_name = angle_deqp_glshared
+
+build obj/src/tests/angle_deqp_glshared/glsAttributeLocationTests.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/modules/glshared/glsAttributeLocationTests.cpp
+  source_file_part = glsAttributeLocationTests.cpp
+  source_name_part = glsAttributeLocationTests
+build obj/src/tests/angle_deqp_glshared/glsBufferTestUtil.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/modules/glshared/glsBufferTestUtil.cpp
+  source_file_part = glsBufferTestUtil.cpp
+  source_name_part = glsBufferTestUtil
+build obj/src/tests/angle_deqp_glshared/glsBuiltinPrecisionTests.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/modules/glshared/glsBuiltinPrecisionTests.cpp
+  source_file_part = glsBuiltinPrecisionTests.cpp
+  source_name_part = glsBuiltinPrecisionTests
+build obj/src/tests/angle_deqp_glshared/glsCalibration.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/modules/glshared/glsCalibration.cpp
+  source_file_part = glsCalibration.cpp
+  source_name_part = glsCalibration
+build obj/src/tests/angle_deqp_glshared/glsDrawTest.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/modules/glshared/glsDrawTest.cpp
+  source_file_part = glsDrawTest.cpp
+  source_name_part = glsDrawTest
+build obj/src/tests/angle_deqp_glshared/glsFboCompletenessTests.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/modules/glshared/glsFboCompletenessTests.cpp
+  source_file_part = glsFboCompletenessTests.cpp
+  source_name_part = glsFboCompletenessTests
+build obj/src/tests/angle_deqp_glshared/glsFboUtil.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/modules/glshared/glsFboUtil.cpp
+  source_file_part = glsFboUtil.cpp
+  source_name_part = glsFboUtil
+build obj/src/tests/angle_deqp_glshared/glsFragOpInteractionCase.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/modules/glshared/glsFragOpInteractionCase.cpp
+  source_file_part = glsFragOpInteractionCase.cpp
+  source_name_part = glsFragOpInteractionCase
+build obj/src/tests/angle_deqp_glshared/glsFragmentOpUtil.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/modules/glshared/glsFragmentOpUtil.cpp
+  source_file_part = glsFragmentOpUtil.cpp
+  source_name_part = glsFragmentOpUtil
+build obj/src/tests/angle_deqp_glshared/glsInteractionTestUtil.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/modules/glshared/glsInteractionTestUtil.cpp
+  source_file_part = glsInteractionTestUtil.cpp
+  source_name_part = glsInteractionTestUtil
+build obj/src/tests/angle_deqp_glshared/glsLifetimeTests.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/modules/glshared/glsLifetimeTests.cpp
+  source_file_part = glsLifetimeTests.cpp
+  source_name_part = glsLifetimeTests
+build obj/src/tests/angle_deqp_glshared/glsLongStressCase.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/modules/glshared/glsLongStressCase.cpp
+  source_file_part = glsLongStressCase.cpp
+  source_name_part = glsLongStressCase
+build obj/src/tests/angle_deqp_glshared/glsLongStressTestUtil.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/modules/glshared/glsLongStressTestUtil.cpp
+  source_file_part = glsLongStressTestUtil.cpp
+  source_name_part = glsLongStressTestUtil
+build obj/src/tests/angle_deqp_glshared/glsMemoryStressCase.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/modules/glshared/glsMemoryStressCase.cpp
+  source_file_part = glsMemoryStressCase.cpp
+  source_name_part = glsMemoryStressCase
+build obj/src/tests/angle_deqp_glshared/glsRandomShaderCase.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/modules/glshared/glsRandomShaderCase.cpp
+  source_file_part = glsRandomShaderCase.cpp
+  source_name_part = glsRandomShaderCase
+build obj/src/tests/angle_deqp_glshared/glsRandomShaderProgram.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/modules/glshared/glsRandomShaderProgram.cpp
+  source_file_part = glsRandomShaderProgram.cpp
+  source_name_part = glsRandomShaderProgram
+build obj/src/tests/angle_deqp_glshared/glsRandomUniformBlockCase.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/modules/glshared/glsRandomUniformBlockCase.cpp
+  source_file_part = glsRandomUniformBlockCase.cpp
+  source_name_part = glsRandomUniformBlockCase
+build obj/src/tests/angle_deqp_glshared/glsSamplerObjectTest.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/modules/glshared/glsSamplerObjectTest.cpp
+  source_file_part = glsSamplerObjectTest.cpp
+  source_name_part = glsSamplerObjectTest
+build obj/src/tests/angle_deqp_glshared/glsScissorTests.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/modules/glshared/glsScissorTests.cpp
+  source_file_part = glsScissorTests.cpp
+  source_name_part = glsScissorTests
+build obj/src/tests/angle_deqp_glshared/glsShaderConstExprTests.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/modules/glshared/glsShaderConstExprTests.cpp
+  source_file_part = glsShaderConstExprTests.cpp
+  source_name_part = glsShaderConstExprTests
+build obj/src/tests/angle_deqp_glshared/glsShaderExecUtil.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/modules/glshared/glsShaderExecUtil.cpp
+  source_file_part = glsShaderExecUtil.cpp
+  source_name_part = glsShaderExecUtil
+build obj/src/tests/angle_deqp_glshared/glsShaderLibrary.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/modules/glshared/glsShaderLibrary.cpp
+  source_file_part = glsShaderLibrary.cpp
+  source_name_part = glsShaderLibrary
+build obj/src/tests/angle_deqp_glshared/glsShaderLibraryCase.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/modules/glshared/glsShaderLibraryCase.cpp
+  source_file_part = glsShaderLibraryCase.cpp
+  source_name_part = glsShaderLibraryCase
+build obj/src/tests/angle_deqp_glshared/glsShaderPerformanceCase.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/modules/glshared/glsShaderPerformanceCase.cpp
+  source_file_part = glsShaderPerformanceCase.cpp
+  source_name_part = glsShaderPerformanceCase
+build obj/src/tests/angle_deqp_glshared/glsShaderPerformanceMeasurer.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/modules/glshared/glsShaderPerformanceMeasurer.cpp
+  source_file_part = glsShaderPerformanceMeasurer.cpp
+  source_name_part = glsShaderPerformanceMeasurer
+build obj/src/tests/angle_deqp_glshared/glsShaderRenderCase.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/modules/glshared/glsShaderRenderCase.cpp
+  source_file_part = glsShaderRenderCase.cpp
+  source_name_part = glsShaderRenderCase
+build obj/src/tests/angle_deqp_glshared/glsStateChangePerfTestCases.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/modules/glshared/glsStateChangePerfTestCases.cpp
+  source_file_part = glsStateChangePerfTestCases.cpp
+  source_name_part = glsStateChangePerfTestCases
+build obj/src/tests/angle_deqp_glshared/glsStateQueryUtil.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/modules/glshared/glsStateQueryUtil.cpp
+  source_file_part = glsStateQueryUtil.cpp
+  source_name_part = glsStateQueryUtil
+build obj/src/tests/angle_deqp_glshared/glsTextureBufferCase.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/modules/glshared/glsTextureBufferCase.cpp
+  source_file_part = glsTextureBufferCase.cpp
+  source_name_part = glsTextureBufferCase
+build obj/src/tests/angle_deqp_glshared/glsTextureStateQueryTests.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/modules/glshared/glsTextureStateQueryTests.cpp
+  source_file_part = glsTextureStateQueryTests.cpp
+  source_name_part = glsTextureStateQueryTests
+build obj/src/tests/angle_deqp_glshared/glsTextureTestUtil.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/modules/glshared/glsTextureTestUtil.cpp
+  source_file_part = glsTextureTestUtil.cpp
+  source_name_part = glsTextureTestUtil
+build obj/src/tests/angle_deqp_glshared/glsUniformBlockCase.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/modules/glshared/glsUniformBlockCase.cpp
+  source_file_part = glsUniformBlockCase.cpp
+  source_name_part = glsUniformBlockCase
+build obj/src/tests/angle_deqp_glshared/glsVertexArrayTests.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/modules/glshared/glsVertexArrayTests.cpp
+  source_file_part = glsVertexArrayTests.cpp
+  source_name_part = glsVertexArrayTests
+
+build phony/src/tests/angle_deqp_glshared: phony obj/src/tests/angle_deqp_glshared/glsAttributeLocationTests.o obj/src/tests/angle_deqp_glshared/glsBufferTestUtil.o obj/src/tests/angle_deqp_glshared/glsBuiltinPrecisionTests.o obj/src/tests/angle_deqp_glshared/glsCalibration.o obj/src/tests/angle_deqp_glshared/glsDrawTest.o obj/src/tests/angle_deqp_glshared/glsFboCompletenessTests.o obj/src/tests/angle_deqp_glshared/glsFboUtil.o obj/src/tests/angle_deqp_glshared/glsFragOpInteractionCase.o obj/src/tests/angle_deqp_glshared/glsFragmentOpUtil.o obj/src/tests/angle_deqp_glshared/glsInteractionTestUtil.o obj/src/tests/angle_deqp_glshared/glsLifetimeTests.o obj/src/tests/angle_deqp_glshared/glsLongStressCase.o obj/src/tests/angle_deqp_glshared/glsLongStressTestUtil.o obj/src/tests/angle_deqp_glshared/glsMemoryStressCase.o obj/src/tests/angle_deqp_glshared/glsRandomShaderCase.o obj/src/tests/angle_deqp_glshared/glsRandomShaderProgram.o obj/src/tests/angle_deqp_glshared/glsRandomUniformBlockCase.o obj/src/tests/angle_deqp_glshared/glsSamplerObjectTest.o obj/src/tests/angle_deqp_glshared/glsScissorTests.o obj/src/tests/angle_deqp_glshared/glsShaderConstExprTests.o obj/src/tests/angle_deqp_glshared/glsShaderExecUtil.o obj/src/tests/angle_deqp_glshared/glsShaderLibrary.o obj/src/tests/angle_deqp_glshared/glsShaderLibraryCase.o obj/src/tests/angle_deqp_glshared/glsShaderPerformanceCase.o obj/src/tests/angle_deqp_glshared/glsShaderPerformanceMeasurer.o obj/src/tests/angle_deqp_glshared/glsShaderRenderCase.o obj/src/tests/angle_deqp_glshared/glsStateChangePerfTestCases.o obj/src/tests/angle_deqp_glshared/glsStateQueryUtil.o obj/src/tests/angle_deqp_glshared/glsTextureBufferCase.o obj/src/tests/angle_deqp_glshared/glsTextureStateQueryTests.o obj/src/tests/angle_deqp_glshared/glsTextureTestUtil.o obj/src/tests/angle_deqp_glshared/glsUniformBlockCase.o obj/src/tests/angle_deqp_glshared/glsVertexArrayTests.o || phony/src/tests/angle_deqp_framework_opengl phony/src/tests/angle_deqp_framework_common phony/src/tests/angle_deqp_framework_decpp phony/src/tests/angle_deqp_framework_debase phony/src/tests/angle_deqp_framework_delibs phony/src/tests/angle_deqp_framework_qphelper obj/third_party/libpng/libpng.a obj/third_party/zlib/libchrome_zlib.a phony/third_party/zlib/zlib_adler32_simd phony/third_party/zlib/zlib_inflate_chunk_simd phony/third_party/zlib/zlib_arm_crc32 phony/third_party/cpu_features/ndk_compat phony/third_party/cpu_features/cpuinfo phony/src/tests/angle_deqp_framework_xexml

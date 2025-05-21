@@ -1,0 +1,35 @@
+defines = -D__STDC_CONSTANT_MACROS -D__STDC_FORMAT_MACROS -D_FORTIFY_SOURCE=2 -D_GNU_SOURCE -DANDROID -D__ANDROID_UNAVAILABLE_SYMBOLS_ARE_WEAK__ -DHAVE_SYS_UIO_H -DANDROID_NDK_VERSION_ROLL=r28_1 -DCR_CLANG_REVISION=\"llvmorg-21-init-9266-g09006611-1\" -D_LIBCPP_HARDENING_MODE=_LIBCPP_HARDENING_MODE_NONE -DNDEBUG -DNVALGRIND -DDYNAMIC_ANNOTATIONS_ENABLED=0 -DSTACK_LINE_READER_BUFFER_SIZE=1024 -DHAVE_STRONG_GETAUXVAL
+include_dirs = -I/ninja-to-soong-angle -Igen -I/ninja-to-soong-angle/third_party/cpu_features/src/include
+cflags = -Wall -Wextra -Wimplicit-fallthrough -Wextra-semi -Wunreachable-code-aggressive -Wthread-safety -Wgnu -Wno-gnu-anonymous-struct -Wno-gnu-conditional-omitted-operand -Wno-gnu-include-next -Wno-gnu-label-as-value -Wno-gnu-redeclared-enum -Wno-gnu-statement-expression -Wno-gnu-zero-variadic-macro-arguments -Wno-zero-length-array -Wunguarded-availability -Wno-missing-field-initializers -Wno-unused-parameter -Wno-psabi -Wloop-analysis -Wno-unneeded-internal-declaration -Wno-cast-function-type -Wno-thread-safety-reference-return -Wno-nontrivial-memcall -Wshadow -Werror -fno-delete-null-pointer-checks -fno-strict-overflow -fno-ident -fno-strict-aliasing -fstack-protector -funwind-tables -fPIC -fcolor-diagnostics -fmerge-all-constants -fno-sized-deallocation -fcrash-diagnostics-dir=/ninja-to-soong-angle/tools/clang/crashreports -mllvm -instcombine-lower-dbg-declare=0 -mllvm -split-threshold-for-reg-with-hint=0 -ffp-contract=off -fextend-variable-liveness=none -ffunction-sections -fno-short-enums --target=x86_64-linux-android26 -m64 -msse3 -Wno-builtin-macro-redefined -D__DATE__= -D__TIME__= -D__TIMESTAMP__= -ffile-compilation-dir=. -no-canonical-prefixes -ftrivial-auto-var-init=pattern -O2 -fdata-sections -ffunction-sections -fno-unique-section-names -fno-math-errno -fomit-frame-pointer -g0 -fvisibility=hidden -Wheader-hygiene -Wstring-conversion -Wtautological-overlap-compare -Wno-unused-function
+cflags_c = -std=c11 --sysroot=/ninja-to-soong-angle/third_party/android_toolchain/ndk/toolchains/llvm/prebuilt/linux-x86_64/sysroot
+label_name = cpuinfo
+root_out_dir = .
+target_out_dir = obj/third_party/cpu_features
+target_output_name = cpuinfo
+
+build obj/third_party/cpu_features/cpuinfo/filesystem.o: cc /ninja-to-soong-angle/third_party/cpu_features/src/src/filesystem.c
+  source_file_part = filesystem.c
+  source_name_part = filesystem
+build obj/third_party/cpu_features/cpuinfo/hwcaps.o: cc /ninja-to-soong-angle/third_party/cpu_features/src/src/hwcaps.c
+  source_file_part = hwcaps.c
+  source_name_part = hwcaps
+build obj/third_party/cpu_features/cpuinfo/stack_line_reader.o: cc /ninja-to-soong-angle/third_party/cpu_features/src/src/stack_line_reader.c
+  source_file_part = stack_line_reader.c
+  source_name_part = stack_line_reader
+build obj/third_party/cpu_features/cpuinfo/string_view.o: cc /ninja-to-soong-angle/third_party/cpu_features/src/src/string_view.c
+  source_file_part = string_view.c
+  source_name_part = string_view
+build obj/third_party/cpu_features/cpuinfo/impl_x86_freebsd.o: cc /ninja-to-soong-angle/third_party/cpu_features/src/src/impl_x86_freebsd.c
+  source_file_part = impl_x86_freebsd.c
+  source_name_part = impl_x86_freebsd
+build obj/third_party/cpu_features/cpuinfo/impl_x86_linux_or_android.o: cc /ninja-to-soong-angle/third_party/cpu_features/src/src/impl_x86_linux_or_android.c
+  source_file_part = impl_x86_linux_or_android.c
+  source_name_part = impl_x86_linux_or_android
+build obj/third_party/cpu_features/cpuinfo/impl_x86_macos.o: cc /ninja-to-soong-angle/third_party/cpu_features/src/src/impl_x86_macos.c
+  source_file_part = impl_x86_macos.c
+  source_name_part = impl_x86_macos
+build obj/third_party/cpu_features/cpuinfo/impl_x86_windows.o: cc /ninja-to-soong-angle/third_party/cpu_features/src/src/impl_x86_windows.c
+  source_file_part = impl_x86_windows.c
+  source_name_part = impl_x86_windows
+
+build phony/third_party/cpu_features/cpuinfo: phony obj/third_party/cpu_features/cpuinfo/filesystem.o obj/third_party/cpu_features/cpuinfo/hwcaps.o obj/third_party/cpu_features/cpuinfo/stack_line_reader.o obj/third_party/cpu_features/cpuinfo/string_view.o obj/third_party/cpu_features/cpuinfo/impl_x86_freebsd.o obj/third_party/cpu_features/cpuinfo/impl_x86_linux_or_android.o obj/third_party/cpu_features/cpuinfo/impl_x86_macos.o obj/third_party/cpu_features/cpuinfo/impl_x86_windows.o
