@@ -51,6 +51,7 @@ pub fn clean_gen_deps(
                 .lines()
                 .into_iter()
                 .filter(|line| !line.starts_with("#line"))
+                .chain(std::iter::once(""))
                 .collect::<Vec<&str>>()
                 .join("\n"),
         )?;
