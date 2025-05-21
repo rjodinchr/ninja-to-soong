@@ -8,6 +8,7 @@ use crate::ninja_parser::*;
 use crate::ninja_target::*;
 use crate::soong_module::*;
 use crate::soong_package::*;
+use crate::soong_package_merger::*;
 use crate::utils::*;
 
 mod common;

@@ -1,0 +1,14 @@
+defines = -D_GNU_SOURCE -DANDROID -D__ANDROID_UNAVAILABLE_SYMBOLS_ARE_WEAK__ -DHAVE_SYS_UIO_H -DANDROID_NDK_VERSION_ROLL=r28_1 -DCR_CLANG_REVISION=\"llvmorg-21-init-9266-g09006611-1\" -D_LIBCPP_HARDENING_MODE=_LIBCPP_HARDENING_MODE_NONE -DNDEBUG -DNVALGRIND -DDYNAMIC_ANNOTATIONS_ENABLED=0 -DABSL_ALLOCATOR_NOTHROW=1
+include_dirs = -I/ninja-to-soong-angle -Igen -I/ninja-to-soong-angle/third_party/abseil-cpp
+cflags = -fno-delete-null-pointer-checks -fno-strict-overflow -fno-ident -fno-strict-aliasing -fstack-protector -funwind-tables -fPIC -fcolor-diagnostics -fmerge-all-constants -fno-sized-deallocation -fcrash-diagnostics-dir=/ninja-to-soong-angle/tools/clang/crashreports -mllvm -instcombine-lower-dbg-declare=0 -mllvm -split-threshold-for-reg-with-hint=0 -ffp-contract=off -fextend-variable-liveness=none -ffunction-sections -fno-short-enums --target=x86_64-linux-android26 -m64 -msse3 -Wno-builtin-macro-redefined -D__DATE__= -D__TIME__= -D__TIMESTAMP__= -ffile-compilation-dir=. -no-canonical-prefixes -ftrivial-auto-var-init=pattern -O2 -fdata-sections -ffunction-sections -fno-unique-section-names -fno-math-errno -fomit-frame-pointer -g0 -fvisibility=hidden -Wheader-hygiene -Wstring-conversion -Wtautological-overlap-compare -Wall -Wno-unused-variable -Wno-c++11-narrowing -Wno-unused-but-set-variable -Wunguarded-availability -Wno-missing-field-initializers -Wno-unused-parameter -Wno-psabi -Wloop-analysis -Wno-unneeded-internal-declaration -Wno-cast-function-type -Wno-thread-safety-reference-return -Wno-nontrivial-memcall -Werror -Wimplicit-int-conversion -Wshorten-64-to-32 -Wsign-compare -Wsign-conversion -Wtautological-unsigned-zero-compare
+cflags_cc = -std=c++20 -Wno-trigraphs -gsimple-template-names -fno-exceptions -fno-rtti --sysroot=/ninja-to-soong-angle/third_party/android_toolchain/ndk/toolchains/llvm/prebuilt/linux-x86_64/sysroot -fvisibility-inlines-hidden -Wno-invalid-offsetof -Wenum-compare-conditional -Wno-nullability-completeness -Wbool-conversion -Wconstant-conversion -Wenum-conversion -Wint-conversion -Wliteral-conversion -Wnon-literal-null-conversion -Wnull-conversion -Wobjc-literal-conversion -Wstring-conversion -Wbitfield-enum-conversion
+label_name = throw_delegate
+root_out_dir = .
+target_out_dir = obj/third_party/abseil-cpp/absl/base
+target_output_name = throw_delegate
+
+build obj/third_party/abseil-cpp/absl/base/throw_delegate/throw_delegate.o: cxx /ninja-to-soong-angle/third_party/abseil-cpp/absl/base/internal/throw_delegate.cc
+  source_file_part = throw_delegate.cc
+  source_name_part = throw_delegate
+
+build phony/third_party/abseil-cpp/absl/base/throw_delegate: phony obj/third_party/abseil-cpp/absl/base/throw_delegate/throw_delegate.o || phony/third_party/abseil-cpp/absl/base/raw_logging_internal phony/third_party/abseil-cpp/absl/base/log_severity

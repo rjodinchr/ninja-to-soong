@@ -1,0 +1,8 @@
+defines = -D_GNU_SOURCE -DANDROID -D__ANDROID_UNAVAILABLE_SYMBOLS_ARE_WEAK__ -DHAVE_SYS_UIO_H -DANDROID_NDK_VERSION_ROLL=r28_1 -DCR_CLANG_REVISION=\"llvmorg-21-init-9266-g09006611-1\" -D_LIBCPP_HARDENING_MODE=_LIBCPP_HARDENING_MODE_NONE -DNDEBUG -DNVALGRIND -DDYNAMIC_ANNOTATIONS_ENABLED=0 -DABSL_ALLOCATOR_NOTHROW=1
+include_dirs = -I/ninja-to-soong-angle -Igen -I/ninja-to-soong-angle/third_party/abseil-cpp
+label_name = algorithm
+root_out_dir = .
+target_out_dir = obj/third_party/abseil-cpp/absl/algorithm
+target_output_name = algorithm
+
+

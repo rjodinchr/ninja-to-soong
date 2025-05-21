@@ -39,6 +39,53 @@ impl Angle {
         }
         true
     }
+    fn generate_package_for_target_cpu(
+        &mut self,
+        ctx: &Context,
+        ndk_path: &Path,
+        target_cpu: &str,
+    ) -> Result<SoongPackage, String> {
+        self.build_path = ctx.temp_path.join(self.get_name()).join(target_cpu);
+        if !ctx.skip_gen_ninja {
+            execute_cmd!(
+                "bash",
+                [
+                    &path_to_string(self.get_test_path(ctx).join("gen-ninja.sh")),
+                    &path_to_string(&self.src_path),
+                    &path_to_string(&self.build_path),
+                    target_cpu,
+                    if ctx.skip_build {
+                        "skip_build"
+                    } else {
+                        "build"
+                    },
+                ]
+            )?;
+        }
+
+        let targets_so = TARGETS
+            .iter()
+            .map(|target| (String::from("./") + target + ".so", String::from(*target)))
+            .collect::<Vec<_>>();
+        let mut targets = targets_so
+            .iter()
+            .map(|(target_so, target)| NinjaTargetToGen(target_so, Some(target), None))
+            .collect::<Vec<_>>();
+        targets.push(NinjaTargetToGen(
+            "./libangle_end2end_tests__library.so",
+            Some("libangle_end2end_tests__library"),
+            None,
+        ));
+        SoongPackage::default().generate(
+            NinjaTargetsToGenMap::from(&targets),
+            parse_build_ninja::<GnNinjaTarget>(&self.build_path)?,
+            &self.src_path,
+            ndk_path,
+            &self.build_path,
+            None,
+            self,
+        )
+    }
 }
 
 impl Project for Angle {
@@ -61,91 +108,69 @@ impl Project for Angle {
         } else {
             PathBuf::from("/ninja-to-soong-angle")
         };
-        self.build_path = ctx.temp_path.join(self.get_name());
         let ndk_path = self.src_path.join("third_party/android_toolchain/ndk");
 
-        if !ctx.skip_gen_ninja {
-            execute_cmd!(
-                "bash",
-                [
-                    &path_to_string(self.get_test_path(ctx).join("gen-ninja.sh")),
-                    &path_to_string(&self.src_path),
-                    &path_to_string(&self.build_path),
-                ]
-            )?;
-        }
-
-        let targets_so = TARGETS
-            .iter()
-            .map(|target| (String::from("./") + target + ".so", String::from(*target)))
-            .collect::<Vec<_>>();
-        let mut targets = targets_so
-            .iter()
-            .map(|(target_so, target)| NinjaTargetToGen(target_so, Some(target), None))
-            .collect::<Vec<_>>();
-        targets.push(NinjaTargetToGen(
-            "./libangle_end2end_tests__library.so",
-            Some("libangle_end2end_tests__library"),
-            None,
-        ));
-        let package = SoongPackage::new(
-            &["//visibility:public"],
-            "external_angle_license",
-            &[
-                "SPDX-license-identifier-Apache-2.0",
-                "SPDX-license-identifier-BSD",
-                "SPDX-license-identifier-GPL",
-                "SPDX-license-identifier-GPL-2.0",
-                "SPDX-license-identifier-GPL-3.0",
-                "SPDX-license-identifier-LGPL",
-                "SPDX-license-identifier-MIT",
-                "SPDX-license-identifier-Zlib",
-                "legacy_unencumbered",
-            ],
-            &[
-                "LICENSE",
-                "src/common/third_party/xxhash/LICENSE",
-                "src/libANGLE/renderer/vulkan/shaders/src/third_party/ffx_spd/LICENSE",
-                "src/tests/test_utils/third_party/LICENSE",
-                "src/third_party/libXNVCtrl/LICENSE",
-                "src/third_party/volk/LICENSE.md",
-                "third_party/abseil-cpp/LICENSE",
-                "third_party/android_system_sdk/LICENSE",
-                "third_party/bazel/LICENSE",
-                "third_party/colorama/LICENSE",
-                "third_party/glslang/LICENSE",
-                "third_party/glslang/src/LICENSE.txt",
-                "third_party/proguard/LICENSE",
-                "third_party/r8/LICENSE",
-                "third_party/spirv-headers/LICENSE",
-                "third_party/spirv-headers/src/LICENSE",
-                "third_party/spirv-tools/LICENSE",
-                "third_party/spirv-tools/src/LICENSE",
-                "third_party/spirv-tools/src/utils/vscode/src/lsp/LICENSE",
-                "third_party/turbine/LICENSE",
-                "third_party/vulkan-headers/LICENSE.txt",
-                "third_party/vulkan-headers/src/LICENSE.md",
-                "third_party/vulkan_memory_allocator/LICENSE.txt",
-                "tools/flex-bison/third_party/m4sugar/LICENSE",
-                "tools/flex-bison/third_party/skeletons/LICENSE",
-                "util/windows/third_party/StackWalker/LICENSE",
-            ],
-        )
-        .generate(
-            NinjaTargetsToGenMap::from(&targets),
-            parse_build_ninja::<GnNinjaTarget>(&self.build_path)?,
-            &self.src_path,
-            &ndk_path,
-            &self.build_path,
-            None,
-            self,
-        )?;
+        let package = SoongPackageMerger::new(
+            ["arm64", "arm", "x64", "x86"]
+                .into_iter()
+                .map(|target_cpu| {
+                    (
+                        target_cpu,
+                        self.generate_package_for_target_cpu(ctx, &ndk_path, target_cpu),
+                    )
+                })
+                .collect(),
+            SoongPackage::new(
+                &["//visibility:public"],
+                "external_angle_license",
+                &[
+                    "SPDX-license-identifier-Apache-2.0",
+                    "SPDX-license-identifier-BSD",
+                    "SPDX-license-identifier-GPL",
+                    "SPDX-license-identifier-GPL-2.0",
+                    "SPDX-license-identifier-GPL-3.0",
+                    "SPDX-license-identifier-LGPL",
+                    "SPDX-license-identifier-MIT",
+                    "SPDX-license-identifier-Zlib",
+                    "legacy_unencumbered",
+                ],
+                &[
+                    "LICENSE",
+                    "src/common/third_party/xxhash/LICENSE",
+                    "src/libANGLE/renderer/vulkan/shaders/src/third_party/ffx_spd/LICENSE",
+                    "src/tests/test_utils/third_party/LICENSE",
+                    "src/third_party/libXNVCtrl/LICENSE",
+                    "src/third_party/volk/LICENSE.md",
+                    "third_party/abseil-cpp/LICENSE",
+                    "third_party/android_system_sdk/LICENSE",
+                    "third_party/bazel/LICENSE",
+                    "third_party/colorama/LICENSE",
+                    "third_party/glslang/LICENSE",
+                    "third_party/glslang/src/LICENSE.txt",
+                    "third_party/proguard/LICENSE",
+                    "third_party/r8/LICENSE",
+                    "third_party/spirv-headers/LICENSE",
+                    "third_party/spirv-headers/src/LICENSE",
+                    "third_party/spirv-tools/LICENSE",
+                    "third_party/spirv-tools/src/LICENSE",
+                    "third_party/spirv-tools/src/utils/vscode/src/lsp/LICENSE",
+                    "third_party/turbine/LICENSE",
+                    "third_party/vulkan-headers/LICENSE.txt",
+                    "third_party/vulkan-headers/src/LICENSE.md",
+                    "third_party/vulkan_memory_allocator/LICENSE.txt",
+                    "tools/flex-bison/third_party/m4sugar/LICENSE",
+                    "tools/flex-bison/third_party/skeletons/LICENSE",
+                    "util/windows/third_party/StackWalker/LICENSE",
+                ],
+            ),
+        )?
+        .merge()?;
 
         let default_module = SoongModule::new("cc_defaults")
             .add_prop("name", SoongProp::Str(String::from(DEFAULTS)))
             .add_props(package.get_props(
                 "angle_obj_libpreprocessor_a",
-                vec!["cflags", "local_include_dirs", "shared_libs", "stl"],
+                vec!["cflags", "local_include_dirs", "shared_libs", "stl", "arch"],
             )?);
 
         package
@@ -344,16 +369,6 @@ android_app {{
         module
             .add_prop("defaults", SoongProp::VecStr(defaults))
             .add_prop("stl", SoongProp::Str(String::from("libc++_static")))
-            .add_prop(
-                "arch",
-                SoongNamedProp::new_prop(
-                    "arm64",
-                    SoongNamedProp::new_prop(
-                        "cflags",
-                        SoongProp::VecStr(vec![String::from("-D__ARM_NEON__=1")]),
-                    ),
-                ),
-            )
     }
     fn extend_cflags(&self, _target: &Path) -> Vec<String> {
         vec![
@@ -392,9 +407,6 @@ android_app {{
 
     fn filter_cflag(&self, cflag: &str) -> bool {
         cflag.starts_with("-fvisibility")
-    }
-    fn filter_define(&self, define: &str) -> bool {
-        !define.contains("__ARM_NEON__")
     }
     fn filter_gen_header(&self, header: &Path) -> bool {
         header.starts_with("gen/angle")

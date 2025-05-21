@@ -1,0 +1,53 @@
+defines = -D_GNU_SOURCE -DANDROID -D__ANDROID_UNAVAILABLE_SYMBOLS_ARE_WEAK__ -DHAVE_SYS_UIO_H -DANDROID_NDK_VERSION_ROLL=r28_1 -DCR_CLANG_REVISION=\"llvmorg-21-init-9266-g09006611-1\" -D_LIBCPP_HARDENING_MODE=_LIBCPP_HARDENING_MODE_NONE -DNDEBUG -DNVALGRIND -DDYNAMIC_ANNOTATIONS_ENABLED=0 -DABSL_ALLOCATOR_NOTHROW=1
+include_dirs = -I/ninja-to-soong-angle -Igen -I/ninja-to-soong-angle/third_party/abseil-cpp
+cflags = -fno-delete-null-pointer-checks -fno-strict-overflow -fno-ident -fno-strict-aliasing -fstack-protector -funwind-tables -fPIC -fcolor-diagnostics -fmerge-all-constants -fno-sized-deallocation -fcrash-diagnostics-dir=/ninja-to-soong-angle/tools/clang/crashreports -mllvm -instcombine-lower-dbg-declare=0 -mllvm -split-threshold-for-reg-with-hint=0 -ffp-contract=off -fextend-variable-liveness=none -ffunction-sections -fno-short-enums --target=x86_64-linux-android26 -m64 -msse3 -Wno-builtin-macro-redefined -D__DATE__= -D__TIME__= -D__TIMESTAMP__= -ffile-compilation-dir=. -no-canonical-prefixes -ftrivial-auto-var-init=pattern -O2 -fdata-sections -ffunction-sections -fno-unique-section-names -fno-math-errno -fomit-frame-pointer -g0 -fvisibility=hidden -Wheader-hygiene -Wstring-conversion -Wtautological-overlap-compare -Wall -Wno-unused-variable -Wno-c++11-narrowing -Wno-unused-but-set-variable -Wunguarded-availability -Wno-missing-field-initializers -Wno-unused-parameter -Wno-psabi -Wloop-analysis -Wno-unneeded-internal-declaration -Wno-cast-function-type -Wno-thread-safety-reference-return -Wno-nontrivial-memcall -Werror -Wimplicit-int-conversion -Wshorten-64-to-32 -Wsign-compare -Wsign-conversion -Wtautological-unsigned-zero-compare
+cflags_cc = -std=c++20 -Wno-trigraphs -gsimple-template-names -fno-exceptions -fno-rtti --sysroot=/ninja-to-soong-angle/third_party/android_toolchain/ndk/toolchains/llvm/prebuilt/linux-x86_64/sysroot -fvisibility-inlines-hidden -Wno-invalid-offsetof -Wenum-compare-conditional -Wno-nullability-completeness -Wbool-conversion -Wconstant-conversion -Wenum-conversion -Wint-conversion -Wliteral-conversion -Wnon-literal-null-conversion -Wnull-conversion -Wobjc-literal-conversion -Wstring-conversion -Wbitfield-enum-conversion
+label_name = strings
+root_out_dir = .
+target_out_dir = obj/third_party/abseil-cpp/absl/strings
+target_output_name = strings
+
+build obj/third_party/abseil-cpp/absl/strings/strings/ascii.o: cxx /ninja-to-soong-angle/third_party/abseil-cpp/absl/strings/ascii.cc
+  source_file_part = ascii.cc
+  source_name_part = ascii
+build obj/third_party/abseil-cpp/absl/strings/strings/charconv.o: cxx /ninja-to-soong-angle/third_party/abseil-cpp/absl/strings/charconv.cc
+  source_file_part = charconv.cc
+  source_name_part = charconv
+build obj/third_party/abseil-cpp/absl/strings/strings/escaping.o: cxx /ninja-to-soong-angle/third_party/abseil-cpp/absl/strings/escaping.cc
+  source_file_part = escaping.cc
+  source_name_part = escaping
+build obj/third_party/abseil-cpp/absl/strings/strings/charconv_bigint.o: cxx /ninja-to-soong-angle/third_party/abseil-cpp/absl/strings/internal/charconv_bigint.cc
+  source_file_part = charconv_bigint.cc
+  source_name_part = charconv_bigint
+build obj/third_party/abseil-cpp/absl/strings/strings/charconv_parse.o: cxx /ninja-to-soong-angle/third_party/abseil-cpp/absl/strings/internal/charconv_parse.cc
+  source_file_part = charconv_parse.cc
+  source_name_part = charconv_parse
+build obj/third_party/abseil-cpp/absl/strings/strings/damerau_levenshtein_distance.o: cxx /ninja-to-soong-angle/third_party/abseil-cpp/absl/strings/internal/damerau_levenshtein_distance.cc
+  source_file_part = damerau_levenshtein_distance.cc
+  source_name_part = damerau_levenshtein_distance
+build obj/third_party/abseil-cpp/absl/strings/strings/memutil.o: cxx /ninja-to-soong-angle/third_party/abseil-cpp/absl/strings/internal/memutil.cc
+  source_file_part = memutil.cc
+  source_name_part = memutil
+build obj/third_party/abseil-cpp/absl/strings/strings/stringify_sink.o: cxx /ninja-to-soong-angle/third_party/abseil-cpp/absl/strings/internal/stringify_sink.cc
+  source_file_part = stringify_sink.cc
+  source_name_part = stringify_sink
+build obj/third_party/abseil-cpp/absl/strings/strings/match.o: cxx /ninja-to-soong-angle/third_party/abseil-cpp/absl/strings/match.cc
+  source_file_part = match.cc
+  source_name_part = match
+build obj/third_party/abseil-cpp/absl/strings/strings/numbers.o: cxx /ninja-to-soong-angle/third_party/abseil-cpp/absl/strings/numbers.cc
+  source_file_part = numbers.cc
+  source_name_part = numbers
+build obj/third_party/abseil-cpp/absl/strings/strings/str_cat.o: cxx /ninja-to-soong-angle/third_party/abseil-cpp/absl/strings/str_cat.cc
+  source_file_part = str_cat.cc
+  source_name_part = str_cat
+build obj/third_party/abseil-cpp/absl/strings/strings/str_replace.o: cxx /ninja-to-soong-angle/third_party/abseil-cpp/absl/strings/str_replace.cc
+  source_file_part = str_replace.cc
+  source_name_part = str_replace
+build obj/third_party/abseil-cpp/absl/strings/strings/str_split.o: cxx /ninja-to-soong-angle/third_party/abseil-cpp/absl/strings/str_split.cc
+  source_file_part = str_split.cc
+  source_name_part = str_split
+build obj/third_party/abseil-cpp/absl/strings/strings/substitute.o: cxx /ninja-to-soong-angle/third_party/abseil-cpp/absl/strings/substitute.cc
+  source_file_part = substitute.cc
+  source_name_part = substitute
+
+build phony/third_party/abseil-cpp/absl/strings/strings: phony obj/third_party/abseil-cpp/absl/strings/strings/ascii.o obj/third_party/abseil-cpp/absl/strings/strings/charconv.o obj/third_party/abseil-cpp/absl/strings/strings/escaping.o obj/third_party/abseil-cpp/absl/strings/strings/charconv_bigint.o obj/third_party/abseil-cpp/absl/strings/strings/charconv_parse.o obj/third_party/abseil-cpp/absl/strings/strings/damerau_levenshtein_distance.o obj/third_party/abseil-cpp/absl/strings/strings/memutil.o obj/third_party/abseil-cpp/absl/strings/strings/stringify_sink.o obj/third_party/abseil-cpp/absl/strings/strings/match.o obj/third_party/abseil-cpp/absl/strings/strings/numbers.o obj/third_party/abseil-cpp/absl/strings/strings/str_cat.o obj/third_party/abseil-cpp/absl/strings/strings/str_replace.o obj/third_party/abseil-cpp/absl/strings/strings/str_split.o obj/third_party/abseil-cpp/absl/strings/strings/substitute.o || phony/third_party/abseil-cpp/absl/strings/string_view phony/third_party/abseil-cpp/absl/strings/charset phony/third_party/abseil-cpp/absl/strings/internal phony/third_party/abseil-cpp/absl/base/base phony/third_party/abseil-cpp/absl/base/endian phony/third_party/abseil-cpp/absl/base/raw_logging_internal phony/third_party/abseil-cpp/absl/base/throw_delegate phony/third_party/abseil-cpp/absl/numeric/bits phony/third_party/abseil-cpp/absl/numeric/int128 phony/third_party/abseil-cpp/absl/base/log_severity phony/third_party/abseil-cpp/absl/base/spinlock_wait

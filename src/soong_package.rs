@@ -116,7 +116,7 @@ impl SoongPackage {
         match default_names_prop.get_prop() {
             SoongProp::VecStr(default_names) => {
                 for default_name in default_names {
-                    let Some(default_module) = self.get_module(&default_name)? else {
+                    let Some(default_module) = self.get_module(&default_name) else {
                         return Ok(module);
                     };
                     module.filter_default(default_module)?;
@@ -132,7 +132,7 @@ impl SoongPackage {
         module_name: &str,
         props: Vec<&str>,
     ) -> Result<Vec<SoongNamedProp>, String> {
-        let Some(module) = self.get_module(module_name)? else {
+        let Some(module) = self.get_module(module_name) else {
             return error!("Could not find module {module_name:#?}");
         };
         Ok(props
@@ -141,7 +141,7 @@ impl SoongPackage {
             .collect())
     }
 
-    fn get_module(&self, name: &str) -> Result<Option<&SoongModule>, String> {
+    fn get_module(&self, name: &str) -> Option<&SoongModule> {
         for module in &self.modules {
             let Some(module_name_prop) = module.get_prop("name") else {
                 continue;
@@ -149,13 +149,49 @@ impl SoongPackage {
             match module_name_prop.get_prop() {
                 SoongProp::Str(module_name) => {
                     if module_name == name {
-                        return Ok(Some(module));
+                        return Some(module);
                     }
                 }
                 _ => continue,
             }
         }
-        Ok(None)
+        None
+    }
+
+    pub fn pop_module(&mut self, name: &str) -> Option<SoongModule> {
+        for idx in 0..self.modules.len() {
+            let module = &self.modules[idx];
+            let Some(module_name_prop) = module.get_prop("name") else {
+                continue;
+            };
+            match module_name_prop.get_prop() {
+                SoongProp::Str(module_name) => {
+                    if module_name == name {
+                        return Some(self.modules.remove(idx));
+                    }
+                }
+                _ => continue,
+            }
+        }
+        None
+    }
+
+    pub fn get_modules_name(&self) -> Vec<String> {
+        self.modules
+            .iter()
+            .filter_map(|module| {
+                let Some(prop) = module.get_prop("name") else {
+                    return None;
+                };
+                match prop.get_prop() {
+                    SoongProp::Bool(_) => None,
+                    SoongProp::Str(name) => Some(name),
+                    SoongProp::Prop(_) => None,
+                    SoongProp::VecStr(_) => None,
+                    SoongProp::None => None,
+                }
+            })
+            .collect()
     }
 
     pub fn print(mut self) -> Result<String, String> {

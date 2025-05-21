@@ -10,6 +10,7 @@ mod project;
 mod soong_module;
 mod soong_module_generator;
 mod soong_package;
+mod soong_package_merger;
 mod utils;
 
 use crate::context::*;

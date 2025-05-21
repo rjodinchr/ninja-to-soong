@@ -1,0 +1,106 @@
+defines = -DUSE_UDEV -DUSE_AURA=1 -DUSE_GLIB=1 -DUSE_OZONE=1 -D__STDC_CONSTANT_MACROS -D__STDC_FORMAT_MACROS -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_LARGEFILE64_SOURCE -D_GNU_SOURCE -DCR_CLANG_REVISION=\"llvmorg-21-init-9266-g09006611-1\" -D_LIBCPP_HARDENING_MODE=_LIBCPP_HARDENING_MODE_EXTENSIVE -DCOMPONENT_BUILD -D_LIBCPP_INSTRUMENTED_WITH_ASAN=0 -DCR_LIBCXX_REVISION=62724eb55f2ad7389088265952b1bb62cb89c73b -DCR_SYSROOT_KEY=20250129T203412Z-1 -D_DEBUG -DDYNAMIC_ANNOTATIONS_ENABLED=1 -DTINT_BUILD_SPV_READER=0 -DTINT_BUILD_SPV_WRITER=1 -DTINT_BUILD_WGSL_READER=1 -DTINT_BUILD_WGSL_WRITER=1 -DTINT_BUILD_MSL_WRITER=1 -DTINT_BUILD_HLSL_WRITER=1 -DTINT_BUILD_GLSL_WRITER=1 -DTINT_BUILD_GLSL_VALIDATOR=1 -DTINT_BUILD_SYNTAX_TREE_WRITER=0 -DTINT_BUILD_IR_BINARY=0 -DTINT_BUILD_IR_FUZZER=0 -DTINT_BUILD_IS_WIN=0 -DTINT_BUILD_IS_MAC=0 -DTINT_BUILD_IS_LINUX=1
+include_dirs = -I/ninja-to-soong-angle -Igen -I/ninja-to-soong-angle/buildtools/third_party/libc++ -I/ninja-to-soong-angle/third_party/dawn -Igen/third_party/dawn -I/ninja-to-soong-angle/third_party/dawn/include
+cflags = -Wall -Wextra -Wimplicit-fallthrough -Wextra-semi -Wunreachable-code-aggressive -Wthread-safety -Wgnu -Wno-gnu-anonymous-struct -Wno-gnu-conditional-omitted-operand -Wno-gnu-include-next -Wno-gnu-label-as-value -Wno-gnu-redeclared-enum -Wno-gnu-statement-expression -Wno-gnu-zero-variadic-macro-arguments -Wno-zero-length-array -Wno-missing-field-initializers -Wno-unused-parameter -Wno-psabi -Wloop-analysis -Wno-unneeded-internal-declaration -Wno-cast-function-type -Wno-thread-safety-reference-return -Wno-nontrivial-memcall -Wshadow -Werror -fno-delete-null-pointer-checks -fno-strict-overflow -fno-ident -fno-strict-aliasing -fstack-protector -funwind-tables -fPIC -pthread -fcolor-diagnostics -fmerge-all-constants -fno-sized-deallocation -fcrash-diagnostics-dir=/ninja-to-soong-angle/tools/clang/crashreports -mllvm -instcombine-lower-dbg-declare=0 -mllvm -split-threshold-for-reg-with-hint=0 -ffp-contract=off -Wa,--crel,--allow-experimental-crel -fextend-variable-liveness=none -fcomplete-member-pointers -m64 -msse3 -Wno-builtin-macro-redefined -D__DATE__= -D__TIME__= -D__TIMESTAMP__= -ffile-compilation-dir=. -no-canonical-prefixes -ftrivial-auto-var-init=pattern -O0 -fno-omit-frame-pointer -gdwarf-4 -g2 -gdwarf-aranges -gsplit-dwarf -ggnu-pubnames -Xclang -fuse-ctor-homing -fvisibility=hidden -Wheader-hygiene -Wstring-conversion -Wtautological-overlap-compare
+cflags_cc = -Wno-invalid-offsetof -Wenum-compare-conditional -Wno-nullability-completeness -std=c++20 -Wno-trigraphs -gsimple-template-names -fno-exceptions -fno-rtti -nostdinc++ -isystem/ninja-to-soong-angle/third_party/libc++/src/include -isystem/ninja-to-soong-angle/third_party/libc++abi/src/include --sysroot=/ninja-to-soong-angle/build/linux/debian_bullseye_amd64-sysroot -fvisibility-inlines-hidden
+label_name = transform
+target_out_dir = obj/third_party/dawn/src/tint/lang/wgsl/ast/transform
+target_output_name = transform
+
+build obj/third_party/dawn/src/tint/lang/wgsl/ast/transform/transform/add_empty_entry_point.o: cxx /ninja-to-soong-angle/third_party/dawn/src/tint/lang/wgsl/ast/transform/add_empty_entry_point.cc
+  source_file_part = add_empty_entry_point.cc
+  source_name_part = add_empty_entry_point
+build obj/third_party/dawn/src/tint/lang/wgsl/ast/transform/transform/array_length_from_uniform.o: cxx /ninja-to-soong-angle/third_party/dawn/src/tint/lang/wgsl/ast/transform/array_length_from_uniform.cc
+  source_file_part = array_length_from_uniform.cc
+  source_name_part = array_length_from_uniform
+build obj/third_party/dawn/src/tint/lang/wgsl/ast/transform/transform/binding_remapper.o: cxx /ninja-to-soong-angle/third_party/dawn/src/tint/lang/wgsl/ast/transform/binding_remapper.cc
+  source_file_part = binding_remapper.cc
+  source_name_part = binding_remapper
+build obj/third_party/dawn/src/tint/lang/wgsl/ast/transform/transform/builtin_polyfill.o: cxx /ninja-to-soong-angle/third_party/dawn/src/tint/lang/wgsl/ast/transform/builtin_polyfill.cc
+  source_file_part = builtin_polyfill.cc
+  source_name_part = builtin_polyfill
+build obj/third_party/dawn/src/tint/lang/wgsl/ast/transform/transform/canonicalize_entry_point_io.o: cxx /ninja-to-soong-angle/third_party/dawn/src/tint/lang/wgsl/ast/transform/canonicalize_entry_point_io.cc
+  source_file_part = canonicalize_entry_point_io.cc
+  source_name_part = canonicalize_entry_point_io
+build obj/third_party/dawn/src/tint/lang/wgsl/ast/transform/transform/data.o: cxx /ninja-to-soong-angle/third_party/dawn/src/tint/lang/wgsl/ast/transform/data.cc
+  source_file_part = data.cc
+  source_name_part = data
+build obj/third_party/dawn/src/tint/lang/wgsl/ast/transform/transform/demote_to_helper.o: cxx /ninja-to-soong-angle/third_party/dawn/src/tint/lang/wgsl/ast/transform/demote_to_helper.cc
+  source_file_part = demote_to_helper.cc
+  source_name_part = demote_to_helper
+build obj/third_party/dawn/src/tint/lang/wgsl/ast/transform/transform/direct_variable_access.o: cxx /ninja-to-soong-angle/third_party/dawn/src/tint/lang/wgsl/ast/transform/direct_variable_access.cc
+  source_file_part = direct_variable_access.cc
+  source_name_part = direct_variable_access
+build obj/third_party/dawn/src/tint/lang/wgsl/ast/transform/transform/disable_uniformity_analysis.o: cxx /ninja-to-soong-angle/third_party/dawn/src/tint/lang/wgsl/ast/transform/disable_uniformity_analysis.cc
+  source_file_part = disable_uniformity_analysis.cc
+  source_name_part = disable_uniformity_analysis
+build obj/third_party/dawn/src/tint/lang/wgsl/ast/transform/transform/expand_compound_assignment.o: cxx /ninja-to-soong-angle/third_party/dawn/src/tint/lang/wgsl/ast/transform/expand_compound_assignment.cc
+  source_file_part = expand_compound_assignment.cc
+  source_name_part = expand_compound_assignment
+build obj/third_party/dawn/src/tint/lang/wgsl/ast/transform/transform/first_index_offset.o: cxx /ninja-to-soong-angle/third_party/dawn/src/tint/lang/wgsl/ast/transform/first_index_offset.cc
+  source_file_part = first_index_offset.cc
+  source_name_part = first_index_offset
+build obj/third_party/dawn/src/tint/lang/wgsl/ast/transform/transform/fold_constants.o: cxx /ninja-to-soong-angle/third_party/dawn/src/tint/lang/wgsl/ast/transform/fold_constants.cc
+  source_file_part = fold_constants.cc
+  source_name_part = fold_constants
+build obj/third_party/dawn/src/tint/lang/wgsl/ast/transform/transform/get_insertion_point.o: cxx /ninja-to-soong-angle/third_party/dawn/src/tint/lang/wgsl/ast/transform/get_insertion_point.cc
+  source_file_part = get_insertion_point.cc
+  source_name_part = get_insertion_point
+build obj/third_party/dawn/src/tint/lang/wgsl/ast/transform/transform/hoist_to_decl_before.o: cxx /ninja-to-soong-angle/third_party/dawn/src/tint/lang/wgsl/ast/transform/hoist_to_decl_before.cc
+  source_file_part = hoist_to_decl_before.cc
+  source_name_part = hoist_to_decl_before
+build obj/third_party/dawn/src/tint/lang/wgsl/ast/transform/transform/manager.o: cxx /ninja-to-soong-angle/third_party/dawn/src/tint/lang/wgsl/ast/transform/manager.cc
+  source_file_part = manager.cc
+  source_name_part = manager
+build obj/third_party/dawn/src/tint/lang/wgsl/ast/transform/transform/multiplanar_external_texture.o: cxx /ninja-to-soong-angle/third_party/dawn/src/tint/lang/wgsl/ast/transform/multiplanar_external_texture.cc
+  source_file_part = multiplanar_external_texture.cc
+  source_name_part = multiplanar_external_texture
+build obj/third_party/dawn/src/tint/lang/wgsl/ast/transform/transform/preserve_padding.o: cxx /ninja-to-soong-angle/third_party/dawn/src/tint/lang/wgsl/ast/transform/preserve_padding.cc
+  source_file_part = preserve_padding.cc
+  source_name_part = preserve_padding
+build obj/third_party/dawn/src/tint/lang/wgsl/ast/transform/transform/promote_initializers_to_let.o: cxx /ninja-to-soong-angle/third_party/dawn/src/tint/lang/wgsl/ast/transform/promote_initializers_to_let.cc
+  source_file_part = promote_initializers_to_let.cc
+  source_name_part = promote_initializers_to_let
+build obj/third_party/dawn/src/tint/lang/wgsl/ast/transform/transform/promote_side_effects_to_decl.o: cxx /ninja-to-soong-angle/third_party/dawn/src/tint/lang/wgsl/ast/transform/promote_side_effects_to_decl.cc
+  source_file_part = promote_side_effects_to_decl.cc
+  source_name_part = promote_side_effects_to_decl
+build obj/third_party/dawn/src/tint/lang/wgsl/ast/transform/transform/remove_continue_in_switch.o: cxx /ninja-to-soong-angle/third_party/dawn/src/tint/lang/wgsl/ast/transform/remove_continue_in_switch.cc
+  source_file_part = remove_continue_in_switch.cc
+  source_name_part = remove_continue_in_switch
+build obj/third_party/dawn/src/tint/lang/wgsl/ast/transform/transform/remove_phonies.o: cxx /ninja-to-soong-angle/third_party/dawn/src/tint/lang/wgsl/ast/transform/remove_phonies.cc
+  source_file_part = remove_phonies.cc
+  source_name_part = remove_phonies
+build obj/third_party/dawn/src/tint/lang/wgsl/ast/transform/transform/remove_unreachable_statements.o: cxx /ninja-to-soong-angle/third_party/dawn/src/tint/lang/wgsl/ast/transform/remove_unreachable_statements.cc
+  source_file_part = remove_unreachable_statements.cc
+  source_name_part = remove_unreachable_statements
+build obj/third_party/dawn/src/tint/lang/wgsl/ast/transform/transform/renamer.o: cxx /ninja-to-soong-angle/third_party/dawn/src/tint/lang/wgsl/ast/transform/renamer.cc
+  source_file_part = renamer.cc
+  source_name_part = renamer
+build obj/third_party/dawn/src/tint/lang/wgsl/ast/transform/transform/robustness.o: cxx /ninja-to-soong-angle/third_party/dawn/src/tint/lang/wgsl/ast/transform/robustness.cc
+  source_file_part = robustness.cc
+  source_name_part = robustness
+build obj/third_party/dawn/src/tint/lang/wgsl/ast/transform/transform/simplify_pointers.o: cxx /ninja-to-soong-angle/third_party/dawn/src/tint/lang/wgsl/ast/transform/simplify_pointers.cc
+  source_file_part = simplify_pointers.cc
+  source_name_part = simplify_pointers
+build obj/third_party/dawn/src/tint/lang/wgsl/ast/transform/transform/single_entry_point.o: cxx /ninja-to-soong-angle/third_party/dawn/src/tint/lang/wgsl/ast/transform/single_entry_point.cc
+  source_file_part = single_entry_point.cc
+  source_name_part = single_entry_point
+build obj/third_party/dawn/src/tint/lang/wgsl/ast/transform/transform/substitute_override.o: cxx /ninja-to-soong-angle/third_party/dawn/src/tint/lang/wgsl/ast/transform/substitute_override.cc
+  source_file_part = substitute_override.cc
+  source_name_part = substitute_override
+build obj/third_party/dawn/src/tint/lang/wgsl/ast/transform/transform/transform.o: cxx /ninja-to-soong-angle/third_party/dawn/src/tint/lang/wgsl/ast/transform/transform.cc
+  source_file_part = transform.cc
+  source_name_part = transform
+build obj/third_party/dawn/src/tint/lang/wgsl/ast/transform/transform/unshadow.o: cxx /ninja-to-soong-angle/third_party/dawn/src/tint/lang/wgsl/ast/transform/unshadow.cc
+  source_file_part = unshadow.cc
+  source_name_part = unshadow
+build obj/third_party/dawn/src/tint/lang/wgsl/ast/transform/transform/vectorize_scalar_matrix_initializers.o: cxx /ninja-to-soong-angle/third_party/dawn/src/tint/lang/wgsl/ast/transform/vectorize_scalar_matrix_initializers.cc
+  source_file_part = vectorize_scalar_matrix_initializers.cc
+  source_name_part = vectorize_scalar_matrix_initializers
+build obj/third_party/dawn/src/tint/lang/wgsl/ast/transform/transform/vertex_pulling.o: cxx /ninja-to-soong-angle/third_party/dawn/src/tint/lang/wgsl/ast/transform/vertex_pulling.cc
+  source_file_part = vertex_pulling.cc
+  source_name_part = vertex_pulling
+build obj/third_party/dawn/src/tint/lang/wgsl/ast/transform/transform/zero_init_workgroup_memory.o: cxx /ninja-to-soong-angle/third_party/dawn/src/tint/lang/wgsl/ast/transform/zero_init_workgroup_memory.cc
+  source_file_part = zero_init_workgroup_memory.cc
+  source_name_part = zero_init_workgroup_memory
+
+build phony/third_party/dawn/src/tint/lang/wgsl/ast/transform/transform: phony obj/third_party/dawn/src/tint/lang/wgsl/ast/transform/transform/add_empty_entry_point.o obj/third_party/dawn/src/tint/lang/wgsl/ast/transform/transform/array_length_from_uniform.o obj/third_party/dawn/src/tint/lang/wgsl/ast/transform/transform/binding_remapper.o obj/third_party/dawn/src/tint/lang/wgsl/ast/transform/transform/builtin_polyfill.o obj/third_party/dawn/src/tint/lang/wgsl/ast/transform/transform/canonicalize_entry_point_io.o obj/third_party/dawn/src/tint/lang/wgsl/ast/transform/transform/data.o obj/third_party/dawn/src/tint/lang/wgsl/ast/transform/transform/demote_to_helper.o obj/third_party/dawn/src/tint/lang/wgsl/ast/transform/transform/direct_variable_access.o obj/third_party/dawn/src/tint/lang/wgsl/ast/transform/transform/disable_uniformity_analysis.o obj/third_party/dawn/src/tint/lang/wgsl/ast/transform/transform/expand_compound_assignment.o obj/third_party/dawn/src/tint/lang/wgsl/ast/transform/transform/first_index_offset.o obj/third_party/dawn/src/tint/lang/wgsl/ast/transform/transform/fold_constants.o obj/third_party/dawn/src/tint/lang/wgsl/ast/transform/transform/get_insertion_point.o obj/third_party/dawn/src/tint/lang/wgsl/ast/transform/transform/hoist_to_decl_before.o obj/third_party/dawn/src/tint/lang/wgsl/ast/transform/transform/manager.o obj/third_party/dawn/src/tint/lang/wgsl/ast/transform/transform/multiplanar_external_texture.o obj/third_party/dawn/src/tint/lang/wgsl/ast/transform/transform/preserve_padding.o obj/third_party/dawn/src/tint/lang/wgsl/ast/transform/transform/promote_initializers_to_let.o obj/third_party/dawn/src/tint/lang/wgsl/ast/transform/transform/promote_side_effects_to_decl.o obj/third_party/dawn/src/tint/lang/wgsl/ast/transform/transform/remove_continue_in_switch.o obj/third_party/dawn/src/tint/lang/wgsl/ast/transform/transform/remove_phonies.o obj/third_party/dawn/src/tint/lang/wgsl/ast/transform/transform/remove_unreachable_statements.o obj/third_party/dawn/src/tint/lang/wgsl/ast/transform/transform/renamer.o obj/third_party/dawn/src/tint/lang/wgsl/ast/transform/transform/robustness.o obj/third_party/dawn/src/tint/lang/wgsl/ast/transform/transform/simplify_pointers.o obj/third_party/dawn/src/tint/lang/wgsl/ast/transform/transform/single_entry_point.o obj/third_party/dawn/src/tint/lang/wgsl/ast/transform/transform/substitute_override.o obj/third_party/dawn/src/tint/lang/wgsl/ast/transform/transform/transform.o obj/third_party/dawn/src/tint/lang/wgsl/ast/transform/transform/unshadow.o obj/third_party/dawn/src/tint/lang/wgsl/ast/transform/transform/vectorize_scalar_matrix_initializers.o obj/third_party/dawn/src/tint/lang/wgsl/ast/transform/transform/vertex_pulling.o obj/third_party/dawn/src/tint/lang/wgsl/ast/transform/transform/zero_init_workgroup_memory.o || obj/third_party/dawn/src/utils/libutils.a phony/third_party/dawn/src/tint/api/common/common phony/third_party/dawn/src/tint/lang/core/core phony/third_party/dawn/src/tint/lang/core/common/common phony/third_party/dawn/src/tint/lang/core/constant/constant phony/third_party/dawn/src/tint/lang/core/type/type phony/third_party/dawn/src/tint/lang/wgsl/wgsl phony/third_party/dawn/src/tint/lang/wgsl/ast/ast phony/third_party/dawn/src/tint/lang/wgsl/common/common phony/third_party/dawn/src/tint/lang/wgsl/features/features phony/third_party/dawn/src/tint/lang/wgsl/program/program phony/third_party/dawn/src/tint/lang/wgsl/resolver/resolver phony/third_party/dawn/src/tint/lang/wgsl/sem/sem phony/third_party/dawn/src/tint/utils/utils phony/third_party/dawn/src/tint/utils/containers/containers phony/third_party/dawn/src/tint/utils/diagnostic/diagnostic phony/third_party/dawn/src/tint/utils/ice/ice phony/third_party/dawn/src/tint/utils/macros/macros phony/third_party/dawn/src/tint/utils/math/math phony/third_party/dawn/src/tint/utils/memory/memory phony/third_party/dawn/src/tint/utils/result/result phony/third_party/dawn/src/tint/utils/rtti/rtti phony/third_party/dawn/src/tint/utils/symbol/symbol phony/third_party/dawn/src/tint/utils/text/text phony/third_party/dawn/src/tint/utils/system/system phony/third_party/dawn/src/tint/lang/core/intrinsic/intrinsic phony/third_party/dawn/src/tint/lang/wgsl/intrinsic/intrinsic

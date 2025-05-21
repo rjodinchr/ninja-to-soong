@@ -1,0 +1,76 @@
+defines = -DASTCENC_DECOMPRESS_ONLY=1 -DUSE_UDEV -DUSE_AURA=1 -DUSE_GLIB=1 -DUSE_OZONE=1 -D__STDC_CONSTANT_MACROS -D__STDC_FORMAT_MACROS -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_LARGEFILE64_SOURCE -D_GNU_SOURCE -DCR_CLANG_REVISION=\"llvmorg-21-init-9266-g09006611-1\" -D_LIBCPP_HARDENING_MODE=_LIBCPP_HARDENING_MODE_EXTENSIVE -DCOMPONENT_BUILD -D_LIBCPP_INSTRUMENTED_WITH_ASAN=0 -DCR_LIBCXX_REVISION=62724eb55f2ad7389088265952b1bb62cb89c73b -DCR_SYSROOT_KEY=20250129T203412Z-1 -D_DEBUG -DDYNAMIC_ANNOTATIONS_ENABLED=1
+include_dirs = -I/ninja-to-soong-angle -Igen -I/ninja-to-soong-angle/buildtools/third_party/libc++
+cflags = -Wall -Wextra -Wimplicit-fallthrough -Wextra-semi -Wunreachable-code-aggressive -Wthread-safety -Wgnu -Wno-gnu-anonymous-struct -Wno-gnu-conditional-omitted-operand -Wno-gnu-include-next -Wno-gnu-label-as-value -Wno-gnu-redeclared-enum -Wno-gnu-statement-expression -Wno-gnu-zero-variadic-macro-arguments -Wno-zero-length-array -Wno-missing-field-initializers -Wno-unused-parameter -Wno-psabi -Wloop-analysis -Wno-unneeded-internal-declaration -Wno-cast-function-type -Wno-thread-safety-reference-return -Wno-nontrivial-memcall -Wshadow -Werror -fno-delete-null-pointer-checks -fno-strict-overflow -fno-ident -fno-strict-aliasing -fstack-protector -funwind-tables -fPIC -pthread -fcolor-diagnostics -fmerge-all-constants -fno-sized-deallocation -fcrash-diagnostics-dir=/ninja-to-soong-angle/tools/clang/crashreports -mllvm -instcombine-lower-dbg-declare=0 -mllvm -split-threshold-for-reg-with-hint=0 -ffp-contract=off -Wa,--crel,--allow-experimental-crel -fextend-variable-liveness=none -fcomplete-member-pointers -m64 -msse3 -Wno-builtin-macro-redefined -D__DATE__= -D__TIME__= -D__TIMESTAMP__= -ffile-compilation-dir=. -no-canonical-prefixes -ftrivial-auto-var-init=pattern -O0 -fno-omit-frame-pointer -gdwarf-4 -g2 -gdwarf-aranges -gsplit-dwarf -ggnu-pubnames -Xclang -fuse-ctor-homing -fvisibility=hidden -Wheader-hygiene -Wstring-conversion -Wtautological-overlap-compare -O2 -fdata-sections -ffunction-sections -fno-unique-section-names -fno-math-errno
+cflags_cc = -Wno-unused-but-set-variable -Wno-invalid-offsetof -Wenum-compare-conditional -Wno-nullability-completeness -std=c++20 -Wno-trigraphs -gsimple-template-names -fno-exceptions -fno-rtti -nostdinc++ -isystem/ninja-to-soong-angle/third_party/libc++/src/include -isystem/ninja-to-soong-angle/third_party/libc++abi/src/include --sysroot=/ninja-to-soong-angle/build/linux/debian_bullseye_amd64-sysroot -fvisibility-inlines-hidden
+label_name = astcenc
+target_out_dir = obj/third_party/astc-encoder
+target_output_name = astcenc
+
+build obj/third_party/astc-encoder/astcenc/astcenc_averages_and_directions.o: cxx /ninja-to-soong-angle/third_party/astc-encoder/src/Source/astcenc_averages_and_directions.cpp
+  source_file_part = astcenc_averages_and_directions.cpp
+  source_name_part = astcenc_averages_and_directions
+build obj/third_party/astc-encoder/astcenc/astcenc_block_sizes.o: cxx /ninja-to-soong-angle/third_party/astc-encoder/src/Source/astcenc_block_sizes.cpp
+  source_file_part = astcenc_block_sizes.cpp
+  source_name_part = astcenc_block_sizes
+build obj/third_party/astc-encoder/astcenc/astcenc_color_quantize.o: cxx /ninja-to-soong-angle/third_party/astc-encoder/src/Source/astcenc_color_quantize.cpp
+  source_file_part = astcenc_color_quantize.cpp
+  source_name_part = astcenc_color_quantize
+build obj/third_party/astc-encoder/astcenc/astcenc_color_unquantize.o: cxx /ninja-to-soong-angle/third_party/astc-encoder/src/Source/astcenc_color_unquantize.cpp
+  source_file_part = astcenc_color_unquantize.cpp
+  source_name_part = astcenc_color_unquantize
+build obj/third_party/astc-encoder/astcenc/astcenc_compress_symbolic.o: cxx /ninja-to-soong-angle/third_party/astc-encoder/src/Source/astcenc_compress_symbolic.cpp
+  source_file_part = astcenc_compress_symbolic.cpp
+  source_name_part = astcenc_compress_symbolic
+build obj/third_party/astc-encoder/astcenc/astcenc_compute_variance.o: cxx /ninja-to-soong-angle/third_party/astc-encoder/src/Source/astcenc_compute_variance.cpp
+  source_file_part = astcenc_compute_variance.cpp
+  source_name_part = astcenc_compute_variance
+build obj/third_party/astc-encoder/astcenc/astcenc_decompress_symbolic.o: cxx /ninja-to-soong-angle/third_party/astc-encoder/src/Source/astcenc_decompress_symbolic.cpp
+  source_file_part = astcenc_decompress_symbolic.cpp
+  source_name_part = astcenc_decompress_symbolic
+build obj/third_party/astc-encoder/astcenc/astcenc_diagnostic_trace.o: cxx /ninja-to-soong-angle/third_party/astc-encoder/src/Source/astcenc_diagnostic_trace.cpp
+  source_file_part = astcenc_diagnostic_trace.cpp
+  source_name_part = astcenc_diagnostic_trace
+build obj/third_party/astc-encoder/astcenc/astcenc_entry.o: cxx /ninja-to-soong-angle/third_party/astc-encoder/src/Source/astcenc_entry.cpp
+  source_file_part = astcenc_entry.cpp
+  source_name_part = astcenc_entry
+build obj/third_party/astc-encoder/astcenc/astcenc_find_best_partitioning.o: cxx /ninja-to-soong-angle/third_party/astc-encoder/src/Source/astcenc_find_best_partitioning.cpp
+  source_file_part = astcenc_find_best_partitioning.cpp
+  source_name_part = astcenc_find_best_partitioning
+build obj/third_party/astc-encoder/astcenc/astcenc_ideal_endpoints_and_weights.o: cxx /ninja-to-soong-angle/third_party/astc-encoder/src/Source/astcenc_ideal_endpoints_and_weights.cpp
+  source_file_part = astcenc_ideal_endpoints_and_weights.cpp
+  source_name_part = astcenc_ideal_endpoints_and_weights
+build obj/third_party/astc-encoder/astcenc/astcenc_image.o: cxx /ninja-to-soong-angle/third_party/astc-encoder/src/Source/astcenc_image.cpp
+  source_file_part = astcenc_image.cpp
+  source_name_part = astcenc_image
+build obj/third_party/astc-encoder/astcenc/astcenc_integer_sequence.o: cxx /ninja-to-soong-angle/third_party/astc-encoder/src/Source/astcenc_integer_sequence.cpp
+  source_file_part = astcenc_integer_sequence.cpp
+  source_name_part = astcenc_integer_sequence
+build obj/third_party/astc-encoder/astcenc/astcenc_mathlib.o: cxx /ninja-to-soong-angle/third_party/astc-encoder/src/Source/astcenc_mathlib.cpp
+  source_file_part = astcenc_mathlib.cpp
+  source_name_part = astcenc_mathlib
+build obj/third_party/astc-encoder/astcenc/astcenc_mathlib_softfloat.o: cxx /ninja-to-soong-angle/third_party/astc-encoder/src/Source/astcenc_mathlib_softfloat.cpp
+  source_file_part = astcenc_mathlib_softfloat.cpp
+  source_name_part = astcenc_mathlib_softfloat
+build obj/third_party/astc-encoder/astcenc/astcenc_partition_tables.o: cxx /ninja-to-soong-angle/third_party/astc-encoder/src/Source/astcenc_partition_tables.cpp
+  source_file_part = astcenc_partition_tables.cpp
+  source_name_part = astcenc_partition_tables
+build obj/third_party/astc-encoder/astcenc/astcenc_percentile_tables.o: cxx /ninja-to-soong-angle/third_party/astc-encoder/src/Source/astcenc_percentile_tables.cpp
+  source_file_part = astcenc_percentile_tables.cpp
+  source_name_part = astcenc_percentile_tables
+build obj/third_party/astc-encoder/astcenc/astcenc_pick_best_endpoint_format.o: cxx /ninja-to-soong-angle/third_party/astc-encoder/src/Source/astcenc_pick_best_endpoint_format.cpp
+  source_file_part = astcenc_pick_best_endpoint_format.cpp
+  source_name_part = astcenc_pick_best_endpoint_format
+build obj/third_party/astc-encoder/astcenc/astcenc_quantization.o: cxx /ninja-to-soong-angle/third_party/astc-encoder/src/Source/astcenc_quantization.cpp
+  source_file_part = astcenc_quantization.cpp
+  source_name_part = astcenc_quantization
+build obj/third_party/astc-encoder/astcenc/astcenc_symbolic_physical.o: cxx /ninja-to-soong-angle/third_party/astc-encoder/src/Source/astcenc_symbolic_physical.cpp
+  source_file_part = astcenc_symbolic_physical.cpp
+  source_name_part = astcenc_symbolic_physical
+build obj/third_party/astc-encoder/astcenc/astcenc_weight_align.o: cxx /ninja-to-soong-angle/third_party/astc-encoder/src/Source/astcenc_weight_align.cpp
+  source_file_part = astcenc_weight_align.cpp
+  source_name_part = astcenc_weight_align
+build obj/third_party/astc-encoder/astcenc/astcenc_weight_quant_xfer_tables.o: cxx /ninja-to-soong-angle/third_party/astc-encoder/src/Source/astcenc_weight_quant_xfer_tables.cpp
+  source_file_part = astcenc_weight_quant_xfer_tables.cpp
+  source_name_part = astcenc_weight_quant_xfer_tables
+
+build phony/third_party/astc-encoder/astcenc: phony obj/third_party/astc-encoder/astcenc/astcenc_averages_and_directions.o obj/third_party/astc-encoder/astcenc/astcenc_block_sizes.o obj/third_party/astc-encoder/astcenc/astcenc_color_quantize.o obj/third_party/astc-encoder/astcenc/astcenc_color_unquantize.o obj/third_party/astc-encoder/astcenc/astcenc_compress_symbolic.o obj/third_party/astc-encoder/astcenc/astcenc_compute_variance.o obj/third_party/astc-encoder/astcenc/astcenc_decompress_symbolic.o obj/third_party/astc-encoder/astcenc/astcenc_diagnostic_trace.o obj/third_party/astc-encoder/astcenc/astcenc_entry.o obj/third_party/astc-encoder/astcenc/astcenc_find_best_partitioning.o obj/third_party/astc-encoder/astcenc/astcenc_ideal_endpoints_and_weights.o obj/third_party/astc-encoder/astcenc/astcenc_image.o obj/third_party/astc-encoder/astcenc/astcenc_integer_sequence.o obj/third_party/astc-encoder/astcenc/astcenc_mathlib.o obj/third_party/astc-encoder/astcenc/astcenc_mathlib_softfloat.o obj/third_party/astc-encoder/astcenc/astcenc_partition_tables.o obj/third_party/astc-encoder/astcenc/astcenc_percentile_tables.o obj/third_party/astc-encoder/astcenc/astcenc_pick_best_endpoint_format.o obj/third_party/astc-encoder/astcenc/astcenc_quantization.o obj/third_party/astc-encoder/astcenc/astcenc_symbolic_physical.o obj/third_party/astc-encoder/astcenc/astcenc_weight_align.o obj/third_party/astc-encoder/astcenc/astcenc_weight_quant_xfer_tables.o

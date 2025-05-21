@@ -1,0 +1,23 @@
+defines = -DUSE_FILE32API -D_GNU_SOURCE -DANDROID -D__ANDROID_UNAVAILABLE_SYMBOLS_ARE_WEAK__ -DHAVE_SYS_UIO_H -DANDROID_NDK_VERSION_ROLL=r28_1 -DCR_CLANG_REVISION=\"llvmorg-21-init-9266-g09006611-1\" -D_LIBCPP_HARDENING_MODE=_LIBCPP_HARDENING_MODE_NONE -DNDEBUG -DNVALGRIND -DDYNAMIC_ANNOTATIONS_ENABLED=0
+include_dirs = -I/ninja-to-soong-angle/third_party/zlib -I/ninja-to-soong-angle -Igen
+cflags = -fno-delete-null-pointer-checks -fno-strict-overflow -fno-ident -fno-strict-aliasing -fstack-protector -funwind-tables -fPIC -fcolor-diagnostics -fmerge-all-constants -fno-sized-deallocation -fcrash-diagnostics-dir=/ninja-to-soong-angle/tools/clang/crashreports -mllvm -instcombine-lower-dbg-declare=0 -mllvm -split-threshold-for-reg-with-hint=0 -ffp-contract=off -fextend-variable-liveness=none -ffunction-sections -fno-short-enums --target=x86_64-linux-android26 -m64 -msse3 -Wno-builtin-macro-redefined -D__DATE__= -D__TIME__= -D__TIMESTAMP__= -ffile-compilation-dir=. -no-canonical-prefixes -ftrivial-auto-var-init=pattern -O2 -fdata-sections -ffunction-sections -fno-unique-section-names -fno-math-errno -fomit-frame-pointer -g0 -fvisibility=hidden -Wheader-hygiene -Wstring-conversion -Wtautological-overlap-compare -Wall -Wno-unused-variable -Wno-c++11-narrowing -Wno-unused-but-set-variable -Wunguarded-availability -Wno-missing-field-initializers -Wno-unused-parameter -Wno-psabi -Wloop-analysis -Wno-unneeded-internal-declaration -Wno-cast-function-type -Wno-thread-safety-reference-return -Wno-nontrivial-memcall -Werror -Wno-parentheses-equality
+cflags_c = -std=c11 --sysroot=/ninja-to-soong-angle/third_party/android_toolchain/ndk/toolchains/llvm/prebuilt/linux-x86_64/sysroot
+label_name = minizip
+root_out_dir = .
+target_out_dir = obj/third_party/zlib
+target_output_name = libminizip
+
+build obj/third_party/zlib/minizip/ioapi.o: cc /ninja-to-soong-angle/third_party/zlib/contrib/minizip/ioapi.c
+  source_file_part = ioapi.c
+  source_name_part = ioapi
+build obj/third_party/zlib/minizip/unzip.o: cc /ninja-to-soong-angle/third_party/zlib/contrib/minizip/unzip.c
+  source_file_part = unzip.c
+  source_name_part = unzip
+build obj/third_party/zlib/minizip/zip.o: cc /ninja-to-soong-angle/third_party/zlib/contrib/minizip/zip.c
+  source_file_part = zip.c
+  source_name_part = zip
+
+build obj/third_party/zlib/libminizip.a: alink obj/third_party/zlib/minizip/ioapi.o obj/third_party/zlib/minizip/unzip.o obj/third_party/zlib/minizip/zip.o | /ninja-to-soong-angle/third_party/llvm-build/Release+Asserts/lib/clang/21/lib/linux/libclang_rt.builtins-x86_64-android.a || obj/third_party/zlib/libchrome_zlib.a phony/third_party/zlib/zlib_adler32_simd phony/third_party/zlib/zlib_inflate_chunk_simd phony/third_party/zlib/zlib_crc32_simd phony/third_party/cpu_features/ndk_compat phony/third_party/cpu_features/cpuinfo
+  arflags = -T -S
+  output_extension = .a
+  output_dir = obj/third_party/zlib

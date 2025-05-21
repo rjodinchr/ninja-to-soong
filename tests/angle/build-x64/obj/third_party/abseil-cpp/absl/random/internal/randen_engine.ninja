@@ -1,0 +1,9 @@
+defines = -D_GNU_SOURCE -DANDROID -D__ANDROID_UNAVAILABLE_SYMBOLS_ARE_WEAK__ -DHAVE_SYS_UIO_H -DANDROID_NDK_VERSION_ROLL=r28_1 -DCR_CLANG_REVISION=\"llvmorg-21-init-9266-g09006611-1\" -D_LIBCPP_HARDENING_MODE=_LIBCPP_HARDENING_MODE_NONE -DNDEBUG -DNVALGRIND -DDYNAMIC_ANNOTATIONS_ENABLED=0 -DABSL_ALLOCATOR_NOTHROW=1
+include_dirs = -I/ninja-to-soong-angle -Igen -I/ninja-to-soong-angle/third_party/abseil-cpp
+label_name = randen_engine
+root_out_dir = .
+target_out_dir = obj/third_party/abseil-cpp/absl/random/internal
+target_output_name = randen_engine
+
+
+build phony/third_party/abseil-cpp/absl/random/internal/randen_engine: phony || phony/third_party/abseil-cpp/absl/random/internal/iostream_state_saver phony/third_party/abseil-cpp/absl/random/internal/randen phony/third_party/abseil-cpp/absl/base/endian phony/third_party/abseil-cpp/absl/numeric/int128 phony/third_party/abseil-cpp/absl/numeric/bits phony/third_party/abseil-cpp/absl/base/base phony/third_party/abseil-cpp/absl/base/log_severity phony/third_party/abseil-cpp/absl/base/raw_logging_internal phony/third_party/abseil-cpp/absl/base/spinlock_wait phony/third_party/abseil-cpp/absl/random/internal/platform phony/third_party/abseil-cpp/absl/random/internal/randen_hwaes phony/third_party/abseil-cpp/absl/random/internal/randen_hwaes_impl phony/third_party/abseil-cpp/absl/random/internal/randen_slow

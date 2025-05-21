@@ -1,0 +1,76 @@
+defines = -DSWIFTSHADER_LEGACY_PRECISION=true -DUSE_UDEV -DUSE_AURA=1 -DUSE_GLIB=1 -DUSE_OZONE=1 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_LARGEFILE64_SOURCE -D_GNU_SOURCE -DCR_CLANG_REVISION=\"llvmorg-21-init-9266-g09006611-1\" -D_LIBCPP_HARDENING_MODE=_LIBCPP_HARDENING_MODE_EXTENSIVE -DCOMPONENT_BUILD -D_LIBCPP_INSTRUMENTED_WITH_ASAN=0 -DCR_LIBCXX_REVISION=62724eb55f2ad7389088265952b1bb62cb89c73b -DCR_SYSROOT_KEY=20250129T203412Z-1 -D_DEBUG -DDYNAMIC_ANNOTATIONS_ENABLED=1 -DMARL_USE_PTHREAD_THREAD_LOCAL=1
+include_dirs = -I/ninja-to-soong-angle/third_party/SwiftShader/src -I/ninja-to-soong-angle/third_party/SwiftShader/include -I/ninja-to-soong-angle/third_party/SwiftShader/third_party/SPIRV-Headers/include -I/ninja-to-soong-angle/third_party/SwiftShader/third_party/SPIRV-Tools/include -I/ninja-to-soong-angle -Igen -I/ninja-to-soong-angle/buildtools/third_party/libc++ -I/ninja-to-soong-angle/third_party/SwiftShader/third_party/marl/include
+cflags = -fno-delete-null-pointer-checks -fno-strict-overflow -fno-ident -fno-strict-aliasing -fstack-protector -funwind-tables -fPIC -pthread -fcolor-diagnostics -fmerge-all-constants -fno-sized-deallocation -fcrash-diagnostics-dir=/ninja-to-soong-angle/tools/clang/crashreports -mllvm -instcombine-lower-dbg-declare=0 -mllvm -split-threshold-for-reg-with-hint=0 -ffp-contract=off -Wa,--crel,--allow-experimental-crel -fextend-variable-liveness=none -fcomplete-member-pointers -m64 -msse3 -Wno-builtin-macro-redefined -D__DATE__= -D__TIME__= -D__TIMESTAMP__= -ffile-compilation-dir=. -no-canonical-prefixes -ftrivial-auto-var-init=pattern -fno-omit-frame-pointer -gdwarf-4 -g2 -gdwarf-aranges -gsplit-dwarf -ggnu-pubnames -Xclang -fuse-ctor-homing -fvisibility=hidden -Wheader-hygiene -Wstring-conversion -Wtautological-overlap-compare -O2 -fdata-sections -ffunction-sections -fno-unique-section-names -fno-math-errno -Wall -Wno-unused-variable -Wno-c++11-narrowing -Wno-unused-but-set-variable -Wno-missing-field-initializers -Wno-unused-parameter -Wno-psabi -Wloop-analysis -Wno-unneeded-internal-declaration -Wno-cast-function-type -Wno-thread-safety-reference-return -Wno-nontrivial-memcall -Werror -Wno-shadow
+cflags_cc = -std=c++20 -Wno-trigraphs -gsimple-template-names -fno-exceptions -fno-rtti -nostdinc++ -isystem/ninja-to-soong-angle/third_party/libc++/src/include -isystem/ninja-to-soong-angle/third_party/libc++abi/src/include --sysroot=/ninja-to-soong-angle/build/linux/debian_bullseye_amd64-sysroot -fvisibility-inlines-hidden -Wno-invalid-offsetof -Wenum-compare-conditional -Wno-nullability-completeness
+label_name = Pipeline
+target_out_dir = obj/third_party/SwiftShader/src/Pipeline
+target_output_name = Pipeline
+
+build obj/third_party/SwiftShader/src/Pipeline/Pipeline/ComputeProgram.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/src/Pipeline/ComputeProgram.cpp
+  source_file_part = ComputeProgram.cpp
+  source_name_part = ComputeProgram
+build obj/third_party/SwiftShader/src/Pipeline/Pipeline/Constants.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/src/Pipeline/Constants.cpp
+  source_file_part = Constants.cpp
+  source_name_part = Constants
+build obj/third_party/SwiftShader/src/Pipeline/Pipeline/PixelProgram.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/src/Pipeline/PixelProgram.cpp
+  source_file_part = PixelProgram.cpp
+  source_name_part = PixelProgram
+build obj/third_party/SwiftShader/src/Pipeline/Pipeline/PixelRoutine.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/src/Pipeline/PixelRoutine.cpp
+  source_file_part = PixelRoutine.cpp
+  source_name_part = PixelRoutine
+build obj/third_party/SwiftShader/src/Pipeline/Pipeline/SamplerCore.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/src/Pipeline/SamplerCore.cpp
+  source_file_part = SamplerCore.cpp
+  source_name_part = SamplerCore
+build obj/third_party/SwiftShader/src/Pipeline/Pipeline/SetupRoutine.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/src/Pipeline/SetupRoutine.cpp
+  source_file_part = SetupRoutine.cpp
+  source_name_part = SetupRoutine
+build obj/third_party/SwiftShader/src/Pipeline/Pipeline/ShaderCore.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/src/Pipeline/ShaderCore.cpp
+  source_file_part = ShaderCore.cpp
+  source_name_part = ShaderCore
+build obj/third_party/SwiftShader/src/Pipeline/Pipeline/SpirvBinary.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/src/Pipeline/SpirvBinary.cpp
+  source_file_part = SpirvBinary.cpp
+  source_name_part = SpirvBinary
+build obj/third_party/SwiftShader/src/Pipeline/Pipeline/SpirvProfiler.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/src/Pipeline/SpirvProfiler.cpp
+  source_file_part = SpirvProfiler.cpp
+  source_name_part = SpirvProfiler
+build obj/third_party/SwiftShader/src/Pipeline/Pipeline/SpirvShader.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/src/Pipeline/SpirvShader.cpp
+  source_file_part = SpirvShader.cpp
+  source_name_part = SpirvShader
+build obj/third_party/SwiftShader/src/Pipeline/Pipeline/SpirvShaderArithmetic.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/src/Pipeline/SpirvShaderArithmetic.cpp
+  source_file_part = SpirvShaderArithmetic.cpp
+  source_name_part = SpirvShaderArithmetic
+build obj/third_party/SwiftShader/src/Pipeline/Pipeline/SpirvShaderControlFlow.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/src/Pipeline/SpirvShaderControlFlow.cpp
+  source_file_part = SpirvShaderControlFlow.cpp
+  source_name_part = SpirvShaderControlFlow
+build obj/third_party/SwiftShader/src/Pipeline/Pipeline/SpirvShaderDebugger.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/src/Pipeline/SpirvShaderDebugger.cpp
+  source_file_part = SpirvShaderDebugger.cpp
+  source_name_part = SpirvShaderDebugger
+build obj/third_party/SwiftShader/src/Pipeline/Pipeline/SpirvShaderGLSLstd450.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/src/Pipeline/SpirvShaderGLSLstd450.cpp
+  source_file_part = SpirvShaderGLSLstd450.cpp
+  source_name_part = SpirvShaderGLSLstd450
+build obj/third_party/SwiftShader/src/Pipeline/Pipeline/SpirvShaderGroup.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/src/Pipeline/SpirvShaderGroup.cpp
+  source_file_part = SpirvShaderGroup.cpp
+  source_name_part = SpirvShaderGroup
+build obj/third_party/SwiftShader/src/Pipeline/Pipeline/SpirvShaderImage.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/src/Pipeline/SpirvShaderImage.cpp
+  source_file_part = SpirvShaderImage.cpp
+  source_name_part = SpirvShaderImage
+build obj/third_party/SwiftShader/src/Pipeline/Pipeline/SpirvShaderInstructions.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/src/Pipeline/SpirvShaderInstructions.cpp
+  source_file_part = SpirvShaderInstructions.cpp
+  source_name_part = SpirvShaderInstructions
+build obj/third_party/SwiftShader/src/Pipeline/Pipeline/SpirvShaderMemory.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/src/Pipeline/SpirvShaderMemory.cpp
+  source_file_part = SpirvShaderMemory.cpp
+  source_name_part = SpirvShaderMemory
+build obj/third_party/SwiftShader/src/Pipeline/Pipeline/SpirvShaderSampling.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/src/Pipeline/SpirvShaderSampling.cpp
+  source_file_part = SpirvShaderSampling.cpp
+  source_name_part = SpirvShaderSampling
+build obj/third_party/SwiftShader/src/Pipeline/Pipeline/SpirvShaderSpec.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/src/Pipeline/SpirvShaderSpec.cpp
+  source_file_part = SpirvShaderSpec.cpp
+  source_name_part = SpirvShaderSpec
+build obj/third_party/SwiftShader/src/Pipeline/Pipeline/VertexProgram.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/src/Pipeline/VertexProgram.cpp
+  source_file_part = VertexProgram.cpp
+  source_name_part = VertexProgram
+build obj/third_party/SwiftShader/src/Pipeline/Pipeline/VertexRoutine.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/src/Pipeline/VertexRoutine.cpp
+  source_file_part = VertexRoutine.cpp
+  source_name_part = VertexRoutine
+
+build phony/third_party/SwiftShader/src/Pipeline/Pipeline: phony obj/third_party/SwiftShader/src/Pipeline/Pipeline/ComputeProgram.o obj/third_party/SwiftShader/src/Pipeline/Pipeline/Constants.o obj/third_party/SwiftShader/src/Pipeline/Pipeline/PixelProgram.o obj/third_party/SwiftShader/src/Pipeline/Pipeline/PixelRoutine.o obj/third_party/SwiftShader/src/Pipeline/Pipeline/SamplerCore.o obj/third_party/SwiftShader/src/Pipeline/Pipeline/SetupRoutine.o obj/third_party/SwiftShader/src/Pipeline/Pipeline/ShaderCore.o obj/third_party/SwiftShader/src/Pipeline/Pipeline/SpirvBinary.o obj/third_party/SwiftShader/src/Pipeline/Pipeline/SpirvProfiler.o obj/third_party/SwiftShader/src/Pipeline/Pipeline/SpirvShader.o obj/third_party/SwiftShader/src/Pipeline/Pipeline/SpirvShaderArithmetic.o obj/third_party/SwiftShader/src/Pipeline/Pipeline/SpirvShaderControlFlow.o obj/third_party/SwiftShader/src/Pipeline/Pipeline/SpirvShaderDebugger.o obj/third_party/SwiftShader/src/Pipeline/Pipeline/SpirvShaderGLSLstd450.o obj/third_party/SwiftShader/src/Pipeline/Pipeline/SpirvShaderGroup.o obj/third_party/SwiftShader/src/Pipeline/Pipeline/SpirvShaderImage.o obj/third_party/SwiftShader/src/Pipeline/Pipeline/SpirvShaderInstructions.o obj/third_party/SwiftShader/src/Pipeline/Pipeline/SpirvShaderMemory.o obj/third_party/SwiftShader/src/Pipeline/Pipeline/SpirvShaderSampling.o obj/third_party/SwiftShader/src/Pipeline/Pipeline/SpirvShaderSpec.o obj/third_party/SwiftShader/src/Pipeline/Pipeline/VertexProgram.o obj/third_party/SwiftShader/src/Pipeline/Pipeline/VertexRoutine.o || phony/third_party/SwiftShader/src/System/System_headers

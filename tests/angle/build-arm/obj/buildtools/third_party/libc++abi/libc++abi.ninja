@@ -1,0 +1,62 @@
+defines = -DLIBCXXABI_SILENT_TERMINATE -DHAVE___CXA_THREAD_ATEXIT_IMPL -D_GNU_SOURCE -DANDROID -D__ANDROID_UNAVAILABLE_SYMBOLS_ARE_WEAK__ -DHAVE_SYS_UIO_H -DANDROID_NDK_VERSION_ROLL=r28_1 -DCR_CLANG_REVISION=\"llvmorg-21-init-9266-g09006611-1\" -D_LIBCPP_HARDENING_MODE=_LIBCPP_HARDENING_MODE_NONE -DNDEBUG -DNVALGRIND -DDYNAMIC_ANNOTATIONS_ENABLED=0 -D_LIBCPP_BUILDING_LIBRARY
+include_dirs = -I/ninja-to-soong-angle/third_party/libc++/src/src -I/ninja-to-soong-angle -Igen
+cflags = -fno-delete-null-pointer-checks -fno-strict-overflow -fno-ident -fno-strict-aliasing -fstack-protector -funwind-tables -fPIC -fcolor-diagnostics -fmerge-all-constants -fno-sized-deallocation -fcrash-diagnostics-dir=/ninja-to-soong-angle/tools/clang/crashreports -mllvm -instcombine-lower-dbg-declare=0 -mllvm -split-threshold-for-reg-with-hint=0 -ffp-contract=off -fextend-variable-liveness=none -ffunction-sections -fno-short-enums --target=arm-linux-androideabi26 -march=armv7-a -mfloat-abi=softfp -Wno-builtin-macro-redefined -D__DATE__= -D__TIME__= -D__TIMESTAMP__= -ffile-compilation-dir=. -no-canonical-prefixes -mfpu=neon -mthumb -ftrivial-auto-var-init=pattern -Os -fdata-sections -ffunction-sections -fno-unique-section-names -fno-math-errno -mllvm -enable-ml-inliner=release -mllvm -ml-inliner-model-selector=arm32-size -fomit-frame-pointer -g0 -fvisibility=hidden -Wheader-hygiene -Wstring-conversion -Wtautological-overlap-compare -Wall -Wno-unused-variable -Wno-c++11-narrowing -Wno-unused-but-set-variable -Wunguarded-availability -Wno-missing-field-initializers -Wno-unused-parameter -Wno-psabi -Wloop-analysis -Wno-unneeded-internal-declaration -Wno-cast-function-type -Wno-thread-safety-reference-return -Wno-nontrivial-memcall -Werror -fstrict-aliasing -Wundef -fPIC
+cflags_cc = -std=c++20 -Wno-trigraphs -gsimple-template-names --sysroot=/ninja-to-soong-angle/third_party/android_toolchain/ndk/toolchains/llvm/prebuilt/linux-x86_64/sysroot -fvisibility-inlines-hidden -Wno-invalid-offsetof -Wenum-compare-conditional -Wno-nullability-completeness -fexceptions -frtti -std=c++20
+label_name = libc++abi
+root_out_dir = .
+target_out_dir = obj/buildtools/third_party/libc++abi
+target_output_name = libc++abi
+
+build obj/buildtools/third_party/libc++abi/libc++abi/abort_message.o: cxx /ninja-to-soong-angle/third_party/libc++abi/src/src/abort_message.cpp
+  source_file_part = abort_message.cpp
+  source_name_part = abort_message
+build obj/buildtools/third_party/libc++abi/libc++abi/cxa_aux_runtime.o: cxx /ninja-to-soong-angle/third_party/libc++abi/src/src/cxa_aux_runtime.cpp
+  source_file_part = cxa_aux_runtime.cpp
+  source_name_part = cxa_aux_runtime
+build obj/buildtools/third_party/libc++abi/libc++abi/cxa_default_handlers.o: cxx /ninja-to-soong-angle/third_party/libc++abi/src/src/cxa_default_handlers.cpp
+  source_file_part = cxa_default_handlers.cpp
+  source_name_part = cxa_default_handlers
+build obj/buildtools/third_party/libc++abi/libc++abi/cxa_exception.o: cxx /ninja-to-soong-angle/third_party/libc++abi/src/src/cxa_exception.cpp
+  source_file_part = cxa_exception.cpp
+  source_name_part = cxa_exception
+build obj/buildtools/third_party/libc++abi/libc++abi/cxa_exception_storage.o: cxx /ninja-to-soong-angle/third_party/libc++abi/src/src/cxa_exception_storage.cpp
+  source_file_part = cxa_exception_storage.cpp
+  source_name_part = cxa_exception_storage
+build obj/buildtools/third_party/libc++abi/libc++abi/cxa_handlers.o: cxx /ninja-to-soong-angle/third_party/libc++abi/src/src/cxa_handlers.cpp
+  source_file_part = cxa_handlers.cpp
+  source_name_part = cxa_handlers
+build obj/buildtools/third_party/libc++abi/libc++abi/cxa_personality.o: cxx /ninja-to-soong-angle/third_party/libc++abi/src/src/cxa_personality.cpp
+  source_file_part = cxa_personality.cpp
+  source_name_part = cxa_personality
+build obj/buildtools/third_party/libc++abi/libc++abi/cxa_vector.o: cxx /ninja-to-soong-angle/third_party/libc++abi/src/src/cxa_vector.cpp
+  source_file_part = cxa_vector.cpp
+  source_name_part = cxa_vector
+build obj/buildtools/third_party/libc++abi/libc++abi/cxa_virtual.o: cxx /ninja-to-soong-angle/third_party/libc++abi/src/src/cxa_virtual.cpp
+  source_file_part = cxa_virtual.cpp
+  source_name_part = cxa_virtual
+build obj/buildtools/third_party/libc++abi/libc++abi/fallback_malloc.o: cxx /ninja-to-soong-angle/third_party/libc++abi/src/src/fallback_malloc.cpp
+  source_file_part = fallback_malloc.cpp
+  source_name_part = fallback_malloc
+build obj/buildtools/third_party/libc++abi/libc++abi/private_typeinfo.o: cxx /ninja-to-soong-angle/third_party/libc++abi/src/src/private_typeinfo.cpp
+  source_file_part = private_typeinfo.cpp
+  source_name_part = private_typeinfo
+build obj/buildtools/third_party/libc++abi/libc++abi/stdlib_exception.o: cxx /ninja-to-soong-angle/third_party/libc++abi/src/src/stdlib_exception.cpp
+  source_file_part = stdlib_exception.cpp
+  source_name_part = stdlib_exception
+build obj/buildtools/third_party/libc++abi/libc++abi/stdlib_stdexcept.o: cxx /ninja-to-soong-angle/third_party/libc++abi/src/src/stdlib_stdexcept.cpp
+  source_file_part = stdlib_stdexcept.cpp
+  source_name_part = stdlib_stdexcept
+build obj/buildtools/third_party/libc++abi/libc++abi/stdlib_typeinfo.o: cxx /ninja-to-soong-angle/third_party/libc++abi/src/src/stdlib_typeinfo.cpp
+  source_file_part = stdlib_typeinfo.cpp
+  source_name_part = stdlib_typeinfo
+build obj/buildtools/third_party/libc++abi/libc++abi/cxa_guard.o: cxx /ninja-to-soong-angle/third_party/libc++abi/src/src/cxa_guard.cpp
+  source_file_part = cxa_guard.cpp
+  source_name_part = cxa_guard
+build obj/buildtools/third_party/libc++abi/libc++abi/cxa_demangle_stub.o: cxx /ninja-to-soong-angle/buildtools/third_party/libc++abi/cxa_demangle_stub.cc
+  source_file_part = cxa_demangle_stub.cc
+  source_name_part = cxa_demangle_stub
+build obj/buildtools/third_party/libc++abi/libc++abi/cxa_thread_atexit.o: cxx /ninja-to-soong-angle/third_party/libc++abi/src/src/cxa_thread_atexit.cpp
+  source_file_part = cxa_thread_atexit.cpp
+  source_name_part = cxa_thread_atexit
+
+build phony/buildtools/third_party/libc++abi/libc++abi: phony obj/buildtools/third_party/libc++abi/libc++abi/abort_message.o obj/buildtools/third_party/libc++abi/libc++abi/cxa_aux_runtime.o obj/buildtools/third_party/libc++abi/libc++abi/cxa_default_handlers.o obj/buildtools/third_party/libc++abi/libc++abi/cxa_exception.o obj/buildtools/third_party/libc++abi/libc++abi/cxa_exception_storage.o obj/buildtools/third_party/libc++abi/libc++abi/cxa_handlers.o obj/buildtools/third_party/libc++abi/libc++abi/cxa_personality.o obj/buildtools/third_party/libc++abi/libc++abi/cxa_vector.o obj/buildtools/third_party/libc++abi/libc++abi/cxa_virtual.o obj/buildtools/third_party/libc++abi/libc++abi/fallback_malloc.o obj/buildtools/third_party/libc++abi/libc++abi/private_typeinfo.o obj/buildtools/third_party/libc++abi/libc++abi/stdlib_exception.o obj/buildtools/third_party/libc++abi/libc++abi/stdlib_stdexcept.o obj/buildtools/third_party/libc++abi/libc++abi/stdlib_typeinfo.o obj/buildtools/third_party/libc++abi/libc++abi/cxa_guard.o obj/buildtools/third_party/libc++abi/libc++abi/cxa_demangle_stub.o obj/buildtools/third_party/libc++abi/libc++abi/cxa_thread_atexit.o || phony/buildtools/third_party/libunwind/libunwind

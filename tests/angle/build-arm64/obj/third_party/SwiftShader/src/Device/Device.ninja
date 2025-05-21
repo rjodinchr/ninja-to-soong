@@ -1,0 +1,76 @@
+defines = -DSWIFTSHADER_ENABLE_ASTC -DSWIFTSHADER_LEGACY_PRECISION=true -DUSE_UDEV -DUSE_AURA=1 -DUSE_GLIB=1 -DUSE_OZONE=1 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_LARGEFILE64_SOURCE -D_GNU_SOURCE -DCR_CLANG_REVISION=\"llvmorg-21-init-9266-g09006611-1\" -D_LIBCPP_HARDENING_MODE=_LIBCPP_HARDENING_MODE_EXTENSIVE -DCOMPONENT_BUILD -D_LIBCPP_INSTRUMENTED_WITH_ASAN=0 -DCR_LIBCXX_REVISION=62724eb55f2ad7389088265952b1bb62cb89c73b -DCR_SYSROOT_KEY=20250129T203412Z-1 -D_DEBUG -DDYNAMIC_ANNOTATIONS_ENABLED=1 -DMARL_USE_PTHREAD_THREAD_LOCAL=1
+include_dirs = -I/ninja-to-soong-angle/third_party/SwiftShader/src -I/ninja-to-soong-angle/third_party/SwiftShader/include -I/ninja-to-soong-angle/third_party/SwiftShader/third_party/SPIRV-Headers/include -I/ninja-to-soong-angle/third_party/SwiftShader/third_party/astc-encoder/Source -I/ninja-to-soong-angle -Igen -I/ninja-to-soong-angle/buildtools/third_party/libc++ -I/ninja-to-soong-angle/third_party/SwiftShader/third_party/SPIRV-Tools/include -I/ninja-to-soong-angle/third_party/SwiftShader/third_party/marl/include
+cflags = -fno-delete-null-pointer-checks -fno-strict-overflow -fno-ident -fno-strict-aliasing -fstack-protector -funwind-tables -fPIC -pthread -fcolor-diagnostics -fmerge-all-constants -fno-sized-deallocation -fcrash-diagnostics-dir=/ninja-to-soong-angle/tools/clang/crashreports -mllvm -instcombine-lower-dbg-declare=0 -mllvm -split-threshold-for-reg-with-hint=0 -ffp-contract=off -Wa,--crel,--allow-experimental-crel -fextend-variable-liveness=none -fcomplete-member-pointers -m64 -msse3 -Wno-builtin-macro-redefined -D__DATE__= -D__TIME__= -D__TIMESTAMP__= -ffile-compilation-dir=. -no-canonical-prefixes -ftrivial-auto-var-init=pattern -fno-omit-frame-pointer -gdwarf-4 -g2 -gdwarf-aranges -gsplit-dwarf -ggnu-pubnames -Xclang -fuse-ctor-homing -fvisibility=hidden -Wheader-hygiene -Wstring-conversion -Wtautological-overlap-compare -O2 -fdata-sections -ffunction-sections -fno-unique-section-names -fno-math-errno -Wall -Wno-unused-variable -Wno-c++11-narrowing -Wno-unused-but-set-variable -Wno-missing-field-initializers -Wno-unused-parameter -Wno-psabi -Wloop-analysis -Wno-unneeded-internal-declaration -Wno-cast-function-type -Wno-thread-safety-reference-return -Wno-nontrivial-memcall -Werror -Wno-shadow
+cflags_cc = -std=c++20 -Wno-trigraphs -gsimple-template-names -fno-exceptions -fno-rtti -nostdinc++ -isystem/ninja-to-soong-angle/third_party/libc++/src/include -isystem/ninja-to-soong-angle/third_party/libc++abi/src/include --sysroot=/ninja-to-soong-angle/build/linux/debian_bullseye_amd64-sysroot -fvisibility-inlines-hidden -Wno-invalid-offsetof -Wenum-compare-conditional -Wno-nullability-completeness
+label_name = Device
+target_out_dir = obj/third_party/SwiftShader/src/Device
+target_output_name = Device
+
+build obj/third_party/SwiftShader/src/Device/Device/ASTC_Decoder.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/src/Device/ASTC_Decoder.cpp
+  source_file_part = ASTC_Decoder.cpp
+  source_name_part = ASTC_Decoder
+build obj/third_party/SwiftShader/src/Device/Device/BC_Decoder.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/src/Device/BC_Decoder.cpp
+  source_file_part = BC_Decoder.cpp
+  source_name_part = BC_Decoder
+build obj/third_party/SwiftShader/src/Device/Device/Blitter.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/src/Device/Blitter.cpp
+  source_file_part = Blitter.cpp
+  source_name_part = Blitter
+build obj/third_party/SwiftShader/src/Device/Device/Clipper.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/src/Device/Clipper.cpp
+  source_file_part = Clipper.cpp
+  source_name_part = Clipper
+build obj/third_party/SwiftShader/src/Device/Device/Context.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/src/Device/Context.cpp
+  source_file_part = Context.cpp
+  source_name_part = Context
+build obj/third_party/SwiftShader/src/Device/Device/ETC_Decoder.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/src/Device/ETC_Decoder.cpp
+  source_file_part = ETC_Decoder.cpp
+  source_name_part = ETC_Decoder
+build obj/third_party/SwiftShader/src/Device/Device/PixelProcessor.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/src/Device/PixelProcessor.cpp
+  source_file_part = PixelProcessor.cpp
+  source_name_part = PixelProcessor
+build obj/third_party/SwiftShader/src/Device/Device/QuadRasterizer.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/src/Device/QuadRasterizer.cpp
+  source_file_part = QuadRasterizer.cpp
+  source_name_part = QuadRasterizer
+build obj/third_party/SwiftShader/src/Device/Device/Renderer.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/src/Device/Renderer.cpp
+  source_file_part = Renderer.cpp
+  source_name_part = Renderer
+build obj/third_party/SwiftShader/src/Device/Device/SetupProcessor.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/src/Device/SetupProcessor.cpp
+  source_file_part = SetupProcessor.cpp
+  source_name_part = SetupProcessor
+build obj/third_party/SwiftShader/src/Device/Device/VertexProcessor.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/src/Device/VertexProcessor.cpp
+  source_file_part = VertexProcessor.cpp
+  source_name_part = VertexProcessor
+build obj/third_party/SwiftShader/src/Device/Device/astc_block_sizes2.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/third_party/astc-encoder/Source/astc_block_sizes2.cpp
+  source_file_part = astc_block_sizes2.cpp
+  source_name_part = astc_block_sizes2
+build obj/third_party/SwiftShader/src/Device/Device/astc_color_unquantize.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/third_party/astc-encoder/Source/astc_color_unquantize.cpp
+  source_file_part = astc_color_unquantize.cpp
+  source_name_part = astc_color_unquantize
+build obj/third_party/SwiftShader/src/Device/Device/astc_decompress_symbolic.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/third_party/astc-encoder/Source/astc_decompress_symbolic.cpp
+  source_file_part = astc_decompress_symbolic.cpp
+  source_name_part = astc_decompress_symbolic
+build obj/third_party/SwiftShader/src/Device/Device/astc_image_load_store.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/third_party/astc-encoder/Source/astc_image_load_store.cpp
+  source_file_part = astc_image_load_store.cpp
+  source_name_part = astc_image_load_store
+build obj/third_party/SwiftShader/src/Device/Device/astc_integer_sequence.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/third_party/astc-encoder/Source/astc_integer_sequence.cpp
+  source_file_part = astc_integer_sequence.cpp
+  source_name_part = astc_integer_sequence
+build obj/third_party/SwiftShader/src/Device/Device/astc_mathlib.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/third_party/astc-encoder/Source/astc_mathlib.cpp
+  source_file_part = astc_mathlib.cpp
+  source_name_part = astc_mathlib
+build obj/third_party/SwiftShader/src/Device/Device/astc_mathlib_softfloat.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/third_party/astc-encoder/Source/astc_mathlib_softfloat.cpp
+  source_file_part = astc_mathlib_softfloat.cpp
+  source_name_part = astc_mathlib_softfloat
+build obj/third_party/SwiftShader/src/Device/Device/astc_partition_tables.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/third_party/astc-encoder/Source/astc_partition_tables.cpp
+  source_file_part = astc_partition_tables.cpp
+  source_name_part = astc_partition_tables
+build obj/third_party/SwiftShader/src/Device/Device/astc_quantization.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/third_party/astc-encoder/Source/astc_quantization.cpp
+  source_file_part = astc_quantization.cpp
+  source_name_part = astc_quantization
+build obj/third_party/SwiftShader/src/Device/Device/astc_symbolic_physical.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/third_party/astc-encoder/Source/astc_symbolic_physical.cpp
+  source_file_part = astc_symbolic_physical.cpp
+  source_name_part = astc_symbolic_physical
+build obj/third_party/SwiftShader/src/Device/Device/astc_weight_quant_xfer_tables.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/third_party/astc-encoder/Source/astc_weight_quant_xfer_tables.cpp
+  source_file_part = astc_weight_quant_xfer_tables.cpp
+  source_name_part = astc_weight_quant_xfer_tables
+
+build phony/third_party/SwiftShader/src/Device/Device: phony obj/third_party/SwiftShader/src/Device/Device/ASTC_Decoder.o obj/third_party/SwiftShader/src/Device/Device/BC_Decoder.o obj/third_party/SwiftShader/src/Device/Device/Blitter.o obj/third_party/SwiftShader/src/Device/Device/Clipper.o obj/third_party/SwiftShader/src/Device/Device/Context.o obj/third_party/SwiftShader/src/Device/Device/ETC_Decoder.o obj/third_party/SwiftShader/src/Device/Device/PixelProcessor.o obj/third_party/SwiftShader/src/Device/Device/QuadRasterizer.o obj/third_party/SwiftShader/src/Device/Device/Renderer.o obj/third_party/SwiftShader/src/Device/Device/SetupProcessor.o obj/third_party/SwiftShader/src/Device/Device/VertexProcessor.o obj/third_party/SwiftShader/src/Device/Device/astc_block_sizes2.o obj/third_party/SwiftShader/src/Device/Device/astc_color_unquantize.o obj/third_party/SwiftShader/src/Device/Device/astc_decompress_symbolic.o obj/third_party/SwiftShader/src/Device/Device/astc_image_load_store.o obj/third_party/SwiftShader/src/Device/Device/astc_integer_sequence.o obj/third_party/SwiftShader/src/Device/Device/astc_mathlib.o obj/third_party/SwiftShader/src/Device/Device/astc_mathlib_softfloat.o obj/third_party/SwiftShader/src/Device/Device/astc_partition_tables.o obj/third_party/SwiftShader/src/Device/Device/astc_quantization.o obj/third_party/SwiftShader/src/Device/Device/astc_symbolic_physical.o obj/third_party/SwiftShader/src/Device/Device/astc_weight_quant_xfer_tables.o || phony/third_party/SwiftShader/src/System/System_headers

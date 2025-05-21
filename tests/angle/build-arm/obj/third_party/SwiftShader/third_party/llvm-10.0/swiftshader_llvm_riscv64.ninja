@@ -1,0 +1,103 @@
+defines = -DUSE_UDEV -DUSE_AURA=1 -DUSE_GLIB=1 -DUSE_OZONE=1 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_LARGEFILE64_SOURCE -D_GNU_SOURCE -DCR_CLANG_REVISION=\"llvmorg-21-init-9266-g09006611-1\" -D_LIBCPP_HARDENING_MODE=_LIBCPP_HARDENING_MODE_EXTENSIVE -DCOMPONENT_BUILD -D_LIBCPP_INSTRUMENTED_WITH_ASAN=0 -DCR_LIBCXX_REVISION=62724eb55f2ad7389088265952b1bb62cb89c73b -DCR_SYSROOT_KEY=20250129T203412Z-1 -D_DEBUG -DDYNAMIC_ANNOTATIONS_ENABLED=1 -D__STDC_CONSTANT_MACROS -D__STDC_LIMIT_MACROS
+include_dirs = -I/ninja-to-soong-angle/third_party/SwiftShader/third_party/llvm-10.0/llvm/include -I/ninja-to-soong-angle/third_party/SwiftShader/third_party/llvm-10.0/llvm/lib/Target/AArch64 -I/ninja-to-soong-angle/third_party/SwiftShader/third_party/llvm-10.0/llvm/lib/Target/ARM -I/ninja-to-soong-angle/third_party/SwiftShader/third_party/llvm-10.0/llvm/lib/Target/Mips -I/ninja-to-soong-angle/third_party/SwiftShader/third_party/llvm-10.0/llvm/lib/Target/PowerPC -I/ninja-to-soong-angle/third_party/SwiftShader/third_party/llvm-10.0/llvm/lib/Target/RISCV -I/ninja-to-soong-angle/third_party/SwiftShader/third_party/llvm-10.0/llvm/lib/Target/X86 -I/ninja-to-soong-angle/third_party/SwiftShader/third_party/llvm-10.0/configs/common/include -I/ninja-to-soong-angle/third_party/SwiftShader/third_party/llvm-10.0/configs/common/lib/IR -I/ninja-to-soong-angle/third_party/SwiftShader/third_party/llvm-10.0/configs/common/lib/Target/AArch64 -I/ninja-to-soong-angle/third_party/SwiftShader/third_party/llvm-10.0/configs/common/lib/Target/ARM -I/ninja-to-soong-angle/third_party/SwiftShader/third_party/llvm-10.0/configs/common/lib/Target/Mips -I/ninja-to-soong-angle/third_party/SwiftShader/third_party/llvm-10.0/configs/common/lib/Target/PowerPC -I/ninja-to-soong-angle/third_party/SwiftShader/third_party/llvm-10.0/configs/common/lib/Target/RISCV -I/ninja-to-soong-angle/third_party/SwiftShader/third_party/llvm-10.0/configs/common/lib/Target/X86 -I/ninja-to-soong-angle/third_party/SwiftShader/third_party/llvm-10.0/configs/common/lib/Transforms/InstCombine -I/ninja-to-soong-angle/third_party/SwiftShader/third_party/llvm-10.0/configs/linux/include -I/ninja-to-soong-angle -Igen -I/ninja-to-soong-angle/buildtools/third_party/libc++
+cflags = -fno-delete-null-pointer-checks -fno-strict-overflow -fno-ident -fno-strict-aliasing -fstack-protector -funwind-tables -fPIC -pthread -fcolor-diagnostics -fmerge-all-constants -fno-sized-deallocation -fcrash-diagnostics-dir=/ninja-to-soong-angle/tools/clang/crashreports -mllvm -instcombine-lower-dbg-declare=0 -mllvm -split-threshold-for-reg-with-hint=0 -ffp-contract=off -Wa,--crel,--allow-experimental-crel -fextend-variable-liveness=none -fcomplete-member-pointers -m64 -msse3 -Wno-builtin-macro-redefined -D__DATE__= -D__TIME__= -D__TIMESTAMP__= -ffile-compilation-dir=. -no-canonical-prefixes -ftrivial-auto-var-init=pattern -fno-omit-frame-pointer -gdwarf-4 -g2 -gdwarf-aranges -gsplit-dwarf -ggnu-pubnames -Xclang -fuse-ctor-homing -fvisibility=hidden -Wheader-hygiene -Wstring-conversion -Wtautological-overlap-compare -O2 -fdata-sections -ffunction-sections -fno-unique-section-names -fno-math-errno -Wall -Wno-unused-variable -Wno-c++11-narrowing -Wno-unused-but-set-variable -Wno-missing-field-initializers -Wno-unused-parameter -Wno-psabi -Wloop-analysis -Wno-unneeded-internal-declaration -Wno-cast-function-type -Wno-thread-safety-reference-return -Wno-nontrivial-memcall -Werror -Wno-shadow -Wno-attributes -Wno-bitwise-instead-of-logical -Wno-deprecated-declarations -Wno-enum-compare -Wno-header-hygiene -Wno-unused-function -Wno-unused-local-typedef -Wno-unused-private-field -Wno-unused-result -Wno-unused-variable -Wno-unnecessary-virtual-specifier -Wno-unique-object-duplication -Wno-unknown-warning-option
+cflags_cc = -std=c++20 -Wno-trigraphs -gsimple-template-names -fno-exceptions -fno-rtti -nostdinc++ -isystem/ninja-to-soong-angle/third_party/libc++/src/include -isystem/ninja-to-soong-angle/third_party/libc++abi/src/include --sysroot=/ninja-to-soong-angle/build/linux/debian_bullseye_amd64-sysroot -fvisibility-inlines-hidden -Wno-invalid-offsetof -Wenum-compare-conditional -Wno-nullability-completeness
+label_name = swiftshader_llvm_riscv64
+target_out_dir = obj/third_party/SwiftShader/third_party/llvm-10.0
+target_output_name = swiftshader_llvm_riscv64
+
+build obj/third_party/SwiftShader/third_party/llvm-10.0/swiftshader_llvm_riscv64/RISCVAsmParser.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/third_party/llvm-10.0/llvm/lib/Target/RISCV/AsmParser/RISCVAsmParser.cpp
+  source_file_part = RISCVAsmParser.cpp
+  source_name_part = RISCVAsmParser
+build obj/third_party/SwiftShader/third_party/llvm-10.0/swiftshader_llvm_riscv64/RISCVDisassembler.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/third_party/llvm-10.0/llvm/lib/Target/RISCV/Disassembler/RISCVDisassembler.cpp
+  source_file_part = RISCVDisassembler.cpp
+  source_name_part = RISCVDisassembler
+build obj/third_party/SwiftShader/third_party/llvm-10.0/swiftshader_llvm_riscv64/RISCVAsmBackend.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/third_party/llvm-10.0/llvm/lib/Target/RISCV/MCTargetDesc/RISCVAsmBackend.cpp
+  source_file_part = RISCVAsmBackend.cpp
+  source_name_part = RISCVAsmBackend
+build obj/third_party/SwiftShader/third_party/llvm-10.0/swiftshader_llvm_riscv64/RISCVELFObjectWriter.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/third_party/llvm-10.0/llvm/lib/Target/RISCV/MCTargetDesc/RISCVELFObjectWriter.cpp
+  source_file_part = RISCVELFObjectWriter.cpp
+  source_name_part = RISCVELFObjectWriter
+build obj/third_party/SwiftShader/third_party/llvm-10.0/swiftshader_llvm_riscv64/RISCVELFStreamer.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/third_party/llvm-10.0/llvm/lib/Target/RISCV/MCTargetDesc/RISCVELFStreamer.cpp
+  source_file_part = RISCVELFStreamer.cpp
+  source_name_part = RISCVELFStreamer
+build obj/third_party/SwiftShader/third_party/llvm-10.0/swiftshader_llvm_riscv64/RISCVInstPrinter.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/third_party/llvm-10.0/llvm/lib/Target/RISCV/MCTargetDesc/RISCVInstPrinter.cpp
+  source_file_part = RISCVInstPrinter.cpp
+  source_name_part = RISCVInstPrinter
+build obj/third_party/SwiftShader/third_party/llvm-10.0/swiftshader_llvm_riscv64/RISCVMCAsmInfo.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/third_party/llvm-10.0/llvm/lib/Target/RISCV/MCTargetDesc/RISCVMCAsmInfo.cpp
+  source_file_part = RISCVMCAsmInfo.cpp
+  source_name_part = RISCVMCAsmInfo
+build obj/third_party/SwiftShader/third_party/llvm-10.0/swiftshader_llvm_riscv64/RISCVMCCodeEmitter.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/third_party/llvm-10.0/llvm/lib/Target/RISCV/MCTargetDesc/RISCVMCCodeEmitter.cpp
+  source_file_part = RISCVMCCodeEmitter.cpp
+  source_name_part = RISCVMCCodeEmitter
+build obj/third_party/SwiftShader/third_party/llvm-10.0/swiftshader_llvm_riscv64/RISCVMCExpr.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/third_party/llvm-10.0/llvm/lib/Target/RISCV/MCTargetDesc/RISCVMCExpr.cpp
+  source_file_part = RISCVMCExpr.cpp
+  source_name_part = RISCVMCExpr
+build obj/third_party/SwiftShader/third_party/llvm-10.0/swiftshader_llvm_riscv64/RISCVMCTargetDesc.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/third_party/llvm-10.0/llvm/lib/Target/RISCV/MCTargetDesc/RISCVMCTargetDesc.cpp
+  source_file_part = RISCVMCTargetDesc.cpp
+  source_name_part = RISCVMCTargetDesc
+build obj/third_party/SwiftShader/third_party/llvm-10.0/swiftshader_llvm_riscv64/RISCVTargetStreamer.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/third_party/llvm-10.0/llvm/lib/Target/RISCV/MCTargetDesc/RISCVTargetStreamer.cpp
+  source_file_part = RISCVTargetStreamer.cpp
+  source_name_part = RISCVTargetStreamer
+build obj/third_party/SwiftShader/third_party/llvm-10.0/swiftshader_llvm_riscv64/RISCVAsmPrinter.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/third_party/llvm-10.0/llvm/lib/Target/RISCV/RISCVAsmPrinter.cpp
+  source_file_part = RISCVAsmPrinter.cpp
+  source_name_part = RISCVAsmPrinter
+build obj/third_party/SwiftShader/third_party/llvm-10.0/swiftshader_llvm_riscv64/RISCVCallLowering.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/third_party/llvm-10.0/llvm/lib/Target/RISCV/RISCVCallLowering.cpp
+  source_file_part = RISCVCallLowering.cpp
+  source_name_part = RISCVCallLowering
+build obj/third_party/SwiftShader/third_party/llvm-10.0/swiftshader_llvm_riscv64/RISCVExpandPseudoInsts.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/third_party/llvm-10.0/llvm/lib/Target/RISCV/RISCVExpandPseudoInsts.cpp
+  source_file_part = RISCVExpandPseudoInsts.cpp
+  source_name_part = RISCVExpandPseudoInsts
+build obj/third_party/SwiftShader/third_party/llvm-10.0/swiftshader_llvm_riscv64/RISCVFrameLowering.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/third_party/llvm-10.0/llvm/lib/Target/RISCV/RISCVFrameLowering.cpp
+  source_file_part = RISCVFrameLowering.cpp
+  source_name_part = RISCVFrameLowering
+build obj/third_party/SwiftShader/third_party/llvm-10.0/swiftshader_llvm_riscv64/RISCVInstrInfo.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/third_party/llvm-10.0/llvm/lib/Target/RISCV/RISCVInstrInfo.cpp
+  source_file_part = RISCVInstrInfo.cpp
+  source_name_part = RISCVInstrInfo
+build obj/third_party/SwiftShader/third_party/llvm-10.0/swiftshader_llvm_riscv64/RISCVInstructionSelector.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/third_party/llvm-10.0/llvm/lib/Target/RISCV/RISCVInstructionSelector.cpp
+  source_file_part = RISCVInstructionSelector.cpp
+  source_name_part = RISCVInstructionSelector
+build obj/third_party/SwiftShader/third_party/llvm-10.0/swiftshader_llvm_riscv64/RISCVISelDAGToDAG.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/third_party/llvm-10.0/llvm/lib/Target/RISCV/RISCVISelDAGToDAG.cpp
+  source_file_part = RISCVISelDAGToDAG.cpp
+  source_name_part = RISCVISelDAGToDAG
+build obj/third_party/SwiftShader/third_party/llvm-10.0/swiftshader_llvm_riscv64/RISCVISelLowering.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/third_party/llvm-10.0/llvm/lib/Target/RISCV/RISCVISelLowering.cpp
+  source_file_part = RISCVISelLowering.cpp
+  source_name_part = RISCVISelLowering
+build obj/third_party/SwiftShader/third_party/llvm-10.0/swiftshader_llvm_riscv64/RISCVLegalizerInfo.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/third_party/llvm-10.0/llvm/lib/Target/RISCV/RISCVLegalizerInfo.cpp
+  source_file_part = RISCVLegalizerInfo.cpp
+  source_name_part = RISCVLegalizerInfo
+build obj/third_party/SwiftShader/third_party/llvm-10.0/swiftshader_llvm_riscv64/RISCVMCInstLower.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/third_party/llvm-10.0/llvm/lib/Target/RISCV/RISCVMCInstLower.cpp
+  source_file_part = RISCVMCInstLower.cpp
+  source_name_part = RISCVMCInstLower
+build obj/third_party/SwiftShader/third_party/llvm-10.0/swiftshader_llvm_riscv64/RISCVMergeBaseOffset.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/third_party/llvm-10.0/llvm/lib/Target/RISCV/RISCVMergeBaseOffset.cpp
+  source_file_part = RISCVMergeBaseOffset.cpp
+  source_name_part = RISCVMergeBaseOffset
+build obj/third_party/SwiftShader/third_party/llvm-10.0/swiftshader_llvm_riscv64/RISCVRegisterBankInfo.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/third_party/llvm-10.0/llvm/lib/Target/RISCV/RISCVRegisterBankInfo.cpp
+  source_file_part = RISCVRegisterBankInfo.cpp
+  source_name_part = RISCVRegisterBankInfo
+build obj/third_party/SwiftShader/third_party/llvm-10.0/swiftshader_llvm_riscv64/RISCVRegisterInfo.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/third_party/llvm-10.0/llvm/lib/Target/RISCV/RISCVRegisterInfo.cpp
+  source_file_part = RISCVRegisterInfo.cpp
+  source_name_part = RISCVRegisterInfo
+build obj/third_party/SwiftShader/third_party/llvm-10.0/swiftshader_llvm_riscv64/RISCVSubtarget.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/third_party/llvm-10.0/llvm/lib/Target/RISCV/RISCVSubtarget.cpp
+  source_file_part = RISCVSubtarget.cpp
+  source_name_part = RISCVSubtarget
+build obj/third_party/SwiftShader/third_party/llvm-10.0/swiftshader_llvm_riscv64/RISCVTargetMachine.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/third_party/llvm-10.0/llvm/lib/Target/RISCV/RISCVTargetMachine.cpp
+  source_file_part = RISCVTargetMachine.cpp
+  source_name_part = RISCVTargetMachine
+build obj/third_party/SwiftShader/third_party/llvm-10.0/swiftshader_llvm_riscv64/RISCVTargetObjectFile.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/third_party/llvm-10.0/llvm/lib/Target/RISCV/RISCVTargetObjectFile.cpp
+  source_file_part = RISCVTargetObjectFile.cpp
+  source_name_part = RISCVTargetObjectFile
+build obj/third_party/SwiftShader/third_party/llvm-10.0/swiftshader_llvm_riscv64/RISCVTargetTransformInfo.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/third_party/llvm-10.0/llvm/lib/Target/RISCV/RISCVTargetTransformInfo.cpp
+  source_file_part = RISCVTargetTransformInfo.cpp
+  source_name_part = RISCVTargetTransformInfo
+build obj/third_party/SwiftShader/third_party/llvm-10.0/swiftshader_llvm_riscv64/RISCVTargetInfo.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/third_party/llvm-10.0/llvm/lib/Target/RISCV/TargetInfo/RISCVTargetInfo.cpp
+  source_file_part = RISCVTargetInfo.cpp
+  source_name_part = RISCVTargetInfo
+build obj/third_party/SwiftShader/third_party/llvm-10.0/swiftshader_llvm_riscv64/RISCVBaseInfo.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/third_party/llvm-10.0/llvm/lib/Target/RISCV/Utils/RISCVBaseInfo.cpp
+  source_file_part = RISCVBaseInfo.cpp
+  source_name_part = RISCVBaseInfo
+build obj/third_party/SwiftShader/third_party/llvm-10.0/swiftshader_llvm_riscv64/RISCVMatInt.o: cxx /ninja-to-soong-angle/third_party/SwiftShader/third_party/llvm-10.0/llvm/lib/Target/RISCV/Utils/RISCVMatInt.cpp
+  source_file_part = RISCVMatInt.cpp
+  source_name_part = RISCVMatInt
+
+build phony/third_party/SwiftShader/third_party/llvm-10.0/swiftshader_llvm_riscv64: phony obj/third_party/SwiftShader/third_party/llvm-10.0/swiftshader_llvm_riscv64/RISCVAsmParser.o obj/third_party/SwiftShader/third_party/llvm-10.0/swiftshader_llvm_riscv64/RISCVDisassembler.o obj/third_party/SwiftShader/third_party/llvm-10.0/swiftshader_llvm_riscv64/RISCVAsmBackend.o obj/third_party/SwiftShader/third_party/llvm-10.0/swiftshader_llvm_riscv64/RISCVELFObjectWriter.o obj/third_party/SwiftShader/third_party/llvm-10.0/swiftshader_llvm_riscv64/RISCVELFStreamer.o obj/third_party/SwiftShader/third_party/llvm-10.0/swiftshader_llvm_riscv64/RISCVInstPrinter.o obj/third_party/SwiftShader/third_party/llvm-10.0/swiftshader_llvm_riscv64/RISCVMCAsmInfo.o obj/third_party/SwiftShader/third_party/llvm-10.0/swiftshader_llvm_riscv64/RISCVMCCodeEmitter.o obj/third_party/SwiftShader/third_party/llvm-10.0/swiftshader_llvm_riscv64/RISCVMCExpr.o obj/third_party/SwiftShader/third_party/llvm-10.0/swiftshader_llvm_riscv64/RISCVMCTargetDesc.o obj/third_party/SwiftShader/third_party/llvm-10.0/swiftshader_llvm_riscv64/RISCVTargetStreamer.o obj/third_party/SwiftShader/third_party/llvm-10.0/swiftshader_llvm_riscv64/RISCVAsmPrinter.o obj/third_party/SwiftShader/third_party/llvm-10.0/swiftshader_llvm_riscv64/RISCVCallLowering.o obj/third_party/SwiftShader/third_party/llvm-10.0/swiftshader_llvm_riscv64/RISCVExpandPseudoInsts.o obj/third_party/SwiftShader/third_party/llvm-10.0/swiftshader_llvm_riscv64/RISCVFrameLowering.o obj/third_party/SwiftShader/third_party/llvm-10.0/swiftshader_llvm_riscv64/RISCVInstrInfo.o obj/third_party/SwiftShader/third_party/llvm-10.0/swiftshader_llvm_riscv64/RISCVInstructionSelector.o obj/third_party/SwiftShader/third_party/llvm-10.0/swiftshader_llvm_riscv64/RISCVISelDAGToDAG.o obj/third_party/SwiftShader/third_party/llvm-10.0/swiftshader_llvm_riscv64/RISCVISelLowering.o obj/third_party/SwiftShader/third_party/llvm-10.0/swiftshader_llvm_riscv64/RISCVLegalizerInfo.o obj/third_party/SwiftShader/third_party/llvm-10.0/swiftshader_llvm_riscv64/RISCVMCInstLower.o obj/third_party/SwiftShader/third_party/llvm-10.0/swiftshader_llvm_riscv64/RISCVMergeBaseOffset.o obj/third_party/SwiftShader/third_party/llvm-10.0/swiftshader_llvm_riscv64/RISCVRegisterBankInfo.o obj/third_party/SwiftShader/third_party/llvm-10.0/swiftshader_llvm_riscv64/RISCVRegisterInfo.o obj/third_party/SwiftShader/third_party/llvm-10.0/swiftshader_llvm_riscv64/RISCVSubtarget.o obj/third_party/SwiftShader/third_party/llvm-10.0/swiftshader_llvm_riscv64/RISCVTargetMachine.o obj/third_party/SwiftShader/third_party/llvm-10.0/swiftshader_llvm_riscv64/RISCVTargetObjectFile.o obj/third_party/SwiftShader/third_party/llvm-10.0/swiftshader_llvm_riscv64/RISCVTargetTransformInfo.o obj/third_party/SwiftShader/third_party/llvm-10.0/swiftshader_llvm_riscv64/RISCVTargetInfo.o obj/third_party/SwiftShader/third_party/llvm-10.0/swiftshader_llvm_riscv64/RISCVBaseInfo.o obj/third_party/SwiftShader/third_party/llvm-10.0/swiftshader_llvm_riscv64/RISCVMatInt.o

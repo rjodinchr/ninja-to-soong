@@ -1,0 +1,106 @@
+defines = -DUSE_UDEV -DUSE_AURA=1 -DUSE_GLIB=1 -DUSE_OZONE=1 -D__STDC_CONSTANT_MACROS -D__STDC_FORMAT_MACROS -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_LARGEFILE64_SOURCE -D_GNU_SOURCE -DCR_CLANG_REVISION=\"llvmorg-21-init-9266-g09006611-1\" -D_LIBCPP_HARDENING_MODE=_LIBCPP_HARDENING_MODE_EXTENSIVE -DCOMPONENT_BUILD -D_LIBCPP_INSTRUMENTED_WITH_ASAN=0 -DCR_LIBCXX_REVISION=62724eb55f2ad7389088265952b1bb62cb89c73b -DCR_SYSROOT_KEY=20250129T203412Z-1 -D_DEBUG -DDYNAMIC_ANNOTATIONS_ENABLED=1 -DTINT_BUILD_SPV_READER=0 -DTINT_BUILD_SPV_WRITER=1 -DTINT_BUILD_WGSL_READER=1 -DTINT_BUILD_WGSL_WRITER=1 -DTINT_BUILD_MSL_WRITER=1 -DTINT_BUILD_HLSL_WRITER=1 -DTINT_BUILD_GLSL_WRITER=1 -DTINT_BUILD_GLSL_VALIDATOR=1 -DTINT_BUILD_SYNTAX_TREE_WRITER=0 -DTINT_BUILD_IR_BINARY=0 -DTINT_BUILD_IR_FUZZER=0 -DTINT_BUILD_IS_WIN=0 -DTINT_BUILD_IS_MAC=0 -DTINT_BUILD_IS_LINUX=1
+include_dirs = -I/ninja-to-soong-angle -Igen -I/ninja-to-soong-angle/buildtools/third_party/libc++ -I/ninja-to-soong-angle/third_party/dawn -Igen/third_party/dawn -I/ninja-to-soong-angle/third_party/dawn/include
+cflags = -Wall -Wextra -Wimplicit-fallthrough -Wextra-semi -Wunreachable-code-aggressive -Wthread-safety -Wgnu -Wno-gnu-anonymous-struct -Wno-gnu-conditional-omitted-operand -Wno-gnu-include-next -Wno-gnu-label-as-value -Wno-gnu-redeclared-enum -Wno-gnu-statement-expression -Wno-gnu-zero-variadic-macro-arguments -Wno-zero-length-array -Wno-missing-field-initializers -Wno-unused-parameter -Wno-psabi -Wloop-analysis -Wno-unneeded-internal-declaration -Wno-cast-function-type -Wno-thread-safety-reference-return -Wno-nontrivial-memcall -Wshadow -Werror -fno-delete-null-pointer-checks -fno-strict-overflow -fno-ident -fno-strict-aliasing -fstack-protector -funwind-tables -fPIC -pthread -fcolor-diagnostics -fmerge-all-constants -fno-sized-deallocation -fcrash-diagnostics-dir=/ninja-to-soong-angle/tools/clang/crashreports -mllvm -instcombine-lower-dbg-declare=0 -mllvm -split-threshold-for-reg-with-hint=0 -ffp-contract=off -Wa,--crel,--allow-experimental-crel -fextend-variable-liveness=none -fcomplete-member-pointers -m64 -msse3 -Wno-builtin-macro-redefined -D__DATE__= -D__TIME__= -D__TIMESTAMP__= -ffile-compilation-dir=. -no-canonical-prefixes -ftrivial-auto-var-init=pattern -O0 -fno-omit-frame-pointer -gdwarf-4 -g2 -gdwarf-aranges -gsplit-dwarf -ggnu-pubnames -Xclang -fuse-ctor-homing -fvisibility=hidden -Wheader-hygiene -Wstring-conversion -Wtautological-overlap-compare
+cflags_cc = -Wno-invalid-offsetof -Wenum-compare-conditional -Wno-nullability-completeness -std=c++20 -Wno-trigraphs -gsimple-template-names -fno-exceptions -fno-rtti -nostdinc++ -isystem/ninja-to-soong-angle/third_party/libc++/src/include -isystem/ninja-to-soong-angle/third_party/libc++abi/src/include --sysroot=/ninja-to-soong-angle/build/linux/debian_bullseye_amd64-sysroot -fvisibility-inlines-hidden
+label_name = sem
+target_out_dir = obj/third_party/dawn/src/tint/lang/wgsl/sem
+target_output_name = sem
+
+build obj/third_party/dawn/src/tint/lang/wgsl/sem/sem/accessor_expression.o: cxx /ninja-to-soong-angle/third_party/dawn/src/tint/lang/wgsl/sem/accessor_expression.cc
+  source_file_part = accessor_expression.cc
+  source_name_part = accessor_expression
+build obj/third_party/dawn/src/tint/lang/wgsl/sem/sem/array.o: cxx /ninja-to-soong-angle/third_party/dawn/src/tint/lang/wgsl/sem/array.cc
+  source_file_part = array.cc
+  source_name_part = array
+build obj/third_party/dawn/src/tint/lang/wgsl/sem/sem/array_count.o: cxx /ninja-to-soong-angle/third_party/dawn/src/tint/lang/wgsl/sem/array_count.cc
+  source_file_part = array_count.cc
+  source_name_part = array_count
+build obj/third_party/dawn/src/tint/lang/wgsl/sem/sem/behavior.o: cxx /ninja-to-soong-angle/third_party/dawn/src/tint/lang/wgsl/sem/behavior.cc
+  source_file_part = behavior.cc
+  source_name_part = behavior
+build obj/third_party/dawn/src/tint/lang/wgsl/sem/sem/block_statement.o: cxx /ninja-to-soong-angle/third_party/dawn/src/tint/lang/wgsl/sem/block_statement.cc
+  source_file_part = block_statement.cc
+  source_name_part = block_statement
+build obj/third_party/dawn/src/tint/lang/wgsl/sem/sem/break_if_statement.o: cxx /ninja-to-soong-angle/third_party/dawn/src/tint/lang/wgsl/sem/break_if_statement.cc
+  source_file_part = break_if_statement.cc
+  source_name_part = break_if_statement
+build obj/third_party/dawn/src/tint/lang/wgsl/sem/sem/builtin_enum_expression.o: cxx /ninja-to-soong-angle/third_party/dawn/src/tint/lang/wgsl/sem/builtin_enum_expression.cc
+  source_file_part = builtin_enum_expression.cc
+  source_name_part = builtin_enum_expression
+build obj/third_party/dawn/src/tint/lang/wgsl/sem/sem/builtin_fn.o: cxx /ninja-to-soong-angle/third_party/dawn/src/tint/lang/wgsl/sem/builtin_fn.cc
+  source_file_part = builtin_fn.cc
+  source_name_part = builtin_fn
+build obj/third_party/dawn/src/tint/lang/wgsl/sem/sem/call.o: cxx /ninja-to-soong-angle/third_party/dawn/src/tint/lang/wgsl/sem/call.cc
+  source_file_part = call.cc
+  source_name_part = call
+build obj/third_party/dawn/src/tint/lang/wgsl/sem/sem/call_target.o: cxx /ninja-to-soong-angle/third_party/dawn/src/tint/lang/wgsl/sem/call_target.cc
+  source_file_part = call_target.cc
+  source_name_part = call_target
+build obj/third_party/dawn/src/tint/lang/wgsl/sem/sem/expression.o: cxx /ninja-to-soong-angle/third_party/dawn/src/tint/lang/wgsl/sem/expression.cc
+  source_file_part = expression.cc
+  source_name_part = expression
+build obj/third_party/dawn/src/tint/lang/wgsl/sem/sem/for_loop_statement.o: cxx /ninja-to-soong-angle/third_party/dawn/src/tint/lang/wgsl/sem/for_loop_statement.cc
+  source_file_part = for_loop_statement.cc
+  source_name_part = for_loop_statement
+build obj/third_party/dawn/src/tint/lang/wgsl/sem/sem/function.o: cxx /ninja-to-soong-angle/third_party/dawn/src/tint/lang/wgsl/sem/function.cc
+  source_file_part = function.cc
+  source_name_part = function
+build obj/third_party/dawn/src/tint/lang/wgsl/sem/sem/function_expression.o: cxx /ninja-to-soong-angle/third_party/dawn/src/tint/lang/wgsl/sem/function_expression.cc
+  source_file_part = function_expression.cc
+  source_name_part = function_expression
+build obj/third_party/dawn/src/tint/lang/wgsl/sem/sem/if_statement.o: cxx /ninja-to-soong-angle/third_party/dawn/src/tint/lang/wgsl/sem/if_statement.cc
+  source_file_part = if_statement.cc
+  source_name_part = if_statement
+build obj/third_party/dawn/src/tint/lang/wgsl/sem/sem/index_accessor_expression.o: cxx /ninja-to-soong-angle/third_party/dawn/src/tint/lang/wgsl/sem/index_accessor_expression.cc
+  source_file_part = index_accessor_expression.cc
+  source_name_part = index_accessor_expression
+build obj/third_party/dawn/src/tint/lang/wgsl/sem/sem/info.o: cxx /ninja-to-soong-angle/third_party/dawn/src/tint/lang/wgsl/sem/info.cc
+  source_file_part = info.cc
+  source_name_part = info
+build obj/third_party/dawn/src/tint/lang/wgsl/sem/sem/load.o: cxx /ninja-to-soong-angle/third_party/dawn/src/tint/lang/wgsl/sem/load.cc
+  source_file_part = load.cc
+  source_name_part = load
+build obj/third_party/dawn/src/tint/lang/wgsl/sem/sem/loop_statement.o: cxx /ninja-to-soong-angle/third_party/dawn/src/tint/lang/wgsl/sem/loop_statement.cc
+  source_file_part = loop_statement.cc
+  source_name_part = loop_statement
+build obj/third_party/dawn/src/tint/lang/wgsl/sem/sem/materialize.o: cxx /ninja-to-soong-angle/third_party/dawn/src/tint/lang/wgsl/sem/materialize.cc
+  source_file_part = materialize.cc
+  source_name_part = materialize
+build obj/third_party/dawn/src/tint/lang/wgsl/sem/sem/member_accessor_expression.o: cxx /ninja-to-soong-angle/third_party/dawn/src/tint/lang/wgsl/sem/member_accessor_expression.cc
+  source_file_part = member_accessor_expression.cc
+  source_name_part = member_accessor_expression
+build obj/third_party/dawn/src/tint/lang/wgsl/sem/sem/module.o: cxx /ninja-to-soong-angle/third_party/dawn/src/tint/lang/wgsl/sem/module.cc
+  source_file_part = module.cc
+  source_name_part = module
+build obj/third_party/dawn/src/tint/lang/wgsl/sem/sem/node.o: cxx /ninja-to-soong-angle/third_party/dawn/src/tint/lang/wgsl/sem/node.cc
+  source_file_part = node.cc
+  source_name_part = node
+build obj/third_party/dawn/src/tint/lang/wgsl/sem/sem/statement.o: cxx /ninja-to-soong-angle/third_party/dawn/src/tint/lang/wgsl/sem/statement.cc
+  source_file_part = statement.cc
+  source_name_part = statement
+build obj/third_party/dawn/src/tint/lang/wgsl/sem/sem/struct.o: cxx /ninja-to-soong-angle/third_party/dawn/src/tint/lang/wgsl/sem/struct.cc
+  source_file_part = struct.cc
+  source_name_part = struct
+build obj/third_party/dawn/src/tint/lang/wgsl/sem/sem/switch_statement.o: cxx /ninja-to-soong-angle/third_party/dawn/src/tint/lang/wgsl/sem/switch_statement.cc
+  source_file_part = switch_statement.cc
+  source_name_part = switch_statement
+build obj/third_party/dawn/src/tint/lang/wgsl/sem/sem/type_expression.o: cxx /ninja-to-soong-angle/third_party/dawn/src/tint/lang/wgsl/sem/type_expression.cc
+  source_file_part = type_expression.cc
+  source_name_part = type_expression
+build obj/third_party/dawn/src/tint/lang/wgsl/sem/sem/value_constructor.o: cxx /ninja-to-soong-angle/third_party/dawn/src/tint/lang/wgsl/sem/value_constructor.cc
+  source_file_part = value_constructor.cc
+  source_name_part = value_constructor
+build obj/third_party/dawn/src/tint/lang/wgsl/sem/sem/value_conversion.o: cxx /ninja-to-soong-angle/third_party/dawn/src/tint/lang/wgsl/sem/value_conversion.cc
+  source_file_part = value_conversion.cc
+  source_name_part = value_conversion
+build obj/third_party/dawn/src/tint/lang/wgsl/sem/sem/value_expression.o: cxx /ninja-to-soong-angle/third_party/dawn/src/tint/lang/wgsl/sem/value_expression.cc
+  source_file_part = value_expression.cc
+  source_name_part = value_expression
+build obj/third_party/dawn/src/tint/lang/wgsl/sem/sem/variable.o: cxx /ninja-to-soong-angle/third_party/dawn/src/tint/lang/wgsl/sem/variable.cc
+  source_file_part = variable.cc
+  source_name_part = variable
+build obj/third_party/dawn/src/tint/lang/wgsl/sem/sem/while_statement.o: cxx /ninja-to-soong-angle/third_party/dawn/src/tint/lang/wgsl/sem/while_statement.cc
+  source_file_part = while_statement.cc
+  source_name_part = while_statement
+
+build phony/third_party/dawn/src/tint/lang/wgsl/sem/sem: phony obj/third_party/dawn/src/tint/lang/wgsl/sem/sem/accessor_expression.o obj/third_party/dawn/src/tint/lang/wgsl/sem/sem/array.o obj/third_party/dawn/src/tint/lang/wgsl/sem/sem/array_count.o obj/third_party/dawn/src/tint/lang/wgsl/sem/sem/behavior.o obj/third_party/dawn/src/tint/lang/wgsl/sem/sem/block_statement.o obj/third_party/dawn/src/tint/lang/wgsl/sem/sem/break_if_statement.o obj/third_party/dawn/src/tint/lang/wgsl/sem/sem/builtin_enum_expression.o obj/third_party/dawn/src/tint/lang/wgsl/sem/sem/builtin_fn.o obj/third_party/dawn/src/tint/lang/wgsl/sem/sem/call.o obj/third_party/dawn/src/tint/lang/wgsl/sem/sem/call_target.o obj/third_party/dawn/src/tint/lang/wgsl/sem/sem/expression.o obj/third_party/dawn/src/tint/lang/wgsl/sem/sem/for_loop_statement.o obj/third_party/dawn/src/tint/lang/wgsl/sem/sem/function.o obj/third_party/dawn/src/tint/lang/wgsl/sem/sem/function_expression.o obj/third_party/dawn/src/tint/lang/wgsl/sem/sem/if_statement.o obj/third_party/dawn/src/tint/lang/wgsl/sem/sem/index_accessor_expression.o obj/third_party/dawn/src/tint/lang/wgsl/sem/sem/info.o obj/third_party/dawn/src/tint/lang/wgsl/sem/sem/load.o obj/third_party/dawn/src/tint/lang/wgsl/sem/sem/loop_statement.o obj/third_party/dawn/src/tint/lang/wgsl/sem/sem/materialize.o obj/third_party/dawn/src/tint/lang/wgsl/sem/sem/member_accessor_expression.o obj/third_party/dawn/src/tint/lang/wgsl/sem/sem/module.o obj/third_party/dawn/src/tint/lang/wgsl/sem/sem/node.o obj/third_party/dawn/src/tint/lang/wgsl/sem/sem/statement.o obj/third_party/dawn/src/tint/lang/wgsl/sem/sem/struct.o obj/third_party/dawn/src/tint/lang/wgsl/sem/sem/switch_statement.o obj/third_party/dawn/src/tint/lang/wgsl/sem/sem/type_expression.o obj/third_party/dawn/src/tint/lang/wgsl/sem/sem/value_constructor.o obj/third_party/dawn/src/tint/lang/wgsl/sem/sem/value_conversion.o obj/third_party/dawn/src/tint/lang/wgsl/sem/sem/value_expression.o obj/third_party/dawn/src/tint/lang/wgsl/sem/sem/variable.o obj/third_party/dawn/src/tint/lang/wgsl/sem/sem/while_statement.o || obj/third_party/dawn/src/utils/libutils.a phony/third_party/dawn/src/tint/api/common/common phony/third_party/dawn/src/tint/lang/core/core phony/third_party/dawn/src/tint/lang/core/constant/constant phony/third_party/dawn/src/tint/lang/core/intrinsic/intrinsic phony/third_party/dawn/src/tint/lang/core/type/type phony/third_party/dawn/src/tint/lang/wgsl/wgsl phony/third_party/dawn/src/tint/lang/wgsl/ast/ast phony/third_party/dawn/src/tint/lang/wgsl/features/features phony/third_party/dawn/src/tint/utils/utils phony/third_party/dawn/src/tint/utils/containers/containers phony/third_party/dawn/src/tint/utils/diagnostic/diagnostic phony/third_party/dawn/src/tint/utils/ice/ice phony/third_party/dawn/src/tint/utils/macros/macros phony/third_party/dawn/src/tint/utils/math/math phony/third_party/dawn/src/tint/utils/memory/memory phony/third_party/dawn/src/tint/utils/result/result phony/third_party/dawn/src/tint/utils/rtti/rtti phony/third_party/dawn/src/tint/utils/symbol/symbol phony/third_party/dawn/src/tint/utils/text/text phony/third_party/dawn/src/tint/utils/system/system

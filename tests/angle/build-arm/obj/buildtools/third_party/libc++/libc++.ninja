@@ -1,0 +1,153 @@
+defines = -D_LIBCPP_OVERRIDABLE_FUNC_VIS=__attribute__\(\(__visibility__\(\"default\"\)\)\) -DLIBCXX_BUILDING_LIBCXXABI -D_GNU_SOURCE -DANDROID -D__ANDROID_UNAVAILABLE_SYMBOLS_ARE_WEAK__ -DHAVE_SYS_UIO_H -DANDROID_NDK_VERSION_ROLL=r28_1 -DCR_CLANG_REVISION=\"llvmorg-21-init-9266-g09006611-1\" -D_LIBCPP_HARDENING_MODE=_LIBCPP_HARDENING_MODE_NONE -DNDEBUG -DNVALGRIND -DDYNAMIC_ANNOTATIONS_ENABLED=0 -D_LIBCPP_BUILDING_LIBRARY -DLIBC_NAMESPACE=__llvm_libc_cr
+include_dirs = -I/ninja-to-soong-angle/third_party/libc++/src/src -I/ninja-to-soong-angle -Igen -I/ninja-to-soong-angle/third_party/llvm-libc/src
+cflags = -fno-delete-null-pointer-checks -fno-strict-overflow -fno-ident -fno-strict-aliasing -fstack-protector -funwind-tables -fPIC -fcolor-diagnostics -fmerge-all-constants -fno-sized-deallocation -fcrash-diagnostics-dir=/ninja-to-soong-angle/tools/clang/crashreports -mllvm -instcombine-lower-dbg-declare=0 -mllvm -split-threshold-for-reg-with-hint=0 -ffp-contract=off -fextend-variable-liveness=none -ffunction-sections -fno-short-enums --target=arm-linux-androideabi26 -march=armv7-a -mfloat-abi=softfp -Wno-builtin-macro-redefined -D__DATE__= -D__TIME__= -D__TIMESTAMP__= -ffile-compilation-dir=. -no-canonical-prefixes -mfpu=neon -mthumb -ftrivial-auto-var-init=pattern -Os -fdata-sections -ffunction-sections -fno-unique-section-names -fno-math-errno -mllvm -enable-ml-inliner=release -mllvm -ml-inliner-model-selector=arm32-size -fomit-frame-pointer -g0 -fvisibility=hidden -Wheader-hygiene -Wstring-conversion -Wtautological-overlap-compare -fstrict-aliasing -Wundef -fPIC -Wall -Wno-unused-variable -Wno-c++11-narrowing -Wno-unused-but-set-variable -Wunguarded-availability -Wno-missing-field-initializers -Wno-unused-parameter -Wno-psabi -Wloop-analysis -Wno-unneeded-internal-declaration -Wno-cast-function-type -Wno-thread-safety-reference-return -Wno-nontrivial-memcall -Werror
+cflags_cc = -std=c++20 -Wno-trigraphs -gsimple-template-names --sysroot=/ninja-to-soong-angle/third_party/android_toolchain/ndk/toolchains/llvm/prebuilt/linux-x86_64/sysroot -fvisibility-inlines-hidden -std=c++20 -Wno-invalid-offsetof -Wenum-compare-conditional -Wno-nullability-completeness -fexceptions -frtti
+label_name = libc++
+root_out_dir = .
+target_out_dir = obj/buildtools/third_party/libc++
+target_output_name = libc++
+
+build phony/buildtools/third_party/libc++/libc++.inputs: phony /ninja-to-soong-angle/buildtools/third_party/libc++/__assertion_handler /ninja-to-soong-angle/buildtools/third_party/libc++/__config_site
+build obj/buildtools/third_party/libc++/libc++/algorithm.o: cxx /ninja-to-soong-angle/third_party/libc++/src/src/algorithm.cpp | phony/buildtools/third_party/libc++/libc++.inputs
+  source_file_part = algorithm.cpp
+  source_name_part = algorithm
+build obj/buildtools/third_party/libc++/libc++/any.o: cxx /ninja-to-soong-angle/third_party/libc++/src/src/any.cpp | phony/buildtools/third_party/libc++/libc++.inputs
+  source_file_part = any.cpp
+  source_name_part = any
+build obj/buildtools/third_party/libc++/libc++/atomic.o: cxx /ninja-to-soong-angle/third_party/libc++/src/src/atomic.cpp | phony/buildtools/third_party/libc++/libc++.inputs
+  source_file_part = atomic.cpp
+  source_name_part = atomic
+build obj/buildtools/third_party/libc++/libc++/barrier.o: cxx /ninja-to-soong-angle/third_party/libc++/src/src/barrier.cpp | phony/buildtools/third_party/libc++/libc++.inputs
+  source_file_part = barrier.cpp
+  source_name_part = barrier
+build obj/buildtools/third_party/libc++/libc++/bind.o: cxx /ninja-to-soong-angle/third_party/libc++/src/src/bind.cpp | phony/buildtools/third_party/libc++/libc++.inputs
+  source_file_part = bind.cpp
+  source_name_part = bind
+build obj/buildtools/third_party/libc++/libc++/call_once.o: cxx /ninja-to-soong-angle/third_party/libc++/src/src/call_once.cpp | phony/buildtools/third_party/libc++/libc++.inputs
+  source_file_part = call_once.cpp
+  source_name_part = call_once
+build obj/buildtools/third_party/libc++/libc++/charconv.o: cxx /ninja-to-soong-angle/third_party/libc++/src/src/charconv.cpp | phony/buildtools/third_party/libc++/libc++.inputs
+  source_file_part = charconv.cpp
+  source_name_part = charconv
+build obj/buildtools/third_party/libc++/libc++/chrono.o: cxx /ninja-to-soong-angle/third_party/libc++/src/src/chrono.cpp | phony/buildtools/third_party/libc++/libc++.inputs
+  source_file_part = chrono.cpp
+  source_name_part = chrono
+build obj/buildtools/third_party/libc++/libc++/condition_variable.o: cxx /ninja-to-soong-angle/third_party/libc++/src/src/condition_variable.cpp | phony/buildtools/third_party/libc++/libc++.inputs
+  source_file_part = condition_variable.cpp
+  source_name_part = condition_variable
+build obj/buildtools/third_party/libc++/libc++/condition_variable_destructor.o: cxx /ninja-to-soong-angle/third_party/libc++/src/src/condition_variable_destructor.cpp | phony/buildtools/third_party/libc++/libc++.inputs
+  source_file_part = condition_variable_destructor.cpp
+  source_name_part = condition_variable_destructor
+build obj/buildtools/third_party/libc++/libc++/error_category.o: cxx /ninja-to-soong-angle/third_party/libc++/src/src/error_category.cpp | phony/buildtools/third_party/libc++/libc++.inputs
+  source_file_part = error_category.cpp
+  source_name_part = error_category
+build obj/buildtools/third_party/libc++/libc++/exception.o: cxx /ninja-to-soong-angle/third_party/libc++/src/src/exception.cpp | phony/buildtools/third_party/libc++/libc++.inputs
+  source_file_part = exception.cpp
+  source_name_part = exception
+build obj/buildtools/third_party/libc++/libc++/directory_iterator.o: cxx /ninja-to-soong-angle/third_party/libc++/src/src/filesystem/directory_iterator.cpp | phony/buildtools/third_party/libc++/libc++.inputs
+  source_file_part = directory_iterator.cpp
+  source_name_part = directory_iterator
+build obj/buildtools/third_party/libc++/libc++/filesystem_error.o: cxx /ninja-to-soong-angle/third_party/libc++/src/src/filesystem/filesystem_error.cpp | phony/buildtools/third_party/libc++/libc++.inputs
+  source_file_part = filesystem_error.cpp
+  source_name_part = filesystem_error
+build obj/buildtools/third_party/libc++/libc++/operations.o: cxx /ninja-to-soong-angle/third_party/libc++/src/src/filesystem/operations.cpp | phony/buildtools/third_party/libc++/libc++.inputs
+  source_file_part = operations.cpp
+  source_name_part = operations
+build obj/buildtools/third_party/libc++/libc++/path.o: cxx /ninja-to-soong-angle/third_party/libc++/src/src/filesystem/path.cpp | phony/buildtools/third_party/libc++/libc++.inputs
+  source_file_part = path.cpp
+  source_name_part = path
+build obj/buildtools/third_party/libc++/libc++/functional.o: cxx /ninja-to-soong-angle/third_party/libc++/src/src/functional.cpp | phony/buildtools/third_party/libc++/libc++.inputs
+  source_file_part = functional.cpp
+  source_name_part = functional
+build obj/buildtools/third_party/libc++/libc++/future.o: cxx /ninja-to-soong-angle/third_party/libc++/src/src/future.cpp | phony/buildtools/third_party/libc++/libc++.inputs
+  source_file_part = future.cpp
+  source_name_part = future
+build obj/buildtools/third_party/libc++/libc++/hash.o: cxx /ninja-to-soong-angle/third_party/libc++/src/src/hash.cpp | phony/buildtools/third_party/libc++/libc++.inputs
+  source_file_part = hash.cpp
+  source_name_part = hash
+build obj/buildtools/third_party/libc++/libc++/ios.o: cxx /ninja-to-soong-angle/third_party/libc++/src/src/ios.cpp | phony/buildtools/third_party/libc++/libc++.inputs
+  source_file_part = ios.cpp
+  source_name_part = ios
+build obj/buildtools/third_party/libc++/libc++/ios.instantiations.o: cxx /ninja-to-soong-angle/third_party/libc++/src/src/ios.instantiations.cpp | phony/buildtools/third_party/libc++/libc++.inputs
+  source_file_part = ios.instantiations.cpp
+  source_name_part = ios.instantiations
+build obj/buildtools/third_party/libc++/libc++/iostream.o: cxx /ninja-to-soong-angle/third_party/libc++/src/src/iostream.cpp | phony/buildtools/third_party/libc++/libc++.inputs
+  source_file_part = iostream.cpp
+  source_name_part = iostream
+build obj/buildtools/third_party/libc++/libc++/locale.o: cxx /ninja-to-soong-angle/third_party/libc++/src/src/locale.cpp | phony/buildtools/third_party/libc++/libc++.inputs
+  source_file_part = locale.cpp
+  source_name_part = locale
+build obj/buildtools/third_party/libc++/libc++/memory.o: cxx /ninja-to-soong-angle/third_party/libc++/src/src/memory.cpp | phony/buildtools/third_party/libc++/libc++.inputs
+  source_file_part = memory.cpp
+  source_name_part = memory
+build obj/buildtools/third_party/libc++/libc++/mutex.o: cxx /ninja-to-soong-angle/third_party/libc++/src/src/mutex.cpp | phony/buildtools/third_party/libc++/libc++.inputs
+  source_file_part = mutex.cpp
+  source_name_part = mutex
+build obj/buildtools/third_party/libc++/libc++/mutex_destructor.o: cxx /ninja-to-soong-angle/third_party/libc++/src/src/mutex_destructor.cpp | phony/buildtools/third_party/libc++/libc++.inputs
+  source_file_part = mutex_destructor.cpp
+  source_name_part = mutex_destructor
+build obj/buildtools/third_party/libc++/libc++/new_handler.o: cxx /ninja-to-soong-angle/third_party/libc++/src/src/new_handler.cpp | phony/buildtools/third_party/libc++/libc++.inputs
+  source_file_part = new_handler.cpp
+  source_name_part = new_handler
+build obj/buildtools/third_party/libc++/libc++/new_helpers.o: cxx /ninja-to-soong-angle/third_party/libc++/src/src/new_helpers.cpp | phony/buildtools/third_party/libc++/libc++.inputs
+  source_file_part = new_helpers.cpp
+  source_name_part = new_helpers
+build obj/buildtools/third_party/libc++/libc++/optional.o: cxx /ninja-to-soong-angle/third_party/libc++/src/src/optional.cpp | phony/buildtools/third_party/libc++/libc++.inputs
+  source_file_part = optional.cpp
+  source_name_part = optional
+build obj/buildtools/third_party/libc++/libc++/random.o: cxx /ninja-to-soong-angle/third_party/libc++/src/src/random.cpp | phony/buildtools/third_party/libc++/libc++.inputs
+  source_file_part = random.cpp
+  source_name_part = random
+build obj/buildtools/third_party/libc++/libc++/random_shuffle.o: cxx /ninja-to-soong-angle/third_party/libc++/src/src/random_shuffle.cpp | phony/buildtools/third_party/libc++/libc++.inputs
+  source_file_part = random_shuffle.cpp
+  source_name_part = random_shuffle
+build obj/buildtools/third_party/libc++/libc++/regex.o: cxx /ninja-to-soong-angle/third_party/libc++/src/src/regex.cpp | phony/buildtools/third_party/libc++/libc++.inputs
+  source_file_part = regex.cpp
+  source_name_part = regex
+build obj/buildtools/third_party/libc++/libc++/d2fixed.o: cxx /ninja-to-soong-angle/third_party/libc++/src/src/ryu/d2fixed.cpp | phony/buildtools/third_party/libc++/libc++.inputs
+  source_file_part = d2fixed.cpp
+  source_name_part = d2fixed
+build obj/buildtools/third_party/libc++/libc++/d2s.o: cxx /ninja-to-soong-angle/third_party/libc++/src/src/ryu/d2s.cpp | phony/buildtools/third_party/libc++/libc++.inputs
+  source_file_part = d2s.cpp
+  source_name_part = d2s
+build obj/buildtools/third_party/libc++/libc++/f2s.o: cxx /ninja-to-soong-angle/third_party/libc++/src/src/ryu/f2s.cpp | phony/buildtools/third_party/libc++/libc++.inputs
+  source_file_part = f2s.cpp
+  source_name_part = f2s
+build obj/buildtools/third_party/libc++/libc++/shared_mutex.o: cxx /ninja-to-soong-angle/third_party/libc++/src/src/shared_mutex.cpp | phony/buildtools/third_party/libc++/libc++.inputs
+  source_file_part = shared_mutex.cpp
+  source_name_part = shared_mutex
+build obj/buildtools/third_party/libc++/libc++/stdexcept.o: cxx /ninja-to-soong-angle/third_party/libc++/src/src/stdexcept.cpp | phony/buildtools/third_party/libc++/libc++.inputs
+  source_file_part = stdexcept.cpp
+  source_name_part = stdexcept
+build obj/buildtools/third_party/libc++/libc++/string.o: cxx /ninja-to-soong-angle/third_party/libc++/src/src/string.cpp | phony/buildtools/third_party/libc++/libc++.inputs
+  source_file_part = string.cpp
+  source_name_part = string
+build obj/buildtools/third_party/libc++/libc++/strstream.o: cxx /ninja-to-soong-angle/third_party/libc++/src/src/strstream.cpp | phony/buildtools/third_party/libc++/libc++.inputs
+  source_file_part = strstream.cpp
+  source_name_part = strstream
+build obj/buildtools/third_party/libc++/libc++/system_error.o: cxx /ninja-to-soong-angle/third_party/libc++/src/src/system_error.cpp | phony/buildtools/third_party/libc++/libc++.inputs
+  source_file_part = system_error.cpp
+  source_name_part = system_error
+build obj/buildtools/third_party/libc++/libc++/thread.o: cxx /ninja-to-soong-angle/third_party/libc++/src/src/thread.cpp | phony/buildtools/third_party/libc++/libc++.inputs
+  source_file_part = thread.cpp
+  source_name_part = thread
+build obj/buildtools/third_party/libc++/libc++/typeinfo.o: cxx /ninja-to-soong-angle/third_party/libc++/src/src/typeinfo.cpp | phony/buildtools/third_party/libc++/libc++.inputs
+  source_file_part = typeinfo.cpp
+  source_name_part = typeinfo
+build obj/buildtools/third_party/libc++/libc++/valarray.o: cxx /ninja-to-soong-angle/third_party/libc++/src/src/valarray.cpp | phony/buildtools/third_party/libc++/libc++.inputs
+  source_file_part = valarray.cpp
+  source_name_part = valarray
+build obj/buildtools/third_party/libc++/libc++/variant.o: cxx /ninja-to-soong-angle/third_party/libc++/src/src/variant.cpp | phony/buildtools/third_party/libc++/libc++.inputs
+  source_file_part = variant.cpp
+  source_name_part = variant
+build obj/buildtools/third_party/libc++/libc++/vector.o: cxx /ninja-to-soong-angle/third_party/libc++/src/src/vector.cpp | phony/buildtools/third_party/libc++/libc++.inputs
+  source_file_part = vector.cpp
+  source_name_part = vector
+build obj/buildtools/third_party/libc++/libc++/verbose_abort.o: cxx /ninja-to-soong-angle/third_party/libc++/src/src/verbose_abort.cpp | phony/buildtools/third_party/libc++/libc++.inputs
+  source_file_part = verbose_abort.cpp
+  source_name_part = verbose_abort
+build obj/buildtools/third_party/libc++/libc++/new.o: cxx /ninja-to-soong-angle/third_party/libc++/src/src/new.cpp | phony/buildtools/third_party/libc++/libc++.inputs
+  source_file_part = new.cpp
+  source_name_part = new
+
+build phony/buildtools/third_party/libc++/libc++: phony obj/buildtools/third_party/libc++/libc++/algorithm.o obj/buildtools/third_party/libc++/libc++/any.o obj/buildtools/third_party/libc++/libc++/atomic.o obj/buildtools/third_party/libc++/libc++/barrier.o obj/buildtools/third_party/libc++/libc++/bind.o obj/buildtools/third_party/libc++/libc++/call_once.o obj/buildtools/third_party/libc++/libc++/charconv.o obj/buildtools/third_party/libc++/libc++/chrono.o obj/buildtools/third_party/libc++/libc++/condition_variable.o obj/buildtools/third_party/libc++/libc++/condition_variable_destructor.o obj/buildtools/third_party/libc++/libc++/error_category.o obj/buildtools/third_party/libc++/libc++/exception.o obj/buildtools/third_party/libc++/libc++/directory_iterator.o obj/buildtools/third_party/libc++/libc++/filesystem_error.o obj/buildtools/third_party/libc++/libc++/operations.o obj/buildtools/third_party/libc++/libc++/path.o obj/buildtools/third_party/libc++/libc++/functional.o obj/buildtools/third_party/libc++/libc++/future.o obj/buildtools/third_party/libc++/libc++/hash.o obj/buildtools/third_party/libc++/libc++/ios.o obj/buildtools/third_party/libc++/libc++/ios.instantiations.o obj/buildtools/third_party/libc++/libc++/iostream.o obj/buildtools/third_party/libc++/libc++/locale.o obj/buildtools/third_party/libc++/libc++/memory.o obj/buildtools/third_party/libc++/libc++/mutex.o obj/buildtools/third_party/libc++/libc++/mutex_destructor.o obj/buildtools/third_party/libc++/libc++/new_handler.o obj/buildtools/third_party/libc++/libc++/new_helpers.o obj/buildtools/third_party/libc++/libc++/optional.o obj/buildtools/third_party/libc++/libc++/random.o obj/buildtools/third_party/libc++/libc++/random_shuffle.o obj/buildtools/third_party/libc++/libc++/regex.o obj/buildtools/third_party/libc++/libc++/d2fixed.o obj/buildtools/third_party/libc++/libc++/d2s.o obj/buildtools/third_party/libc++/libc++/f2s.o obj/buildtools/third_party/libc++/libc++/shared_mutex.o obj/buildtools/third_party/libc++/libc++/stdexcept.o obj/buildtools/third_party/libc++/libc++/string.o obj/buildtools/third_party/libc++/libc++/strstream.o obj/buildtools/third_party/libc++/libc++/system_error.o obj/buildtools/third_party/libc++/libc++/thread.o obj/buildtools/third_party/libc++/libc++/typeinfo.o obj/buildtools/third_party/libc++/libc++/valarray.o obj/buildtools/third_party/libc++/libc++/variant.o obj/buildtools/third_party/libc++/libc++/vector.o obj/buildtools/third_party/libc++/libc++/verbose_abort.o obj/buildtools/third_party/libc++/libc++/new.o || phony/buildtools/third_party/libc++abi/libc++abi phony/buildtools/third_party/libunwind/libunwind

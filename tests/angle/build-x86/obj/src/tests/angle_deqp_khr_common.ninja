@@ -1,0 +1,894 @@
+defines = -D_GNU_SOURCE -DANDROID -D__ANDROID_UNAVAILABLE_SYMBOLS_ARE_WEAK__ -DHAVE_SYS_UIO_H -DANDROID_NDK_VERSION_ROLL=r28_1 -DCR_CLANG_REVISION=\"llvmorg-21-init-9266-g09006611-1\" -D_LIBCPP_HARDENING_MODE=_LIBCPP_HARDENING_MODE_NONE -DNDEBUG -DNVALGRIND -DDYNAMIC_ANNOTATIONS_ENABLED=0 -DANGLE_ENABLE_SHARE_CONTEXT_LOCK=1 -DANGLE_USE_ANDROID_TLS_SLOT=1 -DANGLE_ENABLE_GLOBAL_MUTEX_RECURSION=1 -DANGLE_ENABLE_GLOBAL_MUTEX_LOAD_TIME_ALLOCATE=1 -DANGLE_ENABLE_CONTEXT_MUTEX=1 -DANGLE_ENABLE_CONTEXT_MUTEX_RECURSION=1 -DANGLE_TEST_ENABLE_SYSTEM_EGL -DDEQP_SUPPORT_GLES31=1 -DDEQP_SUPPORT_GLES3=1 -DDEQP_SUPPORT_GLES2=1 -DDEQP_SUPPORT_EGL=1 -DDEQP_TARGET_NAME=\"angle\" -DDEQP_GLES31_RUNTIME_LOAD=1 -DDEQP_GLES3_RUNTIME_LOAD=1 -DDEQP_GLES2_RUNTIME_LOAD=1 -DQP_SUPPORT_PNG=1 -D_HAS_EXCEPTIONS=1 -D_MBCS -DANGLE_DEQP_DATA_DIR=\"gen/vk_gl_cts_data/data\" -DDE_ANDROID_API=26 -D_XOPEN_SOURCE=600 -DDE_FENV_ACCESS_ON=_Pragma\(\"STDC\$ FENV_ACCESS\$ ON\"\) -DENABLE_HLSL=1
+include_dirs = -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/vulkancts/framework/vulkan -I/ninja-to-soong-angle/include -I/ninja-to-soong-angle/src -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/common -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/common/subgroups -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/gl -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/gles2 -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/gles3 -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/gles31 -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/gles32 -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/glesext -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/framework/common -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/framework/randomshaders -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/framework/referencerenderer -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/executor -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/execserver -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/framework/platform/lnx -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/framework/platform/lnx/X11 -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/framework/platform/null -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/framework/platform/win32 -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/framework/xexml -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/modules/gles2 -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/modules/gles2/functional -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/modules/gles2/accuracy -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/modules/gles2/performance -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/modules/gles2/stress -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/modules/gles2/usecases -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/modules/gles3 -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/modules/gles3/functional -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/modules/gles3/accuracy -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/modules/gles3/performance -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/modules/gles3/stress -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/modules/gles3/usecases -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/modules/gles31 -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/modules/gles31/functional -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/modules/gles31/stress -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/modules/glusecases -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/modules/egl -I/ninja-to-soong-angle/third_party/glslang/src -I/ninja-to-soong-angle/third_party/spirv-tools/src -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/framework/platform/android -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/framework/delibs/decpp -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/framework/delibs/debase -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/framework/delibs/depool -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/framework/delibs/dethread -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/framework/delibs/deutil -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/framework/delibs/destream -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/framework/qphelper -I/ninja-to-soong-angle/third_party/libpng/src -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/framework/egl -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/framework/egl/wrapper -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/framework/opengl -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/framework/opengl/simplereference -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/framework/opengl/wrapper -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/modules/glshared -I/ninja-to-soong-angle/third_party/spirv-tools/src/include
+cflags = -Wno-nonportable-include-path -fno-delete-null-pointer-checks -fno-strict-overflow -fno-ident -fno-strict-aliasing -fstack-protector -funwind-tables -fPIC -fcolor-diagnostics -fmerge-all-constants -fno-sized-deallocation -fcrash-diagnostics-dir=/ninja-to-soong-angle/tools/clang/crashreports -mllvm -instcombine-lower-dbg-declare=0 -mllvm -split-threshold-for-reg-with-hint=0 -ffp-contract=off -fextend-variable-liveness=none -ffunction-sections -fno-short-enums --target=i686-linux-android26 -m32 -mfpmath=sse -msse3 -Wno-builtin-macro-redefined -D__DATE__= -D__TIME__= -D__TIMESTAMP__= -ffile-compilation-dir=. -no-canonical-prefixes -ftrivial-auto-var-init=pattern -fno-omit-frame-pointer -momit-leaf-frame-pointer -g0 -fvisibility=hidden -Wheader-hygiene -Wstring-conversion -Wtautological-overlap-compare -O2 -fdata-sections -ffunction-sections -fno-unique-section-names -fno-math-errno -Wno-header-hygiene -Wall -Wno-unused-variable -Wno-c++11-narrowing -Wno-unused-but-set-variable -Wunguarded-availability -Wno-missing-field-initializers -Wno-unused-parameter -Wno-psabi -Wloop-analysis -Wno-unneeded-internal-declaration -Wno-cast-function-type -Wno-thread-safety-reference-return -Wno-nontrivial-memcall -Werror -Wno-tautological-constant-out-of-range-compare -Wno-conversion
+cflags_cc = -std=c++20 -Wno-trigraphs -gsimple-template-names --sysroot=/ninja-to-soong-angle/third_party/android_toolchain/ndk/toolchains/llvm/prebuilt/linux-x86_64/sysroot -fvisibility-inlines-hidden -Wno-sizeof-array-div -Wno-string-conversion -Wno-unused-function -Wno-unused-local-typedef -Wno-unused-result -fwrapv -fexceptions -Wno-invalid-offsetof -Wenum-compare-conditional -Wno-nullability-completeness
+label_name = angle_deqp_khr_common
+root_out_dir = .
+target_out_dir = obj/src/tests
+target_output_name = angle_deqp_khr_common
+
+build phony/src/tests/angle_deqp_khr_common.inputdeps: phony phony/third_party/glslang/src/glslang_build_info phony/third_party/spirv-tools/src/spvtools_core_enums_unified1 phony/third_party/spirv-tools/src/spvtools_core_tables_unified1 phony/third_party/spirv-tools/src/spvtools_generators_inc phony/third_party/spirv-tools/src/spvtools_glsl_tables_glsl1-0 phony/third_party/spirv-tools/src/spvtools_language_header_cldebuginfo100 phony/third_party/spirv-tools/src/spvtools_language_header_debuginfo phony/third_party/spirv-tools/src/spvtools_language_header_vkdebuginfo100 phony/third_party/spirv-tools/src/spvtools_opencl_tables_opencl1-0 phony/third_party/spirv-tools/src/spvtools_vendor_tables_debuginfo phony/third_party/spirv-tools/src/spvtools_vendor_tables_nonsemantic.clspvreflection phony/third_party/spirv-tools/src/spvtools_vendor_tables_nonsemantic.shader.debuginfo.100 phony/third_party/spirv-tools/src/spvtools_vendor_tables_nonsemantic.vkspreflection phony/third_party/spirv-tools/src/spvtools_vendor_tables_opencl.debuginfo.100 phony/third_party/spirv-tools/src/spvtools_vendor_tables_spv-amd-gcn-shader phony/third_party/spirv-tools/src/spvtools_vendor_tables_spv-amd-shader-ballot phony/third_party/spirv-tools/src/spvtools_vendor_tables_spv-amd-shader-explicit-vertex-parameter phony/third_party/spirv-tools/src/spvtools_vendor_tables_spv-amd-shader-trinary-minmax
+build obj/src/tests/angle_deqp_khr_common/glcAggressiveShaderOptimizationsTests.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/common/glcAggressiveShaderOptimizationsTests.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = glcAggressiveShaderOptimizationsTests.cpp
+  source_name_part = glcAggressiveShaderOptimizationsTests
+build obj/src/tests/angle_deqp_khr_common/glcApiCoverageTests.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/common/glcApiCoverageTests.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = glcApiCoverageTests.cpp
+  source_name_part = glcApiCoverageTests
+build obj/src/tests/angle_deqp_khr_common/glcBindImageTextureTests.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/common/glcBindImageTextureTests.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = glcBindImageTextureTests.cpp
+  source_name_part = glcBindImageTextureTests
+build obj/src/tests/angle_deqp_khr_common/glcBlendEquationAdvancedTests.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/common/glcBlendEquationAdvancedTests.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = glcBlendEquationAdvancedTests.cpp
+  source_name_part = glcBlendEquationAdvancedTests
+build obj/src/tests/angle_deqp_khr_common/glcBufferObjectsTests.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/common/glcBufferObjectsTests.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = glcBufferObjectsTests.cpp
+  source_name_part = glcBufferObjectsTests
+build obj/src/tests/angle_deqp_khr_common/glcClipDistance.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/common/glcClipDistance.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = glcClipDistance.cpp
+  source_name_part = glcClipDistance
+build obj/src/tests/angle_deqp_khr_common/glcCompressedFormatTests.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/common/glcCompressedFormatTests.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = glcCompressedFormatTests.cpp
+  source_name_part = glcCompressedFormatTests
+build obj/src/tests/angle_deqp_khr_common/glcConfigList.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/common/glcConfigList.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = glcConfigList.cpp
+  source_name_part = glcConfigList
+build obj/src/tests/angle_deqp_khr_common/glcConfigListCase.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/common/glcConfigListCase.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = glcConfigListCase.cpp
+  source_name_part = glcConfigListCase
+build obj/src/tests/angle_deqp_khr_common/glcConfigListEGL.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/common/glcConfigListEGL.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = glcConfigListEGL.cpp
+  source_name_part = glcConfigListEGL
+build obj/src/tests/angle_deqp_khr_common/glcConfigListWGL.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/common/glcConfigListWGL.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = glcConfigListWGL.cpp
+  source_name_part = glcConfigListWGL
+build obj/src/tests/angle_deqp_khr_common/glcConfigPackage.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/common/glcConfigPackage.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = glcConfigPackage.cpp
+  source_name_part = glcConfigPackage
+build obj/src/tests/angle_deqp_khr_common/glcContext.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/common/glcContext.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = glcContext.cpp
+  source_name_part = glcContext
+build obj/src/tests/angle_deqp_khr_common/glcContextFlagsTests.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/common/glcContextFlagsTests.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = glcContextFlagsTests.cpp
+  source_name_part = glcContextFlagsTests
+build obj/src/tests/angle_deqp_khr_common/glcCullDistance.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/common/glcCullDistance.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = glcCullDistance.cpp
+  source_name_part = glcCullDistance
+build obj/src/tests/angle_deqp_khr_common/glcExposedExtensionsTests.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/common/glcExposedExtensionsTests.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = glcExposedExtensionsTests.cpp
+  source_name_part = glcExposedExtensionsTests
+build obj/src/tests/angle_deqp_khr_common/glcExtTokens.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/common/glcExtTokens.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = glcExtTokens.cpp
+  source_name_part = glcExtTokens
+build obj/src/tests/angle_deqp_khr_common/glcFragCoordConventionsTests.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/common/glcFragCoordConventionsTests.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = glcFragCoordConventionsTests.cpp
+  source_name_part = glcFragCoordConventionsTests
+build obj/src/tests/angle_deqp_khr_common/glcFragDepthTests.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/common/glcFragDepthTests.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = glcFragDepthTests.cpp
+  source_name_part = glcFragDepthTests
+build obj/src/tests/angle_deqp_khr_common/glcFramebufferBlitTests.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/common/glcFramebufferBlitTests.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = glcFramebufferBlitTests.cpp
+  source_name_part = glcFramebufferBlitTests
+build obj/src/tests/angle_deqp_khr_common/glcFramebufferCompleteness.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/common/glcFramebufferCompleteness.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = glcFramebufferCompleteness.cpp
+  source_name_part = glcFramebufferCompleteness
+build obj/src/tests/angle_deqp_khr_common/glcGLSLVectorConstructorTests.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/common/glcGLSLVectorConstructorTests.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = glcGLSLVectorConstructorTests.cpp
+  source_name_part = glcGLSLVectorConstructorTests
+build obj/src/tests/angle_deqp_khr_common/glcInfoTests.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/common/glcInfoTests.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = glcInfoTests.cpp
+  source_name_part = glcInfoTests
+build obj/src/tests/angle_deqp_khr_common/glcInternalformatTests.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/common/glcInternalformatTests.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = glcInternalformatTests.cpp
+  source_name_part = glcInternalformatTests
+build obj/src/tests/angle_deqp_khr_common/glcKHRDebugTests.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/common/glcKHRDebugTests.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = glcKHRDebugTests.cpp
+  source_name_part = glcKHRDebugTests
+build obj/src/tests/angle_deqp_khr_common/glcLayoutLocationTests.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/common/glcLayoutLocationTests.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = glcLayoutLocationTests.cpp
+  source_name_part = glcLayoutLocationTests
+build obj/src/tests/angle_deqp_khr_common/glcMisc.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/common/glcMisc.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = glcMisc.cpp
+  source_name_part = glcMisc
+build obj/src/tests/angle_deqp_khr_common/glcMultipleContextsTests.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/common/glcMultipleContextsTests.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = glcMultipleContextsTests.cpp
+  source_name_part = glcMultipleContextsTests
+build obj/src/tests/angle_deqp_khr_common/glcNearestEdgeTests.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/common/glcNearestEdgeTests.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = glcNearestEdgeTests.cpp
+  source_name_part = glcNearestEdgeTests
+build obj/src/tests/angle_deqp_khr_common/glcNoDefaultContextPackage.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/common/glcNoDefaultContextPackage.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = glcNoDefaultContextPackage.cpp
+  source_name_part = glcNoDefaultContextPackage
+build obj/src/tests/angle_deqp_khr_common/glcNoErrorTests.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/common/glcNoErrorTests.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = glcNoErrorTests.cpp
+  source_name_part = glcNoErrorTests
+build obj/src/tests/angle_deqp_khr_common/glcPackedDepthStencilTests.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/common/glcPackedDepthStencilTests.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = glcPackedDepthStencilTests.cpp
+  source_name_part = glcPackedDepthStencilTests
+build obj/src/tests/angle_deqp_khr_common/glcPackedPixelsTests.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/common/glcPackedPixelsTests.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = glcPackedPixelsTests.cpp
+  source_name_part = glcPackedPixelsTests
+build obj/src/tests/angle_deqp_khr_common/glcParallelShaderCompileTests.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/common/glcParallelShaderCompileTests.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = glcParallelShaderCompileTests.cpp
+  source_name_part = glcParallelShaderCompileTests
+build obj/src/tests/angle_deqp_khr_common/glcPixelStorageModesTests.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/common/glcPixelStorageModesTests.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = glcPixelStorageModesTests.cpp
+  source_name_part = glcPixelStorageModesTests
+build obj/src/tests/angle_deqp_khr_common/glcPolygonOffsetClampTests.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/common/glcPolygonOffsetClampTests.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = glcPolygonOffsetClampTests.cpp
+  source_name_part = glcPolygonOffsetClampTests
+build obj/src/tests/angle_deqp_khr_common/glcRobustBufferAccessBehaviorTests.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/common/glcRobustBufferAccessBehaviorTests.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = glcRobustBufferAccessBehaviorTests.cpp
+  source_name_part = glcRobustBufferAccessBehaviorTests
+build obj/src/tests/angle_deqp_khr_common/glcRobustnessTests.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/common/glcRobustnessTests.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = glcRobustnessTests.cpp
+  source_name_part = glcRobustnessTests
+build obj/src/tests/angle_deqp_khr_common/glcSampleVariablesTests.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/common/glcSampleVariablesTests.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = glcSampleVariablesTests.cpp
+  source_name_part = glcSampleVariablesTests
+build obj/src/tests/angle_deqp_khr_common/glcSeparableProgramsTransformFeedbackTests.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/common/glcSeparableProgramsTransformFeedbackTests.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = glcSeparableProgramsTransformFeedbackTests.cpp
+  source_name_part = glcSeparableProgramsTransformFeedbackTests
+build obj/src/tests/angle_deqp_khr_common/glcShaderConstExprTests.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/common/glcShaderConstExprTests.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = glcShaderConstExprTests.cpp
+  source_name_part = glcShaderConstExprTests
+build obj/src/tests/angle_deqp_khr_common/glcShaderFunctionTests.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/common/glcShaderFunctionTests.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = glcShaderFunctionTests.cpp
+  source_name_part = glcShaderFunctionTests
+build obj/src/tests/angle_deqp_khr_common/glcShaderGroupVoteTests.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/common/glcShaderGroupVoteTests.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = glcShaderGroupVoteTests.cpp
+  source_name_part = glcShaderGroupVoteTests
+build obj/src/tests/angle_deqp_khr_common/glcShaderImageLoadStoreTests.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/common/glcShaderImageLoadStoreTests.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = glcShaderImageLoadStoreTests.cpp
+  source_name_part = glcShaderImageLoadStoreTests
+build obj/src/tests/angle_deqp_khr_common/glcShaderIndexingTests.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/common/glcShaderIndexingTests.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = glcShaderIndexingTests.cpp
+  source_name_part = glcShaderIndexingTests
+build obj/src/tests/angle_deqp_khr_common/glcShaderIntegerMixTests.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/common/glcShaderIntegerMixTests.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = glcShaderIntegerMixTests.cpp
+  source_name_part = glcShaderIntegerMixTests
+build obj/src/tests/angle_deqp_khr_common/glcShaderLibrary.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/common/glcShaderLibrary.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = glcShaderLibrary.cpp
+  source_name_part = glcShaderLibrary
+build obj/src/tests/angle_deqp_khr_common/glcShaderLibraryCase.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/common/glcShaderLibraryCase.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = glcShaderLibraryCase.cpp
+  source_name_part = glcShaderLibraryCase
+build obj/src/tests/angle_deqp_khr_common/glcShaderLoopTests.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/common/glcShaderLoopTests.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = glcShaderLoopTests.cpp
+  source_name_part = glcShaderLoopTests
+build obj/src/tests/angle_deqp_khr_common/glcShaderMacroTests.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/common/glcShaderMacroTests.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = glcShaderMacroTests.cpp
+  source_name_part = glcShaderMacroTests
+build obj/src/tests/angle_deqp_khr_common/glcShaderMultisampleInterpolationTests.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/common/glcShaderMultisampleInterpolationTests.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = glcShaderMultisampleInterpolationTests.cpp
+  source_name_part = glcShaderMultisampleInterpolationTests
+build obj/src/tests/angle_deqp_khr_common/glcShaderNegativeTests.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/common/glcShaderNegativeTests.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = glcShaderNegativeTests.cpp
+  source_name_part = glcShaderNegativeTests
+build obj/src/tests/angle_deqp_khr_common/glcShaderRenderCase.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/common/glcShaderRenderCase.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = glcShaderRenderCase.cpp
+  source_name_part = glcShaderRenderCase
+build obj/src/tests/angle_deqp_khr_common/glcShaderStorageBufferObjectTests.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/common/glcShaderStorageBufferObjectTests.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = glcShaderStorageBufferObjectTests.cpp
+  source_name_part = glcShaderStorageBufferObjectTests
+build obj/src/tests/angle_deqp_khr_common/glcShaderStructTests.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/common/glcShaderStructTests.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = glcShaderStructTests.cpp
+  source_name_part = glcShaderStructTests
+build obj/src/tests/angle_deqp_khr_common/glcSingleConfigTestPackage.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/common/glcSingleConfigTestPackage.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = glcSingleConfigTestPackage.cpp
+  source_name_part = glcSingleConfigTestPackage
+build obj/src/tests/angle_deqp_khr_common/glcSpirvUtils.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/common/glcSpirvUtils.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = glcSpirvUtils.cpp
+  source_name_part = glcSpirvUtils
+build obj/src/tests/angle_deqp_khr_common/glcTestCase.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/common/glcTestCase.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = glcTestCase.cpp
+  source_name_part = glcTestCase
+build obj/src/tests/angle_deqp_khr_common/glcTestCaseWrapper.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/common/glcTestCaseWrapper.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = glcTestCaseWrapper.cpp
+  source_name_part = glcTestCaseWrapper
+build obj/src/tests/angle_deqp_khr_common/glcTestPackage.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/common/glcTestPackage.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = glcTestPackage.cpp
+  source_name_part = glcTestPackage
+build obj/src/tests/angle_deqp_khr_common/glcTestSubcase.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/common/glcTestSubcase.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = glcTestSubcase.cpp
+  source_name_part = glcTestSubcase
+build obj/src/tests/angle_deqp_khr_common/glcTextureCompatibilityTests.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/common/glcTextureCompatibilityTests.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = glcTextureCompatibilityTests.cpp
+  source_name_part = glcTextureCompatibilityTests
+build obj/src/tests/angle_deqp_khr_common/glcTextureFilterAnisotropicTests.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/common/glcTextureFilterAnisotropicTests.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = glcTextureFilterAnisotropicTests.cpp
+  source_name_part = glcTextureFilterAnisotropicTests
+build obj/src/tests/angle_deqp_khr_common/glcTextureLodBasicTests.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/common/glcTextureLodBasicTests.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = glcTextureLodBasicTests.cpp
+  source_name_part = glcTextureLodBasicTests
+build obj/src/tests/angle_deqp_khr_common/glcTextureLodBiasTests.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/common/glcTextureLodBiasTests.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = glcTextureLodBiasTests.cpp
+  source_name_part = glcTextureLodBiasTests
+build obj/src/tests/angle_deqp_khr_common/glcTextureRepeatModeTests.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/common/glcTextureRepeatModeTests.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = glcTextureRepeatModeTests.cpp
+  source_name_part = glcTextureRepeatModeTests
+build obj/src/tests/angle_deqp_khr_common/glcTextureStencil8Tests.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/common/glcTextureStencil8Tests.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = glcTextureStencil8Tests.cpp
+  source_name_part = glcTextureStencil8Tests
+build obj/src/tests/angle_deqp_khr_common/glcTextureStorageTests.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/common/glcTextureStorageTests.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = glcTextureStorageTests.cpp
+  source_name_part = glcTextureStorageTests
+build obj/src/tests/angle_deqp_khr_common/glcTransformFeedbackTests.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/common/glcTransformFeedbackTests.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = glcTransformFeedbackTests.cpp
+  source_name_part = glcTransformFeedbackTests
+build obj/src/tests/angle_deqp_khr_common/glcUniformBlockCase.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/common/glcUniformBlockCase.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = glcUniformBlockCase.cpp
+  source_name_part = glcUniformBlockCase
+build obj/src/tests/angle_deqp_khr_common/glcUniformBlockNegativeTests.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/common/glcUniformBlockNegativeTests.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = glcUniformBlockNegativeTests.cpp
+  source_name_part = glcUniformBlockNegativeTests
+build obj/src/tests/angle_deqp_khr_common/glcUniformBlockTests.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/common/glcUniformBlockTests.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = glcUniformBlockTests.cpp
+  source_name_part = glcUniformBlockTests
+build obj/src/tests/angle_deqp_khr_common/glcViewportArrayTests.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/common/glcViewportArrayTests.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = glcViewportArrayTests.cpp
+  source_name_part = glcViewportArrayTests
+build obj/src/tests/angle_deqp_khr_common/glcSubgroupsArithmeticTests.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/common/subgroups/glcSubgroupsArithmeticTests.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = glcSubgroupsArithmeticTests.cpp
+  source_name_part = glcSubgroupsArithmeticTests
+build obj/src/tests/angle_deqp_khr_common/glcSubgroupsBallotBroadcastTests.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/common/subgroups/glcSubgroupsBallotBroadcastTests.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = glcSubgroupsBallotBroadcastTests.cpp
+  source_name_part = glcSubgroupsBallotBroadcastTests
+build obj/src/tests/angle_deqp_khr_common/glcSubgroupsBallotOtherTests.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/common/subgroups/glcSubgroupsBallotOtherTests.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = glcSubgroupsBallotOtherTests.cpp
+  source_name_part = glcSubgroupsBallotOtherTests
+build obj/src/tests/angle_deqp_khr_common/glcSubgroupsBallotTests.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/common/subgroups/glcSubgroupsBallotTests.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = glcSubgroupsBallotTests.cpp
+  source_name_part = glcSubgroupsBallotTests
+build obj/src/tests/angle_deqp_khr_common/glcSubgroupsBasicTests.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/common/subgroups/glcSubgroupsBasicTests.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = glcSubgroupsBasicTests.cpp
+  source_name_part = glcSubgroupsBasicTests
+build obj/src/tests/angle_deqp_khr_common/glcSubgroupsBuiltinMaskVarTests.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/common/subgroups/glcSubgroupsBuiltinMaskVarTests.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = glcSubgroupsBuiltinMaskVarTests.cpp
+  source_name_part = glcSubgroupsBuiltinMaskVarTests
+build obj/src/tests/angle_deqp_khr_common/glcSubgroupsBuiltinVarTests.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/common/subgroups/glcSubgroupsBuiltinVarTests.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = glcSubgroupsBuiltinVarTests.cpp
+  source_name_part = glcSubgroupsBuiltinVarTests
+build obj/src/tests/angle_deqp_khr_common/glcSubgroupsClusteredTests.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/common/subgroups/glcSubgroupsClusteredTests.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = glcSubgroupsClusteredTests.cpp
+  source_name_part = glcSubgroupsClusteredTests
+build obj/src/tests/angle_deqp_khr_common/glcSubgroupsPartitionedTests.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/common/subgroups/glcSubgroupsPartitionedTests.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = glcSubgroupsPartitionedTests.cpp
+  source_name_part = glcSubgroupsPartitionedTests
+build obj/src/tests/angle_deqp_khr_common/glcSubgroupsQuadTests.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/common/subgroups/glcSubgroupsQuadTests.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = glcSubgroupsQuadTests.cpp
+  source_name_part = glcSubgroupsQuadTests
+build obj/src/tests/angle_deqp_khr_common/glcSubgroupsShapeTests.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/common/subgroups/glcSubgroupsShapeTests.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = glcSubgroupsShapeTests.cpp
+  source_name_part = glcSubgroupsShapeTests
+build obj/src/tests/angle_deqp_khr_common/glcSubgroupsShuffleTests.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/common/subgroups/glcSubgroupsShuffleTests.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = glcSubgroupsShuffleTests.cpp
+  source_name_part = glcSubgroupsShuffleTests
+build obj/src/tests/angle_deqp_khr_common/glcSubgroupsTests.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/common/subgroups/glcSubgroupsTests.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = glcSubgroupsTests.cpp
+  source_name_part = glcSubgroupsTests
+build obj/src/tests/angle_deqp_khr_common/glcSubgroupsTestsUtils.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/common/subgroups/glcSubgroupsTestsUtils.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = glcSubgroupsTestsUtils.cpp
+  source_name_part = glcSubgroupsTestsUtils
+build obj/src/tests/angle_deqp_khr_common/glcSubgroupsVoteTests.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/common/subgroups/glcSubgroupsVoteTests.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = glcSubgroupsVoteTests.cpp
+  source_name_part = glcSubgroupsVoteTests
+build obj/src/tests/angle_deqp_khr_common/esextcTestCaseBase.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/glesext/esextcTestCaseBase.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = esextcTestCaseBase.cpp
+  source_name_part = esextcTestCaseBase
+build obj/src/tests/angle_deqp_khr_common/esextcTestPackage.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/glesext/esextcTestPackage.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = esextcTestPackage.cpp
+  source_name_part = esextcTestPackage
+build obj/src/tests/angle_deqp_khr_common/gl3cCommonBugsTests.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/gl/gl3cCommonBugsTests.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = gl3cCommonBugsTests.cpp
+  source_name_part = gl3cCommonBugsTests
+build obj/src/tests/angle_deqp_khr_common/gl3cDrawBuffers.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/gl/gl3cDrawBuffers.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = gl3cDrawBuffers.cpp
+  source_name_part = gl3cDrawBuffers
+build obj/src/tests/angle_deqp_khr_common/gl3cGLSLnoperspectiveTests.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/gl/gl3cGLSLnoperspectiveTests.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = gl3cGLSLnoperspectiveTests.cpp
+  source_name_part = gl3cGLSLnoperspectiveTests
+build obj/src/tests/angle_deqp_khr_common/gl3cGPUShader5Tests.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/gl/gl3cGPUShader5Tests.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = gl3cGPUShader5Tests.cpp
+  source_name_part = gl3cGPUShader5Tests
+build obj/src/tests/angle_deqp_khr_common/gl3cGetUniform.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/gl/gl3cGetUniform.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = gl3cGetUniform.cpp
+  source_name_part = gl3cGetUniform
+build obj/src/tests/angle_deqp_khr_common/gl3cPrimitiveRestart.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/gl/gl3cPrimitiveRestart.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = gl3cPrimitiveRestart.cpp
+  source_name_part = gl3cPrimitiveRestart
+build obj/src/tests/angle_deqp_khr_common/gl3cTestPackages.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/gl/gl3cTestPackages.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = gl3cTestPackages.cpp
+  source_name_part = gl3cTestPackages
+build obj/src/tests/angle_deqp_khr_common/gl3cTextureSizePromotion.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/gl/gl3cTextureSizePromotion.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = gl3cTextureSizePromotion.cpp
+  source_name_part = gl3cTextureSizePromotion
+build obj/src/tests/angle_deqp_khr_common/gl3cTextureSwizzleTests.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/gl/gl3cTextureSwizzleTests.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = gl3cTextureSwizzleTests.cpp
+  source_name_part = gl3cTextureSwizzleTests
+build obj/src/tests/angle_deqp_khr_common/gl3cTransformFeedback3Tests.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/gl/gl3cTransformFeedback3Tests.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = gl3cTransformFeedback3Tests.cpp
+  source_name_part = gl3cTransformFeedback3Tests
+build obj/src/tests/angle_deqp_khr_common/gl3cTransformFeedbackOverflowQueryTests.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/gl/gl3cTransformFeedbackOverflowQueryTests.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = gl3cTransformFeedbackOverflowQueryTests.cpp
+  source_name_part = gl3cTransformFeedbackOverflowQueryTests
+build obj/src/tests/angle_deqp_khr_common/gl3cTransformFeedbackTests.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/gl/gl3cTransformFeedbackTests.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = gl3cTransformFeedbackTests.cpp
+  source_name_part = gl3cTransformFeedbackTests
+build obj/src/tests/angle_deqp_khr_common/gl4cBufferStorageTests.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/gl/gl4cBufferStorageTests.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = gl4cBufferStorageTests.cpp
+  source_name_part = gl4cBufferStorageTests
+build obj/src/tests/angle_deqp_khr_common/gl4cClipControlTests.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/gl/gl4cClipControlTests.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = gl4cClipControlTests.cpp
+  source_name_part = gl4cClipControlTests
+build obj/src/tests/angle_deqp_khr_common/gl4cComputeShaderTests.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/gl/gl4cComputeShaderTests.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = gl4cComputeShaderTests.cpp
+  source_name_part = gl4cComputeShaderTests
+build obj/src/tests/angle_deqp_khr_common/gl4cConditionalRenderInvertedTests.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/gl/gl4cConditionalRenderInvertedTests.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = gl4cConditionalRenderInvertedTests.cpp
+  source_name_part = gl4cConditionalRenderInvertedTests
+build obj/src/tests/angle_deqp_khr_common/gl4cCopyImageTests.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/gl/gl4cCopyImageTests.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = gl4cCopyImageTests.cpp
+  source_name_part = gl4cCopyImageTests
+build obj/src/tests/angle_deqp_khr_common/gl4cDirectStateAccessBuffersTests.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/gl/gl4cDirectStateAccessBuffersTests.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = gl4cDirectStateAccessBuffersTests.cpp
+  source_name_part = gl4cDirectStateAccessBuffersTests
+build obj/src/tests/angle_deqp_khr_common/gl4cDirectStateAccessFramebuffersAndRenderbuffersTests.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/gl/gl4cDirectStateAccessFramebuffersAndRenderbuffersTests.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = gl4cDirectStateAccessFramebuffersAndRenderbuffersTests.cpp
+  source_name_part = gl4cDirectStateAccessFramebuffersAndRenderbuffersTests
+build obj/src/tests/angle_deqp_khr_common/gl4cDirectStateAccessProgramPipelinesTests.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/gl/gl4cDirectStateAccessProgramPipelinesTests.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = gl4cDirectStateAccessProgramPipelinesTests.cpp
+  source_name_part = gl4cDirectStateAccessProgramPipelinesTests
+build obj/src/tests/angle_deqp_khr_common/gl4cDirectStateAccessQueriesTests.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/gl/gl4cDirectStateAccessQueriesTests.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = gl4cDirectStateAccessQueriesTests.cpp
+  source_name_part = gl4cDirectStateAccessQueriesTests
+build obj/src/tests/angle_deqp_khr_common/gl4cDirectStateAccessSamplersTests.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/gl/gl4cDirectStateAccessSamplersTests.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = gl4cDirectStateAccessSamplersTests.cpp
+  source_name_part = gl4cDirectStateAccessSamplersTests
+build obj/src/tests/angle_deqp_khr_common/gl4cDirectStateAccessTests.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/gl/gl4cDirectStateAccessTests.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = gl4cDirectStateAccessTests.cpp
+  source_name_part = gl4cDirectStateAccessTests
+build obj/src/tests/angle_deqp_khr_common/gl4cDirectStateAccessTexturesTests.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/gl/gl4cDirectStateAccessTexturesTests.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = gl4cDirectStateAccessTexturesTests.cpp
+  source_name_part = gl4cDirectStateAccessTexturesTests
+build obj/src/tests/angle_deqp_khr_common/gl4cDirectStateAccessVertexArraysTests.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/gl/gl4cDirectStateAccessVertexArraysTests.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = gl4cDirectStateAccessVertexArraysTests.cpp
+  source_name_part = gl4cDirectStateAccessVertexArraysTests
+build obj/src/tests/angle_deqp_khr_common/gl4cDirectStateAccessXFBTests.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/gl/gl4cDirectStateAccessXFBTests.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = gl4cDirectStateAccessXFBTests.cpp
+  source_name_part = gl4cDirectStateAccessXFBTests
+build obj/src/tests/angle_deqp_khr_common/gl4cES31CompatibilityTests.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/gl/gl4cES31CompatibilityTests.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = gl4cES31CompatibilityTests.cpp
+  source_name_part = gl4cES31CompatibilityTests
+build obj/src/tests/angle_deqp_khr_common/gl4cEnhancedLayoutsTests.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/gl/gl4cEnhancedLayoutsTests.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = gl4cEnhancedLayoutsTests.cpp
+  source_name_part = gl4cEnhancedLayoutsTests
+build obj/src/tests/angle_deqp_khr_common/gl4cGPUShaderFP64Tests.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/gl/gl4cGPUShaderFP64Tests.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = gl4cGPUShaderFP64Tests.cpp
+  source_name_part = gl4cGPUShaderFP64Tests
+build obj/src/tests/angle_deqp_khr_common/gl4cGetTextureSubImageTests.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/gl/gl4cGetTextureSubImageTests.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = gl4cGetTextureSubImageTests.cpp
+  source_name_part = gl4cGetTextureSubImageTests
+build obj/src/tests/angle_deqp_khr_common/gl4cGlSpirvTests.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/gl/gl4cGlSpirvTests.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = gl4cGlSpirvTests.cpp
+  source_name_part = gl4cGlSpirvTests
+build obj/src/tests/angle_deqp_khr_common/gl4cIncompleteTextureAccessTests.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/gl/gl4cIncompleteTextureAccessTests.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = gl4cIncompleteTextureAccessTests.cpp
+  source_name_part = gl4cIncompleteTextureAccessTests
+build obj/src/tests/angle_deqp_khr_common/gl4cIndirectParametersTests.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/gl/gl4cIndirectParametersTests.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = gl4cIndirectParametersTests.cpp
+  source_name_part = gl4cIndirectParametersTests
+build obj/src/tests/angle_deqp_khr_common/gl4cLimitsTests.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/gl/gl4cLimitsTests.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = gl4cLimitsTests.cpp
+  source_name_part = gl4cLimitsTests
+build obj/src/tests/angle_deqp_khr_common/gl4cMapBufferAlignmentTests.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/gl/gl4cMapBufferAlignmentTests.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = gl4cMapBufferAlignmentTests.cpp
+  source_name_part = gl4cMapBufferAlignmentTests
+build obj/src/tests/angle_deqp_khr_common/gl4cMultiBindTests.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/gl/gl4cMultiBindTests.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = gl4cMultiBindTests.cpp
+  source_name_part = gl4cMultiBindTests
+build obj/src/tests/angle_deqp_khr_common/gl4cPipelineStatisticsQueryTests.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/gl/gl4cPipelineStatisticsQueryTests.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = gl4cPipelineStatisticsQueryTests.cpp
+  source_name_part = gl4cPipelineStatisticsQueryTests
+build obj/src/tests/angle_deqp_khr_common/gl4cPostDepthCoverageTests.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/gl/gl4cPostDepthCoverageTests.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = gl4cPostDepthCoverageTests.cpp
+  source_name_part = gl4cPostDepthCoverageTests
+build obj/src/tests/angle_deqp_khr_common/gl4cProgramInterfaceQueryTests.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/gl/gl4cProgramInterfaceQueryTests.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = gl4cProgramInterfaceQueryTests.cpp
+  source_name_part = gl4cProgramInterfaceQueryTests
+build obj/src/tests/angle_deqp_khr_common/gl4cShaderAtomicCounterOpsTests.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/gl/gl4cShaderAtomicCounterOpsTests.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = gl4cShaderAtomicCounterOpsTests.cpp
+  source_name_part = gl4cShaderAtomicCounterOpsTests
+build obj/src/tests/angle_deqp_khr_common/gl4cShaderAtomicCountersTests.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/gl/gl4cShaderAtomicCountersTests.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = gl4cShaderAtomicCountersTests.cpp
+  source_name_part = gl4cShaderAtomicCountersTests
+build obj/src/tests/angle_deqp_khr_common/gl4cShaderBallotTests.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/gl/gl4cShaderBallotTests.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = gl4cShaderBallotTests.cpp
+  source_name_part = gl4cShaderBallotTests
+build obj/src/tests/angle_deqp_khr_common/gl4cShaderDrawParametersTests.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/gl/gl4cShaderDrawParametersTests.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = gl4cShaderDrawParametersTests.cpp
+  source_name_part = gl4cShaderDrawParametersTests
+build obj/src/tests/angle_deqp_khr_common/gl4cShaderImageLoadStoreTests.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/gl/gl4cShaderImageLoadStoreTests.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = gl4cShaderImageLoadStoreTests.cpp
+  source_name_part = gl4cShaderImageLoadStoreTests
+build obj/src/tests/angle_deqp_khr_common/gl4cShaderImageSizeTests.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/gl/gl4cShaderImageSizeTests.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = gl4cShaderImageSizeTests.cpp
+  source_name_part = gl4cShaderImageSizeTests
+build obj/src/tests/angle_deqp_khr_common/gl4cShaderStorageBufferObjectTests.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/gl/gl4cShaderStorageBufferObjectTests.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = gl4cShaderStorageBufferObjectTests.cpp
+  source_name_part = gl4cShaderStorageBufferObjectTests
+build obj/src/tests/angle_deqp_khr_common/gl4cShaderSubroutineTests.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/gl/gl4cShaderSubroutineTests.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = gl4cShaderSubroutineTests.cpp
+  source_name_part = gl4cShaderSubroutineTests
+build obj/src/tests/angle_deqp_khr_common/gl4cShaderTextureImageSamplesTests.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/gl/gl4cShaderTextureImageSamplesTests.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = gl4cShaderTextureImageSamplesTests.cpp
+  source_name_part = gl4cShaderTextureImageSamplesTests
+build obj/src/tests/angle_deqp_khr_common/gl4cShaderViewportLayerArrayTests.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/gl/gl4cShaderViewportLayerArrayTests.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = gl4cShaderViewportLayerArrayTests.cpp
+  source_name_part = gl4cShaderViewportLayerArrayTests
+build obj/src/tests/angle_deqp_khr_common/gl4cShadingLanguage420PackTests.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/gl/gl4cShadingLanguage420PackTests.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = gl4cShadingLanguage420PackTests.cpp
+  source_name_part = gl4cShadingLanguage420PackTests
+build obj/src/tests/angle_deqp_khr_common/gl4cSparseBufferTests.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/gl/gl4cSparseBufferTests.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = gl4cSparseBufferTests.cpp
+  source_name_part = gl4cSparseBufferTests
+build obj/src/tests/angle_deqp_khr_common/gl4cSparseTexture2Tests.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/gl/gl4cSparseTexture2Tests.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = gl4cSparseTexture2Tests.cpp
+  source_name_part = gl4cSparseTexture2Tests
+build obj/src/tests/angle_deqp_khr_common/gl4cSparseTextureClampTests.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/gl/gl4cSparseTextureClampTests.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = gl4cSparseTextureClampTests.cpp
+  source_name_part = gl4cSparseTextureClampTests
+build obj/src/tests/angle_deqp_khr_common/gl4cSparseTextureTests.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/gl/gl4cSparseTextureTests.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = gl4cSparseTextureTests.cpp
+  source_name_part = gl4cSparseTextureTests
+build obj/src/tests/angle_deqp_khr_common/gl4cSpirvExtensionsTests.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/gl/gl4cSpirvExtensionsTests.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = gl4cSpirvExtensionsTests.cpp
+  source_name_part = gl4cSpirvExtensionsTests
+build obj/src/tests/angle_deqp_khr_common/gl4cStencilTexturingTests.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/gl/gl4cStencilTexturingTests.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = gl4cStencilTexturingTests.cpp
+  source_name_part = gl4cStencilTexturingTests
+build obj/src/tests/angle_deqp_khr_common/gl4cSyncTests.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/gl/gl4cSyncTests.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = gl4cSyncTests.cpp
+  source_name_part = gl4cSyncTests
+build obj/src/tests/angle_deqp_khr_common/gl4cTestPackages.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/gl/gl4cTestPackages.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = gl4cTestPackages.cpp
+  source_name_part = gl4cTestPackages
+build obj/src/tests/angle_deqp_khr_common/gl4cTextureBarrierTests.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/gl/gl4cTextureBarrierTests.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = gl4cTextureBarrierTests.cpp
+  source_name_part = gl4cTextureBarrierTests
+build obj/src/tests/angle_deqp_khr_common/gl4cTextureFilterMinmaxTests.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/gl/gl4cTextureFilterMinmaxTests.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = gl4cTextureFilterMinmaxTests.cpp
+  source_name_part = gl4cTextureFilterMinmaxTests
+build obj/src/tests/angle_deqp_khr_common/gl4cTextureGatherTests.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/gl/gl4cTextureGatherTests.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = gl4cTextureGatherTests.cpp
+  source_name_part = gl4cTextureGatherTests
+build obj/src/tests/angle_deqp_khr_common/gl4cTextureViewTests.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/gl/gl4cTextureViewTests.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = gl4cTextureViewTests.cpp
+  source_name_part = gl4cTextureViewTests
+build obj/src/tests/angle_deqp_khr_common/gl4cVertexAttrib64BitTest.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/gl/gl4cVertexAttrib64BitTest.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = gl4cVertexAttrib64BitTest.cpp
+  source_name_part = gl4cVertexAttrib64BitTest
+build obj/src/tests/angle_deqp_khr_common/gl4cVertexAttribBindingTests.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/gl/gl4cVertexAttribBindingTests.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = gl4cVertexAttribBindingTests.cpp
+  source_name_part = gl4cVertexAttribBindingTests
+build obj/src/tests/angle_deqp_khr_common/es2cTestPackage.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/gles2/es2cTestPackage.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = es2cTestPackage.cpp
+  source_name_part = es2cTestPackage
+build obj/src/tests/angle_deqp_khr_common/es2cTexture3DTests.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/gles2/es2cTexture3DTests.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = es2cTexture3DTests.cpp
+  source_name_part = es2cTexture3DTests
+build obj/src/tests/angle_deqp_khr_common/es3cCopyTexImageConversionsTests.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/gles3/es3cCopyTexImageConversionsTests.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = es3cCopyTexImageConversionsTests.cpp
+  source_name_part = es3cCopyTexImageConversionsTests
+build obj/src/tests/angle_deqp_khr_common/es3cDriverErrorTests.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/gles3/es3cDriverErrorTests.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = es3cDriverErrorTests.cpp
+  source_name_part = es3cDriverErrorTests
+build obj/src/tests/angle_deqp_khr_common/es3cNumberParsingTests.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/gles3/es3cNumberParsingTests.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = es3cNumberParsingTests.cpp
+  source_name_part = es3cNumberParsingTests
+build obj/src/tests/angle_deqp_khr_common/es3cTestPackage.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/gles3/es3cTestPackage.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = es3cTestPackage.cpp
+  source_name_part = es3cTestPackage
+build obj/src/tests/angle_deqp_khr_common/es31cArrayOfArraysTests.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/gles31/es31cArrayOfArraysTests.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = es31cArrayOfArraysTests.cpp
+  source_name_part = es31cArrayOfArraysTests
+build obj/src/tests/angle_deqp_khr_common/es31cComputeShaderTests.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/gles31/es31cComputeShaderTests.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = es31cComputeShaderTests.cpp
+  source_name_part = es31cComputeShaderTests
+build obj/src/tests/angle_deqp_khr_common/es31cDrawIndirectTests.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/gles31/es31cDrawIndirectTests.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = es31cDrawIndirectTests.cpp
+  source_name_part = es31cDrawIndirectTests
+build obj/src/tests/angle_deqp_khr_common/es31cExplicitUniformLocationTest.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/gles31/es31cExplicitUniformLocationTest.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = es31cExplicitUniformLocationTest.cpp
+  source_name_part = es31cExplicitUniformLocationTest
+build obj/src/tests/angle_deqp_khr_common/es31cFramebufferNoAttachmentsTests.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/gles31/es31cFramebufferNoAttachmentsTests.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = es31cFramebufferNoAttachmentsTests.cpp
+  source_name_part = es31cFramebufferNoAttachmentsTests
+build obj/src/tests/angle_deqp_khr_common/es31cLayoutBindingTests.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/gles31/es31cLayoutBindingTests.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = es31cLayoutBindingTests.cpp
+  source_name_part = es31cLayoutBindingTests
+build obj/src/tests/angle_deqp_khr_common/es31cProgramInterfaceQueryTests.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/gles31/es31cProgramInterfaceQueryTests.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = es31cProgramInterfaceQueryTests.cpp
+  source_name_part = es31cProgramInterfaceQueryTests
+build obj/src/tests/angle_deqp_khr_common/es31cSampleShadingTests.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/gles31/es31cSampleShadingTests.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = es31cSampleShadingTests.cpp
+  source_name_part = es31cSampleShadingTests
+build obj/src/tests/angle_deqp_khr_common/es31cSeparateShaderObjsTests.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/gles31/es31cSeparateShaderObjsTests.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = es31cSeparateShaderObjsTests.cpp
+  source_name_part = es31cSeparateShaderObjsTests
+build obj/src/tests/angle_deqp_khr_common/es31cShaderAtomicCountersTests.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/gles31/es31cShaderAtomicCountersTests.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = es31cShaderAtomicCountersTests.cpp
+  source_name_part = es31cShaderAtomicCountersTests
+build obj/src/tests/angle_deqp_khr_common/es31cShaderBitfieldOperationTests.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/gles31/es31cShaderBitfieldOperationTests.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = es31cShaderBitfieldOperationTests.cpp
+  source_name_part = es31cShaderBitfieldOperationTests
+build obj/src/tests/angle_deqp_khr_common/es31cShaderImageSizeTests.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/gles31/es31cShaderImageSizeTests.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = es31cShaderImageSizeTests.cpp
+  source_name_part = es31cShaderImageSizeTests
+build obj/src/tests/angle_deqp_khr_common/es31cTestPackage.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/gles31/es31cTestPackage.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = es31cTestPackage.cpp
+  source_name_part = es31cTestPackage
+build obj/src/tests/angle_deqp_khr_common/es31cTextureGatherTests.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/gles31/es31cTextureGatherTests.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = es31cTextureGatherTests.cpp
+  source_name_part = es31cTextureGatherTests
+build obj/src/tests/angle_deqp_khr_common/es31cTextureStorageMultisampleDependenciesTests.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/gles31/es31cTextureStorageMultisampleDependenciesTests.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = es31cTextureStorageMultisampleDependenciesTests.cpp
+  source_name_part = es31cTextureStorageMultisampleDependenciesTests
+build obj/src/tests/angle_deqp_khr_common/es31cTextureStorageMultisampleFunctionalTests.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/gles31/es31cTextureStorageMultisampleFunctionalTests.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = es31cTextureStorageMultisampleFunctionalTests.cpp
+  source_name_part = es31cTextureStorageMultisampleFunctionalTests
+build obj/src/tests/angle_deqp_khr_common/es31cTextureStorageMultisampleGLCoverageTests.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/gles31/es31cTextureStorageMultisampleGLCoverageTests.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = es31cTextureStorageMultisampleGLCoverageTests.cpp
+  source_name_part = es31cTextureStorageMultisampleGLCoverageTests
+build obj/src/tests/angle_deqp_khr_common/es31cTextureStorageMultisampleGetActiveUniformTests.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/gles31/es31cTextureStorageMultisampleGetActiveUniformTests.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = es31cTextureStorageMultisampleGetActiveUniformTests.cpp
+  source_name_part = es31cTextureStorageMultisampleGetActiveUniformTests
+build obj/src/tests/angle_deqp_khr_common/es31cTextureStorageMultisampleGetMultisamplefvTests.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/gles31/es31cTextureStorageMultisampleGetMultisamplefvTests.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = es31cTextureStorageMultisampleGetMultisamplefvTests.cpp
+  source_name_part = es31cTextureStorageMultisampleGetMultisamplefvTests
+build obj/src/tests/angle_deqp_khr_common/es31cTextureStorageMultisampleGetTexLevelParameterifvTests.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/gles31/es31cTextureStorageMultisampleGetTexLevelParameterifvTests.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = es31cTextureStorageMultisampleGetTexLevelParameterifvTests.cpp
+  source_name_part = es31cTextureStorageMultisampleGetTexLevelParameterifvTests
+build obj/src/tests/angle_deqp_khr_common/es31cTextureStorageMultisampleSampleMaskiTests.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/gles31/es31cTextureStorageMultisampleSampleMaskiTests.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = es31cTextureStorageMultisampleSampleMaskiTests.cpp
+  source_name_part = es31cTextureStorageMultisampleSampleMaskiTests
+build obj/src/tests/angle_deqp_khr_common/es31cTextureStorageMultisampleTests.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/gles31/es31cTextureStorageMultisampleTests.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = es31cTextureStorageMultisampleTests.cpp
+  source_name_part = es31cTextureStorageMultisampleTests
+build obj/src/tests/angle_deqp_khr_common/es31cTextureStorageMultisampleTexStorage2DMultisampleTests.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/gles31/es31cTextureStorageMultisampleTexStorage2DMultisampleTests.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = es31cTextureStorageMultisampleTexStorage2DMultisampleTests.cpp
+  source_name_part = es31cTextureStorageMultisampleTexStorage2DMultisampleTests
+build obj/src/tests/angle_deqp_khr_common/es31cTextureStorageMultisampleTexStorage3DMultisampleTests.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/gles31/es31cTextureStorageMultisampleTexStorage3DMultisampleTests.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = es31cTextureStorageMultisampleTexStorage3DMultisampleTests.cpp
+  source_name_part = es31cTextureStorageMultisampleTexStorage3DMultisampleTests
+build obj/src/tests/angle_deqp_khr_common/es31cVertexAttribBindingTests.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/gles31/es31cVertexAttribBindingTests.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = es31cVertexAttribBindingTests.cpp
+  source_name_part = es31cVertexAttribBindingTests
+build obj/src/tests/angle_deqp_khr_common/es32cCopyImageTests.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/gles32/es32cCopyImageTests.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = es32cCopyImageTests.cpp
+  source_name_part = es32cCopyImageTests
+build obj/src/tests/angle_deqp_khr_common/es32cTestPackage.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/gles32/es32cTestPackage.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = es32cTestPackage.cpp
+  source_name_part = es32cTestPackage
+build obj/src/tests/angle_deqp_khr_common/esextcDisjointTimerQueryBase.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/glesext/disjoint_timer_query/esextcDisjointTimerQueryBase.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = esextcDisjointTimerQueryBase.cpp
+  source_name_part = esextcDisjointTimerQueryBase
+build obj/src/tests/angle_deqp_khr_common/esextcDisjointTimerQueryHandleReuse.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/glesext/disjoint_timer_query/esextcDisjointTimerQueryHandleReuse.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = esextcDisjointTimerQueryHandleReuse.cpp
+  source_name_part = esextcDisjointTimerQueryHandleReuse
+build obj/src/tests/angle_deqp_khr_common/esextcDisjointTimerQueryTests.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/glesext/disjoint_timer_query/esextcDisjointTimerQueryTests.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = esextcDisjointTimerQueryTests.cpp
+  source_name_part = esextcDisjointTimerQueryTests
+build obj/src/tests/angle_deqp_khr_common/esextcDrawBuffersIndexedBase.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/glesext/draw_buffers_indexed/esextcDrawBuffersIndexedBase.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = esextcDrawBuffersIndexedBase.cpp
+  source_name_part = esextcDrawBuffersIndexedBase
+build obj/src/tests/angle_deqp_khr_common/esextcDrawBuffersIndexedBlending.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/glesext/draw_buffers_indexed/esextcDrawBuffersIndexedBlending.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = esextcDrawBuffersIndexedBlending.cpp
+  source_name_part = esextcDrawBuffersIndexedBlending
+build obj/src/tests/angle_deqp_khr_common/esextcDrawBuffersIndexedColorMasks.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/glesext/draw_buffers_indexed/esextcDrawBuffersIndexedColorMasks.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = esextcDrawBuffersIndexedColorMasks.cpp
+  source_name_part = esextcDrawBuffersIndexedColorMasks
+build obj/src/tests/angle_deqp_khr_common/esextcDrawBuffersIndexedCoverage.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/glesext/draw_buffers_indexed/esextcDrawBuffersIndexedCoverage.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = esextcDrawBuffersIndexedCoverage.cpp
+  source_name_part = esextcDrawBuffersIndexedCoverage
+build obj/src/tests/angle_deqp_khr_common/esextcDrawBuffersIndexedDefaultState.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/glesext/draw_buffers_indexed/esextcDrawBuffersIndexedDefaultState.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = esextcDrawBuffersIndexedDefaultState.cpp
+  source_name_part = esextcDrawBuffersIndexedDefaultState
+build obj/src/tests/angle_deqp_khr_common/esextcDrawBuffersIndexedNegative.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/glesext/draw_buffers_indexed/esextcDrawBuffersIndexedNegative.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = esextcDrawBuffersIndexedNegative.cpp
+  source_name_part = esextcDrawBuffersIndexedNegative
+build obj/src/tests/angle_deqp_khr_common/esextcDrawBuffersIndexedSetGet.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/glesext/draw_buffers_indexed/esextcDrawBuffersIndexedSetGet.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = esextcDrawBuffersIndexedSetGet.cpp
+  source_name_part = esextcDrawBuffersIndexedSetGet
+build obj/src/tests/angle_deqp_khr_common/esextcDrawBuffersIndexedTests.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/glesext/draw_buffers_indexed/esextcDrawBuffersIndexedTests.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = esextcDrawBuffersIndexedTests.cpp
+  source_name_part = esextcDrawBuffersIndexedTests
+build obj/src/tests/angle_deqp_khr_common/esextcDrawElementsBaseVertexTests.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/glesext/draw_elements_base_vertex/esextcDrawElementsBaseVertexTests.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = esextcDrawElementsBaseVertexTests.cpp
+  source_name_part = esextcDrawElementsBaseVertexTests
+build obj/src/tests/angle_deqp_khr_common/esextcFragmentShadingRateAPI.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/glesext/fragment_shading_rate/esextcFragmentShadingRateAPI.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = esextcFragmentShadingRateAPI.cpp
+  source_name_part = esextcFragmentShadingRateAPI
+build obj/src/tests/angle_deqp_khr_common/esextcFragmentShadingRateAttachmentTests.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/glesext/fragment_shading_rate/esextcFragmentShadingRateAttachmentTests.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = esextcFragmentShadingRateAttachmentTests.cpp
+  source_name_part = esextcFragmentShadingRateAttachmentTests
+build obj/src/tests/angle_deqp_khr_common/esextcFragmentShadingRateBasic.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/glesext/fragment_shading_rate/esextcFragmentShadingRateBasic.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = esextcFragmentShadingRateBasic.cpp
+  source_name_part = esextcFragmentShadingRateBasic
+build obj/src/tests/angle_deqp_khr_common/esextcFragmentShadingRateCombinedTests.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/glesext/fragment_shading_rate/esextcFragmentShadingRateCombinedTests.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = esextcFragmentShadingRateCombinedTests.cpp
+  source_name_part = esextcFragmentShadingRateCombinedTests
+build obj/src/tests/angle_deqp_khr_common/esextcFragmentShadingRateComplex.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/glesext/fragment_shading_rate/esextcFragmentShadingRateComplex.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = esextcFragmentShadingRateComplex.cpp
+  source_name_part = esextcFragmentShadingRateComplex
+build obj/src/tests/angle_deqp_khr_common/esextcFragmentShadingRateErrors.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/glesext/fragment_shading_rate/esextcFragmentShadingRateErrors.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = esextcFragmentShadingRateErrors.cpp
+  source_name_part = esextcFragmentShadingRateErrors
+build obj/src/tests/angle_deqp_khr_common/esextcFragmentShadingRateRenderTarget.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/glesext/fragment_shading_rate/esextcFragmentShadingRateRenderTarget.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = esextcFragmentShadingRateRenderTarget.cpp
+  source_name_part = esextcFragmentShadingRateRenderTarget
+build obj/src/tests/angle_deqp_khr_common/esextcFragmentShadingRateTests.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/glesext/fragment_shading_rate/esextcFragmentShadingRateTests.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = esextcFragmentShadingRateTests.cpp
+  source_name_part = esextcFragmentShadingRateTests
+build obj/src/tests/angle_deqp_khr_common/esextcGeometryShaderAPI.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/glesext/geometry_shader/esextcGeometryShaderAPI.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = esextcGeometryShaderAPI.cpp
+  source_name_part = esextcGeometryShaderAPI
+build obj/src/tests/angle_deqp_khr_common/esextcGeometryShaderAdjacency.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/glesext/geometry_shader/esextcGeometryShaderAdjacency.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = esextcGeometryShaderAdjacency.cpp
+  source_name_part = esextcGeometryShaderAdjacency
+build obj/src/tests/angle_deqp_khr_common/esextcGeometryShaderAdjacencyTests.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/glesext/geometry_shader/esextcGeometryShaderAdjacencyTests.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = esextcGeometryShaderAdjacencyTests.cpp
+  source_name_part = esextcGeometryShaderAdjacencyTests
+build obj/src/tests/angle_deqp_khr_common/esextcGeometryShaderBlitting.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/glesext/geometry_shader/esextcGeometryShaderBlitting.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = esextcGeometryShaderBlitting.cpp
+  source_name_part = esextcGeometryShaderBlitting
+build obj/src/tests/angle_deqp_khr_common/esextcGeometryShaderClipping.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/glesext/geometry_shader/esextcGeometryShaderClipping.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = esextcGeometryShaderClipping.cpp
+  source_name_part = esextcGeometryShaderClipping
+build obj/src/tests/angle_deqp_khr_common/esextcGeometryShaderConstantVariables.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/glesext/geometry_shader/esextcGeometryShaderConstantVariables.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = esextcGeometryShaderConstantVariables.cpp
+  source_name_part = esextcGeometryShaderConstantVariables
+build obj/src/tests/angle_deqp_khr_common/esextcGeometryShaderInput.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/glesext/geometry_shader/esextcGeometryShaderInput.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = esextcGeometryShaderInput.cpp
+  source_name_part = esextcGeometryShaderInput
+build obj/src/tests/angle_deqp_khr_common/esextcGeometryShaderLayeredFBO.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/glesext/geometry_shader/esextcGeometryShaderLayeredFBO.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = esextcGeometryShaderLayeredFBO.cpp
+  source_name_part = esextcGeometryShaderLayeredFBO
+build obj/src/tests/angle_deqp_khr_common/esextcGeometryShaderLayeredFramebuffer.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/glesext/geometry_shader/esextcGeometryShaderLayeredFramebuffer.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = esextcGeometryShaderLayeredFramebuffer.cpp
+  source_name_part = esextcGeometryShaderLayeredFramebuffer
+build obj/src/tests/angle_deqp_khr_common/esextcGeometryShaderLayeredRendering.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/glesext/geometry_shader/esextcGeometryShaderLayeredRendering.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = esextcGeometryShaderLayeredRendering.cpp
+  source_name_part = esextcGeometryShaderLayeredRendering
+build obj/src/tests/angle_deqp_khr_common/esextcGeometryShaderLayeredRenderingBoundaryCondition.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/glesext/geometry_shader/esextcGeometryShaderLayeredRenderingBoundaryCondition.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = esextcGeometryShaderLayeredRenderingBoundaryCondition.cpp
+  source_name_part = esextcGeometryShaderLayeredRenderingBoundaryCondition
+build obj/src/tests/angle_deqp_khr_common/esextcGeometryShaderLayeredRenderingFBONoAttachment.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/glesext/geometry_shader/esextcGeometryShaderLayeredRenderingFBONoAttachment.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = esextcGeometryShaderLayeredRenderingFBONoAttachment.cpp
+  source_name_part = esextcGeometryShaderLayeredRenderingFBONoAttachment
+build obj/src/tests/angle_deqp_khr_common/esextcGeometryShaderLimits.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/glesext/geometry_shader/esextcGeometryShaderLimits.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = esextcGeometryShaderLimits.cpp
+  source_name_part = esextcGeometryShaderLimits
+build obj/src/tests/angle_deqp_khr_common/esextcGeometryShaderLinking.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/glesext/geometry_shader/esextcGeometryShaderLinking.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = esextcGeometryShaderLinking.cpp
+  source_name_part = esextcGeometryShaderLinking
+build obj/src/tests/angle_deqp_khr_common/esextcGeometryShaderNonarrayInput.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/glesext/geometry_shader/esextcGeometryShaderNonarrayInput.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = esextcGeometryShaderNonarrayInput.cpp
+  source_name_part = esextcGeometryShaderNonarrayInput
+build obj/src/tests/angle_deqp_khr_common/esextcGeometryShaderOutput.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/glesext/geometry_shader/esextcGeometryShaderOutput.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = esextcGeometryShaderOutput.cpp
+  source_name_part = esextcGeometryShaderOutput
+build obj/src/tests/angle_deqp_khr_common/esextcGeometryShaderPrimitiveCounter.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/glesext/geometry_shader/esextcGeometryShaderPrimitiveCounter.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = esextcGeometryShaderPrimitiveCounter.cpp
+  source_name_part = esextcGeometryShaderPrimitiveCounter
+build obj/src/tests/angle_deqp_khr_common/esextcGeometryShaderPrimitiveQueries.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/glesext/geometry_shader/esextcGeometryShaderPrimitiveQueries.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = esextcGeometryShaderPrimitiveQueries.cpp
+  source_name_part = esextcGeometryShaderPrimitiveQueries
+build obj/src/tests/angle_deqp_khr_common/esextcGeometryShaderProgramResource.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/glesext/geometry_shader/esextcGeometryShaderProgramResource.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = esextcGeometryShaderProgramResource.cpp
+  source_name_part = esextcGeometryShaderProgramResource
+build obj/src/tests/angle_deqp_khr_common/esextcGeometryShaderQualifiers.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/glesext/geometry_shader/esextcGeometryShaderQualifiers.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = esextcGeometryShaderQualifiers.cpp
+  source_name_part = esextcGeometryShaderQualifiers
+build obj/src/tests/angle_deqp_khr_common/esextcGeometryShaderRendering.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/glesext/geometry_shader/esextcGeometryShaderRendering.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = esextcGeometryShaderRendering.cpp
+  source_name_part = esextcGeometryShaderRendering
+build obj/src/tests/angle_deqp_khr_common/esextcGeometryShaderTests.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/glesext/geometry_shader/esextcGeometryShaderTests.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = esextcGeometryShaderTests.cpp
+  source_name_part = esextcGeometryShaderTests
+build obj/src/tests/angle_deqp_khr_common/esextcGPUShader5AtomicCountersArrayIndexing.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/glesext/gpu_shader5/esextcGPUShader5AtomicCountersArrayIndexing.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = esextcGPUShader5AtomicCountersArrayIndexing.cpp
+  source_name_part = esextcGPUShader5AtomicCountersArrayIndexing
+build obj/src/tests/angle_deqp_khr_common/esextcGPUShader5FmaAccuracy.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/glesext/gpu_shader5/esextcGPUShader5FmaAccuracy.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = esextcGPUShader5FmaAccuracy.cpp
+  source_name_part = esextcGPUShader5FmaAccuracy
+build obj/src/tests/angle_deqp_khr_common/esextcGPUShader5FmaPrecision.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/glesext/gpu_shader5/esextcGPUShader5FmaPrecision.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = esextcGPUShader5FmaPrecision.cpp
+  source_name_part = esextcGPUShader5FmaPrecision
+build obj/src/tests/angle_deqp_khr_common/esextcGPUShader5ImagesArrayIndexing.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/glesext/gpu_shader5/esextcGPUShader5ImagesArrayIndexing.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = esextcGPUShader5ImagesArrayIndexing.cpp
+  source_name_part = esextcGPUShader5ImagesArrayIndexing
+build obj/src/tests/angle_deqp_khr_common/esextcGPUShader5PreciseQualifier.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/glesext/gpu_shader5/esextcGPUShader5PreciseQualifier.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = esextcGPUShader5PreciseQualifier.cpp
+  source_name_part = esextcGPUShader5PreciseQualifier
+build obj/src/tests/angle_deqp_khr_common/esextcGPUShader5SSBOArrayIndexing.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/glesext/gpu_shader5/esextcGPUShader5SSBOArrayIndexing.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = esextcGPUShader5SSBOArrayIndexing.cpp
+  source_name_part = esextcGPUShader5SSBOArrayIndexing
+build obj/src/tests/angle_deqp_khr_common/esextcGPUShader5SamplerArrayIndexing.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/glesext/gpu_shader5/esextcGPUShader5SamplerArrayIndexing.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = esextcGPUShader5SamplerArrayIndexing.cpp
+  source_name_part = esextcGPUShader5SamplerArrayIndexing
+build obj/src/tests/angle_deqp_khr_common/esextcGPUShader5Tests.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/glesext/gpu_shader5/esextcGPUShader5Tests.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = esextcGPUShader5Tests.cpp
+  source_name_part = esextcGPUShader5Tests
+build obj/src/tests/angle_deqp_khr_common/esextcGPUShader5TextureGatherOffset.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/glesext/gpu_shader5/esextcGPUShader5TextureGatherOffset.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = esextcGPUShader5TextureGatherOffset.cpp
+  source_name_part = esextcGPUShader5TextureGatherOffset
+build obj/src/tests/angle_deqp_khr_common/esextcGPUShader5UniformBlocksArrayIndexing.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/glesext/gpu_shader5/esextcGPUShader5UniformBlocksArrayIndexing.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = esextcGPUShader5UniformBlocksArrayIndexing.cpp
+  source_name_part = esextcGPUShader5UniformBlocksArrayIndexing
+build obj/src/tests/angle_deqp_khr_common/esextcTessellationShaderBarrier.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/glesext/tessellation_shader/esextcTessellationShaderBarrier.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = esextcTessellationShaderBarrier.cpp
+  source_name_part = esextcTessellationShaderBarrier
+build obj/src/tests/angle_deqp_khr_common/esextcTessellationShaderErrors.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/glesext/tessellation_shader/esextcTessellationShaderErrors.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = esextcTessellationShaderErrors.cpp
+  source_name_part = esextcTessellationShaderErrors
+build obj/src/tests/angle_deqp_khr_common/esextcTessellationShaderInvariance.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/glesext/tessellation_shader/esextcTessellationShaderInvariance.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = esextcTessellationShaderInvariance.cpp
+  source_name_part = esextcTessellationShaderInvariance
+build obj/src/tests/angle_deqp_khr_common/esextcTessellationShaderIsolines.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/glesext/tessellation_shader/esextcTessellationShaderIsolines.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = esextcTessellationShaderIsolines.cpp
+  source_name_part = esextcTessellationShaderIsolines
+build obj/src/tests/angle_deqp_khr_common/esextcTessellationShaderMaxPatchVertices.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/glesext/tessellation_shader/esextcTessellationShaderMaxPatchVertices.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = esextcTessellationShaderMaxPatchVertices.cpp
+  source_name_part = esextcTessellationShaderMaxPatchVertices
+build obj/src/tests/angle_deqp_khr_common/esextcTessellationShaderPoints.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/glesext/tessellation_shader/esextcTessellationShaderPoints.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = esextcTessellationShaderPoints.cpp
+  source_name_part = esextcTessellationShaderPoints
+build obj/src/tests/angle_deqp_khr_common/esextcTessellationShaderPrimitiveCoverage.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/glesext/tessellation_shader/esextcTessellationShaderPrimitiveCoverage.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = esextcTessellationShaderPrimitiveCoverage.cpp
+  source_name_part = esextcTessellationShaderPrimitiveCoverage
+build obj/src/tests/angle_deqp_khr_common/esextcTessellationShaderProgramInterfaces.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/glesext/tessellation_shader/esextcTessellationShaderProgramInterfaces.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = esextcTessellationShaderProgramInterfaces.cpp
+  source_name_part = esextcTessellationShaderProgramInterfaces
+build obj/src/tests/angle_deqp_khr_common/esextcTessellationShaderProperties.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/glesext/tessellation_shader/esextcTessellationShaderProperties.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = esextcTessellationShaderProperties.cpp
+  source_name_part = esextcTessellationShaderProperties
+build obj/src/tests/angle_deqp_khr_common/esextcTessellationShaderQuads.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/glesext/tessellation_shader/esextcTessellationShaderQuads.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = esextcTessellationShaderQuads.cpp
+  source_name_part = esextcTessellationShaderQuads
+build obj/src/tests/angle_deqp_khr_common/esextcTessellationShaderTCTE.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/glesext/tessellation_shader/esextcTessellationShaderTCTE.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = esextcTessellationShaderTCTE.cpp
+  source_name_part = esextcTessellationShaderTCTE
+build obj/src/tests/angle_deqp_khr_common/esextcTessellationShaderTessellation.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/glesext/tessellation_shader/esextcTessellationShaderTessellation.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = esextcTessellationShaderTessellation.cpp
+  source_name_part = esextcTessellationShaderTessellation
+build obj/src/tests/angle_deqp_khr_common/esextcTessellationShaderTests.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/glesext/tessellation_shader/esextcTessellationShaderTests.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = esextcTessellationShaderTests.cpp
+  source_name_part = esextcTessellationShaderTests
+build obj/src/tests/angle_deqp_khr_common/esextcTessellationShaderTriangles.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/glesext/tessellation_shader/esextcTessellationShaderTriangles.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = esextcTessellationShaderTriangles.cpp
+  source_name_part = esextcTessellationShaderTriangles
+build obj/src/tests/angle_deqp_khr_common/esextcTessellationShaderUtils.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/glesext/tessellation_shader/esextcTessellationShaderUtils.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = esextcTessellationShaderUtils.cpp
+  source_name_part = esextcTessellationShaderUtils
+build obj/src/tests/angle_deqp_khr_common/esextcTessellationShaderVertexOrdering.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/glesext/tessellation_shader/esextcTessellationShaderVertexOrdering.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = esextcTessellationShaderVertexOrdering.cpp
+  source_name_part = esextcTessellationShaderVertexOrdering
+build obj/src/tests/angle_deqp_khr_common/esextcTessellationShaderVertexSpacing.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/glesext/tessellation_shader/esextcTessellationShaderVertexSpacing.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = esextcTessellationShaderVertexSpacing.cpp
+  source_name_part = esextcTessellationShaderVertexSpacing
+build obj/src/tests/angle_deqp_khr_common/esextcTessellationShaderWinding.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/glesext/tessellation_shader/esextcTessellationShaderWinding.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = esextcTessellationShaderWinding.cpp
+  source_name_part = esextcTessellationShaderWinding
+build obj/src/tests/angle_deqp_khr_common/esextcTessellationShaderXFB.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/glesext/tessellation_shader/esextcTessellationShaderXFB.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = esextcTessellationShaderXFB.cpp
+  source_name_part = esextcTessellationShaderXFB
+build obj/src/tests/angle_deqp_khr_common/esextcTextureBorderClampBase.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/glesext/texture_border_clamp/esextcTextureBorderClampBase.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = esextcTextureBorderClampBase.cpp
+  source_name_part = esextcTextureBorderClampBase
+build obj/src/tests/angle_deqp_khr_common/esextcTextureBorderClampGetTexParameterIErrors.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/glesext/texture_border_clamp/esextcTextureBorderClampGetTexParameterIErrors.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = esextcTextureBorderClampGetTexParameterIErrors.cpp
+  source_name_part = esextcTextureBorderClampGetTexParameterIErrors
+build obj/src/tests/angle_deqp_khr_common/esextcTextureBorderClampParameterBorderColorError.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/glesext/texture_border_clamp/esextcTextureBorderClampParameterBorderColorError.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = esextcTextureBorderClampParameterBorderColorError.cpp
+  source_name_part = esextcTextureBorderClampParameterBorderColorError
+build obj/src/tests/angle_deqp_khr_common/esextcTextureBorderClampParameterTextureBorderColor.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/glesext/texture_border_clamp/esextcTextureBorderClampParameterTextureBorderColor.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = esextcTextureBorderClampParameterTextureBorderColor.cpp
+  source_name_part = esextcTextureBorderClampParameterTextureBorderColor
+build obj/src/tests/angle_deqp_khr_common/esextcTextureBorderClampSamplerParameterIError.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/glesext/texture_border_clamp/esextcTextureBorderClampSamplerParameterIError.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = esextcTextureBorderClampSamplerParameterIError.cpp
+  source_name_part = esextcTextureBorderClampSamplerParameterIError
+build obj/src/tests/angle_deqp_khr_common/esextcTextureBorderClampSamplerParameterIWithWrongPname.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/glesext/texture_border_clamp/esextcTextureBorderClampSamplerParameterIWithWrongPname.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = esextcTextureBorderClampSamplerParameterIWithWrongPname.cpp
+  source_name_part = esextcTextureBorderClampSamplerParameterIWithWrongPname
+build obj/src/tests/angle_deqp_khr_common/esextcTextureBorderClampSamplingTexture.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/glesext/texture_border_clamp/esextcTextureBorderClampSamplingTexture.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = esextcTextureBorderClampSamplingTexture.cpp
+  source_name_part = esextcTextureBorderClampSamplingTexture
+build obj/src/tests/angle_deqp_khr_common/esextcTextureBorderClampSamplingTextureGroup.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/glesext/texture_border_clamp/esextcTextureBorderClampSamplingTextureGroup.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = esextcTextureBorderClampSamplingTextureGroup.cpp
+  source_name_part = esextcTextureBorderClampSamplingTextureGroup
+build obj/src/tests/angle_deqp_khr_common/esextcTextureBorderClampTests.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/glesext/texture_border_clamp/esextcTextureBorderClampTests.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = esextcTextureBorderClampTests.cpp
+  source_name_part = esextcTextureBorderClampTests
+build obj/src/tests/angle_deqp_khr_common/esextcTextureBorderClampTexParameterIErrors.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/glesext/texture_border_clamp/esextcTextureBorderClampTexParameterIErrors.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = esextcTextureBorderClampTexParameterIErrors.cpp
+  source_name_part = esextcTextureBorderClampTexParameterIErrors
+build obj/src/tests/angle_deqp_khr_common/esextcTextureBufferActiveUniformValidation.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/glesext/texture_buffer/esextcTextureBufferActiveUniformValidation.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = esextcTextureBufferActiveUniformValidation.cpp
+  source_name_part = esextcTextureBufferActiveUniformValidation
+build obj/src/tests/angle_deqp_khr_common/esextcTextureBufferAtomicFunctions.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/glesext/texture_buffer/esextcTextureBufferAtomicFunctions.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = esextcTextureBufferAtomicFunctions.cpp
+  source_name_part = esextcTextureBufferAtomicFunctions
+build obj/src/tests/angle_deqp_khr_common/esextcTextureBufferBufferParameters.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/glesext/texture_buffer/esextcTextureBufferBufferParameters.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = esextcTextureBufferBufferParameters.cpp
+  source_name_part = esextcTextureBufferBufferParameters
+build obj/src/tests/angle_deqp_khr_common/esextcTextureBufferErrors.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/glesext/texture_buffer/esextcTextureBufferErrors.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = esextcTextureBufferErrors.cpp
+  source_name_part = esextcTextureBufferErrors
+build obj/src/tests/angle_deqp_khr_common/esextcTextureBufferMAXSizeValidation.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/glesext/texture_buffer/esextcTextureBufferMAXSizeValidation.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = esextcTextureBufferMAXSizeValidation.cpp
+  source_name_part = esextcTextureBufferMAXSizeValidation
+build obj/src/tests/angle_deqp_khr_common/esextcTextureBufferOperations.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/glesext/texture_buffer/esextcTextureBufferOperations.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = esextcTextureBufferOperations.cpp
+  source_name_part = esextcTextureBufferOperations
+build obj/src/tests/angle_deqp_khr_common/esextcTextureBufferParamValueIntToFloatConversion.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/glesext/texture_buffer/esextcTextureBufferParamValueIntToFloatConversion.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = esextcTextureBufferParamValueIntToFloatConversion.cpp
+  source_name_part = esextcTextureBufferParamValueIntToFloatConversion
+build obj/src/tests/angle_deqp_khr_common/esextcTextureBufferParameters.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/glesext/texture_buffer/esextcTextureBufferParameters.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = esextcTextureBufferParameters.cpp
+  source_name_part = esextcTextureBufferParameters
+build obj/src/tests/angle_deqp_khr_common/esextcTextureBufferPrecision.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/glesext/texture_buffer/esextcTextureBufferPrecision.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = esextcTextureBufferPrecision.cpp
+  source_name_part = esextcTextureBufferPrecision
+build obj/src/tests/angle_deqp_khr_common/esextcTextureBufferTests.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/glesext/texture_buffer/esextcTextureBufferTests.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = esextcTextureBufferTests.cpp
+  source_name_part = esextcTextureBufferTests
+build obj/src/tests/angle_deqp_khr_common/esextcTextureBufferTextureBufferRange.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/glesext/texture_buffer/esextcTextureBufferTextureBufferRange.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = esextcTextureBufferTextureBufferRange.cpp
+  source_name_part = esextcTextureBufferTextureBufferRange
+build obj/src/tests/angle_deqp_khr_common/esextcTextureCubeMapArrayColorDepthAttachments.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/glesext/texture_cube_map_array/esextcTextureCubeMapArrayColorDepthAttachments.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = esextcTextureCubeMapArrayColorDepthAttachments.cpp
+  source_name_part = esextcTextureCubeMapArrayColorDepthAttachments
+build obj/src/tests/angle_deqp_khr_common/esextcTextureCubeMapArrayETC2Support.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/glesext/texture_cube_map_array/esextcTextureCubeMapArrayETC2Support.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = esextcTextureCubeMapArrayETC2Support.cpp
+  source_name_part = esextcTextureCubeMapArrayETC2Support
+build obj/src/tests/angle_deqp_khr_common/esextcTextureCubeMapArrayFBOIncompleteness.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/glesext/texture_cube_map_array/esextcTextureCubeMapArrayFBOIncompleteness.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = esextcTextureCubeMapArrayFBOIncompleteness.cpp
+  source_name_part = esextcTextureCubeMapArrayFBOIncompleteness
+build obj/src/tests/angle_deqp_khr_common/esextcTextureCubeMapArrayGenerateMipMap.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/glesext/texture_cube_map_array/esextcTextureCubeMapArrayGenerateMipMap.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = esextcTextureCubeMapArrayGenerateMipMap.cpp
+  source_name_part = esextcTextureCubeMapArrayGenerateMipMap
+build obj/src/tests/angle_deqp_khr_common/esextcTextureCubeMapArrayGetterCalls.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/glesext/texture_cube_map_array/esextcTextureCubeMapArrayGetterCalls.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = esextcTextureCubeMapArrayGetterCalls.cpp
+  source_name_part = esextcTextureCubeMapArrayGetterCalls
+build obj/src/tests/angle_deqp_khr_common/esextcTextureCubeMapArrayImageOperations.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/glesext/texture_cube_map_array/esextcTextureCubeMapArrayImageOperations.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = esextcTextureCubeMapArrayImageOperations.cpp
+  source_name_part = esextcTextureCubeMapArrayImageOperations
+build obj/src/tests/angle_deqp_khr_common/esextcTextureCubeMapArrayImageTextureSize.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/glesext/texture_cube_map_array/esextcTextureCubeMapArrayImageTextureSize.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = esextcTextureCubeMapArrayImageTextureSize.cpp
+  source_name_part = esextcTextureCubeMapArrayImageTextureSize
+build obj/src/tests/angle_deqp_khr_common/esextcTextureCubeMapArrayImageTextureSizeTests.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/glesext/texture_cube_map_array/esextcTextureCubeMapArrayImageTextureSizeTests.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = esextcTextureCubeMapArrayImageTextureSizeTests.cpp
+  source_name_part = esextcTextureCubeMapArrayImageTextureSizeTests
+build obj/src/tests/angle_deqp_khr_common/esextcTextureCubeMapArraySampling.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/glesext/texture_cube_map_array/esextcTextureCubeMapArraySampling.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = esextcTextureCubeMapArraySampling.cpp
+  source_name_part = esextcTextureCubeMapArraySampling
+build obj/src/tests/angle_deqp_khr_common/esextcTextureCubeMapArrayStencilAttachments.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/glesext/texture_cube_map_array/esextcTextureCubeMapArrayStencilAttachments.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = esextcTextureCubeMapArrayStencilAttachments.cpp
+  source_name_part = esextcTextureCubeMapArrayStencilAttachments
+build obj/src/tests/angle_deqp_khr_common/esextcTextureCubeMapArraySubImage3D.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/glesext/texture_cube_map_array/esextcTextureCubeMapArraySubImage3D.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = esextcTextureCubeMapArraySubImage3D.cpp
+  source_name_part = esextcTextureCubeMapArraySubImage3D
+build obj/src/tests/angle_deqp_khr_common/esextcTextureCubeMapArrayTests.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/glesext/texture_cube_map_array/esextcTextureCubeMapArrayTests.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = esextcTextureCubeMapArrayTests.cpp
+  source_name_part = esextcTextureCubeMapArrayTests
+build obj/src/tests/angle_deqp_khr_common/esextcTextureCubeMapArrayTex3DValidation.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/glesext/texture_cube_map_array/esextcTextureCubeMapArrayTex3DValidation.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = esextcTextureCubeMapArrayTex3DValidation.cpp
+  source_name_part = esextcTextureCubeMapArrayTex3DValidation
+build obj/src/tests/angle_deqp_khr_common/esextcTextureShadowLodFunctionsTest.o: cxx /ninja-to-soong-angle/third_party/VK-GL-CTS/src/external/openglcts/modules/glesext/texture_shadow_lod/esextcTextureShadowLodFunctionsTest.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = esextcTextureShadowLodFunctionsTest.cpp
+  source_name_part = esextcTextureShadowLodFunctionsTest
+build obj/src/tests/angle_deqp_khr_common/glcTestPackageEntry_override.o: cxx /ninja-to-soong-angle/src/tests/deqp_support/glcTestPackageEntry_override.cpp || phony/src/tests/angle_deqp_khr_common.inputdeps
+  source_file_part = glcTestPackageEntry_override.cpp
+  source_name_part = glcTestPackageEntry_override
+
+build phony/src/tests/angle_deqp_khr_common: phony obj/src/tests/angle_deqp_khr_common/glcAggressiveShaderOptimizationsTests.o obj/src/tests/angle_deqp_khr_common/glcApiCoverageTests.o obj/src/tests/angle_deqp_khr_common/glcBindImageTextureTests.o obj/src/tests/angle_deqp_khr_common/glcBlendEquationAdvancedTests.o obj/src/tests/angle_deqp_khr_common/glcBufferObjectsTests.o obj/src/tests/angle_deqp_khr_common/glcClipDistance.o obj/src/tests/angle_deqp_khr_common/glcCompressedFormatTests.o obj/src/tests/angle_deqp_khr_common/glcConfigList.o obj/src/tests/angle_deqp_khr_common/glcConfigListCase.o obj/src/tests/angle_deqp_khr_common/glcConfigListEGL.o obj/src/tests/angle_deqp_khr_common/glcConfigListWGL.o obj/src/tests/angle_deqp_khr_common/glcConfigPackage.o obj/src/tests/angle_deqp_khr_common/glcContext.o obj/src/tests/angle_deqp_khr_common/glcContextFlagsTests.o obj/src/tests/angle_deqp_khr_common/glcCullDistance.o obj/src/tests/angle_deqp_khr_common/glcExposedExtensionsTests.o obj/src/tests/angle_deqp_khr_common/glcExtTokens.o obj/src/tests/angle_deqp_khr_common/glcFragCoordConventionsTests.o obj/src/tests/angle_deqp_khr_common/glcFragDepthTests.o obj/src/tests/angle_deqp_khr_common/glcFramebufferBlitTests.o obj/src/tests/angle_deqp_khr_common/glcFramebufferCompleteness.o obj/src/tests/angle_deqp_khr_common/glcGLSLVectorConstructorTests.o obj/src/tests/angle_deqp_khr_common/glcInfoTests.o obj/src/tests/angle_deqp_khr_common/glcInternalformatTests.o obj/src/tests/angle_deqp_khr_common/glcKHRDebugTests.o obj/src/tests/angle_deqp_khr_common/glcLayoutLocationTests.o obj/src/tests/angle_deqp_khr_common/glcMisc.o obj/src/tests/angle_deqp_khr_common/glcMultipleContextsTests.o obj/src/tests/angle_deqp_khr_common/glcNearestEdgeTests.o obj/src/tests/angle_deqp_khr_common/glcNoDefaultContextPackage.o obj/src/tests/angle_deqp_khr_common/glcNoErrorTests.o obj/src/tests/angle_deqp_khr_common/glcPackedDepthStencilTests.o obj/src/tests/angle_deqp_khr_common/glcPackedPixelsTests.o obj/src/tests/angle_deqp_khr_common/glcParallelShaderCompileTests.o obj/src/tests/angle_deqp_khr_common/glcPixelStorageModesTests.o obj/src/tests/angle_deqp_khr_common/glcPolygonOffsetClampTests.o obj/src/tests/angle_deqp_khr_common/glcRobustBufferAccessBehaviorTests.o obj/src/tests/angle_deqp_khr_common/glcRobustnessTests.o obj/src/tests/angle_deqp_khr_common/glcSampleVariablesTests.o obj/src/tests/angle_deqp_khr_common/glcSeparableProgramsTransformFeedbackTests.o obj/src/tests/angle_deqp_khr_common/glcShaderConstExprTests.o obj/src/tests/angle_deqp_khr_common/glcShaderFunctionTests.o obj/src/tests/angle_deqp_khr_common/glcShaderGroupVoteTests.o obj/src/tests/angle_deqp_khr_common/glcShaderImageLoadStoreTests.o obj/src/tests/angle_deqp_khr_common/glcShaderIndexingTests.o obj/src/tests/angle_deqp_khr_common/glcShaderIntegerMixTests.o obj/src/tests/angle_deqp_khr_common/glcShaderLibrary.o obj/src/tests/angle_deqp_khr_common/glcShaderLibraryCase.o obj/src/tests/angle_deqp_khr_common/glcShaderLoopTests.o obj/src/tests/angle_deqp_khr_common/glcShaderMacroTests.o obj/src/tests/angle_deqp_khr_common/glcShaderMultisampleInterpolationTests.o obj/src/tests/angle_deqp_khr_common/glcShaderNegativeTests.o obj/src/tests/angle_deqp_khr_common/glcShaderRenderCase.o obj/src/tests/angle_deqp_khr_common/glcShaderStorageBufferObjectTests.o obj/src/tests/angle_deqp_khr_common/glcShaderStructTests.o obj/src/tests/angle_deqp_khr_common/glcSingleConfigTestPackage.o obj/src/tests/angle_deqp_khr_common/glcSpirvUtils.o obj/src/tests/angle_deqp_khr_common/glcTestCase.o obj/src/tests/angle_deqp_khr_common/glcTestCaseWrapper.o obj/src/tests/angle_deqp_khr_common/glcTestPackage.o obj/src/tests/angle_deqp_khr_common/glcTestSubcase.o obj/src/tests/angle_deqp_khr_common/glcTextureCompatibilityTests.o obj/src/tests/angle_deqp_khr_common/glcTextureFilterAnisotropicTests.o obj/src/tests/angle_deqp_khr_common/glcTextureLodBasicTests.o obj/src/tests/angle_deqp_khr_common/glcTextureLodBiasTests.o obj/src/tests/angle_deqp_khr_common/glcTextureRepeatModeTests.o obj/src/tests/angle_deqp_khr_common/glcTextureStencil8Tests.o obj/src/tests/angle_deqp_khr_common/glcTextureStorageTests.o obj/src/tests/angle_deqp_khr_common/glcTransformFeedbackTests.o obj/src/tests/angle_deqp_khr_common/glcUniformBlockCase.o obj/src/tests/angle_deqp_khr_common/glcUniformBlockNegativeTests.o obj/src/tests/angle_deqp_khr_common/glcUniformBlockTests.o obj/src/tests/angle_deqp_khr_common/glcViewportArrayTests.o obj/src/tests/angle_deqp_khr_common/glcSubgroupsArithmeticTests.o obj/src/tests/angle_deqp_khr_common/glcSubgroupsBallotBroadcastTests.o obj/src/tests/angle_deqp_khr_common/glcSubgroupsBallotOtherTests.o obj/src/tests/angle_deqp_khr_common/glcSubgroupsBallotTests.o obj/src/tests/angle_deqp_khr_common/glcSubgroupsBasicTests.o obj/src/tests/angle_deqp_khr_common/glcSubgroupsBuiltinMaskVarTests.o obj/src/tests/angle_deqp_khr_common/glcSubgroupsBuiltinVarTests.o obj/src/tests/angle_deqp_khr_common/glcSubgroupsClusteredTests.o obj/src/tests/angle_deqp_khr_common/glcSubgroupsPartitionedTests.o obj/src/tests/angle_deqp_khr_common/glcSubgroupsQuadTests.o obj/src/tests/angle_deqp_khr_common/glcSubgroupsShapeTests.o obj/src/tests/angle_deqp_khr_common/glcSubgroupsShuffleTests.o obj/src/tests/angle_deqp_khr_common/glcSubgroupsTests.o obj/src/tests/angle_deqp_khr_common/glcSubgroupsTestsUtils.o obj/src/tests/angle_deqp_khr_common/glcSubgroupsVoteTests.o obj/src/tests/angle_deqp_khr_common/esextcTestCaseBase.o obj/src/tests/angle_deqp_khr_common/esextcTestPackage.o obj/src/tests/angle_deqp_khr_common/gl3cCommonBugsTests.o obj/src/tests/angle_deqp_khr_common/gl3cDrawBuffers.o obj/src/tests/angle_deqp_khr_common/gl3cGLSLnoperspectiveTests.o obj/src/tests/angle_deqp_khr_common/gl3cGPUShader5Tests.o obj/src/tests/angle_deqp_khr_common/gl3cGetUniform.o obj/src/tests/angle_deqp_khr_common/gl3cPrimitiveRestart.o obj/src/tests/angle_deqp_khr_common/gl3cTestPackages.o obj/src/tests/angle_deqp_khr_common/gl3cTextureSizePromotion.o obj/src/tests/angle_deqp_khr_common/gl3cTextureSwizzleTests.o obj/src/tests/angle_deqp_khr_common/gl3cTransformFeedback3Tests.o obj/src/tests/angle_deqp_khr_common/gl3cTransformFeedbackOverflowQueryTests.o obj/src/tests/angle_deqp_khr_common/gl3cTransformFeedbackTests.o obj/src/tests/angle_deqp_khr_common/gl4cBufferStorageTests.o obj/src/tests/angle_deqp_khr_common/gl4cClipControlTests.o obj/src/tests/angle_deqp_khr_common/gl4cComputeShaderTests.o obj/src/tests/angle_deqp_khr_common/gl4cConditionalRenderInvertedTests.o obj/src/tests/angle_deqp_khr_common/gl4cCopyImageTests.o obj/src/tests/angle_deqp_khr_common/gl4cDirectStateAccessBuffersTests.o obj/src/tests/angle_deqp_khr_common/gl4cDirectStateAccessFramebuffersAndRenderbuffersTests.o obj/src/tests/angle_deqp_khr_common/gl4cDirectStateAccessProgramPipelinesTests.o obj/src/tests/angle_deqp_khr_common/gl4cDirectStateAccessQueriesTests.o obj/src/tests/angle_deqp_khr_common/gl4cDirectStateAccessSamplersTests.o obj/src/tests/angle_deqp_khr_common/gl4cDirectStateAccessTests.o obj/src/tests/angle_deqp_khr_common/gl4cDirectStateAccessTexturesTests.o obj/src/tests/angle_deqp_khr_common/gl4cDirectStateAccessVertexArraysTests.o obj/src/tests/angle_deqp_khr_common/gl4cDirectStateAccessXFBTests.o obj/src/tests/angle_deqp_khr_common/gl4cES31CompatibilityTests.o obj/src/tests/angle_deqp_khr_common/gl4cEnhancedLayoutsTests.o obj/src/tests/angle_deqp_khr_common/gl4cGPUShaderFP64Tests.o obj/src/tests/angle_deqp_khr_common/gl4cGetTextureSubImageTests.o obj/src/tests/angle_deqp_khr_common/gl4cGlSpirvTests.o obj/src/tests/angle_deqp_khr_common/gl4cIncompleteTextureAccessTests.o obj/src/tests/angle_deqp_khr_common/gl4cIndirectParametersTests.o obj/src/tests/angle_deqp_khr_common/gl4cLimitsTests.o obj/src/tests/angle_deqp_khr_common/gl4cMapBufferAlignmentTests.o obj/src/tests/angle_deqp_khr_common/gl4cMultiBindTests.o obj/src/tests/angle_deqp_khr_common/gl4cPipelineStatisticsQueryTests.o obj/src/tests/angle_deqp_khr_common/gl4cPostDepthCoverageTests.o obj/src/tests/angle_deqp_khr_common/gl4cProgramInterfaceQueryTests.o obj/src/tests/angle_deqp_khr_common/gl4cShaderAtomicCounterOpsTests.o obj/src/tests/angle_deqp_khr_common/gl4cShaderAtomicCountersTests.o obj/src/tests/angle_deqp_khr_common/gl4cShaderBallotTests.o obj/src/tests/angle_deqp_khr_common/gl4cShaderDrawParametersTests.o obj/src/tests/angle_deqp_khr_common/gl4cShaderImageLoadStoreTests.o obj/src/tests/angle_deqp_khr_common/gl4cShaderImageSizeTests.o obj/src/tests/angle_deqp_khr_common/gl4cShaderStorageBufferObjectTests.o obj/src/tests/angle_deqp_khr_common/gl4cShaderSubroutineTests.o obj/src/tests/angle_deqp_khr_common/gl4cShaderTextureImageSamplesTests.o obj/src/tests/angle_deqp_khr_common/gl4cShaderViewportLayerArrayTests.o obj/src/tests/angle_deqp_khr_common/gl4cShadingLanguage420PackTests.o obj/src/tests/angle_deqp_khr_common/gl4cSparseBufferTests.o obj/src/tests/angle_deqp_khr_common/gl4cSparseTexture2Tests.o obj/src/tests/angle_deqp_khr_common/gl4cSparseTextureClampTests.o obj/src/tests/angle_deqp_khr_common/gl4cSparseTextureTests.o obj/src/tests/angle_deqp_khr_common/gl4cSpirvExtensionsTests.o obj/src/tests/angle_deqp_khr_common/gl4cStencilTexturingTests.o obj/src/tests/angle_deqp_khr_common/gl4cSyncTests.o obj/src/tests/angle_deqp_khr_common/gl4cTestPackages.o obj/src/tests/angle_deqp_khr_common/gl4cTextureBarrierTests.o obj/src/tests/angle_deqp_khr_common/gl4cTextureFilterMinmaxTests.o obj/src/tests/angle_deqp_khr_common/gl4cTextureGatherTests.o obj/src/tests/angle_deqp_khr_common/gl4cTextureViewTests.o obj/src/tests/angle_deqp_khr_common/gl4cVertexAttrib64BitTest.o obj/src/tests/angle_deqp_khr_common/gl4cVertexAttribBindingTests.o obj/src/tests/angle_deqp_khr_common/es2cTestPackage.o obj/src/tests/angle_deqp_khr_common/es2cTexture3DTests.o obj/src/tests/angle_deqp_khr_common/es3cCopyTexImageConversionsTests.o obj/src/tests/angle_deqp_khr_common/es3cDriverErrorTests.o obj/src/tests/angle_deqp_khr_common/es3cNumberParsingTests.o obj/src/tests/angle_deqp_khr_common/es3cTestPackage.o obj/src/tests/angle_deqp_khr_common/es31cArrayOfArraysTests.o obj/src/tests/angle_deqp_khr_common/es31cComputeShaderTests.o obj/src/tests/angle_deqp_khr_common/es31cDrawIndirectTests.o obj/src/tests/angle_deqp_khr_common/es31cExplicitUniformLocationTest.o obj/src/tests/angle_deqp_khr_common/es31cFramebufferNoAttachmentsTests.o obj/src/tests/angle_deqp_khr_common/es31cLayoutBindingTests.o obj/src/tests/angle_deqp_khr_common/es31cProgramInterfaceQueryTests.o obj/src/tests/angle_deqp_khr_common/es31cSampleShadingTests.o obj/src/tests/angle_deqp_khr_common/es31cSeparateShaderObjsTests.o obj/src/tests/angle_deqp_khr_common/es31cShaderAtomicCountersTests.o obj/src/tests/angle_deqp_khr_common/es31cShaderBitfieldOperationTests.o obj/src/tests/angle_deqp_khr_common/es31cShaderImageSizeTests.o obj/src/tests/angle_deqp_khr_common/es31cTestPackage.o obj/src/tests/angle_deqp_khr_common/es31cTextureGatherTests.o obj/src/tests/angle_deqp_khr_common/es31cTextureStorageMultisampleDependenciesTests.o obj/src/tests/angle_deqp_khr_common/es31cTextureStorageMultisampleFunctionalTests.o obj/src/tests/angle_deqp_khr_common/es31cTextureStorageMultisampleGLCoverageTests.o obj/src/tests/angle_deqp_khr_common/es31cTextureStorageMultisampleGetActiveUniformTests.o obj/src/tests/angle_deqp_khr_common/es31cTextureStorageMultisampleGetMultisamplefvTests.o obj/src/tests/angle_deqp_khr_common/es31cTextureStorageMultisampleGetTexLevelParameterifvTests.o obj/src/tests/angle_deqp_khr_common/es31cTextureStorageMultisampleSampleMaskiTests.o obj/src/tests/angle_deqp_khr_common/es31cTextureStorageMultisampleTests.o obj/src/tests/angle_deqp_khr_common/es31cTextureStorageMultisampleTexStorage2DMultisampleTests.o obj/src/tests/angle_deqp_khr_common/es31cTextureStorageMultisampleTexStorage3DMultisampleTests.o obj/src/tests/angle_deqp_khr_common/es31cVertexAttribBindingTests.o obj/src/tests/angle_deqp_khr_common/es32cCopyImageTests.o obj/src/tests/angle_deqp_khr_common/es32cTestPackage.o obj/src/tests/angle_deqp_khr_common/esextcDisjointTimerQueryBase.o obj/src/tests/angle_deqp_khr_common/esextcDisjointTimerQueryHandleReuse.o obj/src/tests/angle_deqp_khr_common/esextcDisjointTimerQueryTests.o obj/src/tests/angle_deqp_khr_common/esextcDrawBuffersIndexedBase.o obj/src/tests/angle_deqp_khr_common/esextcDrawBuffersIndexedBlending.o obj/src/tests/angle_deqp_khr_common/esextcDrawBuffersIndexedColorMasks.o obj/src/tests/angle_deqp_khr_common/esextcDrawBuffersIndexedCoverage.o obj/src/tests/angle_deqp_khr_common/esextcDrawBuffersIndexedDefaultState.o obj/src/tests/angle_deqp_khr_common/esextcDrawBuffersIndexedNegative.o obj/src/tests/angle_deqp_khr_common/esextcDrawBuffersIndexedSetGet.o obj/src/tests/angle_deqp_khr_common/esextcDrawBuffersIndexedTests.o obj/src/tests/angle_deqp_khr_common/esextcDrawElementsBaseVertexTests.o obj/src/tests/angle_deqp_khr_common/esextcFragmentShadingRateAPI.o obj/src/tests/angle_deqp_khr_common/esextcFragmentShadingRateAttachmentTests.o obj/src/tests/angle_deqp_khr_common/esextcFragmentShadingRateBasic.o obj/src/tests/angle_deqp_khr_common/esextcFragmentShadingRateCombinedTests.o obj/src/tests/angle_deqp_khr_common/esextcFragmentShadingRateComplex.o obj/src/tests/angle_deqp_khr_common/esextcFragmentShadingRateErrors.o obj/src/tests/angle_deqp_khr_common/esextcFragmentShadingRateRenderTarget.o obj/src/tests/angle_deqp_khr_common/esextcFragmentShadingRateTests.o obj/src/tests/angle_deqp_khr_common/esextcGeometryShaderAPI.o obj/src/tests/angle_deqp_khr_common/esextcGeometryShaderAdjacency.o obj/src/tests/angle_deqp_khr_common/esextcGeometryShaderAdjacencyTests.o obj/src/tests/angle_deqp_khr_common/esextcGeometryShaderBlitting.o obj/src/tests/angle_deqp_khr_common/esextcGeometryShaderClipping.o obj/src/tests/angle_deqp_khr_common/esextcGeometryShaderConstantVariables.o obj/src/tests/angle_deqp_khr_common/esextcGeometryShaderInput.o obj/src/tests/angle_deqp_khr_common/esextcGeometryShaderLayeredFBO.o obj/src/tests/angle_deqp_khr_common/esextcGeometryShaderLayeredFramebuffer.o obj/src/tests/angle_deqp_khr_common/esextcGeometryShaderLayeredRendering.o obj/src/tests/angle_deqp_khr_common/esextcGeometryShaderLayeredRenderingBoundaryCondition.o obj/src/tests/angle_deqp_khr_common/esextcGeometryShaderLayeredRenderingFBONoAttachment.o obj/src/tests/angle_deqp_khr_common/esextcGeometryShaderLimits.o obj/src/tests/angle_deqp_khr_common/esextcGeometryShaderLinking.o obj/src/tests/angle_deqp_khr_common/esextcGeometryShaderNonarrayInput.o obj/src/tests/angle_deqp_khr_common/esextcGeometryShaderOutput.o obj/src/tests/angle_deqp_khr_common/esextcGeometryShaderPrimitiveCounter.o obj/src/tests/angle_deqp_khr_common/esextcGeometryShaderPrimitiveQueries.o obj/src/tests/angle_deqp_khr_common/esextcGeometryShaderProgramResource.o obj/src/tests/angle_deqp_khr_common/esextcGeometryShaderQualifiers.o obj/src/tests/angle_deqp_khr_common/esextcGeometryShaderRendering.o obj/src/tests/angle_deqp_khr_common/esextcGeometryShaderTests.o obj/src/tests/angle_deqp_khr_common/esextcGPUShader5AtomicCountersArrayIndexing.o obj/src/tests/angle_deqp_khr_common/esextcGPUShader5FmaAccuracy.o obj/src/tests/angle_deqp_khr_common/esextcGPUShader5FmaPrecision.o obj/src/tests/angle_deqp_khr_common/esextcGPUShader5ImagesArrayIndexing.o obj/src/tests/angle_deqp_khr_common/esextcGPUShader5PreciseQualifier.o obj/src/tests/angle_deqp_khr_common/esextcGPUShader5SSBOArrayIndexing.o obj/src/tests/angle_deqp_khr_common/esextcGPUShader5SamplerArrayIndexing.o obj/src/tests/angle_deqp_khr_common/esextcGPUShader5Tests.o obj/src/tests/angle_deqp_khr_common/esextcGPUShader5TextureGatherOffset.o obj/src/tests/angle_deqp_khr_common/esextcGPUShader5UniformBlocksArrayIndexing.o obj/src/tests/angle_deqp_khr_common/esextcTessellationShaderBarrier.o obj/src/tests/angle_deqp_khr_common/esextcTessellationShaderErrors.o obj/src/tests/angle_deqp_khr_common/esextcTessellationShaderInvariance.o obj/src/tests/angle_deqp_khr_common/esextcTessellationShaderIsolines.o obj/src/tests/angle_deqp_khr_common/esextcTessellationShaderMaxPatchVertices.o obj/src/tests/angle_deqp_khr_common/esextcTessellationShaderPoints.o obj/src/tests/angle_deqp_khr_common/esextcTessellationShaderPrimitiveCoverage.o obj/src/tests/angle_deqp_khr_common/esextcTessellationShaderProgramInterfaces.o obj/src/tests/angle_deqp_khr_common/esextcTessellationShaderProperties.o obj/src/tests/angle_deqp_khr_common/esextcTessellationShaderQuads.o obj/src/tests/angle_deqp_khr_common/esextcTessellationShaderTCTE.o obj/src/tests/angle_deqp_khr_common/esextcTessellationShaderTessellation.o obj/src/tests/angle_deqp_khr_common/esextcTessellationShaderTests.o obj/src/tests/angle_deqp_khr_common/esextcTessellationShaderTriangles.o obj/src/tests/angle_deqp_khr_common/esextcTessellationShaderUtils.o obj/src/tests/angle_deqp_khr_common/esextcTessellationShaderVertexOrdering.o obj/src/tests/angle_deqp_khr_common/esextcTessellationShaderVertexSpacing.o obj/src/tests/angle_deqp_khr_common/esextcTessellationShaderWinding.o obj/src/tests/angle_deqp_khr_common/esextcTessellationShaderXFB.o obj/src/tests/angle_deqp_khr_common/esextcTextureBorderClampBase.o obj/src/tests/angle_deqp_khr_common/esextcTextureBorderClampGetTexParameterIErrors.o obj/src/tests/angle_deqp_khr_common/esextcTextureBorderClampParameterBorderColorError.o obj/src/tests/angle_deqp_khr_common/esextcTextureBorderClampParameterTextureBorderColor.o obj/src/tests/angle_deqp_khr_common/esextcTextureBorderClampSamplerParameterIError.o obj/src/tests/angle_deqp_khr_common/esextcTextureBorderClampSamplerParameterIWithWrongPname.o obj/src/tests/angle_deqp_khr_common/esextcTextureBorderClampSamplingTexture.o obj/src/tests/angle_deqp_khr_common/esextcTextureBorderClampSamplingTextureGroup.o obj/src/tests/angle_deqp_khr_common/esextcTextureBorderClampTests.o obj/src/tests/angle_deqp_khr_common/esextcTextureBorderClampTexParameterIErrors.o obj/src/tests/angle_deqp_khr_common/esextcTextureBufferActiveUniformValidation.o obj/src/tests/angle_deqp_khr_common/esextcTextureBufferAtomicFunctions.o obj/src/tests/angle_deqp_khr_common/esextcTextureBufferBufferParameters.o obj/src/tests/angle_deqp_khr_common/esextcTextureBufferErrors.o obj/src/tests/angle_deqp_khr_common/esextcTextureBufferMAXSizeValidation.o obj/src/tests/angle_deqp_khr_common/esextcTextureBufferOperations.o obj/src/tests/angle_deqp_khr_common/esextcTextureBufferParamValueIntToFloatConversion.o obj/src/tests/angle_deqp_khr_common/esextcTextureBufferParameters.o obj/src/tests/angle_deqp_khr_common/esextcTextureBufferPrecision.o obj/src/tests/angle_deqp_khr_common/esextcTextureBufferTests.o obj/src/tests/angle_deqp_khr_common/esextcTextureBufferTextureBufferRange.o obj/src/tests/angle_deqp_khr_common/esextcTextureCubeMapArrayColorDepthAttachments.o obj/src/tests/angle_deqp_khr_common/esextcTextureCubeMapArrayETC2Support.o obj/src/tests/angle_deqp_khr_common/esextcTextureCubeMapArrayFBOIncompleteness.o obj/src/tests/angle_deqp_khr_common/esextcTextureCubeMapArrayGenerateMipMap.o obj/src/tests/angle_deqp_khr_common/esextcTextureCubeMapArrayGetterCalls.o obj/src/tests/angle_deqp_khr_common/esextcTextureCubeMapArrayImageOperations.o obj/src/tests/angle_deqp_khr_common/esextcTextureCubeMapArrayImageTextureSize.o obj/src/tests/angle_deqp_khr_common/esextcTextureCubeMapArrayImageTextureSizeTests.o obj/src/tests/angle_deqp_khr_common/esextcTextureCubeMapArraySampling.o obj/src/tests/angle_deqp_khr_common/esextcTextureCubeMapArrayStencilAttachments.o obj/src/tests/angle_deqp_khr_common/esextcTextureCubeMapArraySubImage3D.o obj/src/tests/angle_deqp_khr_common/esextcTextureCubeMapArrayTests.o obj/src/tests/angle_deqp_khr_common/esextcTextureCubeMapArrayTex3DValidation.o obj/src/tests/angle_deqp_khr_common/esextcTextureShadowLodFunctionsTest.o obj/src/tests/angle_deqp_khr_common/glcTestPackageEntry_override.o || phony/src/tests/angle_deqp_framework_platform phony/src/tests/angle_deqp_glshared phony/third_party/glslang/src/glslang_lib_sources obj/third_party/spirv-tools/src/libspvtools_val.a phony/src/tests/angle_deqp_framework_common phony/src/tests/angle_deqp_framework_decpp phony/src/tests/angle_deqp_framework_debase phony/src/tests/angle_deqp_framework_delibs phony/src/tests/angle_deqp_framework_qphelper obj/third_party/libpng/libpng.a obj/third_party/zlib/libchrome_zlib.a phony/third_party/zlib/zlib_adler32_simd phony/third_party/zlib/zlib_inflate_chunk_simd phony/third_party/zlib/zlib_crc32_simd phony/third_party/cpu_features/ndk_compat phony/third_party/cpu_features/cpuinfo phony/src/tests/angle_deqp_framework_xexml phony/src/tests/angle_deqp_framework_egl phony/src/tests/angle_deqp_framework_opengl obj/third_party/spirv-tools/src/libspvtools_opt.a obj/third_party/spirv-tools/src/libspvtools.a

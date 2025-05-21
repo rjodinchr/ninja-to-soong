@@ -1,0 +1,107 @@
+defines = -D_GNU_SOURCE -DANDROID -D__ANDROID_UNAVAILABLE_SYMBOLS_ARE_WEAK__ -DHAVE_SYS_UIO_H -DANDROID_NDK_VERSION_ROLL=r28_1 -DCR_CLANG_REVISION=\"llvmorg-21-init-9266-g09006611-1\" -D_LIBCPP_HARDENING_MODE=_LIBCPP_HARDENING_MODE_NONE -DNDEBUG -DNVALGRIND -DDYNAMIC_ANNOTATIONS_ENABLED=0 -DANGLE_ENABLE_SHARE_CONTEXT_LOCK=1 -DANGLE_USE_ANDROID_TLS_SLOT=1 -DANGLE_ENABLE_GLOBAL_MUTEX_RECURSION=1 -DANGLE_ENABLE_GLOBAL_MUTEX_LOAD_TIME_ALLOCATE=1 -DANGLE_ENABLE_CONTEXT_MUTEX=1 -DANGLE_ENABLE_CONTEXT_MUTEX_RECURSION=1 -DANGLE_TEST_ENABLE_SYSTEM_EGL -DDE_FENV_ACCESS_ON=_Pragma\(\"STDC\$ FENV_ACCESS\$ ON\"\) -DDEQP_SUPPORT_GLES31=1 -DDEQP_SUPPORT_GLES3=1 -DDEQP_SUPPORT_GLES2=1 -DDEQP_SUPPORT_EGL=1 -DDEQP_TARGET_NAME=\"angle\" -DDEQP_GLES31_RUNTIME_LOAD=1 -DDEQP_GLES3_RUNTIME_LOAD=1 -DDEQP_GLES2_RUNTIME_LOAD=1 -DQP_SUPPORT_PNG=1 -D_HAS_EXCEPTIONS=1 -D_MBCS -DANGLE_DEQP_DATA_DIR=\"gen/vk_gl_cts_data/data\" -DDE_ANDROID_API=26 -D_XOPEN_SOURCE=600
+include_dirs = -I/ninja-to-soong-angle/include -I/ninja-to-soong-angle/src -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/framework/delibs/debase -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/framework/delibs/depool -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/framework/delibs/dethread -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/framework/delibs/deutil -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/framework/delibs/destream -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/executor -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/execserver -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/framework/platform/lnx -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/framework/platform/lnx/X11 -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/framework/platform/null -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/framework/platform/win32 -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/framework/xexml -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/modules/gles2 -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/modules/gles2/functional -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/modules/gles2/accuracy -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/modules/gles2/performance -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/modules/gles2/stress -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/modules/gles2/usecases -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/modules/gles3 -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/modules/gles3/functional -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/modules/gles3/accuracy -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/modules/gles3/performance -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/modules/gles3/stress -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/modules/gles3/usecases -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/modules/gles31 -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/modules/gles31/functional -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/modules/gles31/stress -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/modules/glusecases -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/modules/egl -I/ninja-to-soong-angle/third_party/glslang/src -I/ninja-to-soong-angle/third_party/spirv-tools/src -I/ninja-to-soong-angle/third_party/VK-GL-CTS/src/framework/platform/android
+cflags = -Wno-nonportable-include-path -fno-delete-null-pointer-checks -fno-strict-overflow -fno-ident -fno-strict-aliasing -fstack-protector -funwind-tables -fPIC -fcolor-diagnostics -fmerge-all-constants -fno-sized-deallocation -fcrash-diagnostics-dir=/ninja-to-soong-angle/tools/clang/crashreports -mllvm -instcombine-lower-dbg-declare=0 -mllvm -split-threshold-for-reg-with-hint=0 -ffp-contract=off -fextend-variable-liveness=none -ffunction-sections -fno-short-enums --target=i686-linux-android26 -m32 -mfpmath=sse -msse3 -Wno-builtin-macro-redefined -D__DATE__= -D__TIME__= -D__TIMESTAMP__= -ffile-compilation-dir=. -no-canonical-prefixes -ftrivial-auto-var-init=pattern -fno-omit-frame-pointer -momit-leaf-frame-pointer -g0 -fvisibility=hidden -Wheader-hygiene -Wstring-conversion -Wtautological-overlap-compare -O2 -fdata-sections -ffunction-sections -fno-unique-section-names -fno-math-errno
+cflags_c = -std=c11 --sysroot=/ninja-to-soong-angle/third_party/android_toolchain/ndk/toolchains/llvm/prebuilt/linux-x86_64/sysroot -Wno-unused-local-typedef
+label_name = angle_deqp_framework_delibs
+root_out_dir = .
+target_out_dir = obj/src/tests
+target_output_name = angle_deqp_framework_delibs
+
+build obj/src/tests/angle_deqp_framework_delibs/deImage.o: cc /ninja-to-soong-angle/third_party/VK-GL-CTS/src/framework/delibs/deimage/deImage.c
+  source_file_part = deImage.c
+  source_name_part = deImage
+build obj/src/tests/angle_deqp_framework_delibs/deTarga.o: cc /ninja-to-soong-angle/third_party/VK-GL-CTS/src/framework/delibs/deimage/deTarga.c
+  source_file_part = deTarga.c
+  source_name_part = deTarga
+build obj/src/tests/angle_deqp_framework_delibs/deMemPool.o: cc /ninja-to-soong-angle/third_party/VK-GL-CTS/src/framework/delibs/depool/deMemPool.c
+  source_file_part = deMemPool.c
+  source_name_part = deMemPool
+build obj/src/tests/angle_deqp_framework_delibs/dePoolArray.o: cc /ninja-to-soong-angle/third_party/VK-GL-CTS/src/framework/delibs/depool/dePoolArray.c
+  source_file_part = dePoolArray.c
+  source_name_part = dePoolArray
+build obj/src/tests/angle_deqp_framework_delibs/dePoolHash.o: cc /ninja-to-soong-angle/third_party/VK-GL-CTS/src/framework/delibs/depool/dePoolHash.c
+  source_file_part = dePoolHash.c
+  source_name_part = dePoolHash
+build obj/src/tests/angle_deqp_framework_delibs/dePoolHashArray.o: cc /ninja-to-soong-angle/third_party/VK-GL-CTS/src/framework/delibs/depool/dePoolHashArray.c
+  source_file_part = dePoolHashArray.c
+  source_name_part = dePoolHashArray
+build obj/src/tests/angle_deqp_framework_delibs/dePoolHashSet.o: cc /ninja-to-soong-angle/third_party/VK-GL-CTS/src/framework/delibs/depool/dePoolHashSet.c
+  source_file_part = dePoolHashSet.c
+  source_name_part = dePoolHashSet
+build obj/src/tests/angle_deqp_framework_delibs/dePoolHeap.o: cc /ninja-to-soong-angle/third_party/VK-GL-CTS/src/framework/delibs/depool/dePoolHeap.c
+  source_file_part = dePoolHeap.c
+  source_name_part = dePoolHeap
+build obj/src/tests/angle_deqp_framework_delibs/dePoolMultiSet.o: cc /ninja-to-soong-angle/third_party/VK-GL-CTS/src/framework/delibs/depool/dePoolMultiSet.c
+  source_file_part = dePoolMultiSet.c
+  source_name_part = dePoolMultiSet
+build obj/src/tests/angle_deqp_framework_delibs/dePoolSet.o: cc /ninja-to-soong-angle/third_party/VK-GL-CTS/src/framework/delibs/depool/dePoolSet.c
+  source_file_part = dePoolSet.c
+  source_name_part = dePoolSet
+build obj/src/tests/angle_deqp_framework_delibs/dePoolStringBuilder.o: cc /ninja-to-soong-angle/third_party/VK-GL-CTS/src/framework/delibs/depool/dePoolStringBuilder.c
+  source_file_part = dePoolStringBuilder.c
+  source_name_part = dePoolStringBuilder
+build obj/src/tests/angle_deqp_framework_delibs/dePoolTest.o: cc /ninja-to-soong-angle/third_party/VK-GL-CTS/src/framework/delibs/depool/dePoolTest.c
+  source_file_part = dePoolTest.c
+  source_name_part = dePoolTest
+build obj/src/tests/angle_deqp_framework_delibs/deFileStream.o: cc /ninja-to-soong-angle/third_party/VK-GL-CTS/src/framework/delibs/destream/deFileStream.c
+  source_file_part = deFileStream.c
+  source_name_part = deFileStream
+build obj/src/tests/angle_deqp_framework_delibs/deRingbuffer.o: cc /ninja-to-soong-angle/third_party/VK-GL-CTS/src/framework/delibs/destream/deRingbuffer.c
+  source_file_part = deRingbuffer.c
+  source_name_part = deRingbuffer
+build obj/src/tests/angle_deqp_framework_delibs/deStreamCpyThread.o: cc /ninja-to-soong-angle/third_party/VK-GL-CTS/src/framework/delibs/destream/deStreamCpyThread.c
+  source_file_part = deStreamCpyThread.c
+  source_name_part = deStreamCpyThread
+build obj/src/tests/angle_deqp_framework_delibs/deThreadStream.o: cc /ninja-to-soong-angle/third_party/VK-GL-CTS/src/framework/delibs/destream/deThreadStream.c
+  source_file_part = deThreadStream.c
+  source_name_part = deThreadStream
+build obj/src/tests/angle_deqp_framework_delibs/deAtomic.o: cc /ninja-to-soong-angle/third_party/VK-GL-CTS/src/framework/delibs/dethread/deAtomic.c
+  source_file_part = deAtomic.c
+  source_name_part = deAtomic
+build obj/src/tests/angle_deqp_framework_delibs/deSingleton.o: cc /ninja-to-soong-angle/third_party/VK-GL-CTS/src/framework/delibs/dethread/deSingleton.c
+  source_file_part = deSingleton.c
+  source_name_part = deSingleton
+build obj/src/tests/angle_deqp_framework_delibs/deThreadTest.o: cc /ninja-to-soong-angle/third_party/VK-GL-CTS/src/framework/delibs/dethread/deThreadTest.c
+  source_file_part = deThreadTest.c
+  source_name_part = deThreadTest
+build obj/src/tests/angle_deqp_framework_delibs/deClock.o: cc /ninja-to-soong-angle/third_party/VK-GL-CTS/src/framework/delibs/deutil/deClock.c
+  source_file_part = deClock.c
+  source_name_part = deClock
+build obj/src/tests/angle_deqp_framework_delibs/deCommandLine.o: cc /ninja-to-soong-angle/third_party/VK-GL-CTS/src/framework/delibs/deutil/deCommandLine.c
+  source_file_part = deCommandLine.c
+  source_name_part = deCommandLine
+build obj/src/tests/angle_deqp_framework_delibs/deDynamicLibrary.o: cc /ninja-to-soong-angle/third_party/VK-GL-CTS/src/framework/delibs/deutil/deDynamicLibrary.c
+  source_file_part = deDynamicLibrary.c
+  source_name_part = deDynamicLibrary
+build obj/src/tests/angle_deqp_framework_delibs/deFile.o: cc /ninja-to-soong-angle/third_party/VK-GL-CTS/src/framework/delibs/deutil/deFile.c
+  source_file_part = deFile.c
+  source_name_part = deFile
+build obj/src/tests/angle_deqp_framework_delibs/deProcess.o: cc /ninja-to-soong-angle/third_party/VK-GL-CTS/src/framework/delibs/deutil/deProcess.c
+  source_file_part = deProcess.c
+  source_name_part = deProcess
+build obj/src/tests/angle_deqp_framework_delibs/deSocket.o: cc /ninja-to-soong-angle/third_party/VK-GL-CTS/src/framework/delibs/deutil/deSocket.c
+  source_file_part = deSocket.c
+  source_name_part = deSocket
+build obj/src/tests/angle_deqp_framework_delibs/deTimer.o: cc /ninja-to-soong-angle/third_party/VK-GL-CTS/src/framework/delibs/deutil/deTimer.c
+  source_file_part = deTimer.c
+  source_name_part = deTimer
+build obj/src/tests/angle_deqp_framework_delibs/deTimerTest.o: cc /ninja-to-soong-angle/third_party/VK-GL-CTS/src/framework/delibs/deutil/deTimerTest.c
+  source_file_part = deTimerTest.c
+  source_name_part = deTimerTest
+build obj/src/tests/angle_deqp_framework_delibs/deMutexUnix.o: cc /ninja-to-soong-angle/third_party/VK-GL-CTS/src/framework/delibs/dethread/unix/deMutexUnix.c
+  source_file_part = deMutexUnix.c
+  source_name_part = deMutexUnix
+build obj/src/tests/angle_deqp_framework_delibs/deSemaphoreMach.o: cc /ninja-to-soong-angle/third_party/VK-GL-CTS/src/framework/delibs/dethread/unix/deSemaphoreMach.c
+  source_file_part = deSemaphoreMach.c
+  source_name_part = deSemaphoreMach
+build obj/src/tests/angle_deqp_framework_delibs/deSemaphoreUnix.o: cc /ninja-to-soong-angle/third_party/VK-GL-CTS/src/framework/delibs/dethread/unix/deSemaphoreUnix.c
+  source_file_part = deSemaphoreUnix.c
+  source_name_part = deSemaphoreUnix
+build obj/src/tests/angle_deqp_framework_delibs/deThreadLocalUnix.o: cc /ninja-to-soong-angle/third_party/VK-GL-CTS/src/framework/delibs/dethread/unix/deThreadLocalUnix.c
+  source_file_part = deThreadLocalUnix.c
+  source_name_part = deThreadLocalUnix
+build obj/src/tests/angle_deqp_framework_delibs/deThreadUnix.o: cc /ninja-to-soong-angle/third_party/VK-GL-CTS/src/framework/delibs/dethread/unix/deThreadUnix.c
+  source_file_part = deThreadUnix.c
+  source_name_part = deThreadUnix
+
+build phony/src/tests/angle_deqp_framework_delibs: phony obj/src/tests/angle_deqp_framework_delibs/deImage.o obj/src/tests/angle_deqp_framework_delibs/deTarga.o obj/src/tests/angle_deqp_framework_delibs/deMemPool.o obj/src/tests/angle_deqp_framework_delibs/dePoolArray.o obj/src/tests/angle_deqp_framework_delibs/dePoolHash.o obj/src/tests/angle_deqp_framework_delibs/dePoolHashArray.o obj/src/tests/angle_deqp_framework_delibs/dePoolHashSet.o obj/src/tests/angle_deqp_framework_delibs/dePoolHeap.o obj/src/tests/angle_deqp_framework_delibs/dePoolMultiSet.o obj/src/tests/angle_deqp_framework_delibs/dePoolSet.o obj/src/tests/angle_deqp_framework_delibs/dePoolStringBuilder.o obj/src/tests/angle_deqp_framework_delibs/dePoolTest.o obj/src/tests/angle_deqp_framework_delibs/deFileStream.o obj/src/tests/angle_deqp_framework_delibs/deRingbuffer.o obj/src/tests/angle_deqp_framework_delibs/deStreamCpyThread.o obj/src/tests/angle_deqp_framework_delibs/deThreadStream.o obj/src/tests/angle_deqp_framework_delibs/deAtomic.o obj/src/tests/angle_deqp_framework_delibs/deSingleton.o obj/src/tests/angle_deqp_framework_delibs/deThreadTest.o obj/src/tests/angle_deqp_framework_delibs/deClock.o obj/src/tests/angle_deqp_framework_delibs/deCommandLine.o obj/src/tests/angle_deqp_framework_delibs/deDynamicLibrary.o obj/src/tests/angle_deqp_framework_delibs/deFile.o obj/src/tests/angle_deqp_framework_delibs/deProcess.o obj/src/tests/angle_deqp_framework_delibs/deSocket.o obj/src/tests/angle_deqp_framework_delibs/deTimer.o obj/src/tests/angle_deqp_framework_delibs/deTimerTest.o obj/src/tests/angle_deqp_framework_delibs/deMutexUnix.o obj/src/tests/angle_deqp_framework_delibs/deSemaphoreMach.o obj/src/tests/angle_deqp_framework_delibs/deSemaphoreUnix.o obj/src/tests/angle_deqp_framework_delibs/deThreadLocalUnix.o obj/src/tests/angle_deqp_framework_delibs/deThreadUnix.o || phony/src/tests/angle_deqp_framework_debase

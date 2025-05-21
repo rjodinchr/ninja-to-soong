@@ -1,0 +1,35 @@
+defines = -DUSE_UDEV -DUSE_AURA=1 -DUSE_GLIB=1 -DUSE_OZONE=1 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_LARGEFILE64_SOURCE -D_GNU_SOURCE -DCR_CLANG_REVISION=\"llvmorg-21-init-9266-g09006611-1\" -D_LIBCPP_HARDENING_MODE=_LIBCPP_HARDENING_MODE_EXTENSIVE -DCOMPONENT_BUILD -D_LIBCPP_INSTRUMENTED_WITH_ASAN=0 -DCR_LIBCXX_REVISION=62724eb55f2ad7389088265952b1bb62cb89c73b -DCR_SYSROOT_KEY=20250129T203412Z-1 -D_DEBUG -DDYNAMIC_ANNOTATIONS_ENABLED=1 -Dtypeof\(x\)=__typeof__\(x\)
+include_dirs = -I/ninja-to-soong-angle/third_party/libdrm/src/tests -I/ninja-to-soong-angle/third_party/libdrm/src/tests/modetest -I/ninja-to-soong-angle -Igen -I/ninja-to-soong-angle/buildtools/third_party/libc++ -I/ninja-to-soong-angle/third_party/libdrm/src -I/ninja-to-soong-angle/third_party/libdrm/src/include -I/ninja-to-soong-angle/third_party/libdrm/src/include/drm
+cflags = -fno-delete-null-pointer-checks -fno-strict-overflow -fno-ident -fno-strict-aliasing -fstack-protector -funwind-tables -fPIC -pthread -fcolor-diagnostics -fmerge-all-constants -fno-sized-deallocation -fcrash-diagnostics-dir=/ninja-to-soong-angle/tools/clang/crashreports -mllvm -instcombine-lower-dbg-declare=0 -mllvm -split-threshold-for-reg-with-hint=0 -ffp-contract=off -Wa,--crel,--allow-experimental-crel -fextend-variable-liveness=none -fcomplete-member-pointers -m64 -msse3 -Wno-builtin-macro-redefined -D__DATE__= -D__TIME__= -D__TIMESTAMP__= -ffile-compilation-dir=. -no-canonical-prefixes -ftrivial-auto-var-init=pattern -O0 -fno-omit-frame-pointer -gdwarf-4 -g2 -gdwarf-aranges -gsplit-dwarf -ggnu-pubnames -Xclang -fuse-ctor-homing -fvisibility=hidden -Wheader-hygiene -Wstring-conversion -Wtautological-overlap-compare -Wall -Wno-unused-variable -Wno-c++11-narrowing -Wno-unused-but-set-variable -Wno-missing-field-initializers -Wno-unused-parameter -Wno-psabi -Wloop-analysis -Wno-unneeded-internal-declaration -Wno-cast-function-type -Wno-thread-safety-reference-return -Wno-nontrivial-memcall -Werror -Wno-\#pragma-messages -DMAJOR_IN_SYSMACROS=1 -Wno-unused-function -Wno-enum-conversion -Wno-unused-result -Wno-format
+cflags_c = -std=c11 --sysroot=/ninja-to-soong-angle/build/linux/debian_bullseye_amd64-sysroot
+label_name = modetest
+target_out_dir = obj/third_party/libdrm
+target_output_name = modetest
+
+build obj/third_party/libdrm/modetest/buffers.o: cc /ninja-to-soong-angle/third_party/libdrm/src/tests/modetest/buffers.c || phony/third_party/libdrm/make_generated_static_table_fourcc
+  source_file_part = buffers.c
+  source_name_part = buffers
+build obj/third_party/libdrm/modetest/cursor.o: cc /ninja-to-soong-angle/third_party/libdrm/src/tests/modetest/cursor.c || phony/third_party/libdrm/make_generated_static_table_fourcc
+  source_file_part = cursor.c
+  source_name_part = cursor
+build obj/third_party/libdrm/modetest/modetest.o: cc /ninja-to-soong-angle/third_party/libdrm/src/tests/modetest/modetest.c || phony/third_party/libdrm/make_generated_static_table_fourcc
+  source_file_part = modetest.c
+  source_name_part = modetest
+build obj/third_party/libdrm/modetest/format.o: cc /ninja-to-soong-angle/third_party/libdrm/src/tests/util/format.c || phony/third_party/libdrm/make_generated_static_table_fourcc
+  source_file_part = format.c
+  source_name_part = format
+build obj/third_party/libdrm/modetest/kms.o: cc /ninja-to-soong-angle/third_party/libdrm/src/tests/util/kms.c || phony/third_party/libdrm/make_generated_static_table_fourcc
+  source_file_part = kms.c
+  source_name_part = kms
+build obj/third_party/libdrm/modetest/pattern.o: cc /ninja-to-soong-angle/third_party/libdrm/src/tests/util/pattern.c || phony/third_party/libdrm/make_generated_static_table_fourcc
+  source_file_part = pattern.c
+  source_name_part = pattern
+
+build ./modetest: link obj/third_party/libdrm/modetest/buffers.o obj/third_party/libdrm/modetest/cursor.o obj/third_party/libdrm/modetest/modetest.o obj/third_party/libdrm/modetest/format.o obj/third_party/libdrm/modetest/kms.o obj/third_party/libdrm/modetest/pattern.o obj/third_party/libdrm/libdrm.a | ./libc++.so.TOC /ninja-to-soong-angle/third_party/llvm-build/Release+Asserts/lib/clang/21/lib/x86_64-unknown-linux-gnu/libclang_rt.builtins.a || phony/build/config/executable_deps
+  ldflags = -fuse-ld=lld -Wl,--fatal-warnings -Wl,--build-id=fast -fPIC -Wl,-z,noexecstack -Wl,-z,relro -Wl,--color-diagnostics -Wl,--undefined-version -Wl,--no-call-graph-profile-sort -m64 -no-canonical-prefixes -Wl,--gdb-index -Wl,-z,defs -Wl,--as-needed -nostdlib++ --sysroot=/ninja-to-soong-angle/build/linux/debian_bullseye_amd64-sysroot -rdynamic -pie -Wl,--disable-new-dtags -Wl,-rpath=\$$ORIGIN -Werror
+  libs = /ninja-to-soong-angle/third_party/llvm-build/Release+Asserts/lib/clang/21/lib/x86_64-unknown-linux-gnu/libclang_rt.builtins.a -ldl -lpthread -lrt
+  frameworks =
+  swiftmodules =
+  output_extension =
+  output_dir = .
+  solibs = ./libc++.so
