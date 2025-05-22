@@ -12,6 +12,7 @@ package {
     default_visibility: [
         "//external/SPIRV-Tools",
         "//external/clspv",
+        "//external/clvk",
     ],
     default_applicable_licenses: ["SPIRV-Headers_license"],
 }
