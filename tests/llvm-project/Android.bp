@@ -24,12 +24,28 @@ license {
 }
 
 cc_library_static {
-    name: "llvm-project_lib_libclangSupport_a",
-    srcs: ["clang/lib/Support/RISCVVIntrinsicUtils.cpp"],
+    name: "llvm-project_lib_libllvm_gtest_main_a",
+    srcs: ["third-party/unittest/UnitTestMain/TestMain.cpp"],
     local_include_dirs: [
-        "clang/include",
-        "clang/lib/Support",
-        "cmake_generated/tools/clang/include",
+        "third-party/unittest/UnitTestMain",
+        "third-party/unittest/googlemock/include",
+        "third-party/unittest/googletest/include",
+    ],
+    defaults: ["llvm-project-defaults"],
+}
+
+cc_library_static {
+    name: "llvm-project_lib_libllvm_gtest_a",
+    srcs: [
+        "third-party/unittest/googlemock/src/gmock-all.cc",
+        "third-party/unittest/googletest/src/gtest-all.cc",
+    ],
+    local_include_dirs: [
+        "third-party/unittest",
+        "third-party/unittest/googlemock",
+        "third-party/unittest/googlemock/include",
+        "third-party/unittest/googletest",
+        "third-party/unittest/googletest/include",
     ],
     defaults: ["llvm-project-defaults"],
 }
@@ -62,6 +78,17 @@ cc_library_static {
     name: "llvm-project_lib_libLLVMDemangle_a",
     srcs: ["llvm/lib/Demangle/*.cpp"],
     local_include_dirs: ["llvm/lib/Demangle"],
+    defaults: ["llvm-project-defaults"],
+}
+
+cc_library_static {
+    name: "llvm-project_lib_libclangSupport_a",
+    srcs: ["clang/lib/Support/RISCVVIntrinsicUtils.cpp"],
+    local_include_dirs: [
+        "clang/include",
+        "clang/lib/Support",
+        "cmake_generated/tools/clang/include",
+    ],
     defaults: ["llvm-project-defaults"],
 }
 

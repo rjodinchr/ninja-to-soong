@@ -20,6 +20,17 @@ license {
     license_text: ["LICENSE"],
 }
 
+cc_test {
+    name: "clvk_simple_test",
+    srcs: ["tests/simple/simple.cpp"],
+    cflags: [
+        "-DCLSPV_ONLINE_COMPILER=1",
+        "-DCOMPILER_AVAILABLE=1",
+    ],
+    shared_libs: ["libclvk"],
+    header_libs: ["OpenCL-Headers"],
+}
+
 cc_library_shared {
     name: "libclvk",
     version_script: "src/exports.map",
@@ -107,4 +118,30 @@ cc_library_shared {
         "llvm-project_lib_libclangSupport_a",
     ],
     header_libs: ["OpenCL-Headers"],
+}
+
+cc_test {
+    name: "clvk_api_tests",
+    srcs: ["tests/api/*.cpp"],
+    cflags: [
+        "-DCLSPV_ONLINE_COMPILER=1",
+        "-DCOMPILER_AVAILABLE=1",
+        "-Wno-missing-braces",
+    ],
+    shared_libs: [
+        "libclvk",
+        "libz",
+    ],
+    static_libs: [
+        "llvm-project_lib_libLLVMDemangle_a",
+        "llvm-project_lib_libLLVMSupport_a",
+        "llvm-project_lib_libllvm_gtest_a",
+        "llvm-project_lib_libllvm_gtest_main_a",
+    ],
+    local_include_dirs: ["tests/../src"],
+    header_libs: [
+        "OpenCL-Headers",
+        "SPIRV-Headers-includes",
+        "vulkan_headers",
+    ],
 }

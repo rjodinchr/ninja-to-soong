@@ -25,5 +25,4 @@ bash "${SCRIPT_DIR}/../../utils/cmake_configure.sh" \
     -DCLSPV_SOURCE_DIR="${CLSPV_PATH}" \
     -DVulkan_LIBRARY="${NDK_PATH}/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/lib/aarch64-linux-android/35/libvulkan.so" \
     -DCLVK_CLSPV_ONLINE_COMPILER=1 \
-    -DCLVK_ENABLE_SPIRV_IL=OFF \
-    -DCLVK_BUILD_TESTS=OFF
+    -DCLVK_ENABLE_SPIRV_IL=OFF

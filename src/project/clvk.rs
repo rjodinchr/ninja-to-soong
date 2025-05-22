@@ -50,7 +50,11 @@ impl Project for Clvk {
             &["LICENSE"],
         )
         .generate(
-            NinjaTargetsToGenMap::from(&[NinjaTargetToGen("libOpenCL.so", Some("libclvk"), None)]),
+            NinjaTargetsToGenMap::from(&[
+                NinjaTargetToGen("libOpenCL.so", Some("libclvk"), None),
+                NinjaTargetToGen("simple_test", None, None),
+                NinjaTargetToGen("api_tests", None, None),
+            ]),
             parse_build_ninja::<CmakeNinjaTarget>(&build_path)?,
             &src_path,
             &ndk_path,
@@ -81,11 +85,20 @@ impl Project for Clvk {
             .collect()
     }
 
-    fn extend_module(&self, _target: &Path, module: SoongModule) -> SoongModule {
-        module.add_prop(
-            "header_libs",
-            SoongProp::VecStr(vec![String::from("OpenCL-Headers")]),
-        )
+    fn extend_cflags(&self, target: &Path) -> Vec<String> {
+        if target.ends_with("api_tests") {
+            vec![String::from("-Wno-missing-braces")]
+        } else {
+            Vec::new()
+        }
+    }
+    fn extend_module(&self, target: &Path, module: SoongModule) -> SoongModule {
+        let mut header_libs = vec![String::from("OpenCL-Headers")];
+        if target.ends_with("api_tests") {
+            header_libs.push(CcLibraryHeaders::SpirvHeaders.str());
+            header_libs.push(String::from("vulkan_headers"));
+        }
+        module.add_prop("header_libs", SoongProp::VecStr(header_libs))
     }
 
     fn map_lib(&self, library: &Path) -> Option<PathBuf> {
@@ -98,6 +111,13 @@ impl Project for Clvk {
             "external",
         ))
     }
+    fn map_module_name(&self, _target: &Path, module_name: &str) -> String {
+        String::from(if module_name == "cc_binary" {
+            "cc_test"
+        } else {
+            module_name
+        })
+    }
 
     fn filter_cflag(&self, _cflag: &str) -> bool {
         false
@@ -105,8 +125,8 @@ impl Project for Clvk {
     fn filter_gen_header(&self, _header: &Path) -> bool {
         false
     }
-    fn filter_include(&self, _include: &Path) -> bool {
-        false
+    fn filter_include(&self, include: &Path) -> bool {
+        include.ends_with("src")
     }
     fn filter_lib(&self, lib: &str) -> bool {
         lib != "libatomic"
