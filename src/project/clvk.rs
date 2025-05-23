@@ -44,7 +44,7 @@ impl Project for Clvk {
         }
 
         let mut package = SoongPackage::new(
-            &["//visibility:private"],
+            &["//external/OpenCL-ICD-Loader"],
             "clvk_license",
             &["SPDX-license-identifier-Apache-2.0"],
             &["LICENSE"],
