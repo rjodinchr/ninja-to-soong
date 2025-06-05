@@ -43,6 +43,7 @@ impl Project for Clvk {
             )?;
         }
 
+        const LIBCLVK: &str = "libclvk";
         let mut package = SoongPackage::new(
             &["//external/OpenCL-ICD-Loader"],
             "clvk_license",
@@ -51,7 +52,7 @@ impl Project for Clvk {
         )
         .generate(
             NinjaTargetsToGenMap::from(&[
-                NinjaTargetToGen("libOpenCL.so", Some("libclvk"), None),
+                NinjaTargetToGen("libOpenCL.so", Some(LIBCLVK), None),
                 NinjaTargetToGen("simple_test", None, None),
                 NinjaTargetToGen("api_tests", None, None),
             ]),
@@ -64,7 +65,27 @@ impl Project for Clvk {
         )?;
         self.gen_libs = package.get_gen_libs();
 
-        package.print()
+        const CLVK_ICD_GENRULE: &str = "clvk_icd_genrule";
+        package
+            .add_raw_suffix(&format!(
+                r#"
+cc_genrule {{
+    name: "{CLVK_ICD_GENRULE}",
+    cmd: "echo /system/$$CC_MULTILIB/{LIBCLVK}.so > $(out)",
+    srcs: [":{LIBCLVK}"],
+    out: ["clvk.icd"],
+}}
+
+prebuilt_etc {{
+    name: "clvk_icd_prebuilt",
+    src: ":{CLVK_ICD_GENRULE}",
+    filename_from_src: true,
+    relative_install_path: "Khronos/OpenCL/vendors",
+    soc_specific: true,
+}}
+"#
+            ))
+            .print()
     }
 
     fn get_deps(&self, dep: Dep) -> Vec<PathBuf> {
@@ -98,6 +119,11 @@ impl Project for Clvk {
             header_libs.push(CcLibraryHeaders::SpirvHeaders.str());
             header_libs.push(String::from("vulkan_headers"));
         }
+        let module = if target.ends_with("simple_test") {
+            module.add_prop("gtest", SoongProp::Bool(false))
+        } else {
+            module
+        };
         module.add_prop("header_libs", SoongProp::VecStr(header_libs))
     }
 
@@ -129,7 +155,7 @@ impl Project for Clvk {
         include.ends_with("src")
     }
     fn filter_lib(&self, lib: &str) -> bool {
-        lib != "libatomic"
+        lib != "libatomic" && !lib.contains("gtest")
     }
     fn filter_link_flag(&self, flag: &str) -> bool {
         flag == "-Wl,-Bsymbolic"

@@ -28,6 +28,7 @@ cc_test {
         "-DCOMPILER_AVAILABLE=1",
     ],
     shared_libs: ["libclvk"],
+    gtest: false,
     header_libs: ["OpenCL-Headers"],
 }
 
@@ -135,8 +136,6 @@ cc_test {
     static_libs: [
         "llvm-project_lib_libLLVMDemangle_a",
         "llvm-project_lib_libLLVMSupport_a",
-        "llvm-project_lib_libllvm_gtest_a",
-        "llvm-project_lib_libllvm_gtest_main_a",
     ],
     local_include_dirs: ["tests/../src"],
     header_libs: [
@@ -144,4 +143,19 @@ cc_test {
         "SPIRV-Headers-includes",
         "vulkan_headers",
     ],
+}
+
+cc_genrule {
+    name: "clvk_icd_genrule",
+    cmd: "echo /system/$$CC_MULTILIB/libclvk.so > $(out)",
+    srcs: [":libclvk"],
+    out: ["clvk.icd"],
+}
+
+prebuilt_etc {
+    name: "clvk_icd_prebuilt",
+    src: ":clvk_icd_genrule",
+    filename_from_src: true,
+    relative_install_path: "Khronos/OpenCL/vendors",
+    soc_specific: true,
 }
