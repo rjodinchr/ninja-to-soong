@@ -15,6 +15,7 @@ mod common;
 
 define_ProjectId!(
     (Angle, angle),
+    (Clpeak, clpeak),
     (Clvk, clvk),
     (Clspv, clspv),
     (LlvmProject, llvm_project),

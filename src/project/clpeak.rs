@@ -1,0 +1,92 @@
+// Copyright 2025 ninja-to-soong authors
+// SPDX-License-Identifier: Apache-2.0
+
+use super::*;
+
+#[derive(Default)]
+pub struct Clpeak {
+    src_path: PathBuf,
+}
+
+impl Project for Clpeak {
+    fn get_name(&self) -> &'static str {
+        "clpeak"
+    }
+    fn get_android_path(&self, ctx: &Context) -> PathBuf {
+        ctx.android_path.join("external").join(self.get_name())
+    }
+    fn get_test_path(&self, ctx: &Context) -> PathBuf {
+        ctx.test_path.join(self.get_name())
+    }
+    fn generate_package(
+        &mut self,
+        ctx: &Context,
+        _projects_map: &ProjectsMap,
+    ) -> Result<String, String> {
+        self.src_path = self.get_android_path(ctx);
+        let build_path = ctx.temp_path.join(self.get_name());
+        let ndk_path = get_ndk_path(&ctx.temp_path)?;
+
+        if !ctx.skip_gen_ninja {
+            execute_cmd!(
+                "bash",
+                [
+                    &path_to_string(self.get_test_path(ctx).join("gen-ninja.sh")),
+                    &path_to_string(&self.src_path),
+                    &path_to_string(&build_path),
+                    &path_to_string(&ndk_path),
+                ]
+            )?;
+        }
+        SoongPackage::new(
+            &["//visibility:public"],
+            "clpeak_license",
+            &["SPDX-license-identifier-Apache-2.0"],
+            &["LICENSE"],
+        )
+        .generate(
+            NinjaTargetsToGenMap::from(&[NinjaTargetToGen("clpeak", Some("clpeak"), None)]),
+            parse_build_ninja::<CmakeNinjaTarget>(&build_path)?,
+            &self.src_path,
+            &ndk_path,
+            &build_path,
+            None,
+            self,
+        )?
+        .print()
+    }
+
+    fn extend_cflags(&self, _target: &Path) -> Vec<String> {
+        vec![String::from("-fexceptions")]
+    }
+    fn extend_module(&self, _target: &Path, module: SoongModule) -> SoongModule {
+        module
+            .add_prop(
+                "shared_libs",
+                SoongProp::VecStr(vec![String::from("//external/OpenCL-ICD-Loader:libOpenCL")]),
+            )
+            .add_prop("test_suites", SoongProp::VecStr(vec![String::from("dts")]))
+            .add_prop(
+                "header_libs",
+                SoongProp::VecStr(vec![String::from("OpenCL-CLHPP")]),
+            )
+            .add_prop("soc_specific", SoongProp::Bool(true))
+    }
+
+    fn map_module_name(&self, _target: &Path, _module_name: &str) -> String {
+        String::from("cc_benchmark")
+    }
+
+    fn filter_cflag(&self, cflag: &str) -> bool {
+        cflag.contains("VERSION_STR")
+    }
+    fn filter_include(&self, include: &Path) -> bool {
+        include.starts_with(&self.src_path)
+    }
+    fn filter_link_flag(&self, _flag: &str) -> bool {
+        false
+    }
+    fn filter_lib(&self, _lib: &str) -> bool {
+        false
+    }
+}
