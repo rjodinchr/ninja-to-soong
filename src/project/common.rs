@@ -57,3 +57,14 @@ pub fn clean_gen_deps(
     }
     Ok(())
 }
+
+pub fn cmake_build(build_path: &Path, targets: &Vec<PathBuf>) -> Result<(), String> {
+    let mut args = vec![String::from("--build"), path_to_string(&build_path)];
+    for target in targets {
+        args.push(String::from("--target"));
+        args.push(path_to_string(target));
+    }
+    let args: Vec<&str> = args.iter().map(|target| target.as_str()).collect();
+    execute_cmd!("cmake", &args)?;
+    Ok(())
+}
