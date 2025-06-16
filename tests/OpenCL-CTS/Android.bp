@@ -30,7 +30,6 @@ cc_test {
     srcs: ["test_conformance/workgroups/*.cpp"],
     shared_libs: ["//external/OpenCL-ICD-Loader:libOpenCL"],
     static_libs: ["OpenCL-CTS_test_common_libharness_a"],
-    gtest: false,
     rtti: false,
     defaults: ["OpenCL-CTS-defaults"],
 }
@@ -51,7 +50,6 @@ cc_test {
     srcs: ["test_conformance/vectors/*.cpp"],
     shared_libs: ["//external/OpenCL-ICD-Loader:libOpenCL"],
     static_libs: ["OpenCL-CTS_test_common_libharness_a"],
-    gtest: false,
     rtti: false,
     defaults: ["OpenCL-CTS-defaults"],
 }
@@ -61,7 +59,6 @@ cc_test {
     srcs: ["test_conformance/thread_dimensions/*.cpp"],
     shared_libs: ["//external/OpenCL-ICD-Loader:libOpenCL"],
     static_libs: ["OpenCL-CTS_test_common_libharness_a"],
-    gtest: false,
     rtti: false,
     defaults: ["OpenCL-CTS-defaults"],
 }
@@ -71,7 +68,6 @@ cc_test {
     srcs: ["test_conformance/subgroups/*.cpp"],
     shared_libs: ["//external/OpenCL-ICD-Loader:libOpenCL"],
     static_libs: ["OpenCL-CTS_test_common_libharness_a"],
-    gtest: false,
     rtti: false,
     defaults: ["OpenCL-CTS-defaults"],
 }
@@ -85,11 +81,7 @@ cc_test {
     ],
     shared_libs: ["//external/OpenCL-ICD-Loader:libOpenCL"],
     static_libs: ["OpenCL-CTS_test_common_libharness_a"],
-    data: [
-        "test_conformance/spirv_new/spirv_asm/*",
-        "test_conformance/spirv_new/spirv_bin/*",
-    ],
-    gtest: false,
+    data: ["cmake_generated/test_conformance/spirv_new/spirv_bin/*"],
     rtti: false,
     defaults: ["OpenCL-CTS-defaults"],
 }
@@ -100,7 +92,6 @@ cc_test {
     shared_libs: ["//external/OpenCL-ICD-Loader:libOpenCL"],
     static_libs: ["OpenCL-CTS_test_common_libharness_a"],
     data: ["test_conformance/spir/*.zip"],
-    gtest: false,
     rtti: true,
     defaults: ["OpenCL-CTS-defaults"],
 }
@@ -110,7 +101,6 @@ cc_test {
     srcs: ["test_conformance/select/*.cpp"],
     shared_libs: ["//external/OpenCL-ICD-Loader:libOpenCL"],
     static_libs: ["OpenCL-CTS_test_common_libharness_a"],
-    gtest: false,
     rtti: false,
     defaults: ["OpenCL-CTS-defaults"],
 }
@@ -120,7 +110,6 @@ cc_test {
     srcs: ["test_conformance/relationals/*.cpp"],
     shared_libs: ["//external/OpenCL-ICD-Loader:libOpenCL"],
     static_libs: ["OpenCL-CTS_test_common_libharness_a"],
-    gtest: false,
     rtti: false,
     defaults: ["OpenCL-CTS-defaults"],
 }
@@ -130,7 +119,6 @@ cc_test {
     srcs: ["test_conformance/profiling/*.cpp"],
     shared_libs: ["//external/OpenCL-ICD-Loader:libOpenCL"],
     static_libs: ["OpenCL-CTS_test_common_libharness_a"],
-    gtest: false,
     rtti: false,
     defaults: ["OpenCL-CTS-defaults"],
 }
@@ -140,7 +128,6 @@ cc_test {
     srcs: ["test_conformance/printf/*.cpp"],
     shared_libs: ["//external/OpenCL-ICD-Loader:libOpenCL"],
     static_libs: ["OpenCL-CTS_test_common_libharness_a"],
-    gtest: false,
     rtti: false,
     defaults: ["OpenCL-CTS-defaults"],
 }
@@ -150,7 +137,6 @@ cc_test {
     srcs: ["test_conformance/pipes/*.cpp"],
     shared_libs: ["//external/OpenCL-ICD-Loader:libOpenCL"],
     static_libs: ["OpenCL-CTS_test_common_libharness_a"],
-    gtest: false,
     rtti: false,
     defaults: ["OpenCL-CTS-defaults"],
 }
@@ -160,7 +146,6 @@ cc_test {
     srcs: ["test_conformance/non_uniform_work_group/*.cpp"],
     shared_libs: ["//external/OpenCL-ICD-Loader:libOpenCL"],
     static_libs: ["OpenCL-CTS_test_common_libharness_a"],
-    gtest: false,
     rtti: false,
     defaults: ["OpenCL-CTS-defaults"],
 }
@@ -170,7 +155,6 @@ cc_test {
     srcs: ["test_conformance/multiple_device_context/*.cpp"],
     shared_libs: ["//external/OpenCL-ICD-Loader:libOpenCL"],
     static_libs: ["OpenCL-CTS_test_common_libharness_a"],
-    gtest: false,
     rtti: false,
     defaults: ["OpenCL-CTS-defaults"],
 }
@@ -180,7 +164,6 @@ cc_test {
     srcs: ["test_conformance/mem_host_flags/*.cpp"],
     shared_libs: ["//external/OpenCL-ICD-Loader:libOpenCL"],
     static_libs: ["OpenCL-CTS_test_common_libharness_a"],
-    gtest: false,
     rtti: false,
     defaults: ["OpenCL-CTS-defaults"],
 }
@@ -190,7 +173,6 @@ cc_test {
     srcs: ["test_conformance/math_brute_force/*.cpp"],
     shared_libs: ["//external/OpenCL-ICD-Loader:libOpenCL"],
     static_libs: ["OpenCL-CTS_test_common_libharness_a"],
-    gtest: false,
     rtti: false,
     defaults: ["OpenCL-CTS-defaults"],
 }
@@ -200,7 +182,6 @@ cc_test {
     srcs: ["test_conformance/integer_ops/*.cpp"],
     shared_libs: ["//external/OpenCL-ICD-Loader:libOpenCL"],
     static_libs: ["OpenCL-CTS_test_common_libharness_a"],
-    gtest: false,
     rtti: false,
     defaults: ["OpenCL-CTS-defaults"],
 }
@@ -213,7 +194,6 @@ cc_test {
     ],
     shared_libs: ["//external/OpenCL-ICD-Loader:libOpenCL"],
     static_libs: ["OpenCL-CTS_test_common_libharness_a"],
-    gtest: false,
     rtti: false,
     defaults: ["OpenCL-CTS-defaults"],
 }
@@ -226,7 +206,6 @@ cc_test {
     ],
     shared_libs: ["//external/OpenCL-ICD-Loader:libOpenCL"],
     static_libs: ["OpenCL-CTS_test_common_libharness_a"],
-    gtest: false,
     rtti: false,
     defaults: ["OpenCL-CTS-defaults"],
 }
@@ -239,7 +218,6 @@ cc_test {
     ],
     shared_libs: ["//external/OpenCL-ICD-Loader:libOpenCL"],
     static_libs: ["OpenCL-CTS_test_common_libharness_a"],
-    gtest: false,
     rtti: false,
     defaults: ["OpenCL-CTS-defaults"],
 }
@@ -252,7 +230,6 @@ cc_test {
     ],
     shared_libs: ["//external/OpenCL-ICD-Loader:libOpenCL"],
     static_libs: ["OpenCL-CTS_test_common_libharness_a"],
-    gtest: false,
     rtti: false,
     defaults: ["OpenCL-CTS-defaults"],
 }
@@ -265,7 +242,6 @@ cc_test {
     ],
     shared_libs: ["//external/OpenCL-ICD-Loader:libOpenCL"],
     static_libs: ["OpenCL-CTS_test_common_libharness_a"],
-    gtest: false,
     rtti: false,
     defaults: ["OpenCL-CTS-defaults"],
 }
@@ -278,7 +254,6 @@ cc_test {
     ],
     shared_libs: ["//external/OpenCL-ICD-Loader:libOpenCL"],
     static_libs: ["OpenCL-CTS_test_common_libharness_a"],
-    gtest: false,
     rtti: false,
     defaults: ["OpenCL-CTS-defaults"],
 }
@@ -291,7 +266,6 @@ cc_test {
     ],
     shared_libs: ["//external/OpenCL-ICD-Loader:libOpenCL"],
     static_libs: ["OpenCL-CTS_test_common_libharness_a"],
-    gtest: false,
     rtti: false,
     defaults: ["OpenCL-CTS-defaults"],
 }
@@ -301,7 +275,6 @@ cc_test {
     srcs: ["test_conformance/half/*.cpp"],
     shared_libs: ["//external/OpenCL-ICD-Loader:libOpenCL"],
     static_libs: ["OpenCL-CTS_test_common_libharness_a"],
-    gtest: false,
     rtti: false,
     defaults: ["OpenCL-CTS-defaults"],
 }
@@ -311,7 +284,6 @@ cc_test {
     srcs: ["test_conformance/geometrics/*.cpp"],
     shared_libs: ["//external/OpenCL-ICD-Loader:libOpenCL"],
     static_libs: ["OpenCL-CTS_test_common_libharness_a"],
-    gtest: false,
     rtti: false,
     defaults: ["OpenCL-CTS-defaults"],
 }
@@ -321,7 +293,6 @@ cc_test {
     srcs: ["test_conformance/generic_address_space/*.cpp"],
     shared_libs: ["//external/OpenCL-ICD-Loader:libOpenCL"],
     static_libs: ["OpenCL-CTS_test_common_libharness_a"],
-    gtest: false,
     rtti: false,
     defaults: ["OpenCL-CTS-defaults"],
 }
@@ -331,7 +302,6 @@ cc_test {
     srcs: ["test_conformance/extensions/cl_khr_semaphore/*.cpp"],
     shared_libs: ["//external/OpenCL-ICD-Loader:libOpenCL"],
     static_libs: ["OpenCL-CTS_test_common_libharness_a"],
-    gtest: false,
     rtti: false,
     defaults: ["OpenCL-CTS-defaults"],
 }
@@ -341,7 +311,6 @@ cc_test {
     srcs: ["test_conformance/extensions/cl_khr_kernel_clock/*.cpp"],
     shared_libs: ["//external/OpenCL-ICD-Loader:libOpenCL"],
     static_libs: ["OpenCL-CTS_test_common_libharness_a"],
-    gtest: false,
     rtti: false,
     defaults: ["OpenCL-CTS-defaults"],
 }
@@ -351,7 +320,6 @@ cc_test {
     srcs: ["test_conformance/extensions/cl_khr_command_buffer/*.cpp"],
     shared_libs: ["//external/OpenCL-ICD-Loader:libOpenCL"],
     static_libs: ["OpenCL-CTS_test_common_libharness_a"],
-    gtest: false,
     rtti: false,
     defaults: ["OpenCL-CTS-defaults"],
 }
@@ -364,7 +332,6 @@ cc_test {
     ],
     shared_libs: ["//external/OpenCL-ICD-Loader:libOpenCL"],
     static_libs: ["OpenCL-CTS_test_common_libharness_a"],
-    gtest: false,
     rtti: false,
     defaults: ["OpenCL-CTS-defaults"],
 }
@@ -374,7 +341,6 @@ cc_test {
     srcs: ["test_conformance/extensions/cl_ext_cxx_for_opencl/*.cpp"],
     shared_libs: ["//external/OpenCL-ICD-Loader:libOpenCL"],
     static_libs: ["OpenCL-CTS_test_common_libharness_a"],
-    gtest: false,
     rtti: false,
     defaults: ["OpenCL-CTS-defaults"],
 }
@@ -384,7 +350,6 @@ cc_test {
     srcs: ["test_conformance/events/*.cpp"],
     shared_libs: ["//external/OpenCL-ICD-Loader:libOpenCL"],
     static_libs: ["OpenCL-CTS_test_common_libharness_a"],
-    gtest: false,
     rtti: false,
     defaults: ["OpenCL-CTS-defaults"],
 }
@@ -394,7 +359,6 @@ cc_test {
     srcs: ["test_conformance/device_timer/*.cpp"],
     shared_libs: ["//external/OpenCL-ICD-Loader:libOpenCL"],
     static_libs: ["OpenCL-CTS_test_common_libharness_a"],
-    gtest: false,
     rtti: false,
     defaults: ["OpenCL-CTS-defaults"],
 }
@@ -404,7 +368,6 @@ cc_test {
     srcs: ["test_conformance/device_partition/*.cpp"],
     shared_libs: ["//external/OpenCL-ICD-Loader:libOpenCL"],
     static_libs: ["OpenCL-CTS_test_common_libharness_a"],
-    gtest: false,
     rtti: false,
     defaults: ["OpenCL-CTS-defaults"],
 }
@@ -414,7 +377,6 @@ cc_test {
     srcs: ["test_conformance/device_execution/*.cpp"],
     shared_libs: ["//external/OpenCL-ICD-Loader:libOpenCL"],
     static_libs: ["OpenCL-CTS_test_common_libharness_a"],
-    gtest: false,
     rtti: false,
     defaults: ["OpenCL-CTS-defaults"],
 }
@@ -424,7 +386,6 @@ cc_test {
     srcs: ["test_conformance/conversions/*.cpp"],
     shared_libs: ["//external/OpenCL-ICD-Loader:libOpenCL"],
     static_libs: ["OpenCL-CTS_test_common_libharness_a"],
-    gtest: false,
     rtti: false,
     defaults: ["OpenCL-CTS-defaults"],
 }
@@ -434,7 +395,6 @@ cc_test {
     srcs: ["test_conformance/contractions/contractions.cpp"],
     shared_libs: ["//external/OpenCL-ICD-Loader:libOpenCL"],
     static_libs: ["OpenCL-CTS_test_common_libharness_a"],
-    gtest: false,
     rtti: false,
     defaults: ["OpenCL-CTS-defaults"],
 }
@@ -444,7 +404,6 @@ cc_test {
     srcs: ["test_conformance/computeinfo/*.cpp"],
     shared_libs: ["//external/OpenCL-ICD-Loader:libOpenCL"],
     static_libs: ["OpenCL-CTS_test_common_libharness_a"],
-    gtest: false,
     rtti: false,
     defaults: ["OpenCL-CTS-defaults"],
 }
@@ -458,7 +417,6 @@ cc_test {
         "test_conformance/compiler/includeTestDirectory/testIncludeFile.h",
         "test_conformance/compiler/secondIncludeTestDirectory/testIncludeFile.h",
     ],
-    gtest: false,
     rtti: false,
     defaults: ["OpenCL-CTS-defaults"],
 }
@@ -468,7 +426,6 @@ cc_test {
     srcs: ["test_conformance/commonfns/*.cpp"],
     shared_libs: ["//external/OpenCL-ICD-Loader:libOpenCL"],
     static_libs: ["OpenCL-CTS_test_common_libharness_a"],
-    gtest: false,
     rtti: false,
     defaults: ["OpenCL-CTS-defaults"],
 }
@@ -478,7 +435,6 @@ cc_test {
     srcs: ["test_conformance/c11_atomics/*.cpp"],
     shared_libs: ["//external/OpenCL-ICD-Loader:libOpenCL"],
     static_libs: ["OpenCL-CTS_test_common_libharness_a"],
-    gtest: false,
     rtti: false,
     defaults: ["OpenCL-CTS-defaults"],
 }
@@ -488,7 +444,6 @@ cc_test {
     srcs: ["test_conformance/buffers/*.cpp"],
     shared_libs: ["//external/OpenCL-ICD-Loader:libOpenCL"],
     static_libs: ["OpenCL-CTS_test_common_libharness_a"],
-    gtest: false,
     rtti: false,
     defaults: ["OpenCL-CTS-defaults"],
 }
@@ -560,7 +515,6 @@ cc_test {
     ],
     shared_libs: ["//external/OpenCL-ICD-Loader:libOpenCL"],
     static_libs: ["OpenCL-CTS_test_common_libharness_a"],
-    gtest: false,
     rtti: false,
     defaults: ["OpenCL-CTS-defaults"],
 }
@@ -570,7 +524,6 @@ cc_test {
     srcs: ["test_conformance/atomics/*.cpp"],
     shared_libs: ["//external/OpenCL-ICD-Loader:libOpenCL"],
     static_libs: ["OpenCL-CTS_test_common_libharness_a"],
-    gtest: false,
     rtti: false,
     defaults: ["OpenCL-CTS-defaults"],
 }
@@ -580,7 +533,6 @@ cc_test {
     srcs: ["test_conformance/api/*.cpp"],
     shared_libs: ["//external/OpenCL-ICD-Loader:libOpenCL"],
     static_libs: ["OpenCL-CTS_test_common_libharness_a"],
-    gtest: false,
     rtti: false,
     defaults: ["OpenCL-CTS-defaults"],
 }
@@ -590,7 +542,6 @@ cc_test {
     srcs: ["test_conformance/allocations/*.cpp"],
     shared_libs: ["//external/OpenCL-ICD-Loader:libOpenCL"],
     static_libs: ["OpenCL-CTS_test_common_libharness_a"],
-    gtest: false,
     rtti: false,
     defaults: ["OpenCL-CTS-defaults"],
 }
@@ -600,7 +551,6 @@ cc_test {
     srcs: ["test_conformance/SVM/*.cpp"],
     shared_libs: ["//external/OpenCL-ICD-Loader:libOpenCL"],
     static_libs: ["OpenCL-CTS_test_common_libharness_a"],
-    gtest: false,
     rtti: false,
     defaults: ["OpenCL-CTS-defaults"],
 }
@@ -608,6 +558,7 @@ cc_test {
 cc_defaults {
     name: "OpenCL-CTS-defaults",
     cflags: [
+        "-DCL_ENABLE_BETA_EXTENSIONS",
         "-DCL_NO_EXTENSION_PROTOTYPES",
         "-DCL_TARGET_OPENCL_VERSION=300",
         "-DCL_USE_DEPRECATED_OPENCL_1_0_APIS=1",
@@ -629,8 +580,11 @@ cc_defaults {
 cc_defaults {
     name: "OpenCL-CTS-raw-defaults",
     header_libs: ["OpenCL-Headers"],
-    compile_multilib: "64",
+    compile_multilib: "both",
     multilib: {
+        lib32: {
+            suffix: "32",
+        },
         lib64: {
             suffix: "64",
         },
@@ -641,16 +595,73 @@ cc_defaults {
         "-Wno-non-virtual-dtor",
         "-fexceptions",
     ],
+    gtest: false,
 }
 
-python_test_host {
+python_test {
     name: "opencl_cts",
     main: "scripts/test_opencl_cts.py",
     srcs: ["scripts/test_opencl_cts.py"],
-    data: ["scripts/test_opencl_cts.xml"],
+    data: [
+        ":OpenCL-CTS-test_svm",
+        ":OpenCL-CTS-test_allocations",
+        ":OpenCL-CTS-test_api",
+        ":OpenCL-CTS-test_atomics",
+        ":OpenCL-CTS-test_basic",
+        ":OpenCL-CTS-test_buffers",
+        ":OpenCL-CTS-test_c11_atomics",
+        ":OpenCL-CTS-test_commonfns",
+        ":OpenCL-CTS-test_compiler",
+        ":OpenCL-CTS-test_computeinfo",
+        ":OpenCL-CTS-test_contractions",
+        ":OpenCL-CTS-test_conversions",
+        ":OpenCL-CTS-test_device_execution",
+        ":OpenCL-CTS-test_device_partition",
+        ":OpenCL-CTS-test_device_timer",
+        ":OpenCL-CTS-test_events",
+        ":OpenCL-CTS-test_cl_ext_cxx_for_opencl",
+        ":OpenCL-CTS-test_cl_khr_mutable_dispatch",
+        ":OpenCL-CTS-test_cl_khr_command_buffer",
+        ":OpenCL-CTS-test_cl_khr_kernel_clock",
+        ":OpenCL-CTS-test_cl_khr_semaphore",
+        ":OpenCL-CTS-test_generic_address_space",
+        ":OpenCL-CTS-test_geometrics",
+        ":OpenCL-CTS-test_half",
+        ":OpenCL-CTS-test_cl_copy_images",
+        ":OpenCL-CTS-test_cl_fill_images",
+        ":OpenCL-CTS-test_cl_get_info",
+        ":OpenCL-CTS-test_cl_read_write_images",
+        ":OpenCL-CTS-test_kernel_image_methods",
+        ":OpenCL-CTS-test_image_streams",
+        ":OpenCL-CTS-test_samplerless_reads",
+        ":OpenCL-CTS-test_integer_ops",
+        ":OpenCL-CTS-test_bruteforce",
+        ":OpenCL-CTS-test_mem_host_flags",
+        ":OpenCL-CTS-test_multiples",
+        ":OpenCL-CTS-test_non_uniform_work_group",
+        ":OpenCL-CTS-test_pipes",
+        ":OpenCL-CTS-test_printf",
+        ":OpenCL-CTS-test_profiling",
+        ":OpenCL-CTS-test_relationals",
+        ":OpenCL-CTS-test_select",
+        ":OpenCL-CTS-test_spir",
+        ":OpenCL-CTS-test_spirv_new",
+        ":OpenCL-CTS-test_subgroups",
+        ":OpenCL-CTS-test_thread_dimensions",
+        ":OpenCL-CTS-test_vectors",
+        ":OpenCL-CTS-test_workgroups",
+    ],
     test_config: "scripts/test_opencl_cts.xml",
     test_options: {
         unit_test: false,
+    },
+    target: {
+        android_arm64: {
+            test_suites: [
+                "device-tests",
+                "device-pixel-tests",
+            ],
+        },
     },
 }
 

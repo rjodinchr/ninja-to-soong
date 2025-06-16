@@ -8,6 +8,7 @@ pub struct OpenclCts();
 
 const DEFAULTS: &str = "OpenCL-CTS-defaults";
 const RAW_DEFAULTS: &str = "OpenCL-CTS-raw-defaults";
+const CMAKE_GENERATED: &str = "cmake_generated";
 
 fn parse_test(line: &str) -> Option<String> {
     let split_comma = line.split(",");
@@ -26,7 +27,7 @@ fn parse_tests(src_path: &Path) -> Result<Vec<String>, String> {
     let content = read_file(&src_path.join("test_conformance/opencl_conformance_tests_full.csv"))?;
     let mut lines = content.lines();
     while let Some(line) = lines.next() {
-        if line.is_empty() || line.starts_with("#") {
+        if line.is_empty() || line.starts_with("#") || line.starts_with("OpenCL-GL") {
             continue;
         }
         if let Some(test) = parse_test(line) {
@@ -58,6 +59,12 @@ impl Project for OpenclCts {
         let build_path = ctx.temp_path.join(self.get_name());
         let ndk_path = get_ndk_path(&ctx.temp_path)?;
 
+        let spirv_tools_path = if !ctx.skip_build {
+            ctx.temp_path.clone()
+        } else {
+            self.get_test_path(ctx)
+        };
+
         if !ctx.skip_gen_ninja {
             execute_cmd!(
                 "bash",
@@ -66,6 +73,7 @@ impl Project for OpenclCts {
                     &path_to_string(&src_path),
                     &path_to_string(&build_path),
                     &path_to_string(&ndk_path),
+                    &path_to_string(&spirv_tools_path),
                 ]
             )?;
         }
@@ -82,7 +90,7 @@ impl Project for OpenclCts {
             .iter()
             .map(|(test, name)| NinjaTargetToGen(test, Some(name), None))
             .collect::<Vec<_>>();
-        let package = SoongPackage::new(
+        let mut package = SoongPackage::new(
             &["//visibility:public"],
             "external_OpenCL-CTS_license",
             &[
@@ -99,9 +107,16 @@ impl Project for OpenclCts {
             &src_path,
             &ndk_path,
             &build_path,
-            None,
+            Some(CMAKE_GENERATED),
             self,
         )?;
+
+        let gen_deps = package.get_gen_deps();
+        if !ctx.skip_build {
+            common::cmake_build(&build_path, &gen_deps)?;
+        }
+        common::copy_gen_deps(gen_deps, CMAKE_GENERATED, &build_path, ctx, self)?;
+
         let default_module = SoongModule::new("cc_defaults")
             .add_prop("name", SoongProp::Str(String::from(DEFAULTS)))
             .add_props(
@@ -118,8 +133,11 @@ impl Project for OpenclCts {
 cc_defaults {{
     name: "{RAW_DEFAULTS}",
     header_libs: ["OpenCL-Headers"],
-    compile_multilib: "64",
+    compile_multilib: "both",
     multilib: {{
+        lib32: {{
+            suffix: "32",
+        }},
         lib64: {{
             suffix: "64",
         }},
@@ -130,16 +148,27 @@ cc_defaults {{
         "-Wno-non-virtual-dtor",
         "-fexceptions",
     ],
+    gtest: false,
 }}
 
-python_test_host {{
+python_test {{
     name: "opencl_cts",
     main: "scripts/test_opencl_cts.py",
     srcs: ["scripts/test_opencl_cts.py"],
-    data: ["scripts/test_opencl_cts.xml"],
+    data: [
+{0}
+    ],
     test_config: "scripts/test_opencl_cts.xml",
     test_options: {{
         unit_test: false,
+    }},
+    target: {{
+        android_arm64: {{
+            test_suites: [
+                "device-tests",
+                "device-pixel-tests",
+            ],
+        }},
     }},
 }}
 
@@ -149,6 +178,11 @@ python_test {{
     srcs: ["test_conformance/run_conformance.py"],
 }}
 "#,
+                tests
+                    .iter()
+                    .map(|(_, test)| String::from("        \":") + test + "\",")
+                    .collect::<Vec<_>>()
+                    .join("\n")
             ))
             .print()
     }
@@ -178,13 +212,9 @@ python_test {{
             module = module.add_prop(
                 "data",
                 SoongProp::VecStr(vec![
-                    String::from("test_conformance/spirv_new/spirv_asm/*"),
-                    String::from("test_conformance/spirv_new/spirv_bin/*"),
+                    String::from(CMAKE_GENERATED) + "/test_conformance/spirv_new/spirv_bin/*",
                 ]),
             )
-        }
-        if target.starts_with("test_conformance") {
-            module = module.add_prop("gtest", SoongProp::Bool(false))
         }
         module
             .add_prop("rtti", SoongProp::Bool(is_test_spir))
@@ -209,6 +239,9 @@ python_test {{
     fn filter_cflag(&self, _cflag: &str) -> bool {
         false
     }
+    fn filter_gen_header(&self, _header: &Path) -> bool {
+        false
+    }
     fn filter_include(&self, include: &Path) -> bool {
         !include.ends_with("OpenCL-Headers")
     }
@@ -217,5 +250,8 @@ python_test {{
     }
     fn filter_link_flag(&self, _flag: &str) -> bool {
         false
+    }
+    fn filter_target(&self, target: &Path) -> bool {
+        !target.starts_with("test_conformance/spirv_new/spirv_bin")
     }
 }

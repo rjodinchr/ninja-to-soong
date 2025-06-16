@@ -47,13 +47,7 @@ impl Project for LlvmProject {
             let mut targets_to_build = Vec::new();
             targets_to_build.extend(targets_to_generate.clone());
             targets_to_build.extend(libclc_binaries.clone());
-            let mut args = vec![String::from("--build"), path_to_string(&build_path)];
-            for target in targets_to_build {
-                args.push(String::from("--target"));
-                args.push(path_to_string(target));
-            }
-            let args: Vec<&str> = args.iter().map(|target| target.as_str()).collect();
-            execute_cmd!("cmake", &args)?;
+            common::cmake_build(&build_path, &targets_to_build)?;
         }
 
         const CMAKE_GENERATED: &str = "cmake_generated";

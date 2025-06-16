@@ -74,7 +74,7 @@ impl SoongNamedProp {
             SoongProp::Str(default_str) => match self.prop {
                 SoongProp::Str(str) => {
                     if default_str != str {
-                        return error!("Could not filter {0:#?} from {base_name:#?} because it is different than default ({default_str:#?} != {str:#?}", self.name);
+                        return error!("Could not filter {0:#?} from {base_name:#?} because it is different than default ({default_str:#?} != {str:#?})", self.name);
                     }
                     self.prop = SoongProp::None;
                 }
@@ -108,6 +108,15 @@ impl SoongNamedProp {
                     self.prop = SoongProp::Prop(Box::new(new_props));
                 }
                 _ => return error!("default prop type (Prop) does not match with named prop"),
+            },
+            SoongProp::Bool(default_bool) => match self.prop {
+                SoongProp::Bool(bool) => {
+                    if default_bool != bool {
+                        return error!("Could not filter {0:#?} from {base_name:#?} because it is different than default ({default_bool:#?} != {bool:#?})", self.name);
+                    }
+                    self.prop = SoongProp::None;
+                }
+                _ => return error!("default prop type (Bool) does not match with named prop"),
             },
             _ => return error!("Unsupported property type to filter"),
         };

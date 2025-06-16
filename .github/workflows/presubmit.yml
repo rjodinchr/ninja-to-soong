@@ -81,7 +81,7 @@ jobs:
           N2S_NDK_PATH: ${{ env.android }}
         run: |
           set -x
-          PATH="${{ env.android }}/depot_tools:${PATH}" cargo run --release -- --skip-build --aosp-path "${{ env.android }}" ${{ env.projects }}
+          PATH="${{ env.android }}/depot_tools:${PATH}" cargo run --features debug_project --release -- --skip-build --aosp-path "${{ env.android }}" ${{ env.projects }}
       - name: Tests w/ cache
         if: steps.checkout-repositories.outputs.cache-hit == 'true'
         shell: bash
@@ -90,7 +90,7 @@ jobs:
           N2S_NDK_PATH: ${{ env.android }}
         run: |
           set -x
-          PATH="${{ env.android }}/depot_tools:${PATH}" cargo run --release -- --skip-gen-ninja --aosp-path "${{ env.android }}" ${{ env.projects }}
+          PATH="${{ env.android }}/depot_tools:${PATH}" cargo run --features debug_project --release -- --skip-gen-ninja --aosp-path "${{ env.android }}" ${{ env.projects }}
       - name: Check generated files
         shell: bash
         run: |
