@@ -574,34 +574,11 @@ cc_defaults {
         "test_common/gles",
         "test_common/harness",
     ],
-    defaults: ["OpenCL-CTS-raw-defaults"],
+    defaults: ["OpenCL-CTS-manual-defaults"],
 }
 
-cc_defaults {
-    name: "OpenCL-CTS-raw-defaults",
-    header_libs: ["OpenCL-Headers"],
-    compile_multilib: "both",
-    multilib: {
-        lib32: {
-            suffix: "32",
-        },
-        lib64: {
-            suffix: "64",
-        },
-    },
-    cflags: [
-        "-Wno-error",
-        "-Wno-c++11-narrowing",
-        "-Wno-non-virtual-dtor",
-        "-fexceptions",
-    ],
-    gtest: false,
-}
-
-python_test {
-    name: "opencl_cts",
-    main: "scripts/test_opencl_cts.py",
-    srcs: ["scripts/test_opencl_cts.py"],
+python_defaults {
+    name: "opencl_cts_data",
     data: [
         ":OpenCL-CTS-test_svm",
         ":OpenCL-CTS-test_allocations",
@@ -651,22 +628,6 @@ python_test {
         ":OpenCL-CTS-test_vectors",
         ":OpenCL-CTS-test_workgroups",
     ],
-    test_config: "scripts/test_opencl_cts.xml",
-    test_options: {
-        unit_test: false,
-    },
-    target: {
-        android_arm64: {
-            test_suites: [
-                "device-tests",
-                "device-pixel-tests",
-            ],
-        },
-    },
 }
 
-python_test {
-    name: "run_conformance",
-    main: "test_conformance/run_conformance.py",
-    srcs: ["test_conformance/run_conformance.py"],
-}
+build = ["AndroidManual.bp"]

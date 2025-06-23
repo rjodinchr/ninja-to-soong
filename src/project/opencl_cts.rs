@@ -7,7 +7,6 @@ use super::*;
 pub struct OpenclCts();
 
 const DEFAULTS: &str = "OpenCL-CTS-defaults";
-const RAW_DEFAULTS: &str = "OpenCL-CTS-raw-defaults";
 const CMAKE_GENERATED: &str = "cmake_generated";
 
 fn parse_test(line: &str) -> Option<String> {
@@ -124,59 +123,20 @@ impl Project for OpenclCts {
             )
             .add_prop(
                 "defaults",
-                SoongProp::VecStr(vec![String::from(RAW_DEFAULTS)]),
+                SoongProp::VecStr(vec![String::from("OpenCL-CTS-manual-defaults")]),
             );
         package
             .add_module(default_module)
             .add_raw_suffix(&format!(
                 r#"
-cc_defaults {{
-    name: "{RAW_DEFAULTS}",
-    header_libs: ["OpenCL-Headers"],
-    compile_multilib: "both",
-    multilib: {{
-        lib32: {{
-            suffix: "32",
-        }},
-        lib64: {{
-            suffix: "64",
-        }},
-    }},
-    cflags: [
-        "-Wno-error",
-        "-Wno-c++11-narrowing",
-        "-Wno-non-virtual-dtor",
-        "-fexceptions",
-    ],
-    gtest: false,
-}}
-
-python_test {{
-    name: "opencl_cts",
-    main: "scripts/test_opencl_cts.py",
-    srcs: ["scripts/test_opencl_cts.py"],
+python_defaults {{
+    name: "opencl_cts_data",
     data: [
 {0}
     ],
-    test_config: "scripts/test_opencl_cts.xml",
-    test_options: {{
-        unit_test: false,
-    }},
-    target: {{
-        android_arm64: {{
-            test_suites: [
-                "device-tests",
-                "device-pixel-tests",
-            ],
-        }},
-    }},
 }}
 
-python_test {{
-    name: "run_conformance",
-    main: "test_conformance/run_conformance.py",
-    srcs: ["test_conformance/run_conformance.py"],
-}}
+build = ["AndroidManual.bp"]
 "#,
                 tests
                     .iter()
