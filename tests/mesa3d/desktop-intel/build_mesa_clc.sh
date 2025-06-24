@@ -20,6 +20,7 @@ meson setup \
     -Dbuildtype=release \
     -Dmesa-clc=enabled \
     -Dinstall-mesa-clc=true \
+    -Dintel-elk=false \
     -Dstrip=true \
     --reconfigure \
     --wipe \
