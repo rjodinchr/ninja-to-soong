@@ -42,6 +42,7 @@ meson setup \
     -Dbuildtype=release \
     -Dmesa-clc=system \
     -Dintel-rt=enabled \
+    -Dintel-elk=false \
     -Dstrip=true \
     --reconfigure \
     --wipe \

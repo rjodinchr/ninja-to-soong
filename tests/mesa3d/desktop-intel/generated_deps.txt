@@ -39,7 +39,6 @@
     "src/intel/compiler/brw_device_sha1_gen.c",
     "src/intel/compiler/brw_nir_lower_fsign.c",
     "src/intel/compiler/brw_nir_trig_workarounds.c",
-    "src/intel/compiler/elk/elk_nir_trig_workarounds.c",
     "src/intel/dev/intel_device_info_gen.h",
     "src/intel/dev/intel_wa.c",
     "src/intel/dev/intel_wa.h",
