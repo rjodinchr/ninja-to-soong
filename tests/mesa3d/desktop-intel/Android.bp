@@ -83,7 +83,6 @@ cc_binary {
         "src/tool/pps",
         "subprojects/perfetto/sdk",
     ],
-    soc_specific: true,
     defaults: ["mesa3d-desktop-intel-defaults"],
 }
 
@@ -781,7 +780,6 @@ cc_library_shared {
         "src/mapi",
         "src/mapi/es2api",
     ],
-    soc_specific: true,
     relative_install_path: "egl",
     defaults: ["mesa3d-desktop-intel-defaults"],
 }
@@ -876,7 +874,6 @@ cc_library_shared {
         "src/mesa",
         "subprojects/perfetto/sdk",
     ],
-    soc_specific: true,
     defaults: ["mesa3d-desktop-intel-defaults"],
 }
 
@@ -2495,7 +2492,6 @@ cc_library_shared {
         "src/mapi",
         "src/mapi/es1api",
     ],
-    soc_specific: true,
     relative_install_path: "egl",
     defaults: ["mesa3d-desktop-intel-defaults"],
 }
@@ -2600,7 +2596,6 @@ cc_library_shared {
         "src/vulkan/wsi",
         "subprojects/perfetto/sdk",
     ],
-    soc_specific: true,
     relative_install_path: "hw",
     defaults: ["mesa3d-desktop-intel-defaults"],
 }
@@ -3360,7 +3355,6 @@ cc_library_shared {
         "src/x11",
         "subprojects/perfetto/sdk",
     ],
-    soc_specific: true,
     relative_install_path: "egl",
     header_libs: ["libnativebase_headers"],
     defaults: ["mesa3d-desktop-intel-defaults"],
@@ -3502,6 +3496,7 @@ cc_defaults {
 
 cc_defaults {
     name: "mesa3d-desktop-intel-raw-defaults",
+    soc_specific: true,
     enabled: false,
     arch: {
         x86_64: {

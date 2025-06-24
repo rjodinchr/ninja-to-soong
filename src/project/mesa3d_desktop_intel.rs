@@ -150,6 +150,7 @@ impl Project for Mesa3DDesktopIntel {
                 r#"
 cc_defaults {{
     name: "{RAW_DEFAULTS}",
+    soc_specific: true,
     enabled: false,
     arch: {{
         x86_64: {{
@@ -168,23 +169,6 @@ cc_defaults {{
     }
 
     fn extend_module(&self, target: &Path, module: SoongModule) -> SoongModule {
-        let is_soc_specific = |module: SoongModule| -> SoongModule {
-            for lib in [
-                "libgallium_dri.so",
-                "libvulkan_intel.so",
-                "libGLESv1_CM_mesa.so.1.1.0",
-                "libGLESv2_mesa.so.2.0.0",
-                "libEGL_mesa.so.1.0.0",
-                "pps-producer",
-            ] {
-                if target.ends_with(lib) {
-                    return module.add_prop("soc_specific", SoongProp::Bool(true));
-                }
-            }
-            module
-        };
-        let module = is_soc_specific(module);
-
         let relative_install = |module: SoongModule| -> SoongModule {
             for lib in [
                 "libGLESv1_CM_mesa.so.1.1.0",
