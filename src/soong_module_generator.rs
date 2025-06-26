@@ -241,7 +241,7 @@ where
                 cflags.extend(input_cflags);
             } else {
                 modules.extend(self.generate_object("cc_library_static", input_target)?);
-                static_libs.push(path_to_id(Path::new(self.project.get_name()).join(input)));
+                whole_static_libs.push(path_to_id(Path::new(self.project.get_name()).join(input)));
                 continue;
             }
         }
