@@ -143,6 +143,9 @@ pub trait Project {
     fn filter_include(&self, _include: &Path) -> bool {
         true
     }
+    fn filter_input_target(&self, _input_target: &Path) -> bool {
+        true
+    }
     fn filter_lib(&self, _lib: &str) -> bool {
         true
     }

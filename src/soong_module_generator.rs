@@ -177,12 +177,13 @@ where
             })
             .collect())
     }
-    pub fn generate_object(&mut self, name: &str, target: &T) -> Result<SoongModule, String> {
+    pub fn generate_object(&mut self, name: &str, target: &T) -> Result<Vec<SoongModule>, String> {
         let target_name = target.get_name();
         let module_name = path_to_id(match self.targets_to_gen.get_name(&target_name) {
             Some(name) => name,
             None => Path::new(self.project.get_name()).join(&target_name),
         });
+        let mut modules = Vec::new();
         let mut cflags = Vec::new();
         let mut includes = Vec::new();
         let mut sources = Vec::new();
@@ -191,17 +192,27 @@ where
         let mut shared_libs = Vec::new();
         for input in target.get_inputs() {
             let Some(input_target) = self.targets_map.get(input) else {
-                return error!("unsupported input for library: {input:#?}");
+                sources.push(path_to_string(strip_prefix(
+                    canonicalize_path(input, self.build_path),
+                    self.src_path,
+                )));
+                continue;
             };
 
-            whole_static_libs
-                .extend(self.get_libs(input_target.get_libs_static_whole(), &module_name));
-            static_libs.extend(self.get_libs(input_target.get_libs_static(), &module_name));
-            shared_libs.extend(self.get_libs(input_target.get_libs_shared(), &module_name));
-            sources.extend(self.get_sources(input_target.get_sources(self.build_path)?));
-            includes.extend(self.get_includes(input_target.get_includes(self.build_path)));
-            cflags.extend(self.get_defines(input_target.get_defines()));
-            cflags.extend(self.get_cflags(input_target.get_cflags()));
+            if self.project.filter_input_target(input) {
+                whole_static_libs
+                    .extend(self.get_libs(input_target.get_libs_static_whole(), &module_name));
+                static_libs.extend(self.get_libs(input_target.get_libs_static(), &module_name));
+                shared_libs.extend(self.get_libs(input_target.get_libs_shared(), &module_name));
+                sources.extend(self.get_sources(input_target.get_sources(self.build_path)?));
+                includes.extend(self.get_includes(input_target.get_includes(self.build_path)));
+                cflags.extend(self.get_defines(input_target.get_defines()));
+                cflags.extend(self.get_cflags(input_target.get_cflags()));
+            } else {
+                modules.extend(self.generate_object("cc_library_static", input_target)?);
+                static_libs.push(path_to_id(Path::new(self.project.get_name()).join(input)));
+                continue;
+            }
         }
         includes.extend(self.get_includes(target.get_includes(self.build_path)));
         cflags.extend(self.get_defines(target.get_defines()));
@@ -240,7 +251,8 @@ where
             .add_prop("local_include_dirs", SoongProp::VecStr(includes))
             .add_prop("generated_headers", SoongProp::VecStr(generated_headers));
 
-        Ok(self.project.extend_module(&target_name, module))
+        modules.push(self.project.extend_module(&target_name, module));
+        Ok(modules)
     }
 
     fn get_tool(&self, mut cmd: String, inputs: &mut Vec<PathBuf>) -> (String, String) {
