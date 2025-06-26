@@ -177,6 +177,33 @@ where
             })
             .collect())
     }
+    fn defines_conflict(
+        defines: &mut std::collections::HashMap<String, String>,
+        cflags: &Vec<String>,
+    ) -> bool {
+        let new_defines = cflags
+            .iter()
+            .filter_map(|cflag| {
+                let Some(def) = cflag.strip_prefix("-D") else {
+                    return None;
+                };
+                let Some((var, val)) = def.split_once("=") else {
+                    return None;
+                };
+                Some((String::from(var), String::from(val)))
+            })
+            .collect::<Vec<_>>();
+        if new_defines.iter().any(|(var, val)| {
+            let Some(ref_val) = defines.get(var) else {
+                return false;
+            };
+            val != ref_val
+        }) {
+            return true;
+        }
+        defines.extend(new_defines);
+        false
+    }
     pub fn generate_object(&mut self, name: &str, target: &T) -> Result<Vec<SoongModule>, String> {
         let target_name = target.get_name();
         let module_name = path_to_id(match self.targets_to_gen.get_name(&target_name) {
@@ -190,6 +217,7 @@ where
         let mut whole_static_libs = Vec::new();
         let mut static_libs = Vec::new();
         let mut shared_libs = Vec::new();
+        let mut defines = std::collections::HashMap::new();
         for input in target.get_inputs() {
             let Some(input_target) = self.targets_map.get(input) else {
                 sources.push(path_to_string(strip_prefix(
@@ -199,15 +227,18 @@ where
                 continue;
             };
 
-            if self.project.filter_input_target(input) {
+            let mut input_cflags = self.get_defines(input_target.get_defines());
+            input_cflags.extend(self.get_cflags(input_target.get_cflags()));
+            if self.project.filter_input_target(input)
+                && !Self::defines_conflict(&mut defines, &input_cflags)
+            {
                 whole_static_libs
                     .extend(self.get_libs(input_target.get_libs_static_whole(), &module_name));
                 static_libs.extend(self.get_libs(input_target.get_libs_static(), &module_name));
                 shared_libs.extend(self.get_libs(input_target.get_libs_shared(), &module_name));
                 sources.extend(self.get_sources(input_target.get_sources(self.build_path)?));
                 includes.extend(self.get_includes(input_target.get_includes(self.build_path)));
-                cflags.extend(self.get_defines(input_target.get_defines()));
-                cflags.extend(self.get_cflags(input_target.get_cflags()));
+                cflags.extend(input_cflags);
             } else {
                 modules.extend(self.generate_object("cc_library_static", input_target)?);
                 static_libs.push(path_to_id(Path::new(self.project.get_name()).join(input)));
