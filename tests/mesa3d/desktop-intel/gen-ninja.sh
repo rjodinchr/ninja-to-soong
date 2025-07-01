@@ -38,7 +38,6 @@ meson setup \
     -Dgallium-drivers=iris \
     -Dgallium-rusticl=false \
     -Dgallium-va=disabled \
-    -Dgallium-xa=disabled \
     -Dbuildtype=release \
     -Dmesa-clc=system \
     -Dintel-rt=enabled \

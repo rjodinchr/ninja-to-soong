@@ -16,7 +16,6 @@ meson setup \
     -Dgallium-drivers= \
     -Dgallium-rusticl=false \
     -Dgallium-va=auto \
-    -Dgallium-xa=disabled \
     -Dbuildtype=release \
     -Dmesa-clc=enabled \
     -Dinstall-mesa-clc=true \
