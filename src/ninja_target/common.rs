@@ -21,9 +21,7 @@ fn get_libs(libs: &str, target: Library) -> Vec<PathBuf> {
                 if library == "dl" || library == "m" || library == "c" {
                     return None;
                 }
-                if state == Some(target.clone()) {
-                    return Some(PathBuf::from(format!("lib{library}")));
-                } else if target == Library::Shared && state.is_none() {
+                if state == Some(target.clone()) || (target == Library::Shared && state.is_none()) {
                     return Some(PathBuf::from(format!("lib{library}")));
                 }
             } else if let Some(arg) = lib.strip_prefix("-Wl,") {
