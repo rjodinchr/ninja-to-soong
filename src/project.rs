@@ -23,7 +23,8 @@ define_ProjectId!(
     (Mesa3DDesktopPanVK, mesa3d_desktop_panvk),
     (OpenclCts, opencl_cts),
     (SpirvHeaders, spirv_headers),
-    (SpirvTools, spirv_tools)
+    (SpirvTools, spirv_tools),
+    (UnitTest, unittest)
 );
 impl ProjectId {
     pub fn get_deps(&self) -> Vec<ProjectId> {

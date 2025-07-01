@@ -68,12 +68,20 @@ fn generate_projects(mut projects_map: ProjectsMap, ctx: &Context) -> Result<(),
             projects_to_generate.extend(missing_deps);
             projects_to_generate.push_back(project_id);
         } else {
-            generate_project(
-                &mut project,
-                projects_to_write.contains(&project_id),
-                &projects_map,
-                ctx,
-            )?;
+            if project_id == ProjectId::UnitTest {
+                for dir in ls_dir(&ctx.test_path.join("unittests")) {
+                    let mut test_ctx = ctx.clone();
+                    test_ctx.test_path = dir;
+                    generate_project(&mut project, true, &projects_map, &test_ctx)?;
+                }
+            } else {
+                generate_project(
+                    &mut project,
+                    projects_to_write.contains(&project_id),
+                    &projects_map,
+                    ctx,
+                )?;
+            }
             projects_generated.insert(project_id);
         }
         projects_map.insert(project_id, project);

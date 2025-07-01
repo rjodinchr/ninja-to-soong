@@ -26,7 +26,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        project: [clvk, mesa, OpenCL-CTS, angle, clpeak]
+        project: [clvk, mesa, OpenCL-CTS, angle, clpeak, unittest]
     steps:
       - uses: actions/checkout@v4
         with:
@@ -57,6 +57,9 @@ jobs:
           elif [ "${{ matrix.project }}" == "clpeak" ]; then
             echo "key=$(git log -1 --format='%h' .github/workflows/*.yml tests/clpeak/*.sh)-clpeak" >> $GITHUB_ENV
             echo "projects=clpeak" >> $GITHUB_ENV
+          elif [ "${{ matrix.project }}" == "unittest" ]; then
+            echo "key=$(git rev-parse HEAD)-unittest" >> $GITHUB_ENV
+            echo "projects=unittest" >> $GITHUB_ENV
           fi
       - name: Get repositories from cache
         id: checkout-repositories
