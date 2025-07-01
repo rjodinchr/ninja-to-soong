@@ -29,7 +29,7 @@ where
 
 impl Project for UnitTest {
     fn get_name(&self) -> &'static str {
-        "unittest"
+        "unittests"
     }
     fn get_android_path(&self, _ctx: &Context) -> PathBuf {
         PathBuf::from("/dev/null")
