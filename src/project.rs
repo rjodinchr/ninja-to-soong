@@ -23,7 +23,8 @@ define_ProjectId!(
     (Mesa3DDesktopPanVK, mesa3d_desktop_panvk),
     (OpenclCts, opencl_cts),
     (SpirvHeaders, spirv_headers),
-    (SpirvTools, spirv_tools)
+    (SpirvTools, spirv_tools),
+    (UnitTest, unittest)
 );
 impl ProjectId {
     pub fn get_deps(&self) -> Vec<ProjectId> {
@@ -141,6 +142,9 @@ pub trait Project {
         true
     }
     fn filter_include(&self, _include: &Path) -> bool {
+        true
+    }
+    fn filter_input_target(&self, _input_target: &Path) -> bool {
         true
     }
     fn filter_lib(&self, _lib: &str) -> bool {

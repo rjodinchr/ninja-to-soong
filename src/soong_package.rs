@@ -258,11 +258,13 @@ impl SoongPackage {
             if !gen.filter_target(target) {
                 return Ok(false);
             }
-            self.modules.push(match target.get_rule()? {
+            self.modules.extend(match target.get_rule()? {
                 NinjaRule::Binary => gen.generate_object("cc_binary", target)?,
                 NinjaRule::SharedLibrary => gen.generate_object("cc_library_shared", target)?,
                 NinjaRule::StaticLibrary => gen.generate_object("cc_library_static", target)?,
-                NinjaRule::CustomCommand(rule_cmd) => gen.generate_custom_command(target, rule_cmd),
+                NinjaRule::CustomCommand(rule_cmd) => {
+                    vec![gen.generate_custom_command(target, rule_cmd)]
+                }
                 NinjaRule::None => return Ok(true),
             });
             Ok(true)

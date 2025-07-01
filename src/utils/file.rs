@@ -73,3 +73,18 @@ pub fn ls_regex(regex: &Path) -> Vec<PathBuf> {
     }
     files
 }
+
+pub fn ls_dir(path: &Path) -> Vec<PathBuf> {
+    let mut dirs = Vec::new();
+    let Ok(entries) = read_dir(path) else {
+        return dirs;
+    };
+    for entry in entries {
+        let dir = entry.expect("Failed to read entry");
+        if !dir.file_type().unwrap().is_dir() {
+            continue;
+        }
+        dirs.push(dir.path());
+    }
+    dirs
+}
