@@ -3,38 +3,66 @@
 
 use crate::utils::*;
 
-fn filter_lib(lib: &str) -> bool {
-    !lib.is_empty() && lib != "-pthread"
+#[derive(PartialEq, Clone, Debug)]
+pub enum Library {
+    Shared,
+    Static,
+    StaticWhole,
 }
 
-pub fn get_libs_static(libs: &str) -> Vec<PathBuf> {
+fn get_libs(libs: &str, target: Library) -> Vec<PathBuf> {
+    let mut prev_state: Option<Library> = None;
+    let mut state: Option<Library> = None;
     libs.split(" ")
         .filter_map(|lib| {
-            if !filter_lib(lib) || lib.starts_with("-l") || !lib.contains(".a") {
+            if lib.is_empty() || lib == "-pthread" {
                 return None;
-            }
-            Some(PathBuf::from(lib))
-        })
-        .collect()
-}
-
-pub fn get_libs_shared(libs: &str) -> Vec<PathBuf> {
-    libs.split(" ")
-        .filter_map(|lib| {
-            if !filter_lib(lib) {
-                return None;
-            }
-            if let Some(library) = lib.strip_prefix("-l") {
+            } else if let Some(library) = lib.strip_prefix("-l") {
                 if library == "dl" || library == "m" || library == "c" {
                     return None;
                 }
-                return Some(PathBuf::from(format!("lib{library}")));
-            } else if !lib.contains(".so") {
-                return None;
+                if let Some(lib_kind) = &state {
+                    if lib_kind == &target {
+                        return Some(PathBuf::from(format!("lib{library}")));
+                    }
+                } else if target == Library::Shared {
+                    return Some(PathBuf::from(format!("lib{library}")));
+                }
+            } else if lib.ends_with(".a") {
+                if target == Library::Static {
+                    return Some(PathBuf::from(lib));
+                }
+            } else if lib.ends_with(".so") {
+                if target == Library::Shared {
+                    return Some(PathBuf::from(lib));
+                }
+            } else if let Some(arg) = lib.strip_prefix("-Wl,") {
+                if arg == "-Bstatic" {
+                    state = Some(Library::Static)
+                } else if arg == "-Bdynamic" {
+                    state = Some(Library::Shared)
+                } else if arg == "--whole-archive" {
+                    prev_state = state.clone();
+                    state = Some(Library::StaticWhole)
+                } else if arg == "--no-whole-archive" {
+                    state = prev_state.clone()
+                }
             }
-            Some(PathBuf::from(lib))
+            return None;
         })
         .collect()
+}
+
+pub fn get_libs_static(libs: &str) -> Vec<PathBuf> {
+    get_libs(libs, Library::Static)
+}
+
+pub fn get_libs_shared(libs: &str) -> Vec<PathBuf> {
+    get_libs(libs, Library::Shared)
+}
+
+pub fn get_libs_static_whole(libs: &str) -> Vec<PathBuf> {
+    get_libs(libs, Library::StaticWhole)
 }
 
 pub fn get_defines(defines: &str) -> Vec<String> {

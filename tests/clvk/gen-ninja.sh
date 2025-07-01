@@ -25,4 +25,7 @@ bash "${SCRIPT_DIR}/../../utils/cmake_configure.sh" \
     -DCLSPV_SOURCE_DIR="${CLSPV_PATH}" \
     -DVulkan_LIBRARY="${NDK_PATH}/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/lib/aarch64-linux-android/35/libvulkan.so" \
     -DCLVK_CLSPV_ONLINE_COMPILER=1 \
+    -DCLVK_PERFETTO_ENABLE=ON \
+    -DCLVK_PERFETTO_LIBRARY=libperfetto_client_experimental.a \
+    -DCLVK_PERFETTO_BACKEND=System \
     -DCLVK_ENABLE_SPIRV_IL=OFF

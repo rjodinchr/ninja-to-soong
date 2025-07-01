@@ -43,7 +43,6 @@ impl Project for Clvk {
             )?;
         }
 
-        const LIBCLVK: &str = "libclvk";
         let mut package = SoongPackage::new(
             &["//external/OpenCL-ICD-Loader"],
             "clvk_license",
@@ -52,7 +51,7 @@ impl Project for Clvk {
         )
         .generate(
             NinjaTargetsToGenMap::from(&[
-                NinjaTargetToGen("libOpenCL.so", Some(LIBCLVK), None),
+                NinjaTargetToGen("libOpenCL.so", Some("libclvk"), None),
                 NinjaTargetToGen("simple_test", None, None),
                 NinjaTargetToGen("api_tests", None, None),
             ]),
@@ -65,26 +64,12 @@ impl Project for Clvk {
         )?;
         self.gen_libs = package.get_gen_libs();
 
-        const CLVK_ICD_GENRULE: &str = "clvk_icd_genrule";
         package
-            .add_raw_suffix(&format!(
+            .add_raw_suffix(
                 r#"
-cc_genrule {{
-    name: "{CLVK_ICD_GENRULE}",
-    cmd: "echo /system/$$CC_MULTILIB/{LIBCLVK}.so > $(out)",
-    srcs: [":{LIBCLVK}"],
-    out: ["clvk.icd"],
-}}
-
-prebuilt_etc {{
-    name: "clvk_icd_prebuilt",
-    src: ":{CLVK_ICD_GENRULE}",
-    filename_from_src: true,
-    relative_install_path: "Khronos/OpenCL/vendors",
-    soc_specific: true,
-}}
-"#
-            ))
+build = ["AndroidManual.bp"]
+"#,
+            )
             .print()
     }
 
@@ -113,17 +98,14 @@ prebuilt_etc {{
             Vec::new()
         }
     }
-    fn extend_module(&self, target: &Path, module: SoongModule) -> SoongModule {
+    fn extend_module(&self, target: &Path, mut module: SoongModule) -> SoongModule {
         let mut header_libs = vec![String::from("OpenCL-Headers")];
         if target.ends_with("api_tests") {
             header_libs.push(CcLibraryHeaders::SpirvHeaders.str());
             header_libs.push(String::from("vulkan_headers"));
+        } else if target.ends_with("simple_test") {
+            module = module.add_prop("gtest", SoongProp::Bool(false))
         }
-        let module = if target.ends_with("simple_test") {
-            module.add_prop("gtest", SoongProp::Bool(false))
-        } else {
-            module
-        };
         module.add_prop("header_libs", SoongProp::VecStr(header_libs))
     }
 

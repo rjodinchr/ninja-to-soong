@@ -286,6 +286,13 @@ cc_library_static {
 }
 
 cc_library_static {
+    name: "llvm-project_lib_libLLVMObjectYAML_a",
+    srcs: ["llvm/lib/ObjectYAML/*.cpp"],
+    local_include_dirs: ["llvm/lib/ObjectYAML"],
+    defaults: ["llvm-project-defaults"],
+}
+
+cc_library_static {
     name: "llvm-project_lib_libLLVMFrontendOpenMP_a",
     srcs: ["llvm/lib/Frontend/OpenMP/*.cpp"],
     local_include_dirs: ["llvm/lib/Frontend/OpenMP"],
@@ -367,7 +374,7 @@ cc_library_static {
 
 cc_library_static {
     name: "llvm-project_lib_libLLVMFrontendHLSL_a",
-    srcs: ["llvm/lib/Frontend/HLSL/HLSLResource.cpp"],
+    srcs: ["llvm/lib/Frontend/HLSL/*.cpp"],
     local_include_dirs: ["llvm/lib/Frontend/HLSL"],
     defaults: ["llvm-project-defaults"],
 }
@@ -427,6 +434,7 @@ cc_library_static {
     name: "llvm-project_lib_libclangCodeGen_a",
     srcs: [
         "clang/lib/CodeGen/*.cpp",
+        "clang/lib/CodeGen/TargetBuiltins/*.cpp",
         "clang/lib/CodeGen/Targets/*.cpp",
     ],
     local_include_dirs: [
