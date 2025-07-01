@@ -21,20 +21,10 @@ fn get_libs(libs: &str, target: Library) -> Vec<PathBuf> {
                 if library == "dl" || library == "m" || library == "c" {
                     return None;
                 }
-                if let Some(lib_kind) = &state {
-                    if lib_kind == &target {
-                        return Some(PathBuf::from(format!("lib{library}")));
-                    }
-                } else if target == Library::Shared {
+                if state == Some(target.clone()) {
                     return Some(PathBuf::from(format!("lib{library}")));
-                }
-            } else if lib.ends_with(".a") {
-                if target == Library::Static {
-                    return Some(PathBuf::from(lib));
-                }
-            } else if lib.ends_with(".so") {
-                if target == Library::Shared {
-                    return Some(PathBuf::from(lib));
+                } else if target == Library::Shared && state.is_none() {
+                    return Some(PathBuf::from(format!("lib{library}")));
                 }
             } else if let Some(arg) = lib.strip_prefix("-Wl,") {
                 if arg == "-Bstatic" {
@@ -46,6 +36,16 @@ fn get_libs(libs: &str, target: Library) -> Vec<PathBuf> {
                     state = Some(Library::StaticWhole)
                 } else if arg == "--no-whole-archive" {
                     state = prev_state.clone()
+                }
+            } else if lib.ends_with(".a") {
+                if (target == Library::Static && state != Some(Library::StaticWhole))
+                    || (target == Library::StaticWhole && state == Some(Library::StaticWhole))
+                {
+                    return Some(PathBuf::from(lib));
+                }
+            } else if lib.ends_with(".so") {
+                if target == Library::Shared {
+                    return Some(PathBuf::from(lib));
                 }
             }
             return None;
