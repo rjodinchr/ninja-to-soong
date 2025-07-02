@@ -16,6 +16,7 @@ pub struct Context {
     pub skip_gen_ninja: bool,
     pub skip_build: bool,
     pub copy_to_aosp: bool,
+    pub wildcardize_paths: bool,
 }
 
 impl Context {
@@ -68,7 +69,10 @@ impl Context {
                     ctx.skip_build = true
                 }
                 SKIP_BUILD => ctx.skip_build = true,
-                COPY_TO_AOSP => ctx.copy_to_aosp = true,
+                COPY_TO_AOSP => {
+                    ctx.copy_to_aosp = true;
+                    ctx.wildcardize_paths = true;
+                }
                 CLEAN_TMP => clean_tmp = true,
                 "-h" | "--help" => {
                     let mut projects_help = projects_map

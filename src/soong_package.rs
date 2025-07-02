@@ -1,6 +1,7 @@
 // Copyright 2024 ninja-to-soong authors
 // SPDX-License-Identifier: Apache-2.0;
 
+use crate::context::*;
 use crate::ninja_target::*;
 use crate::project::*;
 use crate::soong_module::*;
@@ -12,6 +13,7 @@ pub struct SoongPackage {
     modules: Vec<SoongModule>,
     internals: SoongModuleGeneratorInternals,
     raw_suffix: String,
+    ctx: Context,
 }
 
 impl SoongPackage {
@@ -207,6 +209,10 @@ impl SoongPackage {
 //
 ",
         );
+        if !self.ctx.wildcardize_paths {
+            package += "// CI version, no wildcard generated\n";
+            package += "//\n";
+        }
         for module_index in 0..self.modules.len() {
             let module = self.modules.remove(module_index);
             self.modules
@@ -240,10 +246,12 @@ impl SoongPackage {
         build_path: &Path,
         gen_build_prefix: Option<&str>,
         project: &dyn Project,
+        ctx: &Context,
     ) -> Result<SoongPackage, String>
     where
         T: NinjaTarget,
     {
+        self.ctx = ctx.clone();
         let targets_map = NinjaTargetsMap::new(&targets);
         let mut gen = SoongModuleGenerator::new(
             src_path,
@@ -259,9 +267,13 @@ impl SoongPackage {
                 return Ok(false);
             }
             self.modules.extend(match target.get_rule()? {
-                NinjaRule::Binary => gen.generate_object("cc_binary", target)?,
-                NinjaRule::SharedLibrary => gen.generate_object("cc_library_shared", target)?,
-                NinjaRule::StaticLibrary => gen.generate_object("cc_library_static", target)?,
+                NinjaRule::Binary => gen.generate_object("cc_binary", target, ctx)?,
+                NinjaRule::SharedLibrary => {
+                    gen.generate_object("cc_library_shared", target, ctx)?
+                }
+                NinjaRule::StaticLibrary => {
+                    gen.generate_object("cc_library_static", target, ctx)?
+                }
                 NinjaRule::CustomCommand(rule_cmd) => {
                     vec![gen.generate_custom_command(target, rule_cmd)]
                 }

@@ -61,6 +61,7 @@ impl Project for Clspv {
             &self.build_path,
             None,
             self,
+            ctx,
         )?;
         self.gen_deps = package.get_gen_deps();
 

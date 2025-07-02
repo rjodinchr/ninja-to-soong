@@ -1,0 +1,3 @@
+cmake
+wildcardize_cpp_library
+wildcardize_c_library

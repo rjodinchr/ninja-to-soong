@@ -3,6 +3,7 @@
 
 use std::str;
 
+use crate::context::*;
 use crate::ninja_target::*;
 use crate::project::*;
 use crate::soong_module::*;
@@ -204,7 +205,12 @@ where
         defines.extend(new_defines);
         false
     }
-    pub fn generate_object(&mut self, name: &str, target: &T) -> Result<Vec<SoongModule>, String> {
+    pub fn generate_object(
+        &mut self,
+        name: &str,
+        target: &T,
+        ctx: &Context,
+    ) -> Result<Vec<SoongModule>, String> {
         let target_name = target.get_name();
         let module_name = path_to_id(match self.targets_to_gen.get_name(&target_name) {
             Some(name) => name,
@@ -240,7 +246,7 @@ where
                 includes.extend(self.get_includes(input_target.get_includes(self.build_path)));
                 cflags.extend(input_cflags);
             } else {
-                modules.extend(self.generate_object("cc_library_static", input_target)?);
+                modules.extend(self.generate_object("cc_library_static", input_target, ctx)?);
                 whole_static_libs.push(path_to_id(Path::new(self.project.get_name()).join(input)));
                 continue;
             }
@@ -269,11 +275,11 @@ where
                 SoongProp::Str(path_to_string(strip_prefix(vs, &self.src_path))),
             );
         }
+        if ctx.wildcardize_paths {
+            sources = wildcardize_paths(sources, &self.src_path);
+        }
         module = module
-            .add_prop(
-                "srcs",
-                SoongProp::VecStr(wildcardize_paths(sources, &self.src_path)),
-            )
+            .add_prop("srcs", SoongProp::VecStr(sources))
             .add_prop("cflags", SoongProp::VecStr(cflags))
             .add_prop("ldflags", SoongProp::VecStr(link_flags))
             .add_prop("shared_libs", SoongProp::VecStr(shared_libs))

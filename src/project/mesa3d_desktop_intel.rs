@@ -124,6 +124,7 @@ impl Project for Mesa3DDesktopIntel {
             &build_path,
             Some(MESON_GENERATED),
             self,
+            ctx,
         )?;
 
         let gen_deps = package

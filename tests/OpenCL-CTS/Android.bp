@@ -7,6 +7,8 @@
 //
 // https://github.com/rjodinchr/ninja-to-soong
 //
+// CI version, no wildcard generated
+//
 
 package {
     default_visibility: ["//visibility:public"],
@@ -27,7 +29,13 @@ license {
 
 cc_test {
     name: "OpenCL-CTS-test_workgroups",
-    srcs: ["test_conformance/workgroups/*.cpp"],
+    srcs: [
+        "test_conformance/workgroups/main.cpp",
+        "test_conformance/workgroups/test_wg_all.cpp",
+        "test_conformance/workgroups/test_wg_any.cpp",
+        "test_conformance/workgroups/test_wg_broadcast.cpp",
+        "test_conformance/workgroups/test_wg_scan_reduce.cpp",
+    ],
     shared_libs: ["//external/OpenCL-ICD-Loader:libOpenCL"],
     static_libs: ["OpenCL-CTS_test_common_libharness_a"],
     rtti: false,
@@ -37,8 +45,24 @@ cc_test {
 cc_library_static {
     name: "OpenCL-CTS_test_common_libharness_a",
     srcs: [
-        "test_common/harness/*.cpp",
+        "test_common/harness/ThreadPool.cpp",
+        "test_common/harness/alloc.cpp",
+        "test_common/harness/conversions.cpp",
+        "test_common/harness/crc32.cpp",
+        "test_common/harness/deviceInfo.cpp",
+        "test_common/harness/errorHelpers.cpp",
+        "test_common/harness/featureHelpers.cpp",
+        "test_common/harness/genericThread.cpp",
+        "test_common/harness/imageHelpers.cpp",
+        "test_common/harness/kernelHelpers.cpp",
         "test_common/harness/msvc9.c",
+        "test_common/harness/mt19937.cpp",
+        "test_common/harness/os_helpers.cpp",
+        "test_common/harness/parseParameters.cpp",
+        "test_common/harness/propertyHelpers.cpp",
+        "test_common/harness/rounding_mode.cpp",
+        "test_common/harness/testHarness.cpp",
+        "test_common/harness/typeWrappers.cpp",
         "test_common/miniz/miniz.c",
     ],
     rtti: false,
@@ -47,7 +71,14 @@ cc_library_static {
 
 cc_test {
     name: "OpenCL-CTS-test_vectors",
-    srcs: ["test_conformance/vectors/*.cpp"],
+    srcs: [
+        "test_conformance/vectors/globals.cpp",
+        "test_conformance/vectors/main.cpp",
+        "test_conformance/vectors/structs.cpp",
+        "test_conformance/vectors/test_step.cpp",
+        "test_conformance/vectors/test_vec_align.cpp",
+        "test_conformance/vectors/type_replacer.cpp",
+    ],
     shared_libs: ["//external/OpenCL-ICD-Loader:libOpenCL"],
     static_libs: ["OpenCL-CTS_test_common_libharness_a"],
     rtti: false,
@@ -56,7 +87,10 @@ cc_test {
 
 cc_test {
     name: "OpenCL-CTS-test_thread_dimensions",
-    srcs: ["test_conformance/thread_dimensions/*.cpp"],
+    srcs: [
+        "test_conformance/thread_dimensions/main.cpp",
+        "test_conformance/thread_dimensions/test_thread_dimensions.cpp",
+    ],
     shared_libs: ["//external/OpenCL-ICD-Loader:libOpenCL"],
     static_libs: ["OpenCL-CTS_test_common_libharness_a"],
     rtti: false,
@@ -65,7 +99,24 @@ cc_test {
 
 cc_test {
     name: "OpenCL-CTS-test_subgroups",
-    srcs: ["test_conformance/subgroups/*.cpp"],
+    srcs: [
+        "test_conformance/subgroups/main.cpp",
+        "test_conformance/subgroups/subgroup_common_kernels.cpp",
+        "test_conformance/subgroups/subhelpers.cpp",
+        "test_conformance/subgroups/test_barrier.cpp",
+        "test_conformance/subgroups/test_ifp.cpp",
+        "test_conformance/subgroups/test_queries.cpp",
+        "test_conformance/subgroups/test_subgroup.cpp",
+        "test_conformance/subgroups/test_subgroup_ballot.cpp",
+        "test_conformance/subgroups/test_subgroup_clustered_reduce.cpp",
+        "test_conformance/subgroups/test_subgroup_extended_types.cpp",
+        "test_conformance/subgroups/test_subgroup_non_uniform_arithmetic.cpp",
+        "test_conformance/subgroups/test_subgroup_non_uniform_vote.cpp",
+        "test_conformance/subgroups/test_subgroup_rotate.cpp",
+        "test_conformance/subgroups/test_subgroup_shuffle.cpp",
+        "test_conformance/subgroups/test_subgroup_shuffle_relative.cpp",
+        "test_conformance/subgroups/test_workitem.cpp",
+    ],
     shared_libs: ["//external/OpenCL-ICD-Loader:libOpenCL"],
     static_libs: ["OpenCL-CTS_test_common_libharness_a"],
     rtti: false,
@@ -77,7 +128,36 @@ cc_test {
     srcs: [
         "test_conformance/math_brute_force/reference_math.cpp",
         "test_conformance/math_brute_force/utility.cpp",
-        "test_conformance/spirv_new/*.cpp",
+        "test_conformance/spirv_new/main.cpp",
+        "test_conformance/spirv_new/test_basic_versions.cpp",
+        "test_conformance/spirv_new/test_cl_khr_expect_assume.cpp",
+        "test_conformance/spirv_new/test_decorate.cpp",
+        "test_conformance/spirv_new/test_extinst_printf.cpp",
+        "test_conformance/spirv_new/test_get_program_il.cpp",
+        "test_conformance/spirv_new/test_linkage.cpp",
+        "test_conformance/spirv_new/test_no_integer_wrap_decoration.cpp",
+        "test_conformance/spirv_new/test_op_atomic.cpp",
+        "test_conformance/spirv_new/test_op_branch.cpp",
+        "test_conformance/spirv_new/test_op_branch_conditional.cpp",
+        "test_conformance/spirv_new/test_op_composite_construct.cpp",
+        "test_conformance/spirv_new/test_op_constant.cpp",
+        "test_conformance/spirv_new/test_op_copy_object.cpp",
+        "test_conformance/spirv_new/test_op_fmath.cpp",
+        "test_conformance/spirv_new/test_op_function.cpp",
+        "test_conformance/spirv_new/test_op_lifetime.cpp",
+        "test_conformance/spirv_new/test_op_loop_merge.cpp",
+        "test_conformance/spirv_new/test_op_negate.cpp",
+        "test_conformance/spirv_new/test_op_opaque.cpp",
+        "test_conformance/spirv_new/test_op_phi.cpp",
+        "test_conformance/spirv_new/test_op_selection_merge.cpp",
+        "test_conformance/spirv_new/test_op_spec_constant.cpp",
+        "test_conformance/spirv_new/test_op_undef.cpp",
+        "test_conformance/spirv_new/test_op_vector_extract.cpp",
+        "test_conformance/spirv_new/test_op_vector_insert.cpp",
+        "test_conformance/spirv_new/test_op_vector_times_scalar.cpp",
+        "test_conformance/spirv_new/test_spirv_14.cpp",
+        "test_conformance/spirv_new/test_spirv_15.cpp",
+        "test_conformance/spirv_new/test_spirv_16.cpp",
     ],
     shared_libs: ["//external/OpenCL-ICD-Loader:libOpenCL"],
     static_libs: ["OpenCL-CTS_test_common_libharness_a"],
@@ -88,7 +168,13 @@ cc_test {
 
 cc_test {
     name: "OpenCL-CTS-test_spir",
-    srcs: ["test_conformance/spir/*.cpp"],
+    srcs: [
+        "test_conformance/spir/datagen.cpp",
+        "test_conformance/spir/kernelargs.cpp",
+        "test_conformance/spir/main.cpp",
+        "test_conformance/spir/run_build_test.cpp",
+        "test_conformance/spir/run_services.cpp",
+    ],
     shared_libs: ["//external/OpenCL-ICD-Loader:libOpenCL"],
     static_libs: ["OpenCL-CTS_test_common_libharness_a"],
     data: ["test_conformance/spir/*.zip"],
@@ -98,7 +184,10 @@ cc_test {
 
 cc_test {
     name: "OpenCL-CTS-test_select",
-    srcs: ["test_conformance/select/*.cpp"],
+    srcs: [
+        "test_conformance/select/test_select.cpp",
+        "test_conformance/select/util_select.cpp",
+    ],
     shared_libs: ["//external/OpenCL-ICD-Loader:libOpenCL"],
     static_libs: ["OpenCL-CTS_test_common_libharness_a"],
     rtti: false,
@@ -107,7 +196,12 @@ cc_test {
 
 cc_test {
     name: "OpenCL-CTS-test_relationals",
-    srcs: ["test_conformance/relationals/*.cpp"],
+    srcs: [
+        "test_conformance/relationals/main.cpp",
+        "test_conformance/relationals/test_comparisons_fp.cpp",
+        "test_conformance/relationals/test_relationals.cpp",
+        "test_conformance/relationals/test_shuffles.cpp",
+    ],
     shared_libs: ["//external/OpenCL-ICD-Loader:libOpenCL"],
     static_libs: ["OpenCL-CTS_test_common_libharness_a"],
     rtti: false,
@@ -116,7 +210,17 @@ cc_test {
 
 cc_test {
     name: "OpenCL-CTS-test_profiling",
-    srcs: ["test_conformance/profiling/*.cpp"],
+    srcs: [
+        "test_conformance/profiling/copy.cpp",
+        "test_conformance/profiling/execute.cpp",
+        "test_conformance/profiling/execute_multipass.cpp",
+        "test_conformance/profiling/main.cpp",
+        "test_conformance/profiling/profiling_timebase.cpp",
+        "test_conformance/profiling/readArray.cpp",
+        "test_conformance/profiling/readImage.cpp",
+        "test_conformance/profiling/writeArray.cpp",
+        "test_conformance/profiling/writeImage.cpp",
+    ],
     shared_libs: ["//external/OpenCL-ICD-Loader:libOpenCL"],
     static_libs: ["OpenCL-CTS_test_common_libharness_a"],
     rtti: false,
@@ -125,7 +229,10 @@ cc_test {
 
 cc_test {
     name: "OpenCL-CTS-test_printf",
-    srcs: ["test_conformance/printf/*.cpp"],
+    srcs: [
+        "test_conformance/printf/test_printf.cpp",
+        "test_conformance/printf/util_printf.cpp",
+    ],
     shared_libs: ["//external/OpenCL-ICD-Loader:libOpenCL"],
     static_libs: ["OpenCL-CTS_test_common_libharness_a"],
     rtti: false,
@@ -134,7 +241,15 @@ cc_test {
 
 cc_test {
     name: "OpenCL-CTS-test_pipes",
-    srcs: ["test_conformance/pipes/*.cpp"],
+    srcs: [
+        "test_conformance/pipes/main.cpp",
+        "test_conformance/pipes/test_pipe_info.cpp",
+        "test_conformance/pipes/test_pipe_limits.cpp",
+        "test_conformance/pipes/test_pipe_query_functions.cpp",
+        "test_conformance/pipes/test_pipe_read_write.cpp",
+        "test_conformance/pipes/test_pipe_readwrite_errors.cpp",
+        "test_conformance/pipes/test_pipe_subgroups.cpp",
+    ],
     shared_libs: ["//external/OpenCL-ICD-Loader:libOpenCL"],
     static_libs: ["OpenCL-CTS_test_common_libharness_a"],
     rtti: false,
@@ -143,7 +258,15 @@ cc_test {
 
 cc_test {
     name: "OpenCL-CTS-test_non_uniform_work_group",
-    srcs: ["test_conformance/non_uniform_work_group/*.cpp"],
+    srcs: [
+        "test_conformance/non_uniform_work_group/TestNonUniformWorkGroup.cpp",
+        "test_conformance/non_uniform_work_group/main.cpp",
+        "test_conformance/non_uniform_work_group/test_advanced_2d.cpp",
+        "test_conformance/non_uniform_work_group/test_advanced_3d.cpp",
+        "test_conformance/non_uniform_work_group/test_advanced_other.cpp",
+        "test_conformance/non_uniform_work_group/test_basic.cpp",
+        "test_conformance/non_uniform_work_group/tools.cpp",
+    ],
     shared_libs: ["//external/OpenCL-ICD-Loader:libOpenCL"],
     static_libs: ["OpenCL-CTS_test_common_libharness_a"],
     rtti: false,
@@ -152,7 +275,11 @@ cc_test {
 
 cc_test {
     name: "OpenCL-CTS-test_multiples",
-    srcs: ["test_conformance/multiple_device_context/*.cpp"],
+    srcs: [
+        "test_conformance/multiple_device_context/main.cpp",
+        "test_conformance/multiple_device_context/test_multiple_contexts.cpp",
+        "test_conformance/multiple_device_context/test_multiple_devices.cpp",
+    ],
     shared_libs: ["//external/OpenCL-ICD-Loader:libOpenCL"],
     static_libs: ["OpenCL-CTS_test_common_libharness_a"],
     rtti: false,
@@ -161,7 +288,11 @@ cc_test {
 
 cc_test {
     name: "OpenCL-CTS-test_mem_host_flags",
-    srcs: ["test_conformance/mem_host_flags/*.cpp"],
+    srcs: [
+        "test_conformance/mem_host_flags/main.cpp",
+        "test_conformance/mem_host_flags/mem_host_buffer.cpp",
+        "test_conformance/mem_host_flags/mem_host_image.cpp",
+    ],
     shared_libs: ["//external/OpenCL-ICD-Loader:libOpenCL"],
     static_libs: ["OpenCL-CTS_test_common_libharness_a"],
     rtti: false,
@@ -170,7 +301,53 @@ cc_test {
 
 cc_test {
     name: "OpenCL-CTS-test_bruteforce",
-    srcs: ["test_conformance/math_brute_force/*.cpp"],
+    srcs: [
+        "test_conformance/math_brute_force/binary_double.cpp",
+        "test_conformance/math_brute_force/binary_float.cpp",
+        "test_conformance/math_brute_force/binary_half.cpp",
+        "test_conformance/math_brute_force/binary_i_double.cpp",
+        "test_conformance/math_brute_force/binary_i_float.cpp",
+        "test_conformance/math_brute_force/binary_i_half.cpp",
+        "test_conformance/math_brute_force/binary_operator_double.cpp",
+        "test_conformance/math_brute_force/binary_operator_float.cpp",
+        "test_conformance/math_brute_force/binary_operator_half.cpp",
+        "test_conformance/math_brute_force/binary_two_results_i_double.cpp",
+        "test_conformance/math_brute_force/binary_two_results_i_float.cpp",
+        "test_conformance/math_brute_force/binary_two_results_i_half.cpp",
+        "test_conformance/math_brute_force/common.cpp",
+        "test_conformance/math_brute_force/function_list.cpp",
+        "test_conformance/math_brute_force/i_unary_double.cpp",
+        "test_conformance/math_brute_force/i_unary_float.cpp",
+        "test_conformance/math_brute_force/i_unary_half.cpp",
+        "test_conformance/math_brute_force/macro_binary_double.cpp",
+        "test_conformance/math_brute_force/macro_binary_float.cpp",
+        "test_conformance/math_brute_force/macro_binary_half.cpp",
+        "test_conformance/math_brute_force/macro_unary_double.cpp",
+        "test_conformance/math_brute_force/macro_unary_float.cpp",
+        "test_conformance/math_brute_force/macro_unary_half.cpp",
+        "test_conformance/math_brute_force/mad_double.cpp",
+        "test_conformance/math_brute_force/mad_float.cpp",
+        "test_conformance/math_brute_force/mad_half.cpp",
+        "test_conformance/math_brute_force/main.cpp",
+        "test_conformance/math_brute_force/reference_math.cpp",
+        "test_conformance/math_brute_force/sleep.cpp",
+        "test_conformance/math_brute_force/ternary_double.cpp",
+        "test_conformance/math_brute_force/ternary_float.cpp",
+        "test_conformance/math_brute_force/ternary_half.cpp",
+        "test_conformance/math_brute_force/unary_double.cpp",
+        "test_conformance/math_brute_force/unary_float.cpp",
+        "test_conformance/math_brute_force/unary_half.cpp",
+        "test_conformance/math_brute_force/unary_two_results_double.cpp",
+        "test_conformance/math_brute_force/unary_two_results_float.cpp",
+        "test_conformance/math_brute_force/unary_two_results_half.cpp",
+        "test_conformance/math_brute_force/unary_two_results_i_double.cpp",
+        "test_conformance/math_brute_force/unary_two_results_i_float.cpp",
+        "test_conformance/math_brute_force/unary_two_results_i_half.cpp",
+        "test_conformance/math_brute_force/unary_u_double.cpp",
+        "test_conformance/math_brute_force/unary_u_float.cpp",
+        "test_conformance/math_brute_force/unary_u_half.cpp",
+        "test_conformance/math_brute_force/utility.cpp",
+    ],
     shared_libs: ["//external/OpenCL-ICD-Loader:libOpenCL"],
     static_libs: ["OpenCL-CTS_test_common_libharness_a"],
     rtti: false,
@@ -179,7 +356,25 @@ cc_test {
 
 cc_test {
     name: "OpenCL-CTS-test_integer_ops",
-    srcs: ["test_conformance/integer_ops/*.cpp"],
+    srcs: [
+        "test_conformance/integer_ops/main.cpp",
+        "test_conformance/integer_ops/test_abs.cpp",
+        "test_conformance/integer_ops/test_absdiff.cpp",
+        "test_conformance/integer_ops/test_add_sat.cpp",
+        "test_conformance/integer_ops/test_extended_bit_ops_extract.cpp",
+        "test_conformance/integer_ops/test_extended_bit_ops_insert.cpp",
+        "test_conformance/integer_ops/test_extended_bit_ops_reverse.cpp",
+        "test_conformance/integer_ops/test_int_basic_ops.cpp",
+        "test_conformance/integer_ops/test_integer_dot_product.cpp",
+        "test_conformance/integer_ops/test_integers.cpp",
+        "test_conformance/integer_ops/test_intmad24.cpp",
+        "test_conformance/integer_ops/test_intmul24.cpp",
+        "test_conformance/integer_ops/test_popcount.cpp",
+        "test_conformance/integer_ops/test_sub_sat.cpp",
+        "test_conformance/integer_ops/test_unary_ops.cpp",
+        "test_conformance/integer_ops/test_upsample.cpp",
+        "test_conformance/integer_ops/verification_and_generation_functions.cpp",
+    ],
     shared_libs: ["//external/OpenCL-ICD-Loader:libOpenCL"],
     static_libs: ["OpenCL-CTS_test_common_libharness_a"],
     rtti: false,
@@ -190,7 +385,14 @@ cc_test {
     name: "OpenCL-CTS-test_samplerless_reads",
     srcs: [
         "test_conformance/images/common.cpp",
-        "test_conformance/images/samplerlessReads/*.cpp",
+        "test_conformance/images/samplerlessReads/main.cpp",
+        "test_conformance/images/samplerlessReads/test_iterations.cpp",
+        "test_conformance/images/samplerlessReads/test_loops.cpp",
+        "test_conformance/images/samplerlessReads/test_read_1D.cpp",
+        "test_conformance/images/samplerlessReads/test_read_1D_array.cpp",
+        "test_conformance/images/samplerlessReads/test_read_1D_buffer.cpp",
+        "test_conformance/images/samplerlessReads/test_read_2D_array.cpp",
+        "test_conformance/images/samplerlessReads/test_read_3D.cpp",
     ],
     shared_libs: ["//external/OpenCL-ICD-Loader:libOpenCL"],
     static_libs: ["OpenCL-CTS_test_common_libharness_a"],
@@ -202,7 +404,22 @@ cc_test {
     name: "OpenCL-CTS-test_image_streams",
     srcs: [
         "test_conformance/images/common.cpp",
-        "test_conformance/images/kernel_read_write/*.cpp",
+        "test_conformance/images/kernel_read_write/main.cpp",
+        "test_conformance/images/kernel_read_write/test_cl_ext_image_from_buffer.cpp",
+        "test_conformance/images/kernel_read_write/test_cl_ext_image_raw10_raw12.cpp",
+        "test_conformance/images/kernel_read_write/test_cl_ext_image_requirements_info.cpp",
+        "test_conformance/images/kernel_read_write/test_common.cpp",
+        "test_conformance/images/kernel_read_write/test_iterations.cpp",
+        "test_conformance/images/kernel_read_write/test_loops.cpp",
+        "test_conformance/images/kernel_read_write/test_read_1D.cpp",
+        "test_conformance/images/kernel_read_write/test_read_1D_array.cpp",
+        "test_conformance/images/kernel_read_write/test_read_2D_array.cpp",
+        "test_conformance/images/kernel_read_write/test_read_3D.cpp",
+        "test_conformance/images/kernel_read_write/test_write_1D.cpp",
+        "test_conformance/images/kernel_read_write/test_write_1D_array.cpp",
+        "test_conformance/images/kernel_read_write/test_write_2D_array.cpp",
+        "test_conformance/images/kernel_read_write/test_write_3D.cpp",
+        "test_conformance/images/kernel_read_write/test_write_image.cpp",
     ],
     shared_libs: ["//external/OpenCL-ICD-Loader:libOpenCL"],
     static_libs: ["OpenCL-CTS_test_common_libharness_a"],
@@ -214,7 +431,14 @@ cc_test {
     name: "OpenCL-CTS-test_kernel_image_methods",
     srcs: [
         "test_conformance/images/common.cpp",
-        "test_conformance/images/kernel_image_methods/*.cpp",
+        "test_conformance/images/kernel_image_methods/main.cpp",
+        "test_conformance/images/kernel_image_methods/test_1D.cpp",
+        "test_conformance/images/kernel_image_methods/test_1D_array.cpp",
+        "test_conformance/images/kernel_image_methods/test_1D_buffer.cpp",
+        "test_conformance/images/kernel_image_methods/test_2D.cpp",
+        "test_conformance/images/kernel_image_methods/test_2D_array.cpp",
+        "test_conformance/images/kernel_image_methods/test_3D.cpp",
+        "test_conformance/images/kernel_image_methods/test_loops.cpp",
     ],
     shared_libs: ["//external/OpenCL-ICD-Loader:libOpenCL"],
     static_libs: ["OpenCL-CTS_test_common_libharness_a"],
@@ -225,7 +449,14 @@ cc_test {
 cc_test {
     name: "OpenCL-CTS-test_cl_read_write_images",
     srcs: [
-        "test_conformance/images/clReadWriteImage/*.cpp",
+        "test_conformance/images/clReadWriteImage/main.cpp",
+        "test_conformance/images/clReadWriteImage/test_loops.cpp",
+        "test_conformance/images/clReadWriteImage/test_read_1D.cpp",
+        "test_conformance/images/clReadWriteImage/test_read_1D_array.cpp",
+        "test_conformance/images/clReadWriteImage/test_read_1D_buffer.cpp",
+        "test_conformance/images/clReadWriteImage/test_read_2D.cpp",
+        "test_conformance/images/clReadWriteImage/test_read_2D_array.cpp",
+        "test_conformance/images/clReadWriteImage/test_read_3D.cpp",
         "test_conformance/images/common.cpp",
     ],
     shared_libs: ["//external/OpenCL-ICD-Loader:libOpenCL"],
@@ -237,7 +468,13 @@ cc_test {
 cc_test {
     name: "OpenCL-CTS-test_cl_get_info",
     srcs: [
-        "test_conformance/images/clGetInfo/*.cpp",
+        "test_conformance/images/clGetInfo/main.cpp",
+        "test_conformance/images/clGetInfo/test_1D.cpp",
+        "test_conformance/images/clGetInfo/test_1D_2D_array.cpp",
+        "test_conformance/images/clGetInfo/test_1D_buffer.cpp",
+        "test_conformance/images/clGetInfo/test_2D.cpp",
+        "test_conformance/images/clGetInfo/test_3D.cpp",
+        "test_conformance/images/clGetInfo/test_loops.cpp",
         "test_conformance/images/common.cpp",
     ],
     shared_libs: ["//external/OpenCL-ICD-Loader:libOpenCL"],
@@ -249,7 +486,15 @@ cc_test {
 cc_test {
     name: "OpenCL-CTS-test_cl_fill_images",
     srcs: [
-        "test_conformance/images/clFillImage/*.cpp",
+        "test_conformance/images/clFillImage/main.cpp",
+        "test_conformance/images/clFillImage/test_fill_1D.cpp",
+        "test_conformance/images/clFillImage/test_fill_1D_array.cpp",
+        "test_conformance/images/clFillImage/test_fill_1D_buffer.cpp",
+        "test_conformance/images/clFillImage/test_fill_2D.cpp",
+        "test_conformance/images/clFillImage/test_fill_2D_array.cpp",
+        "test_conformance/images/clFillImage/test_fill_3D.cpp",
+        "test_conformance/images/clFillImage/test_fill_generic.cpp",
+        "test_conformance/images/clFillImage/test_loops.cpp",
         "test_conformance/images/common.cpp",
     ],
     shared_libs: ["//external/OpenCL-ICD-Loader:libOpenCL"],
@@ -261,7 +506,18 @@ cc_test {
 cc_test {
     name: "OpenCL-CTS-test_cl_copy_images",
     srcs: [
-        "test_conformance/images/clCopyImage/*.cpp",
+        "test_conformance/images/clCopyImage/main.cpp",
+        "test_conformance/images/clCopyImage/test_copy_1D.cpp",
+        "test_conformance/images/clCopyImage/test_copy_1D_array.cpp",
+        "test_conformance/images/clCopyImage/test_copy_1D_buffer.cpp",
+        "test_conformance/images/clCopyImage/test_copy_2D.cpp",
+        "test_conformance/images/clCopyImage/test_copy_2D_2D_array.cpp",
+        "test_conformance/images/clCopyImage/test_copy_2D_3D.cpp",
+        "test_conformance/images/clCopyImage/test_copy_2D_array.cpp",
+        "test_conformance/images/clCopyImage/test_copy_3D.cpp",
+        "test_conformance/images/clCopyImage/test_copy_3D_2D_array.cpp",
+        "test_conformance/images/clCopyImage/test_copy_generic.cpp",
+        "test_conformance/images/clCopyImage/test_loops.cpp",
         "test_conformance/images/common.cpp",
     ],
     shared_libs: ["//external/OpenCL-ICD-Loader:libOpenCL"],
@@ -272,7 +528,13 @@ cc_test {
 
 cc_test {
     name: "OpenCL-CTS-test_half",
-    srcs: ["test_conformance/half/*.cpp"],
+    srcs: [
+        "test_conformance/half/Test_roundTrip.cpp",
+        "test_conformance/half/Test_vLoadHalf.cpp",
+        "test_conformance/half/Test_vStoreHalf.cpp",
+        "test_conformance/half/cl_utils.cpp",
+        "test_conformance/half/main.cpp",
+    ],
     shared_libs: ["//external/OpenCL-ICD-Loader:libOpenCL"],
     static_libs: ["OpenCL-CTS_test_common_libharness_a"],
     rtti: false,
@@ -281,7 +543,11 @@ cc_test {
 
 cc_test {
     name: "OpenCL-CTS-test_geometrics",
-    srcs: ["test_conformance/geometrics/*.cpp"],
+    srcs: [
+        "test_conformance/geometrics/main.cpp",
+        "test_conformance/geometrics/test_geometrics.cpp",
+        "test_conformance/geometrics/test_geometrics_double.cpp",
+    ],
     shared_libs: ["//external/OpenCL-ICD-Loader:libOpenCL"],
     static_libs: ["OpenCL-CTS_test_common_libharness_a"],
     rtti: false,
@@ -290,7 +556,13 @@ cc_test {
 
 cc_test {
     name: "OpenCL-CTS-test_generic_address_space",
-    srcs: ["test_conformance/generic_address_space/*.cpp"],
+    srcs: [
+        "test_conformance/generic_address_space/advanced_tests.cpp",
+        "test_conformance/generic_address_space/atomic_tests.cpp",
+        "test_conformance/generic_address_space/basic_tests.cpp",
+        "test_conformance/generic_address_space/main.cpp",
+        "test_conformance/generic_address_space/stress_tests.cpp",
+    ],
     shared_libs: ["//external/OpenCL-ICD-Loader:libOpenCL"],
     static_libs: ["OpenCL-CTS_test_common_libharness_a"],
     rtti: false,
@@ -299,7 +571,16 @@ cc_test {
 
 cc_test {
     name: "OpenCL-CTS-test_cl_khr_semaphore",
-    srcs: ["test_conformance/extensions/cl_khr_semaphore/*.cpp"],
+    srcs: [
+        "test_conformance/extensions/cl_khr_semaphore/main.cpp",
+        "test_conformance/extensions/cl_khr_semaphore/test_semaphores.cpp",
+        "test_conformance/extensions/cl_khr_semaphore/test_semaphores_cross_queue.cpp",
+        "test_conformance/extensions/cl_khr_semaphore/test_semaphores_negative_create.cpp",
+        "test_conformance/extensions/cl_khr_semaphore/test_semaphores_negative_getinfo.cpp",
+        "test_conformance/extensions/cl_khr_semaphore/test_semaphores_negative_release_retain.cpp",
+        "test_conformance/extensions/cl_khr_semaphore/test_semaphores_negative_wait_signal.cpp",
+        "test_conformance/extensions/cl_khr_semaphore/test_semaphores_queries.cpp",
+    ],
     shared_libs: ["//external/OpenCL-ICD-Loader:libOpenCL"],
     static_libs: ["OpenCL-CTS_test_common_libharness_a"],
     rtti: false,
@@ -308,7 +589,10 @@ cc_test {
 
 cc_test {
     name: "OpenCL-CTS-test_cl_khr_kernel_clock",
-    srcs: ["test_conformance/extensions/cl_khr_kernel_clock/*.cpp"],
+    srcs: [
+        "test_conformance/extensions/cl_khr_kernel_clock/kernel_clock.cpp",
+        "test_conformance/extensions/cl_khr_kernel_clock/main.cpp",
+    ],
     shared_libs: ["//external/OpenCL-ICD-Loader:libOpenCL"],
     static_libs: ["OpenCL-CTS_test_common_libharness_a"],
     rtti: false,
@@ -317,7 +601,35 @@ cc_test {
 
 cc_test {
     name: "OpenCL-CTS-test_cl_khr_command_buffer",
-    srcs: ["test_conformance/extensions/cl_khr_command_buffer/*.cpp"],
+    srcs: [
+        "test_conformance/extensions/cl_khr_command_buffer/basic_command_buffer.cpp",
+        "test_conformance/extensions/cl_khr_command_buffer/basic_command_buffer_tests.cpp",
+        "test_conformance/extensions/cl_khr_command_buffer/command_buffer_event_sync.cpp",
+        "test_conformance/extensions/cl_khr_command_buffer/command_buffer_finalize.cpp",
+        "test_conformance/extensions/cl_khr_command_buffer/command_buffer_get_command_buffer_info.cpp",
+        "test_conformance/extensions/cl_khr_command_buffer/command_buffer_out_of_order.cpp",
+        "test_conformance/extensions/cl_khr_command_buffer/command_buffer_printf.cpp",
+        "test_conformance/extensions/cl_khr_command_buffer/command_buffer_profiling.cpp",
+        "test_conformance/extensions/cl_khr_command_buffer/command_buffer_queue_substitution.cpp",
+        "test_conformance/extensions/cl_khr_command_buffer/command_buffer_set_kernel_arg.cpp",
+        "test_conformance/extensions/cl_khr_command_buffer/command_buffer_test_barrier.cpp",
+        "test_conformance/extensions/cl_khr_command_buffer/command_buffer_test_copy.cpp",
+        "test_conformance/extensions/cl_khr_command_buffer/command_buffer_test_event_info.cpp",
+        "test_conformance/extensions/cl_khr_command_buffer/command_buffer_test_fill.cpp",
+        "test_conformance/extensions/cl_khr_command_buffer/main.cpp",
+        "test_conformance/extensions/cl_khr_command_buffer/negative_command_buffer_barrier.cpp",
+        "test_conformance/extensions/cl_khr_command_buffer/negative_command_buffer_copy.cpp",
+        "test_conformance/extensions/cl_khr_command_buffer/negative_command_buffer_copy_image.cpp",
+        "test_conformance/extensions/cl_khr_command_buffer/negative_command_buffer_create.cpp",
+        "test_conformance/extensions/cl_khr_command_buffer/negative_command_buffer_enqueue.cpp",
+        "test_conformance/extensions/cl_khr_command_buffer/negative_command_buffer_fill.cpp",
+        "test_conformance/extensions/cl_khr_command_buffer/negative_command_buffer_finalize.cpp",
+        "test_conformance/extensions/cl_khr_command_buffer/negative_command_buffer_get_info.cpp",
+        "test_conformance/extensions/cl_khr_command_buffer/negative_command_buffer_retain_release.cpp",
+        "test_conformance/extensions/cl_khr_command_buffer/negative_command_buffer_svm_mem.cpp",
+        "test_conformance/extensions/cl_khr_command_buffer/negative_command_nd_range_kernel.cpp",
+        "test_conformance/extensions/cl_khr_command_buffer/svm_command_basic.cpp",
+    ],
     shared_libs: ["//external/OpenCL-ICD-Loader:libOpenCL"],
     static_libs: ["OpenCL-CTS_test_common_libharness_a"],
     rtti: false,
@@ -328,7 +640,19 @@ cc_test {
     name: "OpenCL-CTS-test_cl_khr_mutable_dispatch",
     srcs: [
         "test_conformance/extensions/cl_khr_command_buffer/basic_command_buffer.cpp",
-        "test_conformance/extensions/cl_khr_command_buffer/cl_khr_command_buffer_mutable_dispatch/*.cpp",
+        "test_conformance/extensions/cl_khr_command_buffer/cl_khr_command_buffer_mutable_dispatch/main.cpp",
+        "test_conformance/extensions/cl_khr_command_buffer/cl_khr_command_buffer_mutable_dispatch/mutable_command_arguments.cpp",
+        "test_conformance/extensions/cl_khr_command_buffer/cl_khr_command_buffer_mutable_dispatch/mutable_command_full_dispatch.cpp",
+        "test_conformance/extensions/cl_khr_command_buffer/cl_khr_command_buffer_mutable_dispatch/mutable_command_global_offset.cpp",
+        "test_conformance/extensions/cl_khr_command_buffer/cl_khr_command_buffer_mutable_dispatch/mutable_command_global_size.cpp",
+        "test_conformance/extensions/cl_khr_command_buffer/cl_khr_command_buffer_mutable_dispatch/mutable_command_image_arguments.cpp",
+        "test_conformance/extensions/cl_khr_command_buffer/cl_khr_command_buffer_mutable_dispatch/mutable_command_info.cpp",
+        "test_conformance/extensions/cl_khr_command_buffer/cl_khr_command_buffer_mutable_dispatch/mutable_command_iterative_arg_update.cpp",
+        "test_conformance/extensions/cl_khr_command_buffer/cl_khr_command_buffer_mutable_dispatch/mutable_command_local_size.cpp",
+        "test_conformance/extensions/cl_khr_command_buffer/cl_khr_command_buffer_mutable_dispatch/mutable_command_multiple_dispatches.cpp",
+        "test_conformance/extensions/cl_khr_command_buffer/cl_khr_command_buffer_mutable_dispatch/mutable_command_overwrite_update.cpp",
+        "test_conformance/extensions/cl_khr_command_buffer/cl_khr_command_buffer_mutable_dispatch/mutable_command_simultaneous.cpp",
+        "test_conformance/extensions/cl_khr_command_buffer/cl_khr_command_buffer_mutable_dispatch/mutable_command_work_groups.cpp",
     ],
     shared_libs: ["//external/OpenCL-ICD-Loader:libOpenCL"],
     static_libs: ["OpenCL-CTS_test_common_libharness_a"],
@@ -338,7 +662,11 @@ cc_test {
 
 cc_test {
     name: "OpenCL-CTS-test_cl_ext_cxx_for_opencl",
-    srcs: ["test_conformance/extensions/cl_ext_cxx_for_opencl/*.cpp"],
+    srcs: [
+        "test_conformance/extensions/cl_ext_cxx_for_opencl/cxx_for_opencl_ext.cpp",
+        "test_conformance/extensions/cl_ext_cxx_for_opencl/cxx_for_opencl_ver.cpp",
+        "test_conformance/extensions/cl_ext_cxx_for_opencl/main.cpp",
+    ],
     shared_libs: ["//external/OpenCL-ICD-Loader:libOpenCL"],
     static_libs: ["OpenCL-CTS_test_common_libharness_a"],
     rtti: false,
@@ -347,7 +675,16 @@ cc_test {
 
 cc_test {
     name: "OpenCL-CTS-test_events",
-    srcs: ["test_conformance/events/*.cpp"],
+    srcs: [
+        "test_conformance/events/action_classes.cpp",
+        "test_conformance/events/main.cpp",
+        "test_conformance/events/test_callbacks.cpp",
+        "test_conformance/events/test_event_dependencies.cpp",
+        "test_conformance/events/test_events.cpp",
+        "test_conformance/events/test_userevents.cpp",
+        "test_conformance/events/test_userevents_multithreaded.cpp",
+        "test_conformance/events/test_waitlists.cpp",
+    ],
     shared_libs: ["//external/OpenCL-ICD-Loader:libOpenCL"],
     static_libs: ["OpenCL-CTS_test_common_libharness_a"],
     rtti: false,
@@ -356,7 +693,10 @@ cc_test {
 
 cc_test {
     name: "OpenCL-CTS-test_device_timer",
-    srcs: ["test_conformance/device_timer/*.cpp"],
+    srcs: [
+        "test_conformance/device_timer/main.cpp",
+        "test_conformance/device_timer/test_device_timer.cpp",
+    ],
     shared_libs: ["//external/OpenCL-ICD-Loader:libOpenCL"],
     static_libs: ["OpenCL-CTS_test_common_libharness_a"],
     rtti: false,
@@ -365,7 +705,10 @@ cc_test {
 
 cc_test {
     name: "OpenCL-CTS-test_device_partition",
-    srcs: ["test_conformance/device_partition/*.cpp"],
+    srcs: [
+        "test_conformance/device_partition/main.cpp",
+        "test_conformance/device_partition/test_device_partition.cpp",
+    ],
     shared_libs: ["//external/OpenCL-ICD-Loader:libOpenCL"],
     static_libs: ["OpenCL-CTS_test_common_libharness_a"],
     rtti: false,
@@ -374,7 +717,22 @@ cc_test {
 
 cc_test {
     name: "OpenCL-CTS-test_device_execution",
-    srcs: ["test_conformance/device_execution/*.cpp"],
+    srcs: [
+        "test_conformance/device_execution/device_info.cpp",
+        "test_conformance/device_execution/device_queue.cpp",
+        "test_conformance/device_execution/enqueue_block.cpp",
+        "test_conformance/device_execution/enqueue_flags.cpp",
+        "test_conformance/device_execution/enqueue_multi_queue.cpp",
+        "test_conformance/device_execution/enqueue_ndrange.cpp",
+        "test_conformance/device_execution/enqueue_profiling.cpp",
+        "test_conformance/device_execution/enqueue_wg_size.cpp",
+        "test_conformance/device_execution/execute_block.cpp",
+        "test_conformance/device_execution/host_multi_queue.cpp",
+        "test_conformance/device_execution/host_queue_order.cpp",
+        "test_conformance/device_execution/main.cpp",
+        "test_conformance/device_execution/nested_blocks.cpp",
+        "test_conformance/device_execution/utils.cpp",
+    ],
     shared_libs: ["//external/OpenCL-ICD-Loader:libOpenCL"],
     static_libs: ["OpenCL-CTS_test_common_libharness_a"],
     rtti: false,
@@ -383,7 +741,12 @@ cc_test {
 
 cc_test {
     name: "OpenCL-CTS-test_conversions",
-    srcs: ["test_conformance/conversions/*.cpp"],
+    srcs: [
+        "test_conformance/conversions/Sleep.cpp",
+        "test_conformance/conversions/basic_test_conversions.cpp",
+        "test_conformance/conversions/fplib.cpp",
+        "test_conformance/conversions/test_conversions.cpp",
+    ],
     shared_libs: ["//external/OpenCL-ICD-Loader:libOpenCL"],
     static_libs: ["OpenCL-CTS_test_common_libharness_a"],
     rtti: false,
@@ -401,7 +764,13 @@ cc_test {
 
 cc_test {
     name: "OpenCL-CTS-test_computeinfo",
-    srcs: ["test_conformance/computeinfo/*.cpp"],
+    srcs: [
+        "test_conformance/computeinfo/conforming_version.cpp",
+        "test_conformance/computeinfo/device_uuid.cpp",
+        "test_conformance/computeinfo/extended_versioning.cpp",
+        "test_conformance/computeinfo/main.cpp",
+        "test_conformance/computeinfo/pci_bus_info.cpp",
+    ],
     shared_libs: ["//external/OpenCL-ICD-Loader:libOpenCL"],
     static_libs: ["OpenCL-CTS_test_common_libharness_a"],
     rtti: false,
@@ -410,7 +779,20 @@ cc_test {
 
 cc_test {
     name: "OpenCL-CTS-test_compiler",
-    srcs: ["test_conformance/compiler/*.cpp"],
+    srcs: [
+        "test_conformance/compiler/main.cpp",
+        "test_conformance/compiler/test_async_build.cpp",
+        "test_conformance/compiler/test_build_helpers.cpp",
+        "test_conformance/compiler/test_build_options.cpp",
+        "test_conformance/compiler/test_compile.cpp",
+        "test_conformance/compiler/test_compiler_defines_for_extensions.cpp",
+        "test_conformance/compiler/test_feature_macro.cpp",
+        "test_conformance/compiler/test_image_macro.cpp",
+        "test_conformance/compiler/test_opencl_c_versions.cpp",
+        "test_conformance/compiler/test_pragma_unroll.cpp",
+        "test_conformance/compiler/test_preprocessor.cpp",
+        "test_conformance/compiler/test_unload_platform_compiler.cpp",
+    ],
     shared_libs: ["//external/OpenCL-ICD-Loader:libOpenCL"],
     static_libs: ["OpenCL-CTS_test_common_libharness_a"],
     data: [
@@ -423,7 +805,15 @@ cc_test {
 
 cc_test {
     name: "OpenCL-CTS-test_commonfns",
-    srcs: ["test_conformance/commonfns/*.cpp"],
+    srcs: [
+        "test_conformance/commonfns/main.cpp",
+        "test_conformance/commonfns/test_binary_fn.cpp",
+        "test_conformance/commonfns/test_clamp.cpp",
+        "test_conformance/commonfns/test_mix.cpp",
+        "test_conformance/commonfns/test_smoothstep.cpp",
+        "test_conformance/commonfns/test_step.cpp",
+        "test_conformance/commonfns/test_unary_fn.cpp",
+    ],
     shared_libs: ["//external/OpenCL-ICD-Loader:libOpenCL"],
     static_libs: ["OpenCL-CTS_test_common_libharness_a"],
     rtti: false,
@@ -432,7 +822,12 @@ cc_test {
 
 cc_test {
     name: "OpenCL-CTS-test_c11_atomics",
-    srcs: ["test_conformance/c11_atomics/*.cpp"],
+    srcs: [
+        "test_conformance/c11_atomics/common.cpp",
+        "test_conformance/c11_atomics/host_atomics.cpp",
+        "test_conformance/c11_atomics/main.cpp",
+        "test_conformance/c11_atomics/test_atomics.cpp",
+    ],
     shared_libs: ["//external/OpenCL-ICD-Loader:libOpenCL"],
     static_libs: ["OpenCL-CTS_test_common_libharness_a"],
     rtti: false,
@@ -441,7 +836,19 @@ cc_test {
 
 cc_test {
     name: "OpenCL-CTS-test_buffers",
-    srcs: ["test_conformance/buffers/*.cpp"],
+    srcs: [
+        "test_conformance/buffers/array_info.cpp",
+        "test_conformance/buffers/main.cpp",
+        "test_conformance/buffers/test_buffer_copy.cpp",
+        "test_conformance/buffers/test_buffer_fill.cpp",
+        "test_conformance/buffers/test_buffer_map.cpp",
+        "test_conformance/buffers/test_buffer_mem.cpp",
+        "test_conformance/buffers/test_buffer_migrate.cpp",
+        "test_conformance/buffers/test_buffer_read.cpp",
+        "test_conformance/buffers/test_buffer_write.cpp",
+        "test_conformance/buffers/test_image_migrate.cpp",
+        "test_conformance/buffers/test_sub_buffers.cpp",
+    ],
     shared_libs: ["//external/OpenCL-ICD-Loader:libOpenCL"],
     static_libs: ["OpenCL-CTS_test_common_libharness_a"],
     rtti: false,
@@ -521,7 +928,11 @@ cc_test {
 
 cc_test {
     name: "OpenCL-CTS-test_atomics",
-    srcs: ["test_conformance/atomics/*.cpp"],
+    srcs: [
+        "test_conformance/atomics/main.cpp",
+        "test_conformance/atomics/test_atomics.cpp",
+        "test_conformance/atomics/test_indexed_cases.cpp",
+    ],
     shared_libs: ["//external/OpenCL-ICD-Loader:libOpenCL"],
     static_libs: ["OpenCL-CTS_test_common_libharness_a"],
     rtti: false,
@@ -530,7 +941,46 @@ cc_test {
 
 cc_test {
     name: "OpenCL-CTS-test_api",
-    srcs: ["test_conformance/api/*.cpp"],
+    srcs: [
+        "test_conformance/api/main.cpp",
+        "test_conformance/api/negative_platform.cpp",
+        "test_conformance/api/negative_queue.cpp",
+        "test_conformance/api/test_api_consistency.cpp",
+        "test_conformance/api/test_api_min_max.cpp",
+        "test_conformance/api/test_binary.cpp",
+        "test_conformance/api/test_bool.cpp",
+        "test_conformance/api/test_clone_kernel.cpp",
+        "test_conformance/api/test_context_destructor_callback.cpp",
+        "test_conformance/api/test_create_context_from_type.cpp",
+        "test_conformance/api/test_create_kernels.cpp",
+        "test_conformance/api/test_device_command_queue.cpp",
+        "test_conformance/api/test_device_min_data_type_align_size_alignment.cpp",
+        "test_conformance/api/test_kernel_arg_changes.cpp",
+        "test_conformance/api/test_kernel_arg_info.cpp",
+        "test_conformance/api/test_kernel_arg_multi_setup.cpp",
+        "test_conformance/api/test_kernel_attributes.cpp",
+        "test_conformance/api/test_kernel_local_memory_size.cpp",
+        "test_conformance/api/test_kernel_private_memory_size.cpp",
+        "test_conformance/api/test_kernels.cpp",
+        "test_conformance/api/test_mem_object_info.cpp",
+        "test_conformance/api/test_mem_object_properties_queries.cpp",
+        "test_conformance/api/test_mem_objects.cpp",
+        "test_conformance/api/test_min_image_formats.cpp",
+        "test_conformance/api/test_native_kernel.cpp",
+        "test_conformance/api/test_null_buffer_arg.cpp",
+        "test_conformance/api/test_pipe_properties_queries.cpp",
+        "test_conformance/api/test_platform.cpp",
+        "test_conformance/api/test_queries.cpp",
+        "test_conformance/api/test_queue.cpp",
+        "test_conformance/api/test_queue_hint.cpp",
+        "test_conformance/api/test_queue_properties.cpp",
+        "test_conformance/api/test_queue_properties_queries.cpp",
+        "test_conformance/api/test_retain.cpp",
+        "test_conformance/api/test_retain_program.cpp",
+        "test_conformance/api/test_sub_group_dispatch.cpp",
+        "test_conformance/api/test_wg_suggested_local_work_size.cpp",
+        "test_conformance/api/test_zero_sized_enqueue.cpp",
+    ],
     shared_libs: ["//external/OpenCL-ICD-Loader:libOpenCL"],
     static_libs: ["OpenCL-CTS_test_common_libharness_a"],
     rtti: false,
@@ -539,7 +989,13 @@ cc_test {
 
 cc_test {
     name: "OpenCL-CTS-test_allocations",
-    srcs: ["test_conformance/allocations/*.cpp"],
+    srcs: [
+        "test_conformance/allocations/allocation_execute.cpp",
+        "test_conformance/allocations/allocation_fill.cpp",
+        "test_conformance/allocations/allocation_functions.cpp",
+        "test_conformance/allocations/allocation_utils.cpp",
+        "test_conformance/allocations/main.cpp",
+    ],
     shared_libs: ["//external/OpenCL-ICD-Loader:libOpenCL"],
     static_libs: ["OpenCL-CTS_test_common_libharness_a"],
     rtti: false,
@@ -548,7 +1004,23 @@ cc_test {
 
 cc_test {
     name: "OpenCL-CTS-test_svm",
-    srcs: ["test_conformance/SVM/*.cpp"],
+    srcs: [
+        "test_conformance/SVM/main.cpp",
+        "test_conformance/SVM/test_allocate_shared_buffer.cpp",
+        "test_conformance/SVM/test_allocate_shared_buffer_negative.cpp",
+        "test_conformance/SVM/test_byte_granularity.cpp",
+        "test_conformance/SVM/test_cross_buffer_pointers.cpp",
+        "test_conformance/SVM/test_enqueue_api.cpp",
+        "test_conformance/SVM/test_fine_grain_memory_consistency.cpp",
+        "test_conformance/SVM/test_fine_grain_sync_buffers.cpp",
+        "test_conformance/SVM/test_migrate.cpp",
+        "test_conformance/SVM/test_pointer_passing.cpp",
+        "test_conformance/SVM/test_set_kernel_exec_info_svm_ptrs.cpp",
+        "test_conformance/SVM/test_shared_address_space_coarse_grain.cpp",
+        "test_conformance/SVM/test_shared_address_space_fine_grain.cpp",
+        "test_conformance/SVM/test_shared_address_space_fine_grain_buffers.cpp",
+        "test_conformance/SVM/test_shared_sub_buffers.cpp",
+    ],
     shared_libs: ["//external/OpenCL-ICD-Loader:libOpenCL"],
     static_libs: ["OpenCL-CTS_test_common_libharness_a"],
     rtti: false,

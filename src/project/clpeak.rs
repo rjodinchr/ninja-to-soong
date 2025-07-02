@@ -52,6 +52,7 @@ impl Project for Clpeak {
             &build_path,
             None,
             self,
+            ctx,
         )?
         .print()
     }

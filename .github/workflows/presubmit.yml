@@ -67,15 +67,6 @@ jobs:
         with:
           path: ${{ env.tmp_dir }}
           key: ${{ env.key }}
-      - name: Checkout
-        shell: bash
-        run: |
-          set -x
-          mkdir -p "${{ env.android }}"
-          for checkout in ${{ env.projects }}
-          do
-            bash "tests/${checkout}/checkout.sh" "${{ env.android }}"
-          done
       - name: Tests w/o cache
         if: steps.checkout-repositories.outputs.cache-hit != 'true'
         shell: bash
@@ -84,6 +75,11 @@ jobs:
           N2S_NDK_PATH: ${{ env.android }}
         run: |
           set -x
+          mkdir -p "${{ env.android }}"
+          for checkout in ${{ env.projects }}
+          do
+            bash "tests/${checkout}/checkout.sh" "${{ env.android }}"
+          done
           PATH="${{ env.android }}/depot_tools:${PATH}" cargo run --features debug_project --release -- --skip-build --aosp-path "${{ env.android }}" ${{ env.projects }}
       - name: Tests w/ cache
         if: steps.checkout-repositories.outputs.cache-hit == 'true'
