@@ -91,6 +91,7 @@ impl Project for Mesa3DDesktopPanVK {
             &build_path,
             Some(MESON_GENERATED),
             self,
+            ctx,
         )?;
 
         let gen_deps = package

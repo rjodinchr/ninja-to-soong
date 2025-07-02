@@ -57,6 +57,7 @@ impl Project for SpirvTools {
             &self.build_path,
             None,
             self,
+            ctx,
         )?
         .add_module(SoongModule::new_cc_library_headers(
             CcLibraryHeaders::SpirvTools,

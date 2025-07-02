@@ -66,6 +66,7 @@ impl Project for LlvmProject {
             &build_path,
             Some(CMAKE_GENERATED),
             self,
+            ctx,
         )?
         .add_module(SoongModule::new_cc_library_headers(
             CcLibraryHeaders::Llvm,

@@ -32,14 +32,21 @@ fn generate_project(
 
         print_debug!("Writing soong file...");
         const ANDROID_BP: &str = "Android.bp";
-        let file_path = project.get_test_path(ctx).join(ANDROID_BP);
-        write_file(file_path.as_path(), &package)?;
-        print_verbose!("{file_path:#?} created");
-
-        if ctx.copy_to_aosp {
-            let copy_dst = project.get_android_path(ctx).join(ANDROID_BP);
-            copy_file(&file_path, &copy_dst)?;
-            print_verbose!("{file_path:#?} copied to {copy_dst:#?}");
+        let file_path = if !ctx.copy_to_aosp {
+            project.get_test_path(ctx).join(ANDROID_BP)
+        } else {
+            project.get_android_path(ctx).join(ANDROID_BP)
+        };
+        let Ok(current_package) = read_file(&file_path) else {
+            write_file(&file_path, &package)?;
+            print_verbose!("{file_path:#?} created");
+            return Ok(());
+        };
+        if current_package != package {
+            write_file(&file_path, &package)?;
+            print_verbose!("{file_path:#?} updated");
+        } else {
+            print_verbose!("{file_path:#?} unmodified");
         }
     } else {
         print_info!("Generating dependency '{project_name}'");
@@ -72,6 +79,7 @@ fn generate_projects(mut projects_map: ProjectsMap, ctx: &Context) -> Result<(),
                 for dir in ls_dir(&ctx.test_path.join("unittests")) {
                     let mut test_ctx = ctx.clone();
                     test_ctx.test_path = dir;
+                    test_ctx.wildcardize_paths = true;
                     generate_project(&mut project, true, &projects_map, &test_ctx)?;
                 }
             } else {

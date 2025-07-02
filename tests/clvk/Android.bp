@@ -7,6 +7,8 @@
 //
 // https://github.com/rjodinchr/ninja-to-soong
 //
+// CI version, no wildcard generated
+//
 
 package {
     default_visibility: ["//external/OpenCL-ICD-Loader"],
@@ -35,7 +37,28 @@ cc_test {
 cc_library_shared {
     name: "libclvk",
     version_script: "src/exports.map",
-    srcs: ["src/*.cpp"],
+    srcs: [
+        "src/api.cpp",
+        "src/config.cpp",
+        "src/context.cpp",
+        "src/device.cpp",
+        "src/device_properties.cpp",
+        "src/event.cpp",
+        "src/image_format.cpp",
+        "src/init.cpp",
+        "src/kernel.cpp",
+        "src/log.cpp",
+        "src/memory.cpp",
+        "src/printf.cpp",
+        "src/program.cpp",
+        "src/queue.cpp",
+        "src/queue_controller.cpp",
+        "src/semaphore.cpp",
+        "src/sha1.cpp",
+        "src/tracing.cpp",
+        "src/unit.cpp",
+        "src/utils.cpp",
+    ],
     cflags: [
         "-DCLSPV_ONLINE_COMPILER=1",
         "-DCLVK_PERFETTO_ENABLE",
@@ -126,7 +149,23 @@ cc_library_shared {
 
 cc_test {
     name: "clvk_api_tests",
-    srcs: ["tests/api/*.cpp"],
+    srcs: [
+        "tests/api/compiler.cpp",
+        "tests/api/dependencies.cpp",
+        "tests/api/enqueue.cpp",
+        "tests/api/images.cpp",
+        "tests/api/local_buffer.cpp",
+        "tests/api/main.cpp",
+        "tests/api/platform.cpp",
+        "tests/api/printf.cpp",
+        "tests/api/profiling.cpp",
+        "tests/api/simple.cpp",
+        "tests/api/simple_image.cpp",
+        "tests/api/simple_ubo.cpp",
+        "tests/api/split_region.cpp",
+        "tests/api/subgroup_size.cpp",
+        "tests/api/workgroup.cpp",
+    ],
     cflags: [
         "-DCLSPV_ONLINE_COMPILER=1",
         "-DCOMPILER_AVAILABLE=1",

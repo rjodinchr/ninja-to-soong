@@ -108,6 +108,7 @@ impl Project for OpenclCts {
             &build_path,
             Some(CMAKE_GENERATED),
             self,
+            ctx,
         )?;
 
         let gen_deps = package.get_gen_deps();

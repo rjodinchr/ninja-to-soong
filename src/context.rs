@@ -16,6 +16,7 @@ pub struct Context {
     pub skip_gen_ninja: bool,
     pub skip_build: bool,
     pub copy_to_aosp: bool,
+    pub wildcardize_paths: bool,
 }
 
 impl Context {
@@ -59,16 +60,16 @@ impl Context {
                         return Err(format!("<path> missing for {AOSP_PATH}"));
                     };
                     ctx.android_path = PathBuf::from(path);
-                    if !ctx.android_path.exists() {
-                        return Err(format!("<path> for {AOSP_PATH} does not exist"));
-                    }
                 }
                 SKIP_GEN_NINJA => {
                     ctx.skip_gen_ninja = true;
                     ctx.skip_build = true
                 }
                 SKIP_BUILD => ctx.skip_build = true,
-                COPY_TO_AOSP => ctx.copy_to_aosp = true,
+                COPY_TO_AOSP => {
+                    ctx.copy_to_aosp = true;
+                    ctx.wildcardize_paths = true;
+                }
                 CLEAN_TMP => clean_tmp = true,
                 "-h" | "--help" => {
                     let mut projects_help = projects_map
