@@ -65,11 +65,24 @@ impl Project for Clvk {
         self.gen_libs = package.get_gen_libs();
 
         package
-            .add_raw_suffix(
+            .add_raw_suffix(&format!(
                 r#"
-build = ["AndroidManual.bp"]
-"#,
-            )
+cc_genrule {{
+    name: "clvk_icd_genrule",
+    cmd: "echo /system/$$CC_MULTILIB/libclvk.so > $(out)",
+    out: ["clvk.icd"],
+    soc_sepcific: true,
+}}
+
+prebuilt_etc {{
+    name: "clvk_icd_prebuilt",
+    src: ":clvk_icd_genrule",
+    filename_from_src: true,
+    relative_install_path: "Khronos/OpenCL/vendors",
+    soc_specific: true,
+}}
+"#
+            ))
             .print()
     }
 
