@@ -40,7 +40,7 @@ jobs:
         shell: bash
         run: |
           set -x
-          local android="$(realpath ${{ github.workspace }}/../android)"
+          android="$(realpath ${{ github.workspace }}/../android)"
           echo "android=${android}" >> $GITHUB_ENV
           echo "tmp_dir=$(realpath ${{ github.workspace }}/../tmp)" >> $GITHUB_ENV
           if [ "${{ matrix.project }}" == "clvk" ]; then
