@@ -53,7 +53,7 @@ jobs:
             echo "key=$(git log -1 --format='%h' .github/workflows/*.yml tests/OpenCL-CTS/*.sh)-OpenCL-CTS" >> $GITHUB_ENV
             echo "projects=OpenCL-CTS" >> $GITHUB_ENV
           elif [ "${{ matrix.project }}" == "angle" ]; then
-            echo "key=$(git log -1 --format='%h' .github/workflows/*.yml tests/angle/*.sh tests/angle/build)-angle" >> $GITHUB_ENV
+            echo "key=$(git log -1 --format='%h' .github/workflows/*.yml tests/angle/*.sh tests/angle/build-*)-angle" >> $GITHUB_ENV
             echo "projects=angle" >> $GITHUB_ENV
           elif [ "${{ matrix.project }}" == "clpeak" ]; then
             echo "key=$(git log -1 --format='%h' .github/workflows/*.yml tests/clpeak/*.sh)-clpeak" >> $GITHUB_ENV
