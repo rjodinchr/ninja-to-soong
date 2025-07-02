@@ -52,7 +52,10 @@ impl NinjaTarget for CmakeNinjaTarget {
         Ok(common::get_sources(&self.0.inputs, build_path))
     }
     fn get_libs_static_whole(&self) -> Vec<PathBuf> {
-        Vec::new()
+        let Some(libs) = self.0.variables.get("LINK_LIBRARIES") else {
+            return Vec::new();
+        };
+        common::get_libs_static_whole(libs)
     }
     fn get_libs_static(&self) -> Vec<PathBuf> {
         let Some(libs) = self.0.variables.get("LINK_LIBRARIES") else {

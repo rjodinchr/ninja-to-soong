@@ -48,68 +48,19 @@ impl NinjaTarget for MesonNinjaTarget {
         let Some(args) = self.0.variables.get("LINK_ARGS") else {
             return Vec::new();
         };
-        let mut iter = args.split(" ");
-        let mut libs = Vec::new();
-        while iter.clone().count() != 0 {
-            while let Some(arg) = iter.next() {
-                if arg == "-Wl,--whole-archive" {
-                    break;
-                }
-            }
-            while let Some(arg) = iter.next() {
-                if arg == "-Wl,--no-whole-archive" {
-                    break;
-                } else if arg.contains(".a") && !arg.starts_with("-Wl") {
-                    libs.push(PathBuf::from(arg));
-                }
-            }
-        }
-        libs
+        common::get_libs_static_whole(args)
     }
     fn get_libs_static(&self) -> Vec<PathBuf> {
         let Some(args) = self.0.variables.get("LINK_ARGS") else {
             return Vec::new();
         };
-        let mut iter = args.split(" ");
-        let mut libs = Vec::new();
-        while iter.clone().count() != 0 {
-            while let Some(arg) = iter.next() {
-                if arg == "-Wl,--whole-archive" {
-                    break;
-                } else if arg.contains(".a") && !arg.starts_with("-Wl") {
-                    libs.push(arg);
-                }
-            }
-            while let Some(arg) = iter.next() {
-                if arg == "-Wl,--no-whole-archive" {
-                    break;
-                }
-            }
-        }
-        common::get_libs_static(&libs.join(" "))
+        common::get_libs_static(args)
     }
     fn get_libs_shared(&self) -> Vec<PathBuf> {
         let Some(args) = self.0.variables.get("LINK_ARGS") else {
             return Vec::new();
         };
-        let mut iter = args.split(" ");
-        let mut libs = Vec::new();
-        while iter.clone().count() != 0 {
-            while let Some(arg) = iter.next() {
-                if arg == "-Wl,--whole-archive" {
-                    break;
-                } else if (arg.starts_with("-l") || arg.contains(".so")) && !arg.starts_with("-Wl")
-                {
-                    libs.push(arg);
-                }
-            }
-            while let Some(arg) = iter.next() {
-                if arg == "-Wl,--no-whole-archive" {
-                    break;
-                }
-            }
-        }
-        common::get_libs_shared(&libs.join(" "))
+        common::get_libs_shared(args)
     }
     fn get_link_flags(&self) -> (Option<PathBuf>, Vec<String>) {
         let Some(args) = self.0.variables.get("LINK_ARGS") else {

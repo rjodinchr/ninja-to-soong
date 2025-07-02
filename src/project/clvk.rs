@@ -72,8 +72,8 @@ impl Project for Clvk {
 cc_genrule {{
     name: "{CLVK_ICD_GENRULE}",
     cmd: "echo /system/$$CC_MULTILIB/{LIBCLVK}.so > $(out)",
-    srcs: [":{LIBCLVK}"],
     out: ["clvk.icd"],
+    soc_sepcific: true,
 }}
 
 prebuilt_etc {{
@@ -113,17 +113,14 @@ prebuilt_etc {{
             Vec::new()
         }
     }
-    fn extend_module(&self, target: &Path, module: SoongModule) -> SoongModule {
+    fn extend_module(&self, target: &Path, mut module: SoongModule) -> SoongModule {
         let mut header_libs = vec![String::from("OpenCL-Headers")];
         if target.ends_with("api_tests") {
             header_libs.push(CcLibraryHeaders::SpirvHeaders.str());
             header_libs.push(String::from("vulkan_headers"));
+        } else if target.ends_with("simple_test") {
+            module = module.add_prop("gtest", SoongProp::Bool(false))
         }
-        let module = if target.ends_with("simple_test") {
-            module.add_prop("gtest", SoongProp::Bool(false))
-        } else {
-            module
-        };
         module.add_prop("header_libs", SoongProp::VecStr(header_libs))
     }
 

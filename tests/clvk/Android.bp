@@ -38,6 +38,7 @@ cc_library_shared {
     srcs: ["src/*.cpp"],
     cflags: [
         "-DCLSPV_ONLINE_COMPILER=1",
+        "-DCLVK_PERFETTO_ENABLE",
         "-DCOMPILER_AVAILABLE=1",
     ],
     ldflags: ["-Wl,-Bsymbolic"],
@@ -51,6 +52,7 @@ cc_library_shared {
         "SPIRV-Tools_source_link_libSPIRV-Tools-link_a",
         "SPIRV-Tools_source_opt_libSPIRV-Tools-opt_a",
         "clspv_lib_libclspv_core_a",
+        "libperfetto_client_experimental",
         "llvm-project_lib_libLLVMAggressiveInstCombine_a",
         "llvm-project_lib_libLLVMAnalysis_a",
         "llvm-project_lib_libLLVMAsmParser_a",
@@ -87,6 +89,7 @@ cc_library_shared {
         "llvm-project_lib_libLLVMMCParser_a",
         "llvm-project_lib_libLLVMMC_a",
         "llvm-project_lib_libLLVMObjCARCOpts_a",
+        "llvm-project_lib_libLLVMObjectYAML_a",
         "llvm-project_lib_libLLVMObject_a",
         "llvm-project_lib_libLLVMOption_a",
         "llvm-project_lib_libLLVMPasses_a",
@@ -148,8 +151,8 @@ cc_test {
 cc_genrule {
     name: "clvk_icd_genrule",
     cmd: "echo /system/$$CC_MULTILIB/libclvk.so > $(out)",
-    srcs: [":libclvk"],
     out: ["clvk.icd"],
+    soc_sepcific: true,
 }
 
 prebuilt_etc {
