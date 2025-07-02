@@ -19,10 +19,16 @@ license {
 
 cc_library_shared {
     name: "unittests_wildcardize_cpp_library",
-    srcs: ["*.cpp"],
+    srcs: [
+        "*.cpp",
+        "source1.c",
+    ],
 }
 
 cc_library_shared {
     name: "unittests_wildcardize_c_library",
-    srcs: ["source1.c"],
+    srcs: [
+        "*.c",
+        "source1.cpp",
+    ],
 }

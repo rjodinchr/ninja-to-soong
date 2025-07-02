@@ -60,9 +60,6 @@ impl Context {
                         return Err(format!("<path> missing for {AOSP_PATH}"));
                     };
                     ctx.android_path = PathBuf::from(path);
-                    if !ctx.android_path.exists() {
-                        return Err(format!("<path> for {AOSP_PATH} does not exist"));
-                    }
                 }
                 SKIP_GEN_NINJA => {
                     ctx.skip_gen_ninja = true;

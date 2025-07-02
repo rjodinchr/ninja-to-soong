@@ -1314,7 +1314,6 @@ cc_library_static {
         "src/intel/compiler/brw_nir_lower_intersection_shader.c",
         "src/intel/compiler/brw_nir_lower_ray_queries.c",
         "src/intel/compiler/brw_nir_lower_rt_intrinsics.c",
-        "src/intel/compiler/brw_nir_lower_sample_index_in_coord.c",
         "src/intel/compiler/brw_nir_lower_shader_calls.c",
         "src/intel/compiler/brw_nir_lower_storage_image.c",
         "src/intel/compiler/brw_nir_opt_fsat.c",
