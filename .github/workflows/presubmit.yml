@@ -40,7 +40,8 @@ jobs:
         shell: bash
         run: |
           set -x
-          echo "android=$(realpath ${{ github.workspace }}/../android)" >> $GITHUB_ENV
+          local android="$(realpath ${{ github.workspace }}/../android)""
+          echo "android=${android}" >> $GITHUB_ENV
           echo "tmp_dir=$(realpath ${{ github.workspace }}/../tmp)" >> $GITHUB_ENV
           if [ "${{ matrix.project }}" == "clvk" ]; then
             echo "key=$(git log -1 --format='%h' .github/workflows/*.yml tests/clvk/*.sh tests/clspv/*.sh tests/llvm-project/*.sh tests/SPIRV-Tools/*.sh tests/SPIRV-Headers/*.sh)-clvk" >> $GITHUB_ENV
@@ -61,7 +62,7 @@ jobs:
             echo "key=$(git rev-parse HEAD)-unittests" >> $GITHUB_ENV
             echo "projects=unittests" >> $GITHUB_ENV
           fi
-          mkdir -p "${{ env.android }}"
+          mkdir -p "${android}"
       - name: Get repositories from cache
         id: checkout-repositories
         uses: actions/cache@v4
