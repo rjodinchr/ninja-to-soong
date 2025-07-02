@@ -61,6 +61,7 @@ jobs:
             echo "key=$(git rev-parse HEAD)-unittests" >> $GITHUB_ENV
             echo "projects=unittests" >> $GITHUB_ENV
           fi
+          mkdir -p "${{ env.android }}"
       - name: Get repositories from cache
         id: checkout-repositories
         uses: actions/cache@v4
@@ -75,12 +76,11 @@ jobs:
           N2S_NDK_PATH: ${{ env.android }}
         run: |
           set -x
-          mkdir -p "${{ env.android }}"
           for checkout in ${{ env.projects }}
           do
             bash "tests/${checkout}/checkout.sh" "${{ env.android }}"
           done
-          PATH="${{ env.android }}/depot_tools:${PATH}" cargo run --features debug_project --release -- --skip-build --aosp-path "${{ env.android }}" ${{ env.projects }}
+          cargo run --features debug_project --release -- --skip-build --aosp-path "${{ env.android }}" ${{ env.projects }}
       - name: Tests w/ cache
         if: steps.checkout-repositories.outputs.cache-hit == 'true'
         shell: bash
@@ -89,7 +89,7 @@ jobs:
           N2S_NDK_PATH: ${{ env.android }}
         run: |
           set -x
-          PATH="${{ env.android }}/depot_tools:${PATH}" cargo run --features debug_project --release -- --skip-gen-ninja --aosp-path "${{ env.android }}" ${{ env.projects }}
+          cargo run --features debug_project --release -- --skip-gen-ninja --aosp-path "${{ env.android }}" ${{ env.projects }}
       - name: Check generated files
         shell: bash
         run: |
