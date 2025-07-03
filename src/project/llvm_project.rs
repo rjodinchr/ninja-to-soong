@@ -28,7 +28,7 @@ impl Project for LlvmProject {
     ) -> Result<String, String> {
         let src_path = self.get_android_path(ctx);
         let build_path = ctx.temp_path.join(self.get_name());
-        let ndk_path = get_ndk_path(&ctx.temp_path)?;
+        let ndk_path = get_ndk_path(&ctx.temp_path, ctx)?;
 
         if !ctx.skip_gen_ninja {
             execute_cmd!(

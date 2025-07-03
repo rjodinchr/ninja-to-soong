@@ -4,11 +4,13 @@
 use std::env;
 use std::path::*;
 
+use crate::context::*;
+
 pub use std::path::{Path, PathBuf};
 
 use super::*;
 
-pub fn get_ndk_path(temp_path: &Path) -> Result<PathBuf, String> {
+pub fn get_ndk_path(temp_path: &Path, ctx: &Context) -> Result<PathBuf, String> {
     let android_ndk = if let Ok(android_ndk) = env::var("N2S_NDK") {
         android_ndk
     } else {
@@ -20,7 +22,7 @@ pub fn get_ndk_path(temp_path: &Path) -> Result<PathBuf, String> {
         PathBuf::from(temp_path)
     };
     let android_ndk_path = ndk_path.join(&android_ndk);
-    if android_ndk_path.exists() {
+    if android_ndk_path.exists() || ctx.skip_gen_ninja {
         return Ok(android_ndk_path);
     }
 
