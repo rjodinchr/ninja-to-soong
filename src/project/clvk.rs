@@ -74,7 +74,7 @@ cc_genrule {{
     name: "{CLVK_ICD_GENRULE}",
     cmd: "echo /system/$$CC_MULTILIB/{LIBCLVK}.so > $(out)",
     out: ["clvk.icd"],
-    soc_sepcific: true,
+    soc_specific: true,
 }}
 
 prebuilt_etc {{
