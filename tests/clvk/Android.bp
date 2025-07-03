@@ -191,7 +191,7 @@ cc_genrule {
     name: "clvk_icd_genrule",
     cmd: "echo /system/$$CC_MULTILIB/libclvk.so > $(out)",
     out: ["clvk.icd"],
-    soc_sepcific: true,
+    soc_specific: true,
 }
 
 prebuilt_etc {
