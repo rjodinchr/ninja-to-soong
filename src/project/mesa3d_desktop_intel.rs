@@ -214,8 +214,10 @@ soong_namespace {
                 break;
             }
         }
-        if target.ends_with("libanv_common.a") {
-            libs.push("hwvulkan_headers");
+        for lib in ["libvulkan_runtime.a", "libvulkan_lite_runtime.a"] {
+            if target.ends_with(lib) {
+                libs.push("hwvulkan_headers");
+            }
         }
         if target.ends_with("libEGL_mesa.so.1.0.0") {
             libs.push("libnativebase_headers");
