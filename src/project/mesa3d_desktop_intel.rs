@@ -156,6 +156,11 @@ cc_defaults {{
             enabled: true,
         }},
     }},
+    header_libs: [
+        "libcutils_headers",
+        "libhardware_headers",
+        "liblog_headers",
+    ],
 }}
 "#,
             ))
