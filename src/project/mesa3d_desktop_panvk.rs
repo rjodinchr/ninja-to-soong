@@ -85,6 +85,11 @@ impl Project for Mesa3DDesktopPanVK {
                     Some("mesa3d_desktop-panvk_pps-producer"),
                     Some("pps-producer"),
                 ),
+                NinjaTargetToGen(
+                    "src/tool/pps/libgpudataproducer.so",
+                    Some("mesa3d_desktop-intel_libgpudataproducer"),
+                    Some("libgpudataproducer"),
+                ),
             ]),
             parse_build_ninja::<MesonNinjaTarget>(&build_path)?,
             &self.src_path,
@@ -113,7 +118,11 @@ impl Project for Mesa3DDesktopPanVK {
 
     fn extend_module(&self, target: &Path, module: SoongModule) -> SoongModule {
         let is_soc_specific = |module: SoongModule| -> SoongModule {
-            for lib in ["libvulkan_panfrost.so", "pps-producer"] {
+            for lib in [
+                "libvulkan_panfrost.so",
+                "pps-producer",
+                "libgpudataproducer.so",
+            ] {
                 if target.ends_with(lib) {
                     return module.add_prop("soc_specific", SoongProp::Bool(true));
                 }
