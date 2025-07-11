@@ -12,11 +12,11 @@ pub fn copy_gen_deps(
 ) -> Result<(), String> {
     if !ctx.copy_to_aosp {
         write_file(
-            &project.get_test_path(ctx).join("generated_deps.txt"),
+            &project.get_test_path(ctx)?.join("generated_deps.txt"),
             &format!("{0:#?}", &gen_deps),
         )?;
     } else {
-        let dst = project.get_android_path(ctx).join(from);
+        let dst = project.get_android_path(ctx)?.join(from);
         if remove_dir(&dst)? {
             print_verbose!("{dst:#?} removed");
         }

@@ -52,6 +52,7 @@ jobs:
           elif [ "${{ matrix.project }}" == "OpenCL-CTS" ]; then
             echo "key=$(git rev-parse HEAD)-OpenCL-CTS" >> $GITHUB_ENV # Never use cache as checkout is needed for opencl_conformance_tests_full.csv
             echo "projects=OpenCL-CTS" >> $GITHUB_ENV
+            echo "extra_args=--ext-proj-path=${{ github.workspace }}/tests/external/OpenCL-CTS/opencl_cts.rs" >> $GITHUB_ENV
           elif [ "${{ matrix.project }}" == "angle" ]; then
             echo "key=$(git log -1 --format='%h' .github/workflows/*.yml tests/angle/*.sh tests/angle/build-*)-angle" >> $GITHUB_ENV
             echo "projects=angle" >> $GITHUB_ENV
@@ -81,7 +82,7 @@ jobs:
           do
             bash "tests/${checkout}/checkout.sh" "${{ env.android }}"
           done
-          cargo run --features debug_project --release -- --skip-build --aosp-path "${{ env.android }}" ${{ env.projects }}
+          cargo run --features debug_project --release -- --skip-build --aosp-path "${{ env.android }}" ${{ env.projects }} ${{ env.extra_args }}
       - name: Tests w/ cache
         if: steps.checkout-repositories.outputs.cache-hit == 'true'
         shell: bash

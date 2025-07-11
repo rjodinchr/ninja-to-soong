@@ -5,3 +5,9 @@ edition = "2021"
 
 [features]
 debug_project = []
+
+[dependencies]
+libloading = "0.8"
+
+[lib]
+crate-type = ["dylib", "rlib"]

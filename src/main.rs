@@ -3,6 +3,8 @@
 
 use std::collections::HashSet;
 
+use libloading::Library;
+
 mod context;
 mod ninja_parser;
 mod ninja_target;
@@ -33,10 +35,11 @@ fn generate_project(
         print_debug!("Writing soong file...");
         const ANDROID_BP: &str = "Android.bp";
         let file_path = if !ctx.copy_to_aosp {
-            project.get_test_path(ctx).join(ANDROID_BP)
+            project.get_test_path(ctx)?
         } else {
-            project.get_android_path(ctx).join(ANDROID_BP)
-        };
+            project.get_android_path(ctx)?
+        }
+        .join(ANDROID_BP);
         let Ok(current_package) = read_file(&file_path) else {
             write_file(&file_path, &package)?;
             print_verbose!("{file_path:#?} created");
@@ -58,6 +61,30 @@ fn generate_project(
     Ok(())
 }
 
+fn get_library(ctx: &Context) -> Result<Library, String> {
+    let path = ctx.get_external_project_path()?;
+    if !path.exists() {
+        return error!("external project path ({path:#?} does not exist");
+    }
+    let library_path = path_to_string(ctx.temp_path.join("external_project.so"));
+    execute_cmd!(
+        "rustc",
+        [
+            "--crate-type=cdylib",
+            "-L",
+            &path_to_string(&ctx.exe_path),
+            "-lninja_to_soong",
+            "-o",
+            &library_path,
+            &path_to_string(&path),
+        ]
+    )?;
+    match unsafe { Library::new(&library_path) } {
+        Ok(lib) => Ok(lib),
+        Err(_) => error!("Could not create load {library_path:#?}"),
+    }
+}
+
 fn generate_projects(mut projects_map: ProjectsMap, ctx: &Context) -> Result<(), String> {
     let projects_to_write: HashSet<&ProjectId> = HashSet::from_iter(&ctx.projects_to_generate);
     let mut projects_to_generate = ctx.projects_to_generate.clone();
@@ -75,7 +102,20 @@ fn generate_projects(mut projects_map: ProjectsMap, ctx: &Context) -> Result<(),
             projects_to_generate.extend(missing_deps);
             projects_to_generate.push_back(project_id);
         } else {
-            if project_id == ProjectId::UnitTest {
+            if project_id == ProjectId::External {
+                let mut project_ctx = ctx.clone();
+                project_ctx.wildcardize_paths = true;
+
+                let library = get_library(&project_ctx)?;
+                const GET_PROJECT_SYMBOL: &str = "get_project";
+                let mut project = match unsafe {
+                    library.get::<fn() -> Box<dyn Project>>(GET_PROJECT_SYMBOL.as_bytes())
+                } {
+                    Ok(get_project) => get_project(),
+                    Err(_) => return error!("Could not get symbol '{GET_PROJECT_SYMBOL}'"),
+                };
+                generate_project(&mut project, true, &projects_map, &project_ctx)?;
+            } else if project_id == ProjectId::UnitTest {
                 for dir in ls_dir(&ctx.test_path.join("unittests")) {
                     let mut test_ctx = ctx.clone();
                     test_ctx.test_path = dir;
@@ -104,12 +144,12 @@ fn main() -> Result<(), String> {
         Ok(ctx) => {
             if let Err(err) = generate_projects(projects_map, &ctx) {
                 print_error!("{err}");
-                return Err(String::from("generate_projects failed"));
+                return error!("generate_projects failed");
             }
         }
         Err(err) => {
             print_error!("{err}");
-            return Err(String::from("parse_args failed"));
+            return error!("parse_args failed");
         }
     }
     Ok(())

@@ -11,10 +11,11 @@ use crate::soong_package::*;
 use crate::soong_package_merger::*;
 use crate::utils::*;
 
-mod common;
+pub mod common;
 
 define_ProjectId!(
     (Angle, angle),
+    (External, external),
     (Clpeak, clpeak),
     (Clvk, clvk),
     (Clspv, clspv),
@@ -38,7 +39,7 @@ impl ProjectId {
         Vec::from_iter(projects)
     }
     pub fn get_android_path(self, map: &ProjectsMap, ctx: &Context) -> Result<PathBuf, String> {
-        Ok(map.get(self)?.get_android_path(ctx))
+        Ok(map.get(self)?.get_android_path(ctx)?)
     }
 }
 
@@ -97,8 +98,8 @@ impl ProjectsMap {
 pub trait Project {
     // MANDATORY FUNCTIONS
     fn get_name(&self) -> &'static str;
-    fn get_android_path(&self, ctx: &Context) -> PathBuf;
-    fn get_test_path(&self, ctx: &Context) -> PathBuf;
+    fn get_android_path(&self, ctx: &Context) -> Result<PathBuf, String>;
+    fn get_test_path(&self, ctx: &Context) -> Result<PathBuf, String>;
     fn generate_package(
         &mut self,
         ctx: &Context,

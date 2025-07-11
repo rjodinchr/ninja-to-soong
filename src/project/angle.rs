@@ -50,7 +50,7 @@ impl Angle {
             execute_cmd!(
                 "bash",
                 [
-                    &path_to_string(self.get_test_path(ctx).join("gen-ninja.sh")),
+                    &path_to_string(self.get_test_path(ctx)?.join("gen-ninja.sh")),
                     &path_to_string(&self.src_path),
                     &path_to_string(&self.build_path),
                     target_cpu,
@@ -93,11 +93,14 @@ impl Project for Angle {
     fn get_name(&self) -> &'static str {
         "angle"
     }
-    fn get_android_path(&self, ctx: &Context) -> PathBuf {
-        ctx.android_path.join("external").join(self.get_name())
+    fn get_android_path(&self, ctx: &Context) -> Result<PathBuf, String> {
+        Ok(ctx
+            .get_android_path()?
+            .join("external")
+            .join(self.get_name()))
     }
-    fn get_test_path(&self, ctx: &Context) -> PathBuf {
-        ctx.test_path.join(self.get_name())
+    fn get_test_path(&self, ctx: &Context) -> Result<PathBuf, String> {
+        Ok(ctx.test_path.join(self.get_name()))
     }
     fn generate_package(
         &mut self,

@@ -33,11 +33,11 @@ impl Project for UnitTest {
     fn get_name(&self) -> &'static str {
         "unittests"
     }
-    fn get_android_path(&self, _ctx: &Context) -> PathBuf {
-        PathBuf::from("/dev/null")
+    fn get_android_path(&self, _ctx: &Context) -> Result<PathBuf, String> {
+        error!("Should not be called")
     }
-    fn get_test_path(&self, ctx: &Context) -> PathBuf {
-        ctx.test_path.clone()
+    fn get_test_path(&self, ctx: &Context) -> Result<PathBuf, String> {
+        Ok(ctx.test_path.clone())
     }
     fn generate_package(
         &mut self,

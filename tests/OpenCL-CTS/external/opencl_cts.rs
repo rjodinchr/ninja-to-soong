@@ -1,7 +1,20 @@
 // Copyright 2025 ninja-to-soong authors
 // SPDX-License-Identifier: Apache-2.0
 
-use super::*;
+extern crate ninja_to_soong;
+use ninja_to_soong::context::*;
+use ninja_to_soong::ninja_parser::*;
+use ninja_to_soong::ninja_target::*;
+use ninja_to_soong::project::common;
+use ninja_to_soong::project::*;
+use ninja_to_soong::soong_module::*;
+use ninja_to_soong::soong_package::*;
+use ninja_to_soong::utils::*;
+
+#[no_mangle]
+pub fn get_project() -> Box<dyn Project> {
+    Box::new(OpenclCts::default())
+}
 
 #[derive(Default)]
 pub struct OpenclCts();
@@ -50,7 +63,9 @@ impl Project for OpenclCts {
             .join(self.get_name()))
     }
     fn get_test_path(&self, ctx: &Context) -> Result<PathBuf, String> {
-        Ok(ctx.test_path.join(self.get_name()))
+        Ok(PathBuf::from(
+            ctx.get_external_project_path()?.parent().unwrap(),
+        ))
     }
     fn generate_package(
         &mut self,
@@ -61,21 +76,29 @@ impl Project for OpenclCts {
         let build_path = ctx.temp_path.join(self.get_name());
         let ndk_path = get_ndk_path(&ctx.temp_path, ctx)?;
 
-        let spirv_tools_path = if !ctx.skip_build {
-            ctx.temp_path.clone()
-        } else {
-            self.get_test_path(ctx)?
-        };
-
         if !ctx.skip_gen_ninja {
             execute_cmd!(
-                "bash",
+                "cmake",
                 [
-                    &path_to_string(self.get_test_path(ctx)?.join("gen-ninja.sh")),
-                    &path_to_string(&src_path),
+                    "-B",
                     &path_to_string(&build_path),
-                    &path_to_string(&ndk_path),
-                    &path_to_string(&spirv_tools_path),
+                    "-S",
+                    &path_to_string(&src_path),
+                    "-G",
+                    "Ninja",
+                    "-DCMAKE_BUILD_TYPE=Release",
+                    &format!(
+                        "-DCMAKE_TOOLCHAIN_FILE={}/build/cmake/android.toolchain.cmake",
+                        path_to_string(&ndk_path)
+                    ),
+                    "-DANDROID_ABI=arm64-v8a",
+                    "-DANDROID_PLATFORM=35",
+                    &format!(
+                        "-DCL_INCLUDE_DIR={}/../OpenCL-Headers",
+                        path_to_string(&src_path)
+                    ),
+                    &format!("-DCL_LIB_DIR={}", path_to_string(&src_path)),
+                    "-DOPENCL_LIBRARIES=-lOpenCL",
                 ]
             )?;
         }
