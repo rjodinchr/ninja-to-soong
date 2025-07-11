@@ -6,7 +6,7 @@ set -xe
 DEST="$1"
 SCRIPT_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
 
-bash "${SCRIPT_DIR}/../../../utils/checkout.sh" https://gitlab.freedesktop.org/zzyiwei/mesa 11cb6dc4fe1b8acd495e6613e45b003cc914fb46 "${DEST}/vendor/google/graphics/mesa3d/desktop-panvk"
+bash "${SCRIPT_DIR}/../../../utils/checkout.sh" https://gitlab.freedesktop.org/mesa/mesa c459be37952dbf9c7be48b9796d55bd19ffcdf5f "${DEST}/vendor/google/graphics/mesa3d/desktop-panvk"
 
 MAJOR_VERSION=18
 sudo apt install \

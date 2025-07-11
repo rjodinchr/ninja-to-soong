@@ -70,8 +70,9 @@ impl Project for Mesa3DDesktopPanVK {
             &[
                 "SPDX-license-identifier-Apache-2.0",
                 "SPDX-license-identifier-MIT",
+                "SPDX-license-identifier-BSL-1.0",
             ],
-            &["licenses/Apache-2.0", "licenses/MIT"],
+            &["licenses/Apache-2.0", "licenses/MIT", "licenses/BSL-1.0"],
         )
         .generate(
             NinjaTargetsToGenMap::from(&[
@@ -134,6 +135,14 @@ impl Project for Mesa3DDesktopPanVK {
         let mut libs = Vec::new();
         for lib in [
             "libmesa_util.a",
+            "libpan-arch-v4.a",
+            "libpan-arch-v5.a",
+            "libpan-arch-v6.a",
+            "libpan-arch-v7.a",
+            "libpan-arch-v9.a",
+            "libpan-arch-v10.a",
+            "libpan-arch-v12.a",
+            "libpan-arch-v13.a",
             "libpanfrost_lib.a",
             "libpanfrost_perf.a",
             "libpankmod_lib.a",
@@ -153,13 +162,7 @@ impl Project for Mesa3DDesktopPanVK {
                 break;
             }
         }
-        if target.ends_with("libpanvk_v6.a")
-            || target.ends_with("libpanvk_v7.a")
-            || target.ends_with("libpanvk_v10.a")
-            || target.ends_with("libpanvk_v12.a")
-            || target.ends_with("libpanvk_v13.a")
-            || target.ends_with("libvulkan_panfrost.so")
-        {
+        if target.ends_with("libvulkan_lite_runtime.a") {
             libs.push("hwvulkan_headers");
         }
 
