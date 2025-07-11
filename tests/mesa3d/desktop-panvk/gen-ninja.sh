@@ -35,6 +35,7 @@ meson setup \
     -Dbuildtype=release \
     -Dmesa-clc=system \
     -Dprecomp-compiler=system \
+    -Dallow-fallback-for=libdrm \
     -Dstrip=true \
     --reconfigure \
     --wipe \
