@@ -94,6 +94,7 @@ macro_rules! define_ProjectId {
         $(mod $module;)*
         #[derive(Debug, Eq, PartialEq, Hash, Copy, Clone)]
         pub enum ProjectId {
+            External,
             $($project,)*
         }
         fn get_projects() -> HashMap<ProjectId, Box<dyn Project>> {

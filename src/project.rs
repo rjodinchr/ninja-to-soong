@@ -15,7 +15,6 @@ pub mod common;
 
 define_ProjectId!(
     (Angle, angle),
-    (External, external),
     (Clpeak, clpeak),
     (Clvk, clvk),
     (Clspv, clspv),
