@@ -122,9 +122,10 @@ impl Project for OpenclCts {
 
         let default_module = SoongModule::new("cc_defaults")
             .add_prop("name", SoongProp::Str(String::from(DEFAULTS)))
-            .add_props(
-                package.get_props("OpenCL-CTS-test_api", vec!["cflags", "local_include_dirs"])?,
-            )
+            .add_props(package.get_props(
+                "OpenCL-CTS-test_api",
+                vec!["cflags", "local_include_dirs", "static_libs", "shared_libs"],
+            )?)
             .add_prop(
                 "defaults",
                 SoongProp::VecStr(vec![String::from("OpenCL-CTS-manual-defaults")]),
@@ -180,9 +181,10 @@ build = ["AndroidManual.bp"]
                 ]),
             )
         }
-        module
-            .add_prop("rtti", SoongProp::Bool(is_test_spir))
-            .add_prop("defaults", SoongProp::VecStr(vec![String::from(DEFAULTS)]))
+        if !target.ends_with("libharness.a") {
+            module = module.add_prop("defaults", SoongProp::VecStr(vec![String::from(DEFAULTS)]));
+        }
+        module.add_prop("rtti", SoongProp::Bool(is_test_spir))
     }
 
     fn map_lib(&self, lib: &Path) -> Option<PathBuf> {
