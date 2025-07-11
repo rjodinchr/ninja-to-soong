@@ -32,6 +32,7 @@
 ## Options
 
 * `--aosp-path <path>`: Path to Android tree (required for most project)
+* `--ext-proj-path <path>`: Path to external project rust file
 * `--clean-tmp`: Remove the temporary directory before running
 * `--copy-to-aosp`: Copy generated Soong files into the Android tree
 * `--skip-build`: Skip build step
@@ -56,8 +57,9 @@
 | [SPIRV-Headers](https://github.com/KhronosGroup/SPIRV-Headers) | `CMake` | `clspv` & `SPIRV-Tools` dependencies |
 | [angle](https://github.com/google/angle) (WIP) | `GN` | `libEGL_angle.so`, `libGLESv2_angle.so`, `libGLESv1_CM_angle.so` |
 | [mesa](https://www.mesa3d.org/) | `meson` | `libgallium_dri.so`, `libglapi.so`, `libEGL_mesa.so`, `libGLESv2_mesa.so`, `libGLESv1_CM_mesa.so`, `libvulkan_${VENDOR}.so` |
-| [OpenCl-CTS](https://github.com/KhronosGroup/OpenCL-CTS) (WIP) | `CMake` | Every binary in `test_conformance/opencl_conformance_tests_full.csv` |
+| [OpenCl-CTS](https://github.com/KhronosGroup/OpenCL-CTS) | `CMake` | Every binary in `test_conformance/opencl_conformance_tests_full.csv` |
 | [clpeak](https://github.com/krrishnarraj/clpeak) | `CMake` | `clpeak` |
+
 ## Adding a project
 
 To add a project, create a `<project>.rs` implementing the `Project` trait under the `project` folder.
@@ -67,6 +69,27 @@ Then add the project in `define_ProjectId!` in `project.rs`.
 The following feature can be used to output debug information when writting a new project:
 ```
 <ninja-to-soong> $ cargo run --release --features debug_project -- --aosp-path <path> <new_project>
+```
+
+## External project
+
+`ninja-to-soong` is able to take a external rust project file, compile it and link with it at runtime.
+
+This is useful for project where the configuration file cannot be shared upstream for example, or when a project prefer to have the configuration file hosted in the project repository.
+
+An example of such a configuration file can be found [here](tests/OpenCL-CTS/external/opencl_cts.rs)
+
+The important points are:
+- Add `ninja-to-soong` crate: `extern crate ninja_to_soong;`, and use all modules needed for the project.
+- Expose a `get_project` function without mangling:
+```
+#[no_mangle]
+pub fn get_project() -> Box<dyn Project>
+```
+
+Then the project can be run with the following command:
+```
+<ninja-to-soong> $ cargo run --release -- --ext-proj-path <path_to_rust_file> 
 ```
 
 # Tests
