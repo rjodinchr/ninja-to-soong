@@ -100,8 +100,10 @@ fn generate_projects(mut projects_map: ProjectsMap, ctx: &Context) -> Result<(),
         if missing_deps.clone().count() > 0 {
             projects_to_generate.extend(missing_deps);
             projects_to_generate.push_back(project_id);
-        } else {
-            if project_id == ProjectId::External {
+            continue;
+        }
+        match project_id {
+            ProjectId::External => {
                 let mut project_ctx = ctx.clone();
                 project_ctx.wildcardize_paths = true;
 
@@ -114,7 +116,8 @@ fn generate_projects(mut projects_map: ProjectsMap, ctx: &Context) -> Result<(),
                     Err(_) => return error!("Could not get symbol '{GET_PROJECT_SYMBOL}'"),
                 };
                 generate_project(&mut project, true, &projects_map, &project_ctx)?;
-            } else if project_id == ProjectId::UnitTest {
+            }
+            ProjectId::UnitTest => {
                 let mut project = projects_map.remove(&project_id)?;
                 for dir in ls_dir(&ctx.test_path.join("unittests")) {
                     let mut test_ctx = ctx.clone();
@@ -123,7 +126,8 @@ fn generate_projects(mut projects_map: ProjectsMap, ctx: &Context) -> Result<(),
                     generate_project(&mut project, true, &projects_map, &test_ctx)?;
                 }
                 projects_map.insert(project_id, project);
-            } else {
+            }
+            _ => {
                 let mut project = projects_map.remove(&project_id)?;
                 generate_project(
                     &mut project,
@@ -133,8 +137,8 @@ fn generate_projects(mut projects_map: ProjectsMap, ctx: &Context) -> Result<(),
                 )?;
                 projects_map.insert(project_id, project);
             }
-            projects_generated.insert(project_id);
         }
+        projects_generated.insert(project_id);
     }
 
     Ok(())
