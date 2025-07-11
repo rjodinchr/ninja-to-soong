@@ -21,17 +21,24 @@ pub struct Context {
     pub wildcardize_paths: bool,
 }
 
+const AOSP_PATH: &str = "--aosp-path";
+const EXT_PROJ_PATH: &str = "--ext-proj-path";
+const CLEAN_TMP: &str = "--clean-tmp";
+const COPY_TO_AOSP: &str = "--copy-to-aosp";
+const SKIP_BUILD: &str = "--skip-build";
+const SKIP_GEN_NINJA: &str = "--skip-gen-ninja";
+
 impl Context {
     pub fn get_android_path(&self) -> Result<PathBuf, String> {
         match &self.android_path {
             Some(android_path) => Ok(android_path.clone()),
-            None => error!("android_path has not been set"),
+            None => error!("'{AOSP_PATH}' has not been defined"),
         }
     }
     pub fn get_external_project_path(&self) -> Result<PathBuf, String> {
         match &self.external_project_path {
             Some(external_project_path) => Ok(external_project_path.clone()),
-            None => error!("external_project_path has not been set"),
+            None => error!("'{EXT_PROJ_PATH}' has not been defined"),
         }
     }
 
@@ -50,13 +57,6 @@ impl Context {
     }
 
     pub fn parse_args(projects_map: &ProjectsMap) -> Result<Self, String> {
-        const AOSP_PATH: &str = "--aosp-path";
-        const EXT_PROJ_PATH: &str = "--ext-proj-path";
-        const CLEAN_TMP: &str = "--clean-tmp";
-        const COPY_TO_AOSP: &str = "--copy-to-aosp";
-        const SKIP_BUILD: &str = "--skip-build";
-        const SKIP_GEN_NINJA: &str = "--skip-gen-ninja";
-
         let args = env::args().collect::<Vec<String>>();
         let exec = file_name(&Path::new(&args[0]));
         let mut iter = args[1..].iter();
@@ -134,9 +134,6 @@ OPTIONS:
                     },
                 },
             }
-        }
-        if ctx.copy_to_aosp && ctx.android_path.is_none() {
-            return error!("'{AOSP_PATH}' is required when using '{COPY_TO_AOSP}'");
         }
         // TEMP_PATH
         ctx.temp_path = if let Ok(dir) = env::var("N2S_TMP_PATH") {
