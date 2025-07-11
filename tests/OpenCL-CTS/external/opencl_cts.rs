@@ -20,6 +20,7 @@ pub fn get_project() -> Box<dyn Project> {
 pub struct OpenclCts();
 
 const DEFAULTS: &str = "OpenCL-CTS-defaults";
+const DEFAULTS_MANUAL: &str = "OpenCL-CTS-manual-defaults";
 const CMAKE_GENERATED: &str = "cmake_generated";
 
 fn parse_test(line: &str) -> Option<String> {
@@ -77,29 +78,21 @@ impl Project for OpenclCts {
         let ndk_path = get_ndk_path(&ctx.temp_path, ctx)?;
 
         if !ctx.skip_gen_ninja {
-            execute_cmd!(
-                "cmake",
-                [
-                    "-B",
-                    &path_to_string(&build_path),
-                    "-S",
-                    &path_to_string(&src_path),
-                    "-G",
-                    "Ninja",
-                    "-DCMAKE_BUILD_TYPE=Release",
-                    &format!(
-                        "-DCMAKE_TOOLCHAIN_FILE={}/build/cmake/android.toolchain.cmake",
-                        path_to_string(&ndk_path)
-                    ),
-                    "-DANDROID_ABI=arm64-v8a",
-                    "-DANDROID_PLATFORM=35",
+            common::cmake_configure(
+                &src_path,
+                &build_path,
+                &ndk_path,
+                None,
+                None,
+                None,
+                &[
                     &format!(
                         "-DCL_INCLUDE_DIR={}/../OpenCL-Headers",
                         path_to_string(&src_path)
                     ),
                     &format!("-DCL_LIB_DIR={}", path_to_string(&src_path)),
                     "-DOPENCL_LIBRARIES=-lOpenCL",
-                ]
+                ],
             )?;
         }
         let tests = parse_tests(&src_path)?
@@ -151,7 +144,7 @@ impl Project for OpenclCts {
             )?)
             .add_prop(
                 "defaults",
-                SoongProp::VecStr(vec![String::from("OpenCL-CTS-manual-defaults")]),
+                SoongProp::VecStr(vec![String::from(DEFAULTS_MANUAL)]),
             );
         package
             .add_module(default_module)
@@ -204,10 +197,15 @@ build = ["AndroidManual.bp"]
                 ]),
             )
         }
-        if !target.ends_with("libharness.a") {
-            module = module.add_prop("defaults", SoongProp::VecStr(vec![String::from(DEFAULTS)]))
-        }
-        module.add_prop("rtti", SoongProp::Bool(is_test_spir))
+        module = module.add_prop("rtti", SoongProp::Bool(is_test_spir));
+        module.add_prop(
+            "defaults",
+            SoongProp::VecStr(vec![String::from(if target.ends_with("libharness.a") {
+                DEFAULTS_MANUAL
+            } else {
+                DEFAULTS
+            })]),
+        )
     }
 
     fn map_lib(&self, lib: &Path) -> Option<PathBuf> {
