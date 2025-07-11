@@ -7,6 +7,7 @@ use super::*;
 pub struct OpenclCts();
 
 const DEFAULTS: &str = "OpenCL-CTS-defaults";
+const DEFAULTS_MANUAL: &str = "OpenCL-CTS-manual-defaults";
 const CMAKE_GENERATED: &str = "cmake_generated";
 
 fn parse_test(line: &str) -> Option<String> {
@@ -128,7 +129,7 @@ impl Project for OpenclCts {
             )?)
             .add_prop(
                 "defaults",
-                SoongProp::VecStr(vec![String::from("OpenCL-CTS-manual-defaults")]),
+                SoongProp::VecStr(vec![String::from(DEFAULTS_MANUAL)]),
             );
         package
             .add_module(default_module)
@@ -181,10 +182,15 @@ build = ["AndroidManual.bp"]
                 ]),
             )
         }
-        if !target.ends_with("libharness.a") {
-            module = module.add_prop("defaults", SoongProp::VecStr(vec![String::from(DEFAULTS)]));
-        }
-        module.add_prop("rtti", SoongProp::Bool(is_test_spir))
+        module = module.add_prop("rtti", SoongProp::Bool(is_test_spir));
+        module.add_prop(
+            "defaults",
+            SoongProp::VecStr(vec![String::from(if target.ends_with("libharness.a") {
+                DEFAULTS_MANUAL
+            } else {
+                DEFAULTS
+            })]),
+        )
     }
 
     fn map_lib(&self, lib: &Path) -> Option<PathBuf> {
