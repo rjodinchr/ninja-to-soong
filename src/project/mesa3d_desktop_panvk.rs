@@ -14,20 +14,21 @@ impl Project for Mesa3DDesktopPanVK {
     fn get_name(&self) -> &'static str {
         "mesa3d/desktop-panvk"
     }
-    fn get_android_path(&self, ctx: &Context) -> PathBuf {
-        ctx.android_path
+    fn get_android_path(&self, ctx: &Context) -> Result<PathBuf, String> {
+        Ok(ctx
+            .get_android_path()?
             .join("vendor/google/graphics")
-            .join(self.get_name())
+            .join(self.get_name()))
     }
-    fn get_test_path(&self, ctx: &Context) -> PathBuf {
-        ctx.test_path.join(self.get_name())
+    fn get_test_path(&self, ctx: &Context) -> Result<PathBuf, String> {
+        Ok(ctx.test_path.join(self.get_name()))
     }
     fn generate_package(
         &mut self,
         ctx: &Context,
         _projects_map: &ProjectsMap,
     ) -> Result<String, String> {
-        self.src_path = self.get_android_path(ctx);
+        self.src_path = self.get_android_path(ctx)?;
         let ndk_path = get_ndk_path(&ctx.temp_path, ctx)?;
         let build_path = ctx.temp_path.join(self.get_name());
 
@@ -36,21 +37,21 @@ impl Project for Mesa3DDesktopPanVK {
             execute_cmd!(
                 "bash",
                 [
-                    &path_to_string(self.get_test_path(ctx).join("build_mesa_clc.sh")),
+                    &path_to_string(self.get_test_path(ctx)?.join("build_mesa_clc.sh")),
                     &path_to_string(&self.src_path),
                     &path_to_string(&mesa_clc_build_path)
                 ]
             )?;
             mesa_clc_build_path.join("bin")
         } else {
-            self.get_test_path(ctx)
+            self.get_test_path(ctx)?
         };
 
         if !ctx.skip_gen_ninja {
             execute_cmd!(
                 "bash",
                 [
-                    &path_to_string(self.get_test_path(ctx).join("gen-ninja.sh")),
+                    &path_to_string(self.get_test_path(ctx)?.join("gen-ninja.sh")),
                     &path_to_string(&self.src_path),
                     &path_to_string(&build_path),
                     &path_to_string(mesa_clc_path),

@@ -12,14 +12,36 @@ pub struct Context {
     pub projects_to_generate: VecDeque<ProjectId>,
     pub temp_path: PathBuf,
     pub test_path: PathBuf,
-    pub android_path: PathBuf,
+    android_path: Option<PathBuf>,
+    external_project_path: Option<PathBuf>,
+    pub exe_path: PathBuf,
     pub skip_gen_ninja: bool,
     pub skip_build: bool,
     pub copy_to_aosp: bool,
     pub wildcardize_paths: bool,
 }
 
+const AOSP_PATH: &str = "--aosp-path";
+const EXT_PROJ_PATH: &str = "--ext-proj-path";
+const CLEAN_TMP: &str = "--clean-tmp";
+const COPY_TO_AOSP: &str = "--copy-to-aosp";
+const SKIP_BUILD: &str = "--skip-build";
+const SKIP_GEN_NINJA: &str = "--skip-gen-ninja";
+
 impl Context {
+    pub fn get_android_path(&self) -> Result<PathBuf, String> {
+        match &self.android_path {
+            Some(android_path) => Ok(android_path.clone()),
+            None => error!("'{AOSP_PATH}' has not been defined"),
+        }
+    }
+    pub fn get_external_project_path(&self) -> Result<PathBuf, String> {
+        match &self.external_project_path {
+            Some(external_project_path) => Ok(external_project_path.clone()),
+            None => error!("'{EXT_PROJ_PATH}' has not been defined"),
+        }
+    }
+
     fn get_partial_matching_project(projects_map: &ProjectsMap, target: &str) -> Option<ProjectId> {
         for (project_id, project) in projects_map.iter() {
             if project
@@ -35,12 +57,6 @@ impl Context {
     }
 
     pub fn parse_args(projects_map: &ProjectsMap) -> Result<Self, String> {
-        const AOSP_PATH: &str = "--aosp-path";
-        const CLEAN_TMP: &str = "--clean-tmp";
-        const COPY_TO_AOSP: &str = "--copy-to-aosp";
-        const SKIP_BUILD: &str = "--skip-build";
-        const SKIP_GEN_NINJA: &str = "--skip-gen-ninja";
-
         let args = env::args().collect::<Vec<String>>();
         let exec = file_name(&Path::new(&args[0]));
         let mut iter = args[1..].iter();
@@ -57,9 +73,24 @@ impl Context {
             match arg.as_str() {
                 AOSP_PATH => {
                     let Some(path) = iter.next() else {
-                        return Err(format!("<path> missing for {AOSP_PATH}"));
+                        return error!("<path> missing for {AOSP_PATH}");
                     };
-                    ctx.android_path = PathBuf::from(path);
+                    let android_path = PathBuf::from(path);
+                    if !android_path.exists() {
+                        return error!("{android_path:#?} does not exists");
+                    }
+                    ctx.android_path = Some(android_path);
+                }
+                EXT_PROJ_PATH => {
+                    let Some(path) = iter.next() else {
+                        return error!("<path> missing for {EXT_PROJ_PATH}");
+                    };
+                    let path = PathBuf::from(path);
+                    if !path.exists() {
+                        return error!("{path:#?} does not exists");
+                    }
+                    ctx.projects_to_generate.push_back(ProjectId::External);
+                    ctx.external_project_path = Some(path);
                 }
                 SKIP_GEN_NINJA => {
                     ctx.skip_gen_ninja = true;
@@ -77,34 +108,32 @@ impl Context {
                         .map(|(_, project)| format!("  {0}\n", project.get_name()))
                         .collect::<Vec<String>>();
                     projects_help.sort_unstable();
-                    return Err(format!(
+                    return error!(
                         "
 USAGE: {exec} [OPTIONS] [PROJECTS]
 
 PROJECTS:
 {0}
 OPTIONS:
-{AOSP_PATH} <path>   Path to Android tree (required for most project)
-{CLEAN_TMP}          Remove temporary directory before running
-{COPY_TO_AOSP}       Copy generated Soong files into the Android tree
-{SKIP_BUILD}         Skip build step
-{SKIP_GEN_NINJA}     Skip generation of Ninja files
--h, --help           Display the help and exit
+{AOSP_PATH} <path>       Path to Android tree (required for most project)
+{EXT_PROJ_PATH} <path>   Path to external project rust file
+{CLEAN_TMP}              Remove temporary directory before running
+{COPY_TO_AOSP}           Copy generated Soong files into the Android tree
+{SKIP_BUILD}             Skip build step
+{SKIP_GEN_NINJA}         Skip generation of Ninja files
+-h, --help               Display the help and exit
 ",
                         projects_help.concat()
-                    ));
+                    );
                 }
                 project => match project_name_to_id.get(project) {
                     Some(project) => ctx.projects_to_generate.push_back(*project),
                     None => match Self::get_partial_matching_project(projects_map, project) {
                         Some(project) => ctx.projects_to_generate.push_back(project),
-                        None => return Err(format!("Unknown project '{project}'")),
+                        None => return error!("Unknown project '{project}'"),
                     },
                 },
             }
-        }
-        if ctx.copy_to_aosp && !ctx.android_path.exists() {
-            return error!("'{COPY_TO_AOSP}' requires a valid '{AOSP_PATH}'");
         }
         // TEMP_PATH
         ctx.temp_path = if let Ok(dir) = env::var("N2S_TMP_PATH") {
@@ -120,9 +149,9 @@ OPTIONS:
             print_info!("{0:#?} created", ctx.temp_path);
         }
         // TEST_PATH
-        ctx.test_path = match env::current_exe() {
+        match env::current_exe() {
             Ok(exe_path) => {
-                PathBuf::from(
+                ctx.test_path = PathBuf::from(
                     exe_path // <ninja-to-soong>/target/<build-mode>/ninja-to-soong
                         .parent() // <ninja-to-soong>/target/<build-mode>
                         .unwrap()
@@ -131,7 +160,8 @@ OPTIONS:
                         .parent() // <ninja-to-soong>
                         .unwrap()
                         .join("tests"), // <ninja-to-soong>/tests
-                )
+                );
+                ctx.exe_path = PathBuf::from(exe_path.parent().unwrap());
             }
             Err(err) => return error!("Could not get current executable path: {err}"),
         };
