@@ -125,6 +125,7 @@ cc_library_static {
     srcs: ["src/util/streaming-load-memcpy.c"],
     local_include_dirs: [
         "include",
+        "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/util",
         "src",
@@ -226,6 +227,7 @@ cc_library_static {
     shared_libs: ["libz"],
     local_include_dirs: [
         "include",
+        "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/util",
         "meson_generated/src/util/format",
@@ -261,6 +263,7 @@ cc_library_static {
     cflags: ["-DPPS_PANFROST"],
     local_include_dirs: [
         "include",
+        "include/android_stub",
         "meson_generated/src",
         "src",
         "src/tool",
@@ -290,6 +293,7 @@ cc_library_static {
     ],
     local_include_dirs: [
         "include",
+        "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/compiler",
         "meson_generated/src/compiler/nir",
@@ -311,6 +315,7 @@ cc_library_static {
     ],
     local_include_dirs: [
         "include",
+        "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/compiler",
         "meson_generated/src/compiler/nir",
@@ -347,6 +352,7 @@ cc_library_static {
     ],
     local_include_dirs: [
         "include",
+        "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/panfrost/midgard",
         "src",
@@ -384,6 +390,7 @@ cc_library_static {
     ],
     local_include_dirs: [
         "include",
+        "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/compiler",
         "meson_generated/src/compiler/nir",
@@ -414,6 +421,7 @@ cc_library_static {
     ],
     local_include_dirs: [
         "include",
+        "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/compiler",
         "meson_generated/src/compiler/nir",
@@ -444,6 +452,7 @@ cc_library_static {
     cflags: ["-DPAN_ARCH=9"],
     local_include_dirs: [
         "include",
+        "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/panfrost",
         "meson_generated/src/panfrost/compiler",
@@ -470,6 +479,7 @@ cc_library_static {
     cflags: ["-DPAN_ARCH=7"],
     local_include_dirs: [
         "include",
+        "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/panfrost",
         "meson_generated/src/panfrost/compiler",
@@ -496,6 +506,7 @@ cc_library_static {
     cflags: ["-DPAN_ARCH=6"],
     local_include_dirs: [
         "include",
+        "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/panfrost",
         "meson_generated/src/panfrost/compiler",
@@ -522,6 +533,7 @@ cc_library_static {
     cflags: ["-DPAN_ARCH=5"],
     local_include_dirs: [
         "include",
+        "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/panfrost",
         "meson_generated/src/panfrost/compiler",
@@ -548,6 +560,7 @@ cc_library_static {
     cflags: ["-DPAN_ARCH=13"],
     local_include_dirs: [
         "include",
+        "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/panfrost",
         "meson_generated/src/panfrost/compiler",
@@ -574,6 +587,7 @@ cc_library_static {
     cflags: ["-DPAN_ARCH=12"],
     local_include_dirs: [
         "include",
+        "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/panfrost",
         "meson_generated/src/panfrost/compiler",
@@ -600,6 +614,7 @@ cc_library_static {
     cflags: ["-DPAN_ARCH=10"],
     local_include_dirs: [
         "include",
+        "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/panfrost",
         "meson_generated/src/panfrost/compiler",
@@ -631,6 +646,7 @@ cc_library_static {
     cflags: ["-DPAN_ARCH=9"],
     local_include_dirs: [
         "include",
+        "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/compiler",
         "meson_generated/src/compiler/nir",
@@ -667,6 +683,7 @@ cc_library_static {
     cflags: ["-DPAN_ARCH=7"],
     local_include_dirs: [
         "include",
+        "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/compiler",
         "meson_generated/src/compiler/nir",
@@ -703,6 +720,7 @@ cc_library_static {
     cflags: ["-DPAN_ARCH=6"],
     local_include_dirs: [
         "include",
+        "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/compiler",
         "meson_generated/src/compiler/nir",
@@ -739,6 +757,7 @@ cc_library_static {
     cflags: ["-DPAN_ARCH=5"],
     local_include_dirs: [
         "include",
+        "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/compiler",
         "meson_generated/src/compiler/nir",
@@ -775,6 +794,7 @@ cc_library_static {
     cflags: ["-DPAN_ARCH=4"],
     local_include_dirs: [
         "include",
+        "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/compiler",
         "meson_generated/src/compiler/nir",
@@ -811,6 +831,7 @@ cc_library_static {
     cflags: ["-DPAN_ARCH=13"],
     local_include_dirs: [
         "include",
+        "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/compiler",
         "meson_generated/src/compiler/nir",
@@ -847,6 +868,7 @@ cc_library_static {
     cflags: ["-DPAN_ARCH=12"],
     local_include_dirs: [
         "include",
+        "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/compiler",
         "meson_generated/src/compiler/nir",
@@ -883,6 +905,7 @@ cc_library_static {
     cflags: ["-DPAN_ARCH=10"],
     local_include_dirs: [
         "include",
+        "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/compiler",
         "meson_generated/src/compiler/nir",
@@ -918,6 +941,7 @@ cc_library_static {
     shared_libs: ["libsync"],
     local_include_dirs: [
         "include",
+        "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/panfrost",
         "meson_generated/src/panfrost/compiler",
@@ -945,6 +969,7 @@ cc_library_static {
     srcs: ["src/panfrost/genxml/decode_common.c"],
     local_include_dirs: [
         "include",
+        "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/panfrost",
         "meson_generated/src/panfrost/compiler",
@@ -975,6 +1000,7 @@ cc_library_static {
     cflags: ["-DPAN_ARCH=9"],
     local_include_dirs: [
         "include",
+        "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/compiler",
         "meson_generated/src/compiler/nir",
@@ -1009,6 +1035,7 @@ cc_library_static {
     cflags: ["-DPAN_ARCH=7"],
     local_include_dirs: [
         "include",
+        "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/compiler",
         "meson_generated/src/compiler/nir",
@@ -1043,6 +1070,7 @@ cc_library_static {
     cflags: ["-DPAN_ARCH=6"],
     local_include_dirs: [
         "include",
+        "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/compiler",
         "meson_generated/src/compiler/nir",
@@ -1077,6 +1105,7 @@ cc_library_static {
     cflags: ["-DPAN_ARCH=5"],
     local_include_dirs: [
         "include",
+        "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/compiler",
         "meson_generated/src/compiler/nir",
@@ -1111,6 +1140,7 @@ cc_library_static {
     cflags: ["-DPAN_ARCH=4"],
     local_include_dirs: [
         "include",
+        "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/compiler",
         "meson_generated/src/compiler/nir",
@@ -1145,6 +1175,7 @@ cc_library_static {
     cflags: ["-DPAN_ARCH=13"],
     local_include_dirs: [
         "include",
+        "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/compiler",
         "meson_generated/src/compiler/nir",
@@ -1179,6 +1210,7 @@ cc_library_static {
     cflags: ["-DPAN_ARCH=12"],
     local_include_dirs: [
         "include",
+        "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/compiler",
         "meson_generated/src/compiler/nir",
@@ -1213,6 +1245,7 @@ cc_library_static {
     cflags: ["-DPAN_ARCH=10"],
     local_include_dirs: [
         "include",
+        "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/compiler",
         "meson_generated/src/compiler/nir",
@@ -1245,6 +1278,7 @@ cc_library_static {
     ],
     local_include_dirs: [
         "include",
+        "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/compiler",
         "meson_generated/src/compiler/nir",
@@ -1277,6 +1311,7 @@ cc_library_static {
     srcs: ["meson_generated/src/panfrost/compiler/valhall/valhall_disasm.c"],
     local_include_dirs: [
         "include",
+        "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/panfrost/compiler/valhall",
         "src",
@@ -1294,6 +1329,7 @@ cc_library_static {
     ],
     local_include_dirs: [
         "include",
+        "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/compiler",
         "meson_generated/src/compiler/nir",
@@ -1352,6 +1388,7 @@ cc_library_static {
     ],
     local_include_dirs: [
         "include",
+        "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/compiler",
         "meson_generated/src/compiler/nir",
@@ -1593,6 +1630,7 @@ cc_library_static {
     ],
     local_include_dirs: [
         "include",
+        "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/compiler",
         "meson_generated/src/compiler/nir",
@@ -1614,6 +1652,7 @@ cc_library_static {
     ],
     local_include_dirs: [
         "include",
+        "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/compiler",
         "src",
@@ -1721,6 +1760,7 @@ cc_library_shared {
     ],
     local_include_dirs: [
         "include",
+        "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/compiler",
         "meson_generated/src/compiler/nir",
@@ -1771,6 +1811,7 @@ cc_library_static {
     shared_libs: ["libsync"],
     local_include_dirs: [
         "include",
+        "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/compiler/spirv",
         "meson_generated/src/util/format",
@@ -1802,6 +1843,7 @@ cc_library_static {
     cflags: ["-DVK_USE_PLATFORM_ANDROID_KHR"],
     local_include_dirs: [
         "include",
+        "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/compiler",
         "meson_generated/src/compiler/nir",
@@ -1841,6 +1883,7 @@ cc_library_static {
     cflags: ["-DVK_USE_PLATFORM_ANDROID_KHR"],
     local_include_dirs: [
         "include",
+        "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/compiler",
         "meson_generated/src/compiler/nir",
@@ -1925,6 +1968,7 @@ cc_library_static {
     ],
     local_include_dirs: [
         "include",
+        "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/compiler",
         "meson_generated/src/compiler/nir",
@@ -1955,6 +1999,7 @@ cc_library_static {
     ],
     local_include_dirs: [
         "include",
+        "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/compiler",
         "meson_generated/src/compiler/nir",
@@ -1985,6 +2030,7 @@ cc_library_static {
     ],
     local_include_dirs: [
         "include",
+        "include/android_stub",
         "meson_generated/src",
         "src",
         "src/util/u_gralloc",
@@ -2002,6 +2048,7 @@ cc_library_static {
     ],
     local_include_dirs: [
         "include",
+        "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/util",
         "meson_generated/src/util/format",
@@ -2052,6 +2099,7 @@ cc_library_static {
     shared_libs: ["libnativewindow"],
     local_include_dirs: [
         "include",
+        "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/compiler",
         "meson_generated/src/compiler/nir",
@@ -2130,6 +2178,7 @@ cc_library_static {
     shared_libs: ["libnativewindow"],
     local_include_dirs: [
         "include",
+        "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/compiler",
         "meson_generated/src/compiler/nir",
@@ -2209,6 +2258,7 @@ cc_library_static {
     shared_libs: ["libnativewindow"],
     local_include_dirs: [
         "include",
+        "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/compiler",
         "meson_generated/src/compiler/nir",
@@ -2288,6 +2338,7 @@ cc_library_static {
     shared_libs: ["libnativewindow"],
     local_include_dirs: [
         "include",
+        "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/compiler",
         "meson_generated/src/compiler/nir",
@@ -2367,6 +2418,7 @@ cc_library_static {
     shared_libs: ["libnativewindow"],
     local_include_dirs: [
         "include",
+        "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/compiler",
         "meson_generated/src/compiler/nir",
@@ -2413,6 +2465,7 @@ cc_library_static {
     ],
     local_include_dirs: [
         "include",
+        "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/util/format",
         "src",
@@ -2442,6 +2495,7 @@ cc_library_static {
     ],
     local_include_dirs: [
         "include",
+        "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/compiler",
         "meson_generated/src/compiler/nir",

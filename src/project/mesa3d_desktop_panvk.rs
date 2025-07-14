@@ -237,9 +237,8 @@ impl Project for Mesa3DDesktopPanVK {
     fn filter_include(&self, include: &Path) -> bool {
         let inc = path_to_string(include);
         let subprojects = self.src_path.join("subprojects");
-        !include.ends_with("android_stub")
-            && (!inc.contains(&path_to_string(&subprojects))
-                || inc.contains(&path_to_string(&subprojects.join("perfetto"))))
+        !inc.contains(&path_to_string(&subprojects))
+            || inc.contains(&path_to_string(&subprojects.join("perfetto")))
     }
     fn filter_link_flag(&self, flag: &str) -> bool {
         flag == "-Wl,--build-id=sha1"
