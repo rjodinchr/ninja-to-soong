@@ -117,6 +117,8 @@ cc_library_static {
         "-Wno-unused-parameter",
     ],
     local_include_dirs: ["subprojects/perfetto"],
+    soc_specific: true,
+    header_libs: ["liblog_headers"],
 }
 
 cc_library_static {

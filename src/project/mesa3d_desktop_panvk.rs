@@ -137,6 +137,11 @@ impl Project for Mesa3DDesktopPanVK {
             module.add_prop("defaults", SoongProp::VecStr(vec![String::from(DEFAULTS)]))
         } else {
             module
+                .add_prop("soc_specific", SoongProp::Bool(true))
+                .add_prop(
+                    "header_libs",
+                    SoongProp::VecStr(vec!["liblog_headers".to_string()]),
+                )
         }
     }
     fn extend_cflags(&self, target: &Path) -> Vec<String> {
