@@ -1650,6 +1650,7 @@ cc_library_shared {
     soc_specific: true,
     relative_install_path: "hw",
     header_libs: ["hwvulkan_headers"],
+    afdo: true,
     defaults: ["mesa3d-desktop-panvk-defaults"],
 }
 

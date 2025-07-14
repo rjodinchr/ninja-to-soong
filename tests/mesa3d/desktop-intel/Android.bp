@@ -2597,6 +2597,7 @@ cc_library_shared {
         "subprojects/perfetto/sdk",
     ],
     relative_install_path: "hw",
+    afdo: true,
     defaults: ["mesa3d-desktop-intel-defaults"],
 }
 

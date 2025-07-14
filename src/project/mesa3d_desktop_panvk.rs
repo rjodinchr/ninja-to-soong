@@ -168,6 +168,12 @@ impl Project for Mesa3DDesktopPanVK {
             SoongProp::VecStr(libs.into_iter().map(|lib| String::from(lib)).collect()),
         );
 
+        let module = if target.ends_with("libvulkan_panfrost.so") {
+            module.add_prop("afdo", SoongProp::Bool(true))
+        } else {
+            module
+        };
+
         if !["libperfetto.a"].contains(&file_name(target).as_str()) {
             module.add_prop("defaults", SoongProp::VecStr(vec![String::from(DEFAULTS)]))
         } else {
