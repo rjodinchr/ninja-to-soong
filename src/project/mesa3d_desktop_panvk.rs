@@ -153,9 +153,6 @@ impl Project for Mesa3DDesktopPanVK {
                 break;
             }
         }
-        if target.ends_with("libvulkan_lite_runtime.a") {
-            libs.push("hwvulkan_headers");
-        }
 
         let module = module.add_prop(
             "header_libs",
@@ -193,18 +190,8 @@ impl Project for Mesa3DDesktopPanVK {
     }
     fn extend_shared_libs(&self, target: &Path) -> Vec<String> {
         let mut libs = Vec::new();
-        if target.ends_with("libpankmod_lib.a")
-            || target.ends_with("libvulkan_lite_runtime.a")
-            || target.ends_with("libvulkan_wsi.a")
-        {
-            libs.push("libsync");
-        }
         if target.ends_with("libmesa_util.a") {
             libs.push("libz");
-        }
-        if target.starts_with("src/panfrost/vulkan") || target.ends_with("libvulkan_lite_runtime.a")
-        {
-            libs.push("libnativewindow");
         }
         libs.into_iter().map(|lib| String::from(lib)).collect()
     }
