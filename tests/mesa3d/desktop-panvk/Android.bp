@@ -97,7 +97,6 @@ cc_binary {
         "src/tool/pps",
         "subprojects/perfetto/sdk",
     ],
-    soc_specific: true,
     defaults: ["mesa3d-desktop-panvk-defaults"],
 }
 
@@ -1793,7 +1792,6 @@ cc_library_shared {
         "src/vulkan/wsi",
         "subprojects/perfetto/sdk",
     ],
-    soc_specific: true,
     relative_install_path: "hw",
     afdo: true,
     defaults: ["mesa3d-desktop-panvk-defaults"],
@@ -2514,6 +2512,7 @@ cc_library_static {
 
 cc_defaults {
     name: "mesa3d-desktop-panvk-defaults",
+    soc_specific: true,
     cflags: [
         "-DAMD_LLVM_AVAILABLE=0",
         "-DANDROID_API_LEVEL=35",
