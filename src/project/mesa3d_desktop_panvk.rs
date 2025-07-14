@@ -108,6 +108,10 @@ impl Project for Mesa3DDesktopPanVK {
         let default_module = SoongModule::new("cc_defaults")
             .add_prop("name", SoongProp::Str(String::from(DEFAULTS)))
             .add_prop("soc_specific", SoongProp::Bool(true))
+            .add_prop(
+                "header_libs",
+                SoongProp::VecStr(vec!["libdrm_headers".to_string()]),
+            )
             .add_props(package.get_props("mesa3d_desktop-panvk_pps-producer", vec!["cflags"])?);
 
         package.add_module(default_module).print()
@@ -122,42 +126,6 @@ impl Project for Mesa3DDesktopPanVK {
             module
         };
         let module = relative_install(module);
-
-        let mut libs = Vec::new();
-        for lib in [
-            "libmesa_util.a",
-            "libpan-arch-v4.a",
-            "libpan-arch-v5.a",
-            "libpan-arch-v6.a",
-            "libpan-arch-v7.a",
-            "libpan-arch-v9.a",
-            "libpan-arch-v10.a",
-            "libpan-arch-v12.a",
-            "libpan-arch-v13.a",
-            "libpanfrost_lib.a",
-            "libpanfrost_perf.a",
-            "libpankmod_lib.a",
-            "libpanvk_v6.a",
-            "libpanvk_v7.a",
-            "libpanvk_v10.a",
-            "libpanvk_v12.a",
-            "libpanvk_v13.a",
-            "libpps.a",
-            "libpps-panfrost.a",
-            "libvulkan_instance.a",
-            "libvulkan_lite_runtime.a",
-            "libvulkan_wsi.a",
-        ] {
-            if target.ends_with(lib) {
-                libs.push("libdrm_headers");
-                break;
-            }
-        }
-
-        let module = module.add_prop(
-            "header_libs",
-            SoongProp::VecStr(libs.into_iter().map(|lib| String::from(lib)).collect()),
-        );
 
         let module = if target.ends_with("libvulkan_panfrost.so") {
             module.add_prop("afdo", SoongProp::Bool(true))
