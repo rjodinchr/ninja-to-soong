@@ -223,6 +223,12 @@ cc_defaults {{
             SoongProp::VecStr(libs.into_iter().map(|lib| String::from(lib)).collect()),
         );
 
+        let module = if target.ends_with("libvulkan_intel.so") {
+            module.add_prop("afdo", SoongProp::Bool(true))
+        } else {
+            module
+        };
+
         if ![
             "libintel_decoder_brw.a",
             "libintel_decoder_elk.a",
