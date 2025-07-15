@@ -44,6 +44,7 @@ impl Project for UnitTest {
         ctx: &Context,
         _projects_map: &ProjectsMap,
     ) -> Result<String, String> {
+        print_verbose!("'{}'", file_name(&ctx.test_path));
         let config = read_file(&ctx.test_path.join("config"))?;
         let mut lines = config.lines();
         let Some(ninja_generator) = lines.nth(0) else {
