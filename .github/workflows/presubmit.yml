@@ -35,8 +35,7 @@ jobs:
         shell: bash
         run: |
           set -x
-          sudo apt install ninja-build meson-1.5
-          meson --version
+          sudo apt install ninja-build
       - name: Setup environement variables
         shell: bash
         run: |
