@@ -60,7 +60,6 @@ impl Project for Mesa3DDesktopIntel {
                 ]
             )?;
         }
-        common::ninja_build(&build_path, &Vec::new(), ctx)?;
 
         const MESON_GENERATED: &str = "meson_generated";
         let mut package = SoongPackage::new(
@@ -136,6 +135,9 @@ impl Project for Mesa3DDesktopIntel {
             .into_iter()
             .filter(|include| !include.starts_with("subprojects"))
             .collect();
+
+        common::ninja_build(&build_path, &gen_deps, ctx)?;
+
         package.filter_local_include_dirs(MESON_GENERATED, &gen_deps)?;
         common::clean_gen_deps(&gen_deps, &build_path, ctx)?;
         common::copy_gen_deps(gen_deps, MESON_GENERATED, &build_path, ctx, self)?;
@@ -238,19 +240,30 @@ soong_namespace {
         if target.ends_with("libvulkan_lite_runtime.a") {
             cflags.push("-Wno-unreachable-code-loop-increment");
         }
-        let mut libs = Vec::new();
+        let mut shared_libs = Vec::new();
         if target.ends_with("libdri.a")
             || target.ends_with("libanv_common.a")
             || target.ends_with("libvulkan_wsi.a")
             || target.ends_with("libvulkan_lite_runtime.a")
         {
-            libs.push("libsync");
+            shared_libs.push("libsync");
         }
         if target.ends_with("libmesa_util.a") {
-            libs.push("libz");
+            shared_libs.push("libz");
         }
         if target.starts_with("src/intel/vulkan") || target.ends_with("libvulkan_lite_runtime.a") {
-            libs.push("libnativewindow");
+            shared_libs.push("libnativewindow");
+        }
+        let mut static_libs = Vec::new();
+        if [
+            "libmesa_util.a",
+            "libintel-driver-ds.a",
+            "libpps.a",
+            "libpps-intel.a",
+        ]
+        .contains(&file_name(target).as_str())
+        {
+            static_libs.push("libperfetto_client_experimental");
         }
         if ![
             "libintel_decoder_brw.a",
@@ -267,7 +280,8 @@ soong_namespace {
             )
         }
         .extend_prop("cflags", cflags)?
-        .extend_prop("shared_libs", libs)
+        .extend_prop("static_libs", static_libs)?
+        .extend_prop("shared_libs", shared_libs)
     }
 
     fn map_lib(&self, library: &Path) -> Option<PathBuf> {
@@ -288,10 +302,8 @@ soong_namespace {
     }
     fn filter_include(&self, include: &Path) -> bool {
         let inc = path_to_string(include);
-        let subprojects = self.src_path.join("subprojects");
         !include.ends_with("android_stub")
-            && (!inc.contains(&path_to_string(&subprojects))
-                || inc.contains(&path_to_string(&subprojects.join("perfetto"))))
+            && !inc.contains(&path_to_string(&self.src_path.join("subprojects")))
     }
     fn filter_link_flag(&self, flag: &str) -> bool {
         flag == "-Wl,--build-id=sha1"
