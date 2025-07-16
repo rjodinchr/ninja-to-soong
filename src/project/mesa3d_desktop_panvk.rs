@@ -86,6 +86,11 @@ impl Project for Mesa3DDesktopPanVK {
                     Some("mesa3d_desktop-panvk_pps-producer"),
                     Some("pps-producer"),
                 ),
+                NinjaTargetToGen(
+                    "src/tool/pps/libgpudataproducer.so",
+                    Some("mesa3d_desktop-panvk_libgpudataproducer"),
+                    Some("libgpudataproducer"),
+                ),
             ]),
             parse_build_ninja::<MesonNinjaTarget>(&build_path)?,
             &self.src_path,
