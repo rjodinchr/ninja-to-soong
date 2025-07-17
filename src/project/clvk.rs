@@ -75,7 +75,7 @@ impl Project for Clvk {
                 r#"
 cc_genrule {{
     name: "{CLVK_ICD_GENRULE}",
-    cmd: "echo /system/$$CC_MULTILIB/{LIBCLVK}.so > $(out)",
+    cmd: "echo /vendor/$$CC_MULTILIB/{LIBCLVK}.so > $(out)",
     out: ["clvk.icd"],
     soc_specific: true,
 }}
@@ -124,6 +124,7 @@ prebuilt_etc {{
             Vec::new()
         };
         module
+            .add_prop("soc_specific", SoongProp::Bool(true))
             .add_prop("header_libs", SoongProp::VecStr(header_libs))
             .extend_prop("cflags", cflags)
     }
