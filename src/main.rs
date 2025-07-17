@@ -33,13 +33,11 @@ fn generate_project(
         let package = project.generate_package(ctx, projects_map)?;
 
         print_debug!("Writing soong file...");
-        const ANDROID_BP: &str = "Android.bp";
         let file_path = if !ctx.copy_to_aosp {
-            project.get_test_path(ctx)?
+            project.get_test_path(ctx)?.join("Android.bp.n2s")
         } else {
-            project.get_android_path(ctx)?
-        }
-        .join(ANDROID_BP);
+            project.get_android_path(ctx)?.join("Android.bp")
+        };
         let Ok(current_package) = read_file(&file_path) else {
             write_file(&file_path, &package)?;
             print_verbose!("{file_path:#?} created");
