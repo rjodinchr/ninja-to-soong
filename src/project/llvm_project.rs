@@ -42,14 +42,6 @@ impl Project for LlvmProject {
                 ]
             )?;
         }
-        let targets_to_generate = Dep::LlvmProjectTargets.get(projects_map)?;
-        let libclc_binaries = Dep::LibclcBins.get(projects_map)?;
-        if !ctx.skip_build {
-            let mut targets_to_build = Vec::new();
-            targets_to_build.extend(targets_to_generate.clone());
-            targets_to_build.extend(libclc_binaries.clone());
-            common::cmake_build(&build_path, &targets_to_build)?;
-        }
 
         const CMAKE_GENERATED: &str = "cmake_generated";
         let cmake_generated_path = Path::new(CMAKE_GENERATED);
@@ -60,7 +52,7 @@ impl Project for LlvmProject {
             &["LICENSE.TXT"],
         )
         .generate(
-            NinjaTargetsToGenMap::from_dep(targets_to_generate),
+            NinjaTargetsToGenMap::from_dep(Dep::LlvmProjectTargets.get(projects_map)?),
             parse_build_ninja::<CmakeNinjaTarget>(&build_path)?,
             &src_path,
             &ndk_path,
@@ -104,6 +96,7 @@ impl Project for LlvmProject {
                 vec![path_to_string(clang_header)],
             ));
         }
+        let libclc_binaries = Dep::LibclcBins.get(projects_map)?;
         for binary in &libclc_binaries {
             let file_path = cmake_generated_path.join(binary);
             package = package.add_module(SoongModule::new_filegroup(
@@ -114,6 +107,9 @@ impl Project for LlvmProject {
 
         let mut gen_deps = package.get_gen_deps();
         gen_deps.extend(libclc_binaries);
+        if !ctx.skip_build {
+            common::ninja_build(&build_path, &gen_deps)?;
+        }
         gen_deps.extend(
             [
                 "include/llvm/Config/llvm-config.h",
@@ -141,6 +137,7 @@ impl Project for LlvmProject {
 cc_defaults {{
     name: "{RAW_DEFAULTS}",
     optimize_for_size: true,
+    vendor_available: true,
     cflags: [
         "-Wno-error",
         "-Wno-unreachable-code-loop-increment",

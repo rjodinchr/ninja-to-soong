@@ -2610,6 +2610,7 @@ filegroup {
 cc_defaults {
     name: "llvm-project-raw-defaults",
     optimize_for_size: true,
+    vendor_available: true,
     cflags: [
         "-Wno-error",
         "-Wno-unreachable-code-loop-increment",

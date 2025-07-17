@@ -87,6 +87,7 @@ impl Project for SpirvTools {
 
     fn extend_module(&self, _target: &Path, module: SoongModule) -> Result<SoongModule, String> {
         module
+            .add_prop("vendor_available", SoongProp::Bool(true))
             .add_prop(
                 "header_libs",
                 SoongProp::VecStr(vec![CcLibraryHeaders::SpirvHeaders.str()]),

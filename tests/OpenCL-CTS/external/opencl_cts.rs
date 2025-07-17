@@ -132,7 +132,7 @@ impl Project for OpenclCts {
 
         let gen_deps = package.get_gen_deps();
         if !ctx.skip_build {
-            common::cmake_build(&build_path, &gen_deps)?;
+            common::ninja_build(&build_path, &gen_deps)?;
         }
         common::copy_gen_deps(gen_deps, CMAKE_GENERATED, &build_path, ctx, self)?;
 

@@ -113,13 +113,14 @@ cc_library_static {
         "clspv_include_clspv_spirv_glsl_hpp",
         "clspv_include_clspv_spirv_reflection_hpp",
     ],
+    optimize_for_size: true,
+    vendor_available: true,
     header_libs: [
         "SPIRV-Headers-includes",
         "clang-includes",
         "llvm-includes",
     ],
     export_include_dirs: ["include"],
-    optimize_for_size: true,
 }
 
 cc_genrule {
