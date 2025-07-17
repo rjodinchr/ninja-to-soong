@@ -31,6 +31,7 @@ cc_test {
     ],
     shared_libs: ["libclvk"],
     gtest: false,
+    soc_specific: true,
     header_libs: ["OpenCL-Headers"],
 }
 
@@ -144,6 +145,7 @@ cc_library_shared {
         "llvm-project_lib_libclangSerialization_a",
         "llvm-project_lib_libclangSupport_a",
     ],
+    soc_specific: true,
     header_libs: ["OpenCL-Headers"],
 }
 
@@ -180,6 +182,7 @@ cc_test {
         "llvm-project_lib_libLLVMSupport_a",
     ],
     local_include_dirs: ["tests/../src"],
+    soc_specific: true,
     header_libs: [
         "OpenCL-Headers",
         "SPIRV-Headers-includes",
@@ -189,7 +192,7 @@ cc_test {
 
 cc_genrule {
     name: "clvk_icd_genrule",
-    cmd: "echo /system/$$CC_MULTILIB/libclvk.so > $(out)",
+    cmd: "echo /vendor/$$CC_MULTILIB/libclvk.so > $(out)",
     out: ["clvk.icd"],
     soc_specific: true,
 }
