@@ -90,7 +90,7 @@ cc_test {
     ],
     rtti: false,
     defaults: ["OpenCL-CTS-defaults"],
-    data: ["/test_conformance/spirv_new/spirv_bin/*"],
+    data: ["cmake_generated/test_conformance/spirv_new/spirv_bin/*"],
 }
 
 cc_test {
@@ -502,8 +502,32 @@ cc_defaults {
     defaults: ["OpenCL-CTS-manual-defaults"],
 }
 
-python_defaults {
-    name: "opencl_cts_data",
+cc_defaults {
+    name: "OpenCL-CTS-manual-defaults",
+    header_libs: ["OpenCL-Headers"],
+    compile_multilib: "both",
+    multilib: {
+        lib32: {
+            suffix: "32",
+        },
+        lib64: {
+            suffix: "64",
+        },
+    },
+    cflags: [
+        "-Wno-error",
+        "-Wno-c++11-narrowing",
+        "-Wno-non-virtual-dtor",
+        "-Wno-string-concatenation",
+        "-fexceptions",
+    ],
+    gtest: false,
+}
+
+python_test {
+    name: "opencl_cts_n2s",
+    main: "android/ninja-to-soong/test_opencl_cts.py",
+    srcs: ["android/ninja-to-soong/test_opencl_cts.py"],
     data: [
         ":OpenCL-CTS-test_svm",
         ":OpenCL-CTS-test_allocations",
@@ -553,6 +577,10 @@ python_defaults {
         ":OpenCL-CTS-test_vectors",
         ":OpenCL-CTS-test_workgroups",
     ],
+    test_config: "android/ninja-to-soong/test_opencl_cts.xml",
+    test_options: {
+        unit_test: false,
+    },
 }
 
-build = ["AndroidManual.bp"]
+build = ["AndroidLegacy.bp"]
