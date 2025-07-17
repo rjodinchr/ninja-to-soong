@@ -48,7 +48,7 @@ impl Project for Clpeak {
             &["LICENSE"],
         )
         .generate(
-            NinjaTargetsToGenMap::from(&[NinjaTargetToGen("clpeak", Some("clpeak"), None)]),
+            NinjaTargetsToGenMap::from(&[target_typed!("clpeak", "cc_benchmark", "clpeak")]),
             parse_build_ninja::<CmakeNinjaTarget>(&build_path)?,
             &self.src_path,
             &ndk_path,
@@ -73,9 +73,6 @@ impl Project for Clpeak {
             return Some(PathBuf::from("//external/OpenCL-ICD-Loader:libOpenCL"));
         }
         None
-    }
-    fn map_module_name(&self, _target: &Path, _module_name: &str) -> String {
-        String::from("cc_benchmark")
     }
 
     fn filter_cflag(&self, cflag: &str) -> bool {

@@ -83,45 +83,45 @@ impl Project for Mesa3DDesktopIntel {
         )
         .generate(
             NinjaTargetsToGenMap::from(&[
-                NinjaTargetToGen(
+                target!(
                     "src/mapi/shared-glapi/libglapi.so.0.0.0",
-                    Some("mesa3d_desktop-intel_libglapi"),
-                    Some("libglapi"),
+                    "mesa3d_desktop-intel_libglapi",
+                    "libglapi"
                 ),
-                NinjaTargetToGen(
+                target!(
                     "src/gallium/targets/dri/libgallium_dri.so",
-                    Some("mesa3d_desktop-intel_libgallium_dri"),
-                    Some("libgallium_dri"),
+                    "mesa3d_desktop-intel_libgallium_dri",
+                    "libgallium_dri"
                 ),
-                NinjaTargetToGen(
+                target!(
                     "src/egl/libEGL_mesa.so.1.0.0",
-                    Some("mesa3d_desktop-intel_libEGL_mesa"),
-                    Some("libEGL_mesa"),
+                    "mesa3d_desktop-intel_libEGL_mesa",
+                    "libEGL_mesa"
                 ),
-                NinjaTargetToGen(
+                target!(
                     "src/mapi/es2api/libGLESv2_mesa.so.2.0.0",
-                    Some("mesa3d_desktop-intel_libGLESv2_mesa"),
-                    Some("libGLESv2_mesa"),
+                    "mesa3d_desktop-intel_libGLESv2_mesa",
+                    "libGLESv2_mesa"
                 ),
-                NinjaTargetToGen(
+                target!(
                     "src/mapi/es1api/libGLESv1_CM_mesa.so.1.1.0",
-                    Some("mesa3d_desktop-intel_libGLESv1_CM_mesa"),
-                    Some("libGLESv1_CM_mesa"),
+                    "mesa3d_desktop-intel_libGLESv1_CM_mesa",
+                    "libGLESv1_CM_mesa"
                 ),
-                NinjaTargetToGen(
+                target!(
                     "src/intel/vulkan/libvulkan_intel.so",
-                    Some("mesa3d_desktop-intel_libvulkan_intel"),
-                    Some("vulkan.intel"),
+                    "mesa3d_desktop-intel_libvulkan_intel",
+                    "vulkan.intel"
                 ),
-                NinjaTargetToGen(
+                target!(
                     "src/tool/pps/pps-producer",
-                    Some("mesa3d_desktop-intel_pps-producer"),
-                    Some("pps-producer"),
+                    "mesa3d_desktop-intel_pps-producer",
+                    "pps-producer"
                 ),
-                NinjaTargetToGen(
+                target!(
                     "src/tool/pps/libgpudataproducer.so",
-                    Some("mesa3d_desktop-intel_libgpudataproducer"),
-                    Some("libgpudataproducer"),
+                    "mesa3d_desktop-intel_libgpudataproducer",
+                    "libgpudataproducer"
                 ),
             ]),
             parse_build_ninja::<MesonNinjaTarget>(&build_path)?,

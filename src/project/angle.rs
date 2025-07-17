@@ -69,12 +69,11 @@ impl Angle {
             .collect::<Vec<_>>();
         let mut targets = targets_so
             .iter()
-            .map(|(target_so, target)| NinjaTargetToGen(target_so, Some(target), None))
+            .map(|(target_so, target)| target!(target_so, target))
             .collect::<Vec<_>>();
-        targets.push(NinjaTargetToGen(
+        targets.push(target!(
             "./libangle_end2end_tests__library.so",
-            Some("libangle_end2end_tests__library"),
-            None,
+            "libangle_end2end_tests__library"
         ));
         SoongPackage::default().generate(
             NinjaTargetsToGenMap::from(&targets),

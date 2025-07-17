@@ -207,7 +207,7 @@ where
     }
     pub fn generate_object(
         &mut self,
-        name: &str,
+        module_type: &str,
         target: &T,
         ctx: &Context,
     ) -> Result<Vec<SoongModule>, String> {
@@ -262,8 +262,12 @@ where
         static_libs.extend(self.get_libs(target.get_libs_static(), &module_name));
         shared_libs.extend(self.get_libs(target.get_libs_shared(), &module_name));
 
-        let mut module = SoongModule::new(&self.project.map_module_name(&target_name, name))
-            .add_prop("name", SoongProp::Str(module_name));
+        let module_type = match self.targets_to_gen.get_module_name(&target_name) {
+            Some(module_type) => module_type,
+            None => String::from(module_type),
+        };
+        let mut module =
+            SoongModule::new(&module_type).add_prop("name", SoongProp::Str(module_name));
         if let Some(stem) = self.targets_to_gen.get_stem(&target_name) {
             module = module.add_prop("stem", SoongProp::Str(stem));
         }

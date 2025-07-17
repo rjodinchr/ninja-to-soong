@@ -106,7 +106,7 @@ impl Project for OpenclCts {
             .collect::<Vec<_>>();
         let targets = tests
             .iter()
-            .map(|(test, name)| NinjaTargetToGen(test, Some(name), None))
+            .map(|(test, name)| target_typed!(test, "cc_test", name))
             .collect::<Vec<_>>();
         let mut package = SoongPackage::new(
             &["//visibility:public"],
@@ -196,13 +196,6 @@ build = ["AndroidManual.bp"]
         } else {
             None
         }
-    }
-    fn map_module_name(&self, _target: &Path, module_name: &str) -> String {
-        String::from(if module_name == "cc_binary" {
-            "cc_test"
-        } else {
-            module_name
-        })
     }
 
     fn filter_cflag(&self, _cflag: &str) -> bool {

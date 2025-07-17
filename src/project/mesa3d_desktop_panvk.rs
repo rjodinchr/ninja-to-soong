@@ -76,20 +76,20 @@ impl Project for Mesa3DDesktopPanVK {
         )
         .generate(
             NinjaTargetsToGenMap::from(&[
-                NinjaTargetToGen(
+                target!(
                     "src/panfrost/vulkan/libvulkan_panfrost.so",
-                    Some("mesa3d_desktop-panvk_libvulkan_panfrost"),
-                    Some("vulkan.panfrost"),
+                    "mesa3d_desktop-panvk_libvulkan_panfrost",
+                    "vulkan.panfrost"
                 ),
-                NinjaTargetToGen(
+                target!(
                     "src/tool/pps/pps-producer",
-                    Some("mesa3d_desktop-panvk_pps-producer"),
-                    Some("pps-producer"),
+                    "mesa3d_desktop-panvk_pps-producer",
+                    "pps-producer"
                 ),
-                NinjaTargetToGen(
+                target!(
                     "src/tool/pps/libgpudataproducer.so",
-                    Some("mesa3d_desktop-panvk_libgpudataproducer"),
-                    Some("libgpudataproducer"),
+                    "mesa3d_desktop-panvk_libgpudataproducer",
+                    "libgpudataproducer"
                 ),
             ]),
             parse_build_ninja::<MesonNinjaTarget>(&build_path)?,
