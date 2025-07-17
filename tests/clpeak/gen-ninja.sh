@@ -13,6 +13,6 @@ bash "${SCRIPT_DIR}/../../utils/cmake_configure.sh" \
     "${SRC_PATH}" \
     "${BUILD_PATH}" \
     "${NDK_PATH}" \
-    -DOpenCL_LIBRARY="${BUILD_PATH}/sdk_install/lib/libOpenCL.a" \
+    -DOpenCL_LIBRARY="${BUILD_PATH}/sdk_install/lib/libOpenCL.so" \
     -DOpenCL_INCLUDE_DIR="${BUILD_PATH}/sdk_install/include/" \
     -DHPP_FOUND="${BUILD_PATH}/sdk_install/include"

@@ -151,30 +151,26 @@ cc_defaults {{
             .print()
     }
 
-    fn extend_module(&self, _target: &Path, module: SoongModule) -> SoongModule {
-        module.add_prop("defaults", SoongProp::VecStr(vec![String::from(DEFAULTS)]))
-    }
-    fn extend_cflags(&self, target: &Path) -> Vec<String> {
-        if target.ends_with("libLLVMSupport.a") {
-            [
+    fn extend_module(&self, target: &Path, module: SoongModule) -> Result<SoongModule, String> {
+        let cflags = if target.ends_with("libLLVMSupport.a") {
+            vec![
                 "-DBLAKE3_NO_AVX512",
                 "-DBLAKE3_NO_AVX2",
                 "-DBLAKE3_NO_SSE41",
                 "-DBLAKE3_NO_SSE2",
             ]
-            .into_iter()
-            .map(|flag| String::from(flag))
-            .collect()
         } else {
             Vec::new()
-        }
-    }
-    fn extend_shared_libs(&self, target: &Path) -> Vec<String> {
-        if target.ends_with("libLLVMSupport.a") {
-            vec![String::from("libz")]
+        };
+        let libs = if target.ends_with("libLLVMSupport.a") {
+            vec!["libz"]
         } else {
             Vec::new()
-        }
+        };
+        module
+            .add_prop("defaults", SoongProp::VecStr(vec![String::from(DEFAULTS)]))
+            .extend_prop("cflags", cflags)?
+            .extend_prop("shared_libs", libs)
     }
 
     fn filter_cflag(&self, _cflag: &str) -> bool {

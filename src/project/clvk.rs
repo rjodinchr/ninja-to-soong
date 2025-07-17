@@ -110,14 +110,7 @@ prebuilt_etc {{
             .collect()
     }
 
-    fn extend_cflags(&self, target: &Path) -> Vec<String> {
-        if target.ends_with("api_tests") {
-            vec![String::from("-Wno-missing-braces")]
-        } else {
-            Vec::new()
-        }
-    }
-    fn extend_module(&self, target: &Path, mut module: SoongModule) -> SoongModule {
+    fn extend_module(&self, target: &Path, mut module: SoongModule) -> Result<SoongModule, String> {
         let mut header_libs = vec![String::from("OpenCL-Headers")];
         if target.ends_with("api_tests") {
             header_libs.push(CcLibraryHeaders::SpirvHeaders.str());
@@ -125,7 +118,14 @@ prebuilt_etc {{
         } else if target.ends_with("simple_test") {
             module = module.add_prop("gtest", SoongProp::Bool(false))
         }
-        module.add_prop("header_libs", SoongProp::VecStr(header_libs))
+        let cflags = if target.ends_with("api_tests") {
+            vec!["-Wno-missing-braces"]
+        } else {
+            Vec::new()
+        };
+        module
+            .add_prop("header_libs", SoongProp::VecStr(header_libs))
+            .extend_prop("cflags", cflags)
     }
 
     fn map_lib(&self, library: &Path) -> Option<PathBuf> {

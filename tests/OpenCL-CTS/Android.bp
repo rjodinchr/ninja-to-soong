@@ -168,9 +168,9 @@ cc_test {
         "test_conformance/spirv_new/test_spirv_15.cpp",
         "test_conformance/spirv_new/test_spirv_16.cpp",
     ],
-    data: ["cmake_generated/test_conformance/spirv_new/spirv_bin/*"],
     rtti: false,
     defaults: ["OpenCL-CTS-defaults"],
+    data: ["/test_conformance/spirv_new/spirv_bin/*"],
 }
 
 cc_test {
@@ -182,9 +182,9 @@ cc_test {
         "test_conformance/spir/run_build_test.cpp",
         "test_conformance/spir/run_services.cpp",
     ],
-    data: ["test_conformance/spir/*.zip"],
     rtti: true,
     defaults: ["OpenCL-CTS-defaults"],
+    data: ["test_conformance/spir/*.zip"],
 }
 
 cc_test {
@@ -734,12 +734,12 @@ cc_test {
         "test_conformance/compiler/test_preprocessor.cpp",
         "test_conformance/compiler/test_unload_platform_compiler.cpp",
     ],
+    rtti: false,
+    defaults: ["OpenCL-CTS-defaults"],
     data: [
         "test_conformance/compiler/includeTestDirectory/testIncludeFile.h",
         "test_conformance/compiler/secondIncludeTestDirectory/testIncludeFile.h",
     ],
-    rtti: false,
-    defaults: ["OpenCL-CTS-defaults"],
 }
 
 cc_test {

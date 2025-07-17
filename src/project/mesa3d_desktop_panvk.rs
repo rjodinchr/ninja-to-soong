@@ -122,7 +122,7 @@ impl Project for Mesa3DDesktopPanVK {
         package.add_module(default_module).print()
     }
 
-    fn extend_module(&self, target: &Path, module: SoongModule) -> SoongModule {
+    fn extend_module(&self, target: &Path, module: SoongModule) -> Result<SoongModule, String> {
         let relative_install = |module: SoongModule| -> SoongModule {
             if target.ends_with("libvulkan_panfrost.so") {
                 return module
@@ -138,18 +138,6 @@ impl Project for Mesa3DDesktopPanVK {
             module
         };
 
-        if !["libperfetto.a"].contains(&file_name(target).as_str()) {
-            module.add_prop("defaults", SoongProp::VecStr(vec![String::from(DEFAULTS)]))
-        } else {
-            module
-                .add_prop("soc_specific", SoongProp::Bool(true))
-                .add_prop(
-                    "header_libs",
-                    SoongProp::VecStr(vec!["liblog_headers".to_string()]),
-                )
-        }
-    }
-    fn extend_cflags(&self, target: &Path) -> Vec<String> {
         let mut cflags = vec![
             "-Wno-constant-conversion",
             "-Wno-enum-conversion",
@@ -164,14 +152,22 @@ impl Project for Mesa3DDesktopPanVK {
         if target.ends_with("libvulkan_lite_runtime.a") {
             cflags.push("-Wno-unreachable-code-loop-increment");
         }
-        cflags.into_iter().map(|flag| String::from(flag)).collect()
-    }
-    fn extend_shared_libs(&self, target: &Path) -> Vec<String> {
         let mut libs = Vec::new();
         if target.ends_with("libmesa_util.a") {
             libs.push("libz");
         }
-        libs.into_iter().map(|lib| String::from(lib)).collect()
+        if !["libperfetto.a"].contains(&file_name(target).as_str()) {
+            module.add_prop("defaults", SoongProp::VecStr(vec![String::from(DEFAULTS)]))
+        } else {
+            module
+                .add_prop("soc_specific", SoongProp::Bool(true))
+                .add_prop(
+                    "header_libs",
+                    SoongProp::VecStr(vec!["liblog_headers".to_string()]),
+                )
+        }
+        .extend_prop("cflags", cflags)?
+        .extend_prop("shared_libs", libs)
     }
 
     fn map_lib(&self, library: &Path) -> Option<PathBuf> {

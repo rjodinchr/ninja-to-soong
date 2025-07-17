@@ -168,44 +168,26 @@ build = ["AndroidManual.bp"]
             .print()
     }
 
-    fn extend_module(&self, target: &Path, mut module: SoongModule) -> SoongModule {
-        if target.ends_with("test_compiler") {
-            module = module.add_prop(
-                "data",
-                SoongProp::VecStr(vec![
-                    String::from(
-                        "test_conformance/compiler/includeTestDirectory/testIncludeFile.h",
-                    ),
-                    String::from(
-                        "test_conformance/compiler/secondIncludeTestDirectory/testIncludeFile.h",
-                    ),
-                ]),
-            );
-        }
+    fn extend_module(&self, target: &Path, module: SoongModule) -> Result<SoongModule, String> {
+        let mut data = Vec::new();
         let is_test_spir = target.ends_with("test_spir");
-        if is_test_spir {
-            module = module.add_prop(
-                "data",
-                SoongProp::VecStr(vec![String::from("test_conformance/spir/*.zip")]),
-            );
+        if target.ends_with("test_compiler") {
+            data.push("test_conformance/compiler/includeTestDirectory/testIncludeFile.h");
+            data.push("test_conformance/compiler/secondIncludeTestDirectory/testIncludeFile.h")
+        } else if is_test_spir {
+            data.push("test_conformance/spir/*.zip");
+        } else if target.ends_with("test_spirv_new") {
+            data.push("/test_conformance/spirv_new/spirv_bin/*");
         }
-        if target.ends_with("test_spirv_new") {
-            module = module.add_prop(
-                "data",
-                SoongProp::VecStr(vec![
-                    String::from(CMAKE_GENERATED) + "/test_conformance/spirv_new/spirv_bin/*",
-                ]),
-            )
-        }
-        module = module.add_prop("rtti", SoongProp::Bool(is_test_spir));
-        module.add_prop(
-            "defaults",
-            SoongProp::VecStr(vec![String::from(if target.ends_with("libharness.a") {
-                DEFAULTS_MANUAL
-            } else {
-                DEFAULTS
-            })]),
-        )
+        let defaults = if target.ends_with("libharness.a") {
+            DEFAULTS_MANUAL
+        } else {
+            DEFAULTS
+        };
+        module
+            .add_prop("rtti", SoongProp::Bool(is_test_spir))
+            .extend_prop("defaults", vec![defaults])?
+            .extend_prop("data", data)
     }
 
     fn map_lib(&self, lib: &Path) -> Option<PathBuf> {

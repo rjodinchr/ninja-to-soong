@@ -254,7 +254,6 @@ where
         includes.extend(self.get_includes(target.get_includes(self.build_path)));
         cflags.extend(self.get_defines(target.get_defines()));
         cflags.extend(self.get_cflags(target.get_cflags()));
-        cflags.extend(self.project.extend_cflags(&target_name));
 
         let generated_headers = self.get_generated_headers(target)?;
         let (version_script, link_flags) = target.get_link_flags();
@@ -262,7 +261,6 @@ where
         whole_static_libs.extend(self.get_libs(target.get_libs_static_whole(), &module_name));
         static_libs.extend(self.get_libs(target.get_libs_static(), &module_name));
         shared_libs.extend(self.get_libs(target.get_libs_shared(), &module_name));
-        shared_libs.extend(self.project.extend_shared_libs(&target_name));
 
         let mut module = SoongModule::new(&self.project.map_module_name(&target_name, name))
             .add_prop("name", SoongProp::Str(module_name));
@@ -288,7 +286,7 @@ where
             .add_prop("local_include_dirs", SoongProp::VecStr(includes))
             .add_prop("generated_headers", SoongProp::VecStr(generated_headers));
 
-        modules.push(self.project.extend_module(&target_name, module));
+        modules.push(self.project.extend_module(&target_name, module)?);
         Ok(modules)
     }
 

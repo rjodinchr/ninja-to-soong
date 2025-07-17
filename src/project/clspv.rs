@@ -109,8 +109,8 @@ impl Project for Clspv {
         }
     }
 
-    fn extend_module(&self, _target: &Path, module: SoongModule) -> SoongModule {
-        module
+    fn extend_module(&self, _target: &Path, module: SoongModule) -> Result<SoongModule, String> {
+        Ok(module
             .add_prop(
                 "header_libs",
                 SoongProp::VecStr(vec![
@@ -119,11 +119,8 @@ impl Project for Clspv {
                     CcLibraryHeaders::Clang.str(),
                 ]),
             )
-            .add_prop(
-                "export_include_dirs",
-                SoongProp::VecStr(vec![String::from("include")]),
-            )
-            .add_prop("optimize_for_size", SoongProp::Bool(true))
+            .extend_prop("export_include_dirs", vec!["include"])?
+            .add_prop("optimize_for_size", SoongProp::Bool(true)))
     }
 
     fn map_cmd_output(&self, output: &Path) -> PathBuf {
