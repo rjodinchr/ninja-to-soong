@@ -174,7 +174,7 @@ cc_defaults {{
             .print()
     }
 
-    fn extend_module(&self, target: &Path, module: SoongModule) -> SoongModule {
+    fn extend_module(&self, target: &Path, module: SoongModule) -> Result<SoongModule, String> {
         let relative_install = |module: SoongModule| -> SoongModule {
             for lib in [
                 "libGLESv1_CM_mesa.so.1.1.0",
@@ -234,29 +234,10 @@ cc_defaults {{
             module
         };
 
-        if ![
-            "libintel_decoder_brw.a",
-            "libintel_decoder_elk.a",
-            "libperfetto.a",
-        ]
-        .contains(&file_name(target).as_str())
-        {
-            module.add_prop("defaults", SoongProp::VecStr(vec![String::from(DEFAULTS)]))
-        } else {
-            module.add_prop(
-                "defaults",
-                SoongProp::VecStr(vec![String::from(RAW_DEFAULTS)]),
-            )
-        }
-    }
-    fn extend_cflags(&self, target: &Path) -> Vec<String> {
         let mut cflags = vec!["-Wno-non-virtual-dtor", "-Wno-error"];
         if target.ends_with("libvulkan_lite_runtime.a") {
             cflags.push("-Wno-unreachable-code-loop-increment");
         }
-        cflags.into_iter().map(|flag| String::from(flag)).collect()
-    }
-    fn extend_shared_libs(&self, target: &Path) -> Vec<String> {
         let mut libs = Vec::new();
         if target.ends_with("libdri.a")
             || target.ends_with("libanv_common.a")
@@ -271,7 +252,22 @@ cc_defaults {{
         if target.starts_with("src/intel/vulkan") || target.ends_with("libvulkan_lite_runtime.a") {
             libs.push("libnativewindow");
         }
-        libs.into_iter().map(|lib| String::from(lib)).collect()
+        if ![
+            "libintel_decoder_brw.a",
+            "libintel_decoder_elk.a",
+            "libperfetto.a",
+        ]
+        .contains(&file_name(target).as_str())
+        {
+            module.add_prop("defaults", SoongProp::VecStr(vec![String::from(DEFAULTS)]))
+        } else {
+            module.add_prop(
+                "defaults",
+                SoongProp::VecStr(vec![String::from(RAW_DEFAULTS)]),
+            )
+        }
+        .extend_prop("cflags", cflags)?
+        .extend_prop("shared_libs", libs)
     }
 
     fn map_lib(&self, library: &Path) -> Option<PathBuf> {

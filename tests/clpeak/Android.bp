@@ -46,11 +46,11 @@ cc_benchmark {
         "-DVERSION_STR=\"1.1.5\"",
         "-fexceptions",
     ],
+    shared_libs: ["//external/OpenCL-ICD-Loader:libOpenCL"],
     local_include_dirs: [
         "include",
         "src/kernels",
     ],
-    shared_libs: ["//external/OpenCL-ICD-Loader:libOpenCL"],
     test_suites: ["dts"],
     header_libs: ["OpenCL-CLHPP"],
     soc_specific: true,

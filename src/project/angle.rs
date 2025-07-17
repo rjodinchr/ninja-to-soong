@@ -351,7 +351,7 @@ android_app {{
             .print()
     }
 
-    fn extend_module(&self, target: &Path, mut module: SoongModule) -> SoongModule {
+    fn extend_module(&self, target: &Path, mut module: SoongModule) -> Result<SoongModule, String> {
         let target_name_holder = file_name(target);
         let target_name = &target_name_holder.as_str();
         if target.ends_with("libtranslator.a") {
@@ -365,31 +365,30 @@ android_app {{
         }
         let mut defaults = Vec::new();
         if !["libGLESv1_CM_angle.so", "libgtest.a"].contains(target_name) {
-            defaults.push(String::from(DEFAULTS));
+            defaults.push(DEFAULTS);
         }
         if TARGETS.contains(target_name) {
-            defaults.push(String::from(VENDOR_DEFAULTS));
+            defaults.push(VENDOR_DEFAULTS);
+        }
+        let mut libs = Vec::new();
+        if target.starts_with("obj") {
+            libs.push("libnativewindow");
+        } else if target.ends_with("libGLESv2_angle.so") {
+            libs.push("libz");
         }
         module
-            .add_prop("defaults", SoongProp::VecStr(defaults))
+            .extend_prop("defaults", defaults)?
             .add_prop("stl", SoongProp::Str(String::from("libc++_static")))
-    }
-    fn extend_cflags(&self, _target: &Path) -> Vec<String> {
-        vec![
-            String::from("-Wno-nullability-completeness"),
-            String::from("-O2"),
-            String::from("-fno-stack-protector"),
-            String::from("-fno-unwind-tables"),
-        ]
-    }
-    fn extend_shared_libs(&self, target: &Path) -> Vec<String> {
-        if target.starts_with("obj") {
-            vec![String::from("libnativewindow")]
-        } else if target.ends_with("libGLESv2_angle.so") {
-            vec![String::from("libz")]
-        } else {
-            Vec::new()
-        }
+            .extend_prop(
+                "cflags",
+                vec![
+                    "-Wno-nullability-completeness",
+                    "-O2",
+                    "-fno-stack-protector",
+                    "-fno-unwind-tables",
+                ],
+            )?
+            .extend_prop("shared_libs", libs)
     }
 
     fn map_cmd_output(&self, output: &Path) -> PathBuf {

@@ -197,6 +197,28 @@ impl SoongModule {
             .add_prop("srcs", SoongProp::VecStr(files))
     }
 
+    pub fn extend_prop(mut self, name: &str, vec_str: Vec<&str>) -> Result<SoongModule, String> {
+        let merge_prop = |prop: SoongProp| match &prop {
+            SoongProp::VecStr(existing_vec_str) => {
+                let mut new_vec = existing_vec_str.clone();
+                new_vec.extend(vec_str.iter().map(|str| String::from(*str)));
+                return Ok(SoongProp::VecStr(new_vec));
+            }
+            _ => {
+                return error!(
+                    "Cannot extend {name}, only VecStr can be extended through 'extend_prop'"
+                )
+            }
+        };
+        if !self.update_prop(&name, merge_prop)? {
+            self.props.push(SoongNamedProp::new(
+                name,
+                SoongProp::VecStr(vec_str.iter().map(|str| String::from(*str)).collect()),
+            ));
+        }
+        Ok(self)
+    }
+
     pub fn add_named_prop(mut self, prop: SoongNamedProp) -> SoongModule {
         self.props.push(prop);
         self
@@ -212,7 +234,7 @@ impl SoongModule {
         self
     }
 
-    pub fn update_prop<F>(&mut self, name: &str, f: F) -> Result<(), String>
+    pub fn update_prop<F>(&mut self, name: &str, f: F) -> Result<bool, String>
     where
         F: Fn(SoongProp) -> Result<SoongProp, String>,
     {
@@ -222,10 +244,10 @@ impl SoongModule {
                 let updated_prop = f(prop)?;
                 self.props
                     .insert(index, SoongNamedProp::new(name, updated_prop));
-                return Ok(());
+                return Ok(true);
             }
         }
-        Ok(())
+        Ok(false)
     }
 
     pub fn filter_default(&mut self, default: &SoongModule) -> Result<(), String> {
