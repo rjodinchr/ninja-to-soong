@@ -150,14 +150,42 @@ impl Project for OpenclCts {
             .add_module(default_module)
             .add_raw_suffix(&format!(
                 r#"
-python_defaults {{
-    name: "opencl_cts_data",
+cc_defaults {{
+    name: "{DEFAULTS_MANUAL}",
+    header_libs: ["OpenCL-Headers"],
+    compile_multilib: "both",
+    multilib: {{
+        lib32: {{
+            suffix: "32",
+        }},
+        lib64: {{
+            suffix: "64",
+        }},
+    }},
+    cflags: [
+        "-Wno-error",
+        "-Wno-c++11-narrowing",
+        "-Wno-non-virtual-dtor",
+        "-Wno-string-concatenation",
+        "-fexceptions",
+    ],
+    gtest: false,
+}}
+
+python_test {{
+    name: "opencl_cts_n2s",
+    main: "android/ninja-to-soong/test_opencl_cts.py",
+    srcs: ["android/ninja-to-soong/test_opencl_cts.py"],
     data: [
 {0}
     ],
+    test_config: "android/ninja-to-soong/test_opencl_cts.xml",
+    test_options: {{
+        unit_test: false,
+    }},
 }}
 
-build = ["AndroidManual.bp"]
+build = ["AndroidLegacy.bp"]
 "#,
                 tests
                     .iter()
@@ -171,13 +199,14 @@ build = ["AndroidManual.bp"]
     fn extend_module(&self, target: &Path, module: SoongModule) -> Result<SoongModule, String> {
         let mut data = Vec::new();
         let is_test_spir = target.ends_with("test_spir");
+        let spirv_bin = format!("{CMAKE_GENERATED}/test_conformance/spirv_new/spirv_bin/*");
         if target.ends_with("test_compiler") {
             data.push("test_conformance/compiler/includeTestDirectory/testIncludeFile.h");
             data.push("test_conformance/compiler/secondIncludeTestDirectory/testIncludeFile.h")
         } else if is_test_spir {
             data.push("test_conformance/spir/*.zip");
         } else if target.ends_with("test_spirv_new") {
-            data.push("/test_conformance/spirv_new/spirv_bin/*");
+            data.push(&spirv_bin);
         }
         let defaults = if target.ends_with("libharness.a") {
             DEFAULTS_MANUAL
