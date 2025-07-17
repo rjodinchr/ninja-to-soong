@@ -125,7 +125,70 @@ macro_rules! define_Dep {
     };
 }
 
+#[macro_export]
+macro_rules! target {
+    ($path:expr) => {
+        NinjaTargetToGen {
+            path: $path,
+            name: None,
+            stem: None,
+            module_type: None,
+        }
+    };
+    ($path:expr, $name:expr) => {
+        NinjaTargetToGen {
+            path: $path,
+            name: Some($name),
+            stem: None,
+            module_type: None,
+        }
+    };
+    ($path:expr, $name:expr, $stem:expr) => {
+        NinjaTargetToGen {
+            path: $path,
+            name: Some($name),
+            stem: Some($stem),
+            module_type: None,
+        }
+    };
+    ($path:expr, $name:expr, $stem:expr, $module_type:expr) => {
+        NinjaTargetToGen {
+            path: $path,
+            name: Some($name),
+            stem: Some($stem),
+            module_type: Some(module_type),
+        }
+    };
+}
+#[macro_export]
+macro_rules! target_typed {
+    ($path:expr) => {
+        NinjaTargetToGen {
+            path: $path,
+            name: None,
+            stem: None,
+            module_type: None,
+        }
+    };
+    ($path:expr, $module_type:expr) => {
+        NinjaTargetToGen {
+            path: $path,
+            name: None,
+            stem: None,
+            module_type: Some($module_type),
+        }
+    };
+    ($path:expr, $module_type:expr, $name:expr) => {
+        NinjaTargetToGen {
+            path: $path,
+            name: Some($name),
+            stem: None,
+            module_type: Some($module_type),
+        }
+    };
+}
+
 pub use {
     debug_project, define_Dep, define_ProjectId, error, execute_cmd, print_info, print_internal,
-    print_verbose,
+    print_verbose, target, target_typed,
 };

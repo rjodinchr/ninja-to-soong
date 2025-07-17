@@ -55,9 +55,9 @@ impl Project for Clvk {
         )
         .generate(
             NinjaTargetsToGenMap::from(&[
-                NinjaTargetToGen("libOpenCL.so", Some(LIBCLVK), None),
-                NinjaTargetToGen("simple_test", None, None),
-                NinjaTargetToGen("api_tests", None, None),
+                target!("libOpenCL.so", LIBCLVK),
+                target_typed!("simple_test", "cc_test"),
+                target_typed!("api_tests", "cc_test"),
             ]),
             parse_build_ninja::<CmakeNinjaTarget>(&build_path)?,
             &src_path,
@@ -137,13 +137,6 @@ prebuilt_etc {{
             },
             "external",
         ))
-    }
-    fn map_module_name(&self, _target: &Path, module_name: &str) -> String {
-        String::from(if module_name == "cc_binary" {
-            "cc_test"
-        } else {
-            module_name
-        })
     }
 
     fn filter_cflag(&self, _cflag: &str) -> bool {

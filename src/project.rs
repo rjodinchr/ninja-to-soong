@@ -122,9 +122,6 @@ pub trait Project {
     fn map_lib(&self, _lib: &Path) -> Option<PathBuf> {
         None
     }
-    fn map_module_name(&self, _target: &Path, module_name: &str) -> String {
-        String::from(module_name)
-    }
     // FILTER FUNCTIONS
     fn filter_cflag(&self, _cflag: &str) -> bool {
         true
