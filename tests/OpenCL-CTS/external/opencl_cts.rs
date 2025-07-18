@@ -193,7 +193,7 @@ build = ["AndroidLegacy.bp"]
                     .collect::<Vec<_>>()
                     .join("\n")
             ))
-            .print()
+            .print(ctx)
     }
 
     fn extend_module(&self, target: &Path, module: SoongModule) -> Result<SoongModule, String> {

@@ -26,7 +26,7 @@ where
             project,
             ctx,
         )?
-        .print()
+        .print(ctx)
 }
 
 impl Project for UnitTest {

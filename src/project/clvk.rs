@@ -89,7 +89,7 @@ prebuilt_etc {{
 }}
 "#
             ))
-            .print()
+            .print(ctx)
     }
 
     fn get_deps(&self, dep: Dep) -> Vec<PathBuf> {

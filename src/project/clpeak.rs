@@ -57,7 +57,7 @@ impl Project for Clpeak {
             self,
             ctx,
         )?
-        .print()
+        .print(ctx)
     }
 
     fn extend_module(&self, _target: &Path, module: SoongModule) -> Result<SoongModule, String> {

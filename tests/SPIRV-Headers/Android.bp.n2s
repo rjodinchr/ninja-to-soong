@@ -29,6 +29,7 @@ license {
 cc_library_headers {
     name: "SPIRV-Headers-includes",
     export_include_dirs: ["include"],
+    vendor_available: true,
 }
 
 filegroup {
