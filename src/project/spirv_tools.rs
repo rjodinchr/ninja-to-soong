@@ -68,7 +68,7 @@ impl Project for SpirvTools {
         ));
         self.gen_deps = package.get_gen_deps();
 
-        package.print()
+        package.print(ctx)
     }
 
     fn get_deps_prefix(&self) -> Vec<(PathBuf, Dep)> {

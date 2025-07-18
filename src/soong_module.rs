@@ -189,6 +189,7 @@ impl SoongModule {
         Self::new("cc_library_headers")
             .add_prop("name", SoongProp::Str(name.str()))
             .add_prop("export_include_dirs", SoongProp::VecStr(include_dirs))
+            .add_prop("vendor_available", SoongProp::Bool(true))
     }
 
     pub fn new_filegroup(name: String, files: Vec<String>) -> Self {

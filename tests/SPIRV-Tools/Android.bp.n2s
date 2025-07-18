@@ -502,4 +502,5 @@ cc_library_static {
 cc_library_headers {
     name: "SPIRV-Tools-includes",
     export_include_dirs: ["include"],
+    vendor_available: true,
 }

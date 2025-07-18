@@ -2573,6 +2573,7 @@ cc_library_headers {
         "cmake_generated/include",
         "llvm/include",
     ],
+    vendor_available: true,
 }
 
 cc_library_headers {
@@ -2581,6 +2582,7 @@ cc_library_headers {
         "clang/include",
         "cmake_generated/tools/clang/include",
     ],
+    vendor_available: true,
 }
 
 cc_defaults {

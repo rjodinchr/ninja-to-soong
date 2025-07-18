@@ -47,6 +47,6 @@ impl Project for SpirvHeaders {
             ));
         }
 
-        package.print()
+        package.print(ctx)
     }
 }

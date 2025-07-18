@@ -119,7 +119,7 @@ impl Project for Mesa3DDesktopPanVK {
             )
             .add_props(package.get_props("mesa3d_desktop-panvk_pps-producer", vec!["cflags"])?);
 
-        package.add_module(default_module).print()
+        package.add_module(default_module).print(ctx)
     }
 
     fn extend_module(&self, target: &Path, module: SoongModule) -> Result<SoongModule, String> {

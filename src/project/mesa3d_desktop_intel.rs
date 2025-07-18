@@ -171,7 +171,7 @@ cc_defaults {{
 }}
 "#,
             ))
-            .print()
+            .print(ctx)
     }
 
     fn extend_module(&self, target: &Path, module: SoongModule) -> Result<SoongModule, String> {
