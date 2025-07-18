@@ -22,6 +22,7 @@ meson setup \
     --cross-file "${AOSP_X86_64}" \
     --libdir lib64 \
     --sysconfdir=/system/vendor/etc \
+    -Dallow-fallback-for=libdrm \
     -Dllvm=disabled \
     -Dglx=disabled \
     -Dgbm=disabled \
