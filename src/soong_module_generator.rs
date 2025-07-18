@@ -449,5 +449,6 @@ where
             .add_prop("srcs", SoongProp::VecStr(sources))
             .add_prop("out", SoongProp::VecStr(outputs))
             .add_prop("tool_files", SoongProp::VecStr(vec![tool]))
+            .add_prop("vendor_available", SoongProp::Bool(true))
     }
 }

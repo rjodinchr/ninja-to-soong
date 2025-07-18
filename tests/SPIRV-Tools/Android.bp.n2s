@@ -289,6 +289,7 @@ cc_genrule {
     srcs: ["CHANGES"],
     out: ["build-version.inc"],
     tool_files: ["utils/update_build_version.py"],
+    vendor_available: true,
 }
 
 cc_genrule {
@@ -297,6 +298,7 @@ cc_genrule {
     srcs: [":SpirvHeaders_include_spirv_unified1_extinst_nonsemantic_vkspreflection_grammar_json"],
     out: ["nonsemantic.vkspreflection.insts.inc"],
     tool_files: ["utils/generate_grammar_tables.py"],
+    vendor_available: true,
 }
 
 cc_genrule {
@@ -305,6 +307,7 @@ cc_genrule {
     srcs: [":SpirvHeaders_include_spirv_unified1_extinst_spv-amd-shader-trinary-minmax_grammar_json"],
     out: ["spv-amd-shader-trinary-minmax.insts.inc"],
     tool_files: ["utils/generate_grammar_tables.py"],
+    vendor_available: true,
 }
 
 cc_genrule {
@@ -313,6 +316,7 @@ cc_genrule {
     srcs: [":SpirvHeaders_include_spirv_unified1_extinst_spv-amd-shader-explicit-vertex-parameter_grammar_json"],
     out: ["spv-amd-shader-explicit-vertex-parameter.insts.inc"],
     tool_files: ["utils/generate_grammar_tables.py"],
+    vendor_available: true,
 }
 
 cc_genrule {
@@ -321,6 +325,7 @@ cc_genrule {
     srcs: [":SpirvHeaders_include_spirv_unified1_extinst_spv-amd-shader-ballot_grammar_json"],
     out: ["spv-amd-shader-ballot.insts.inc"],
     tool_files: ["utils/generate_grammar_tables.py"],
+    vendor_available: true,
 }
 
 cc_genrule {
@@ -329,6 +334,7 @@ cc_genrule {
     srcs: [":SpirvHeaders_include_spirv_unified1_extinst_spv-amd-gcn-shader_grammar_json"],
     out: ["spv-amd-gcn-shader.insts.inc"],
     tool_files: ["utils/generate_grammar_tables.py"],
+    vendor_available: true,
 }
 
 cc_genrule {
@@ -337,6 +343,7 @@ cc_genrule {
     srcs: [":SpirvHeaders_include_spirv_unified1_extinst_nonsemantic_shader_debuginfo_100_grammar_json"],
     out: ["nonsemantic.shader.debuginfo.100.insts.inc"],
     tool_files: ["utils/generate_grammar_tables.py"],
+    vendor_available: true,
 }
 
 cc_genrule {
@@ -345,6 +352,7 @@ cc_genrule {
     srcs: [":SpirvHeaders_include_spirv_unified1_extinst_debuginfo_grammar_json"],
     out: ["debuginfo.insts.inc"],
     tool_files: ["utils/generate_grammar_tables.py"],
+    vendor_available: true,
 }
 
 cc_genrule {
@@ -353,6 +361,7 @@ cc_genrule {
     srcs: [":SpirvHeaders_include_spirv_unified1_extinst_nonsemantic_clspvreflection_grammar_json"],
     out: ["nonsemantic.clspvreflection.insts.inc"],
     tool_files: ["utils/generate_grammar_tables.py"],
+    vendor_available: true,
 }
 
 cc_genrule {
@@ -361,6 +370,7 @@ cc_genrule {
     srcs: [":SpirvHeaders_include_spirv_unified1_extinst_opencl_debuginfo_100_grammar_json"],
     out: ["opencl.debuginfo.100.insts.inc"],
     tool_files: ["utils/generate_grammar_tables.py"],
+    vendor_available: true,
 }
 
 cc_genrule {
@@ -369,6 +379,7 @@ cc_genrule {
     srcs: [":SpirvHeaders_include_spirv_unified1_extinst_opencl_debuginfo_100_grammar_json"],
     out: ["OpenCLDebugInfo100.h"],
     tool_files: ["utils/generate_language_headers.py"],
+    vendor_available: true,
 }
 
 cc_genrule {
@@ -377,6 +388,7 @@ cc_genrule {
     srcs: [":SpirvHeaders_include_spirv_unified1_extinst_nonsemantic_shader_debuginfo_100_grammar_json"],
     out: ["NonSemanticShaderDebugInfo100.h"],
     tool_files: ["utils/generate_language_headers.py"],
+    vendor_available: true,
 }
 
 cc_genrule {
@@ -385,6 +397,7 @@ cc_genrule {
     srcs: [":SpirvHeaders_include_spirv_unified1_extinst_debuginfo_grammar_json"],
     out: ["DebugInfo.h"],
     tool_files: ["utils/generate_language_headers.py"],
+    vendor_available: true,
 }
 
 cc_genrule {
@@ -396,6 +409,7 @@ cc_genrule {
     ],
     out: ["opencl.std.insts.inc"],
     tool_files: ["utils/generate_grammar_tables.py"],
+    vendor_available: true,
 }
 
 cc_genrule {
@@ -407,6 +421,7 @@ cc_genrule {
     ],
     out: ["glsl.std.450.insts.inc"],
     tool_files: ["utils/generate_grammar_tables.py"],
+    vendor_available: true,
 }
 
 cc_genrule {
@@ -422,6 +437,7 @@ cc_genrule {
         "extension_enum.inc",
     ],
     tool_files: ["utils/generate_grammar_tables.py"],
+    vendor_available: true,
 }
 
 cc_genrule {
@@ -430,6 +446,7 @@ cc_genrule {
     srcs: [":SpirvHeaders_include_spirv_spir-v_xml"],
     out: ["generators.inc"],
     tool_files: ["utils/generate_registry_tables.py"],
+    vendor_available: true,
 }
 
 cc_genrule {
@@ -445,6 +462,7 @@ cc_genrule {
         "operand.kinds-unified1.inc",
     ],
     tool_files: ["utils/generate_grammar_tables.py"],
+    vendor_available: true,
 }
 
 cc_library_static {
