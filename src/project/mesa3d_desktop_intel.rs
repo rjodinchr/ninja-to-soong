@@ -171,6 +171,12 @@ cc_defaults {{
 }}
 "#,
             ))
+            .add_raw_prefix(
+                r#"
+soong_namespace {
+}
+            "#,
+            )
             .print(ctx)
     }
 

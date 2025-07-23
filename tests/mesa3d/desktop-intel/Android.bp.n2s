@@ -10,6 +10,9 @@
 // CI version, no wildcard generated
 //
 
+soong_namespace {
+}
+            
 package {
     default_visibility: ["//visibility:public"],
     default_applicable_licenses: ["mesa3d_desktop_intel_licenses"],
