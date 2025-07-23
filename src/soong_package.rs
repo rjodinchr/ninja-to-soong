@@ -13,6 +13,7 @@ pub struct SoongPackage {
     modules: Vec<SoongModule>,
     internals: SoongModuleGeneratorInternals,
     raw_suffix: String,
+    raw_prefix: String,
 }
 
 impl SoongPackage {
@@ -74,6 +75,11 @@ impl SoongPackage {
 
     pub fn add_raw_suffix(mut self, suffix: &str) -> SoongPackage {
         self.raw_suffix = String::from(suffix);
+        self
+    }
+
+    pub fn add_raw_prefix(mut self, prefix: &str) -> SoongPackage {
+        self.raw_prefix = String::from(prefix);
         self
     }
 
@@ -212,6 +218,7 @@ impl SoongPackage {
             package += "// CI version, no wildcard generated\n";
             package += "//\n";
         }
+        package += &self.raw_prefix;
         for module_index in 0..self.modules.len() {
             let module = self.modules.remove(module_index);
             self.modules
