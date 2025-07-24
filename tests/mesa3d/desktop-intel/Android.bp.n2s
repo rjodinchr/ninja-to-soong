@@ -3555,12 +3555,6 @@ cc_defaults {
 cc_defaults {
     name: "mesa3d-desktop-intel-raw-defaults",
     soc_specific: true,
-    enabled: false,
-    arch: {
-        x86_64: {
-            enabled: true,
-        },
-    },
     header_libs: [
         "libcutils_headers",
         "libhardware_headers",

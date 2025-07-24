@@ -157,12 +157,6 @@ impl Project for Mesa3DDesktopIntel {
 cc_defaults {{
     name: "{RAW_DEFAULTS}",
     soc_specific: true,
-    enabled: false,
-    arch: {{
-        x86_64: {{
-            enabled: true,
-        }},
-    }},
     header_libs: [
         "libcutils_headers",
         "libhardware_headers",
