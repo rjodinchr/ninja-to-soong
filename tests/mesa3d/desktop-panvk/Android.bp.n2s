@@ -2634,7 +2634,7 @@ cc_defaults {
         "-DMESA_DEBUG=0",
         "-DNDEBUG",
         "-DPACKAGE_BUGREPORT=\"https://gitlab.freedesktop.org/mesa/mesa/-/issues\"",
-        "-DPACKAGE_VERSION=\"25.2.0-rc1\"",
+        "-DPACKAGE_VERSION=\"25.3.0-devel\"",
         "-DTHREAD_SANITIZER=0",
         "-DUSE_AARCH64_ASM",
         "-DUSE_GCC_ATOMIC_BUILTINS",
