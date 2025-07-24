@@ -125,7 +125,7 @@ impl Project for Mesa3DDesktopPanVK {
                 r#"
 soong_namespace {
 }
-            "#,
+"#,
             )
             .print(ctx)
     }

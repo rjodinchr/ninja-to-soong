@@ -175,7 +175,7 @@ cc_defaults {{
                 r#"
 soong_namespace {
 }
-            "#,
+"#,
             )
             .print(ctx)
     }
