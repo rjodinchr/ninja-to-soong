@@ -1,0 +1,4 @@
+Name: libperfetto
+Description: perfetto stub for mesa
+Version: 1.0.0
+Libs: libperfetto_client_experimental.a
