@@ -115,7 +115,7 @@ USAGE: {exec} [OPTIONS] [PROJECTS]
 PROJECTS:
 {0}
 OPTIONS:
-{AOSP_PATH} <path>       Path to Android tree (required for most project)
+{AOSP_PATH} <path>       Path to Android tree
 {EXT_PROJ_PATH} <path>   Path to external project rust file
 {CLEAN_TMP}              Remove temporary directory before running
 {COPY_TO_AOSP}           Copy generated Soong files into the Android tree
@@ -165,6 +165,25 @@ OPTIONS:
             }
             Err(err) => return error!("Could not get current executable path: {err}"),
         };
+        if ctx.android_path.is_none()
+            && ctx
+                .test_path
+                .parent()
+                .unwrap()
+                .ends_with("external/rust/ninja-to-soong")
+        {
+            ctx.android_path = Some(PathBuf::from(
+                ctx.test_path // <aosp>/external/rust/ninja-to-soong/tests
+                    .parent() // <aosp>/external/rust/ninja-to-soong
+                    .unwrap()
+                    .parent() // <aosp>/external/rust
+                    .unwrap()
+                    .parent() // <aosp>/external
+                    .unwrap()
+                    .parent() // <aosp>
+                    .unwrap(),
+            ));
+        }
         // PROJECTS_TO_GENERATE
         if ctx.projects_to_generate.len() == 0 {
             ctx.projects_to_generate =
