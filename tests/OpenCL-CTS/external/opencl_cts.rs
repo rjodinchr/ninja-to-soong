@@ -153,15 +153,6 @@ impl Project for OpenclCts {
 cc_defaults {{
     name: "{DEFAULTS_MANUAL}",
     header_libs: ["OpenCL-Headers"],
-    compile_multilib: "both",
-    multilib: {{
-        lib32: {{
-            suffix: "32",
-        }},
-        lib64: {{
-            suffix: "64",
-        }},
-    }},
     cflags: [
         "-Wno-error",
         "-Wno-c++11-narrowing",
@@ -170,33 +161,16 @@ cc_defaults {{
         "-fexceptions",
     ],
     gtest: false,
-}}
-
-python_test {{
-    name: "opencl_cts_n2s",
-    main: "android/ninja-to-soong/test_opencl_cts.py",
-    srcs: ["android/ninja-to-soong/test_opencl_cts.py"],
-    data: [
-{0}
-    ],
-    test_config: "android/ninja-to-soong/test_opencl_cts.xml",
     test_options: {{
         unit_test: false,
     }},
 }}
-
-build = ["AndroidLegacy.bp"]
-"#,
-                tests
-                    .iter()
-                    .map(|(_, test)| String::from("        \":") + test + "\",")
-                    .collect::<Vec<_>>()
-                    .join("\n")
+"#
             ))
             .print(ctx)
     }
 
-    fn extend_module(&self, target: &Path, module: SoongModule) -> Result<SoongModule, String> {
+    fn extend_module(&self, target: &Path, mut module: SoongModule) -> Result<SoongModule, String> {
         let mut data = Vec::new();
         let is_test_spir = target.ends_with("test_spir");
         let spirv_bin = format!("{CMAKE_GENERATED}/test_conformance/spirv_new/spirv_bin/*");
@@ -211,6 +185,10 @@ build = ["AndroidLegacy.bp"]
         let defaults = if target.ends_with("libharness.a") {
             DEFAULTS_MANUAL
         } else {
+            module = module.add_prop(
+                "test_config",
+                SoongProp::Str(String::from("android/") + &file_name(target) + ".xml"),
+            );
             DEFAULTS
         };
         module
@@ -221,10 +199,9 @@ build = ["AndroidLegacy.bp"]
 
     fn map_lib(&self, lib: &Path) -> Option<PathBuf> {
         if lib.ends_with("libOpenCL") {
-            Some(PathBuf::from("//external/OpenCL-ICD-Loader:libOpenCL"))
-        } else {
-            None
+            return Some(PathBuf::from("//external/OpenCL-ICD-Loader:libOpenCL"));
         }
+        None
     }
 
     fn filter_cflag(&self, _cflag: &str) -> bool {
