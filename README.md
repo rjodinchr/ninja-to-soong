@@ -31,7 +31,7 @@
 
 ## Options
 
-* `--aosp-path <path>`: Path to Android tree (required for most project)
+* `--aosp-path <path>`: Path to Android tree
 * `--ext-proj-path <path>`: Path to external project rust file
 * `--clean-tmp`: Remove the temporary directory before running
 * `--copy-to-aosp`: Copy generated Soong files into the Android tree
