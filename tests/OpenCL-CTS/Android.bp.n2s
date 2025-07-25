@@ -36,6 +36,7 @@ cc_test {
         "test_conformance/workgroups/test_wg_broadcast.cpp",
         "test_conformance/workgroups/test_wg_scan_reduce.cpp",
     ],
+    test_config: "android/test_workgroups.xml",
     rtti: false,
     defaults: ["OpenCL-CTS-defaults"],
 }
@@ -94,6 +95,7 @@ cc_test {
         "test_conformance/vectors/test_vec_align.cpp",
         "test_conformance/vectors/type_replacer.cpp",
     ],
+    test_config: "android/test_vectors.xml",
     rtti: false,
     defaults: ["OpenCL-CTS-defaults"],
 }
@@ -104,6 +106,7 @@ cc_test {
         "test_conformance/thread_dimensions/main.cpp",
         "test_conformance/thread_dimensions/test_thread_dimensions.cpp",
     ],
+    test_config: "android/test_thread_dimensions.xml",
     rtti: false,
     defaults: ["OpenCL-CTS-defaults"],
 }
@@ -128,6 +131,7 @@ cc_test {
         "test_conformance/subgroups/test_subgroup_shuffle_relative.cpp",
         "test_conformance/subgroups/test_workitem.cpp",
     ],
+    test_config: "android/test_subgroups.xml",
     rtti: false,
     defaults: ["OpenCL-CTS-defaults"],
 }
@@ -168,6 +172,7 @@ cc_test {
         "test_conformance/spirv_new/test_spirv_15.cpp",
         "test_conformance/spirv_new/test_spirv_16.cpp",
     ],
+    test_config: "android/test_spirv_new.xml",
     rtti: false,
     defaults: ["OpenCL-CTS-defaults"],
     data: ["cmake_generated/test_conformance/spirv_new/spirv_bin/*"],
@@ -182,6 +187,7 @@ cc_test {
         "test_conformance/spir/run_build_test.cpp",
         "test_conformance/spir/run_services.cpp",
     ],
+    test_config: "android/test_spir.xml",
     rtti: true,
     defaults: ["OpenCL-CTS-defaults"],
     data: ["test_conformance/spir/*.zip"],
@@ -193,6 +199,7 @@ cc_test {
         "test_conformance/select/test_select.cpp",
         "test_conformance/select/util_select.cpp",
     ],
+    test_config: "android/test_select.xml",
     rtti: false,
     defaults: ["OpenCL-CTS-defaults"],
 }
@@ -205,6 +212,7 @@ cc_test {
         "test_conformance/relationals/test_relationals.cpp",
         "test_conformance/relationals/test_shuffles.cpp",
     ],
+    test_config: "android/test_relationals.xml",
     rtti: false,
     defaults: ["OpenCL-CTS-defaults"],
 }
@@ -222,6 +230,7 @@ cc_test {
         "test_conformance/profiling/writeArray.cpp",
         "test_conformance/profiling/writeImage.cpp",
     ],
+    test_config: "android/test_profiling.xml",
     rtti: false,
     defaults: ["OpenCL-CTS-defaults"],
 }
@@ -232,6 +241,7 @@ cc_test {
         "test_conformance/printf/test_printf.cpp",
         "test_conformance/printf/util_printf.cpp",
     ],
+    test_config: "android/test_printf.xml",
     rtti: false,
     defaults: ["OpenCL-CTS-defaults"],
 }
@@ -247,6 +257,7 @@ cc_test {
         "test_conformance/pipes/test_pipe_readwrite_errors.cpp",
         "test_conformance/pipes/test_pipe_subgroups.cpp",
     ],
+    test_config: "android/test_pipes.xml",
     rtti: false,
     defaults: ["OpenCL-CTS-defaults"],
 }
@@ -262,6 +273,7 @@ cc_test {
         "test_conformance/non_uniform_work_group/test_basic.cpp",
         "test_conformance/non_uniform_work_group/tools.cpp",
     ],
+    test_config: "android/test_non_uniform_work_group.xml",
     rtti: false,
     defaults: ["OpenCL-CTS-defaults"],
 }
@@ -273,6 +285,7 @@ cc_test {
         "test_conformance/multiple_device_context/test_multiple_contexts.cpp",
         "test_conformance/multiple_device_context/test_multiple_devices.cpp",
     ],
+    test_config: "android/test_multiples.xml",
     rtti: false,
     defaults: ["OpenCL-CTS-defaults"],
 }
@@ -284,6 +297,7 @@ cc_test {
         "test_conformance/mem_host_flags/mem_host_buffer.cpp",
         "test_conformance/mem_host_flags/mem_host_image.cpp",
     ],
+    test_config: "android/test_mem_host_flags.xml",
     rtti: false,
     defaults: ["OpenCL-CTS-defaults"],
 }
@@ -337,6 +351,7 @@ cc_test {
         "test_conformance/math_brute_force/unary_u_half.cpp",
         "test_conformance/math_brute_force/utility.cpp",
     ],
+    test_config: "android/test_bruteforce.xml",
     rtti: false,
     defaults: ["OpenCL-CTS-defaults"],
 }
@@ -362,6 +377,7 @@ cc_test {
         "test_conformance/integer_ops/test_upsample.cpp",
         "test_conformance/integer_ops/verification_and_generation_functions.cpp",
     ],
+    test_config: "android/test_integer_ops.xml",
     rtti: false,
     defaults: ["OpenCL-CTS-defaults"],
 }
@@ -379,6 +395,7 @@ cc_test {
         "test_conformance/images/samplerlessReads/test_read_2D_array.cpp",
         "test_conformance/images/samplerlessReads/test_read_3D.cpp",
     ],
+    test_config: "android/test_samplerless_reads.xml",
     rtti: false,
     defaults: ["OpenCL-CTS-defaults"],
 }
@@ -404,6 +421,7 @@ cc_test {
         "test_conformance/images/kernel_read_write/test_write_3D.cpp",
         "test_conformance/images/kernel_read_write/test_write_image.cpp",
     ],
+    test_config: "android/test_image_streams.xml",
     rtti: false,
     defaults: ["OpenCL-CTS-defaults"],
 }
@@ -421,6 +439,7 @@ cc_test {
         "test_conformance/images/kernel_image_methods/test_3D.cpp",
         "test_conformance/images/kernel_image_methods/test_loops.cpp",
     ],
+    test_config: "android/test_kernel_image_methods.xml",
     rtti: false,
     defaults: ["OpenCL-CTS-defaults"],
 }
@@ -438,6 +457,7 @@ cc_test {
         "test_conformance/images/clReadWriteImage/test_read_3D.cpp",
         "test_conformance/images/common.cpp",
     ],
+    test_config: "android/test_cl_read_write_images.xml",
     rtti: false,
     defaults: ["OpenCL-CTS-defaults"],
 }
@@ -454,6 +474,7 @@ cc_test {
         "test_conformance/images/clGetInfo/test_loops.cpp",
         "test_conformance/images/common.cpp",
     ],
+    test_config: "android/test_cl_get_info.xml",
     rtti: false,
     defaults: ["OpenCL-CTS-defaults"],
 }
@@ -472,6 +493,7 @@ cc_test {
         "test_conformance/images/clFillImage/test_loops.cpp",
         "test_conformance/images/common.cpp",
     ],
+    test_config: "android/test_cl_fill_images.xml",
     rtti: false,
     defaults: ["OpenCL-CTS-defaults"],
 }
@@ -493,6 +515,7 @@ cc_test {
         "test_conformance/images/clCopyImage/test_loops.cpp",
         "test_conformance/images/common.cpp",
     ],
+    test_config: "android/test_cl_copy_images.xml",
     rtti: false,
     defaults: ["OpenCL-CTS-defaults"],
 }
@@ -506,6 +529,7 @@ cc_test {
         "test_conformance/half/cl_utils.cpp",
         "test_conformance/half/main.cpp",
     ],
+    test_config: "android/test_half.xml",
     rtti: false,
     defaults: ["OpenCL-CTS-defaults"],
 }
@@ -517,6 +541,7 @@ cc_test {
         "test_conformance/geometrics/test_geometrics.cpp",
         "test_conformance/geometrics/test_geometrics_double.cpp",
     ],
+    test_config: "android/test_geometrics.xml",
     rtti: false,
     defaults: ["OpenCL-CTS-defaults"],
 }
@@ -530,6 +555,7 @@ cc_test {
         "test_conformance/generic_address_space/main.cpp",
         "test_conformance/generic_address_space/stress_tests.cpp",
     ],
+    test_config: "android/test_generic_address_space.xml",
     rtti: false,
     defaults: ["OpenCL-CTS-defaults"],
 }
@@ -546,6 +572,7 @@ cc_test {
         "test_conformance/extensions/cl_khr_semaphore/test_semaphores_negative_wait_signal.cpp",
         "test_conformance/extensions/cl_khr_semaphore/test_semaphores_queries.cpp",
     ],
+    test_config: "android/test_cl_khr_semaphore.xml",
     rtti: false,
     defaults: ["OpenCL-CTS-defaults"],
 }
@@ -556,6 +583,7 @@ cc_test {
         "test_conformance/extensions/cl_khr_kernel_clock/kernel_clock.cpp",
         "test_conformance/extensions/cl_khr_kernel_clock/main.cpp",
     ],
+    test_config: "android/test_cl_khr_kernel_clock.xml",
     rtti: false,
     defaults: ["OpenCL-CTS-defaults"],
 }
@@ -591,6 +619,7 @@ cc_test {
         "test_conformance/extensions/cl_khr_command_buffer/negative_command_nd_range_kernel.cpp",
         "test_conformance/extensions/cl_khr_command_buffer/svm_command_basic.cpp",
     ],
+    test_config: "android/test_cl_khr_command_buffer.xml",
     rtti: false,
     defaults: ["OpenCL-CTS-defaults"],
 }
@@ -613,6 +642,7 @@ cc_test {
         "test_conformance/extensions/cl_khr_command_buffer/cl_khr_command_buffer_mutable_dispatch/mutable_command_simultaneous.cpp",
         "test_conformance/extensions/cl_khr_command_buffer/cl_khr_command_buffer_mutable_dispatch/mutable_command_work_groups.cpp",
     ],
+    test_config: "android/test_cl_khr_mutable_dispatch.xml",
     rtti: false,
     defaults: ["OpenCL-CTS-defaults"],
 }
@@ -624,6 +654,7 @@ cc_test {
         "test_conformance/extensions/cl_ext_cxx_for_opencl/cxx_for_opencl_ver.cpp",
         "test_conformance/extensions/cl_ext_cxx_for_opencl/main.cpp",
     ],
+    test_config: "android/test_cl_ext_cxx_for_opencl.xml",
     rtti: false,
     defaults: ["OpenCL-CTS-defaults"],
 }
@@ -640,6 +671,7 @@ cc_test {
         "test_conformance/events/test_userevents_multithreaded.cpp",
         "test_conformance/events/test_waitlists.cpp",
     ],
+    test_config: "android/test_events.xml",
     rtti: false,
     defaults: ["OpenCL-CTS-defaults"],
 }
@@ -650,6 +682,7 @@ cc_test {
         "test_conformance/device_timer/main.cpp",
         "test_conformance/device_timer/test_device_timer.cpp",
     ],
+    test_config: "android/test_device_timer.xml",
     rtti: false,
     defaults: ["OpenCL-CTS-defaults"],
 }
@@ -660,6 +693,7 @@ cc_test {
         "test_conformance/device_partition/main.cpp",
         "test_conformance/device_partition/test_device_partition.cpp",
     ],
+    test_config: "android/test_device_partition.xml",
     rtti: false,
     defaults: ["OpenCL-CTS-defaults"],
 }
@@ -682,6 +716,7 @@ cc_test {
         "test_conformance/device_execution/nested_blocks.cpp",
         "test_conformance/device_execution/utils.cpp",
     ],
+    test_config: "android/test_device_execution.xml",
     rtti: false,
     defaults: ["OpenCL-CTS-defaults"],
 }
@@ -694,6 +729,7 @@ cc_test {
         "test_conformance/conversions/fplib.cpp",
         "test_conformance/conversions/test_conversions.cpp",
     ],
+    test_config: "android/test_conversions.xml",
     rtti: false,
     defaults: ["OpenCL-CTS-defaults"],
 }
@@ -701,6 +737,7 @@ cc_test {
 cc_test {
     name: "OpenCL-CTS-test_contractions",
     srcs: ["test_conformance/contractions/contractions.cpp"],
+    test_config: "android/test_contractions.xml",
     rtti: false,
     defaults: ["OpenCL-CTS-defaults"],
 }
@@ -714,6 +751,7 @@ cc_test {
         "test_conformance/computeinfo/main.cpp",
         "test_conformance/computeinfo/pci_bus_info.cpp",
     ],
+    test_config: "android/test_computeinfo.xml",
     rtti: false,
     defaults: ["OpenCL-CTS-defaults"],
 }
@@ -734,6 +772,7 @@ cc_test {
         "test_conformance/compiler/test_preprocessor.cpp",
         "test_conformance/compiler/test_unload_platform_compiler.cpp",
     ],
+    test_config: "android/test_compiler.xml",
     rtti: false,
     defaults: ["OpenCL-CTS-defaults"],
     data: [
@@ -753,6 +792,7 @@ cc_test {
         "test_conformance/commonfns/test_step.cpp",
         "test_conformance/commonfns/test_unary_fn.cpp",
     ],
+    test_config: "android/test_commonfns.xml",
     rtti: false,
     defaults: ["OpenCL-CTS-defaults"],
 }
@@ -765,6 +805,7 @@ cc_test {
         "test_conformance/c11_atomics/main.cpp",
         "test_conformance/c11_atomics/test_atomics.cpp",
     ],
+    test_config: "android/test_c11_atomics.xml",
     rtti: false,
     defaults: ["OpenCL-CTS-defaults"],
 }
@@ -784,6 +825,7 @@ cc_test {
         "test_conformance/buffers/test_image_migrate.cpp",
         "test_conformance/buffers/test_sub_buffers.cpp",
     ],
+    test_config: "android/test_buffers.xml",
     rtti: false,
     defaults: ["OpenCL-CTS-defaults"],
 }
@@ -853,6 +895,7 @@ cc_test {
         "test_conformance/basic/test_work_item_functions.cpp",
         "test_conformance/basic/test_writeimage.cpp",
     ],
+    test_config: "android/test_basic.xml",
     rtti: false,
     defaults: ["OpenCL-CTS-defaults"],
 }
@@ -864,6 +907,7 @@ cc_test {
         "test_conformance/atomics/test_atomics.cpp",
         "test_conformance/atomics/test_indexed_cases.cpp",
     ],
+    test_config: "android/test_atomics.xml",
     rtti: false,
     defaults: ["OpenCL-CTS-defaults"],
 }
@@ -910,6 +954,7 @@ cc_test {
         "test_conformance/api/test_wg_suggested_local_work_size.cpp",
         "test_conformance/api/test_zero_sized_enqueue.cpp",
     ],
+    test_config: "android/test_api.xml",
     rtti: false,
     defaults: ["OpenCL-CTS-defaults"],
 }
@@ -923,6 +968,7 @@ cc_test {
         "test_conformance/allocations/allocation_utils.cpp",
         "test_conformance/allocations/main.cpp",
     ],
+    test_config: "android/test_allocations.xml",
     rtti: false,
     defaults: ["OpenCL-CTS-defaults"],
 }
@@ -946,6 +992,7 @@ cc_test {
         "test_conformance/SVM/test_shared_address_space_fine_grain_buffers.cpp",
         "test_conformance/SVM/test_shared_sub_buffers.cpp",
     ],
+    test_config: "android/test_svm.xml",
     rtti: false,
     defaults: ["OpenCL-CTS-defaults"],
 }
@@ -977,15 +1024,6 @@ cc_defaults {
 cc_defaults {
     name: "OpenCL-CTS-manual-defaults",
     header_libs: ["OpenCL-Headers"],
-    compile_multilib: "both",
-    multilib: {
-        lib32: {
-            suffix: "32",
-        },
-        lib64: {
-            suffix: "64",
-        },
-    },
     cflags: [
         "-Wno-error",
         "-Wno-c++11-narrowing",
@@ -994,65 +1032,7 @@ cc_defaults {
         "-fexceptions",
     ],
     gtest: false,
-}
-
-python_test {
-    name: "opencl_cts_n2s",
-    main: "android/ninja-to-soong/test_opencl_cts.py",
-    srcs: ["android/ninja-to-soong/test_opencl_cts.py"],
-    data: [
-        ":OpenCL-CTS-test_svm",
-        ":OpenCL-CTS-test_allocations",
-        ":OpenCL-CTS-test_api",
-        ":OpenCL-CTS-test_atomics",
-        ":OpenCL-CTS-test_basic",
-        ":OpenCL-CTS-test_buffers",
-        ":OpenCL-CTS-test_c11_atomics",
-        ":OpenCL-CTS-test_commonfns",
-        ":OpenCL-CTS-test_compiler",
-        ":OpenCL-CTS-test_computeinfo",
-        ":OpenCL-CTS-test_contractions",
-        ":OpenCL-CTS-test_conversions",
-        ":OpenCL-CTS-test_device_execution",
-        ":OpenCL-CTS-test_device_partition",
-        ":OpenCL-CTS-test_device_timer",
-        ":OpenCL-CTS-test_events",
-        ":OpenCL-CTS-test_cl_ext_cxx_for_opencl",
-        ":OpenCL-CTS-test_cl_khr_mutable_dispatch",
-        ":OpenCL-CTS-test_cl_khr_command_buffer",
-        ":OpenCL-CTS-test_cl_khr_kernel_clock",
-        ":OpenCL-CTS-test_cl_khr_semaphore",
-        ":OpenCL-CTS-test_generic_address_space",
-        ":OpenCL-CTS-test_geometrics",
-        ":OpenCL-CTS-test_half",
-        ":OpenCL-CTS-test_cl_copy_images",
-        ":OpenCL-CTS-test_cl_fill_images",
-        ":OpenCL-CTS-test_cl_get_info",
-        ":OpenCL-CTS-test_cl_read_write_images",
-        ":OpenCL-CTS-test_kernel_image_methods",
-        ":OpenCL-CTS-test_image_streams",
-        ":OpenCL-CTS-test_samplerless_reads",
-        ":OpenCL-CTS-test_integer_ops",
-        ":OpenCL-CTS-test_bruteforce",
-        ":OpenCL-CTS-test_mem_host_flags",
-        ":OpenCL-CTS-test_multiples",
-        ":OpenCL-CTS-test_non_uniform_work_group",
-        ":OpenCL-CTS-test_pipes",
-        ":OpenCL-CTS-test_printf",
-        ":OpenCL-CTS-test_profiling",
-        ":OpenCL-CTS-test_relationals",
-        ":OpenCL-CTS-test_select",
-        ":OpenCL-CTS-test_spir",
-        ":OpenCL-CTS-test_spirv_new",
-        ":OpenCL-CTS-test_subgroups",
-        ":OpenCL-CTS-test_thread_dimensions",
-        ":OpenCL-CTS-test_vectors",
-        ":OpenCL-CTS-test_workgroups",
-    ],
-    test_config: "android/ninja-to-soong/test_opencl_cts.xml",
     test_options: {
         unit_test: false,
     },
 }
-
-build = ["AndroidLegacy.bp"]
