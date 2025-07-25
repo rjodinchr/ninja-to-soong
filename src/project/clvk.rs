@@ -115,8 +115,15 @@ prebuilt_etc {{
         if target.ends_with("api_tests") {
             header_libs.push(CcLibraryHeaders::SpirvHeaders.str());
             header_libs.push(String::from("vulkan_headers"));
+            module = module.add_prop(
+                "test_config",
+                SoongProp::Str(String::from("android/api_tests.xml")),
+            );
         } else if target.ends_with("simple_test") {
-            module = module.add_prop("gtest", SoongProp::Bool(false))
+            module = module.add_prop("gtest", SoongProp::Bool(false)).add_prop(
+                "test_config",
+                SoongProp::Str(String::from("android/simple_test.xml")),
+            );
         }
         let cflags = if target.ends_with("api_tests") {
             vec!["-Wno-missing-braces"]

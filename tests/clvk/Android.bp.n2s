@@ -31,6 +31,7 @@ cc_test {
     ],
     shared_libs: ["libclvk"],
     gtest: false,
+    test_config: "android/simple_test.xml",
     soc_specific: true,
     header_libs: ["OpenCL-Headers"],
 }
@@ -182,6 +183,7 @@ cc_test {
         "llvm-project_lib_libLLVMSupport_a",
     ],
     local_include_dirs: ["tests/../src"],
+    test_config: "android/api_tests.xml",
     soc_specific: true,
     header_libs: [
         "OpenCL-Headers",
