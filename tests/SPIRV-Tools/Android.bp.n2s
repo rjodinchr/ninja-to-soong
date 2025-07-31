@@ -11,7 +11,10 @@
 //
 
 package {
-    default_visibility: ["//external/clvk"],
+    default_visibility: [
+        "//external/OpenCL-CTS",
+        "//external/clvk",
+    ],
     default_applicable_licenses: ["SPIRV-Tools_license"],
 }
 
@@ -20,6 +23,352 @@ license {
     visibility: [":__subpackages__"],
     license_kinds: ["SPDX-license-identifier-Apache-2.0"],
     license_text: ["LICENSE"],
+}
+
+cc_binary_host {
+    name: "spirv-as",
+    srcs: [
+        "tools/as/as.cpp",
+        "tools/io.cpp",
+        "tools/util/flags.cpp",
+    ],
+    cflags: ["-Wno-implicit-fallthrough"],
+    static_libs: ["SPIRV-Tools_source_libSPIRV-Tools_a"],
+    local_include_dirs: [
+        "",
+        "include",
+    ],
+    generated_headers: [
+        "SPIRV-Tools_DebugInfo_h",
+        "SPIRV-Tools_NonSemanticShaderDebugInfo100_h",
+        "SPIRV-Tools_OpenCLDebugInfo100_h",
+        "SPIRV-Tools_build-version_inc",
+        "SPIRV-Tools_core_insts-unified1_inc",
+        "SPIRV-Tools_debuginfo_insts_inc",
+        "SPIRV-Tools_extension_enum_inc",
+        "SPIRV-Tools_generators_inc",
+        "SPIRV-Tools_glsl_std_450_insts_inc",
+        "SPIRV-Tools_nonsemantic_clspvreflection_insts_inc",
+        "SPIRV-Tools_nonsemantic_shader_debuginfo_100_insts_inc",
+        "SPIRV-Tools_nonsemantic_vkspreflection_insts_inc",
+        "SPIRV-Tools_opencl_debuginfo_100_insts_inc",
+        "SPIRV-Tools_opencl_std_insts_inc",
+        "SPIRV-Tools_spv-amd-gcn-shader_insts_inc",
+        "SPIRV-Tools_spv-amd-shader-ballot_insts_inc",
+        "SPIRV-Tools_spv-amd-shader-explicit-vertex-parameter_insts_inc",
+        "SPIRV-Tools_spv-amd-shader-trinary-minmax_insts_inc",
+    ],
+    header_libs: ["SPIRV-Headers-includes"],
+}
+
+cc_library_static {
+    name: "SPIRV-Tools_source_libSPIRV-Tools_a",
+    srcs: [
+        "source/assembly_grammar.cpp",
+        "source/binary.cpp",
+        "source/diagnostic.cpp",
+        "source/disassemble.cpp",
+        "source/enum_string_mapping.cpp",
+        "source/ext_inst.cpp",
+        "source/extensions.cpp",
+        "source/libspirv.cpp",
+        "source/name_mapper.cpp",
+        "source/opcode.cpp",
+        "source/operand.cpp",
+        "source/parsed_operand.cpp",
+        "source/print.cpp",
+        "source/software_version.cpp",
+        "source/spirv_endian.cpp",
+        "source/spirv_fuzzer_options.cpp",
+        "source/spirv_optimizer_options.cpp",
+        "source/spirv_reducer_options.cpp",
+        "source/spirv_target_env.cpp",
+        "source/spirv_validator_options.cpp",
+        "source/table.cpp",
+        "source/text.cpp",
+        "source/text_handler.cpp",
+        "source/to_string.cpp",
+        "source/util/bit_vector.cpp",
+        "source/util/parse_number.cpp",
+        "source/util/string_utils.cpp",
+        "source/util/timer.cpp",
+        "source/val/basic_block.cpp",
+        "source/val/construct.cpp",
+        "source/val/function.cpp",
+        "source/val/instruction.cpp",
+        "source/val/validate.cpp",
+        "source/val/validate_adjacency.cpp",
+        "source/val/validate_annotation.cpp",
+        "source/val/validate_arithmetics.cpp",
+        "source/val/validate_atomics.cpp",
+        "source/val/validate_barriers.cpp",
+        "source/val/validate_bitwise.cpp",
+        "source/val/validate_builtins.cpp",
+        "source/val/validate_capability.cpp",
+        "source/val/validate_cfg.cpp",
+        "source/val/validate_composites.cpp",
+        "source/val/validate_constants.cpp",
+        "source/val/validate_conversion.cpp",
+        "source/val/validate_debug.cpp",
+        "source/val/validate_decorations.cpp",
+        "source/val/validate_derivatives.cpp",
+        "source/val/validate_execution_limitations.cpp",
+        "source/val/validate_extensions.cpp",
+        "source/val/validate_function.cpp",
+        "source/val/validate_id.cpp",
+        "source/val/validate_image.cpp",
+        "source/val/validate_instruction.cpp",
+        "source/val/validate_interfaces.cpp",
+        "source/val/validate_invalid_type.cpp",
+        "source/val/validate_layout.cpp",
+        "source/val/validate_literals.cpp",
+        "source/val/validate_logicals.cpp",
+        "source/val/validate_memory.cpp",
+        "source/val/validate_memory_semantics.cpp",
+        "source/val/validate_mesh_shading.cpp",
+        "source/val/validate_misc.cpp",
+        "source/val/validate_mode_setting.cpp",
+        "source/val/validate_non_uniform.cpp",
+        "source/val/validate_primitives.cpp",
+        "source/val/validate_ray_query.cpp",
+        "source/val/validate_ray_tracing.cpp",
+        "source/val/validate_ray_tracing_reorder.cpp",
+        "source/val/validate_scopes.cpp",
+        "source/val/validate_small_type_uses.cpp",
+        "source/val/validate_tensor_layout.cpp",
+        "source/val/validate_type.cpp",
+        "source/val/validation_state.cpp",
+    ],
+    cflags: ["-Wno-implicit-fallthrough"],
+    local_include_dirs: [
+        "",
+        "include",
+    ],
+    generated_headers: [
+        "SPIRV-Tools_DebugInfo_h",
+        "SPIRV-Tools_NonSemanticShaderDebugInfo100_h",
+        "SPIRV-Tools_OpenCLDebugInfo100_h",
+        "SPIRV-Tools_build-version_inc",
+        "SPIRV-Tools_core_insts-unified1_inc",
+        "SPIRV-Tools_debuginfo_insts_inc",
+        "SPIRV-Tools_extension_enum_inc",
+        "SPIRV-Tools_generators_inc",
+        "SPIRV-Tools_glsl_std_450_insts_inc",
+        "SPIRV-Tools_nonsemantic_clspvreflection_insts_inc",
+        "SPIRV-Tools_nonsemantic_shader_debuginfo_100_insts_inc",
+        "SPIRV-Tools_nonsemantic_vkspreflection_insts_inc",
+        "SPIRV-Tools_opencl_debuginfo_100_insts_inc",
+        "SPIRV-Tools_opencl_std_insts_inc",
+        "SPIRV-Tools_spv-amd-gcn-shader_insts_inc",
+        "SPIRV-Tools_spv-amd-shader-ballot_insts_inc",
+        "SPIRV-Tools_spv-amd-shader-explicit-vertex-parameter_insts_inc",
+        "SPIRV-Tools_spv-amd-shader-trinary-minmax_insts_inc",
+    ],
+    export_include_dirs: ["include"],
+    export_header_lib_headers: ["SPIRV-Headers-includes"],
+    vendor_available: true,
+    host_supported: true,
+    header_libs: ["SPIRV-Headers-includes"],
+}
+
+cc_genrule {
+    name: "SPIRV-Tools_build-version_inc",
+    cmd: "$(location) $(location CHANGES) $(location build-version.inc)",
+    srcs: ["CHANGES"],
+    out: ["build-version.inc"],
+    tool_files: ["utils/update_build_version.py"],
+    vendor_available: true,
+    host_supported: true,
+}
+
+cc_genrule {
+    name: "SPIRV-Tools_nonsemantic_vkspreflection_insts_inc",
+    cmd: "$(location) --extinst-vendor-grammar=$(location :SpirvHeaders_include_spirv_unified1_extinst_nonsemantic_vkspreflection_grammar_json) --vendor-insts-output=$(location nonsemantic.vkspreflection.insts.inc) --vendor-operand-kind-prefix=",
+    srcs: [":SpirvHeaders_include_spirv_unified1_extinst_nonsemantic_vkspreflection_grammar_json"],
+    out: ["nonsemantic.vkspreflection.insts.inc"],
+    tool_files: ["utils/generate_grammar_tables.py"],
+    vendor_available: true,
+    host_supported: true,
+}
+
+cc_genrule {
+    name: "SPIRV-Tools_spv-amd-shader-trinary-minmax_insts_inc",
+    cmd: "$(location) --extinst-vendor-grammar=$(location :SpirvHeaders_include_spirv_unified1_extinst_spv-amd-shader-trinary-minmax_grammar_json) --vendor-insts-output=$(location spv-amd-shader-trinary-minmax.insts.inc) --vendor-operand-kind-prefix=",
+    srcs: [":SpirvHeaders_include_spirv_unified1_extinst_spv-amd-shader-trinary-minmax_grammar_json"],
+    out: ["spv-amd-shader-trinary-minmax.insts.inc"],
+    tool_files: ["utils/generate_grammar_tables.py"],
+    vendor_available: true,
+    host_supported: true,
+}
+
+cc_genrule {
+    name: "SPIRV-Tools_spv-amd-shader-explicit-vertex-parameter_insts_inc",
+    cmd: "$(location) --extinst-vendor-grammar=$(location :SpirvHeaders_include_spirv_unified1_extinst_spv-amd-shader-explicit-vertex-parameter_grammar_json) --vendor-insts-output=$(location spv-amd-shader-explicit-vertex-parameter.insts.inc) --vendor-operand-kind-prefix=",
+    srcs: [":SpirvHeaders_include_spirv_unified1_extinst_spv-amd-shader-explicit-vertex-parameter_grammar_json"],
+    out: ["spv-amd-shader-explicit-vertex-parameter.insts.inc"],
+    tool_files: ["utils/generate_grammar_tables.py"],
+    vendor_available: true,
+    host_supported: true,
+}
+
+cc_genrule {
+    name: "SPIRV-Tools_spv-amd-shader-ballot_insts_inc",
+    cmd: "$(location) --extinst-vendor-grammar=$(location :SpirvHeaders_include_spirv_unified1_extinst_spv-amd-shader-ballot_grammar_json) --vendor-insts-output=$(location spv-amd-shader-ballot.insts.inc) --vendor-operand-kind-prefix=",
+    srcs: [":SpirvHeaders_include_spirv_unified1_extinst_spv-amd-shader-ballot_grammar_json"],
+    out: ["spv-amd-shader-ballot.insts.inc"],
+    tool_files: ["utils/generate_grammar_tables.py"],
+    vendor_available: true,
+    host_supported: true,
+}
+
+cc_genrule {
+    name: "SPIRV-Tools_spv-amd-gcn-shader_insts_inc",
+    cmd: "$(location) --extinst-vendor-grammar=$(location :SpirvHeaders_include_spirv_unified1_extinst_spv-amd-gcn-shader_grammar_json) --vendor-insts-output=$(location spv-amd-gcn-shader.insts.inc) --vendor-operand-kind-prefix=",
+    srcs: [":SpirvHeaders_include_spirv_unified1_extinst_spv-amd-gcn-shader_grammar_json"],
+    out: ["spv-amd-gcn-shader.insts.inc"],
+    tool_files: ["utils/generate_grammar_tables.py"],
+    vendor_available: true,
+    host_supported: true,
+}
+
+cc_genrule {
+    name: "SPIRV-Tools_nonsemantic_shader_debuginfo_100_insts_inc",
+    cmd: "$(location) --extinst-vendor-grammar=$(location :SpirvHeaders_include_spirv_unified1_extinst_nonsemantic_shader_debuginfo_100_grammar_json) --vendor-insts-output=$(location nonsemantic.shader.debuginfo.100.insts.inc) --vendor-operand-kind-prefix=SHDEBUG100_",
+    srcs: [":SpirvHeaders_include_spirv_unified1_extinst_nonsemantic_shader_debuginfo_100_grammar_json"],
+    out: ["nonsemantic.shader.debuginfo.100.insts.inc"],
+    tool_files: ["utils/generate_grammar_tables.py"],
+    vendor_available: true,
+    host_supported: true,
+}
+
+cc_genrule {
+    name: "SPIRV-Tools_debuginfo_insts_inc",
+    cmd: "$(location) --extinst-vendor-grammar=$(location :SpirvHeaders_include_spirv_unified1_extinst_debuginfo_grammar_json) --vendor-insts-output=$(location debuginfo.insts.inc) --vendor-operand-kind-prefix=",
+    srcs: [":SpirvHeaders_include_spirv_unified1_extinst_debuginfo_grammar_json"],
+    out: ["debuginfo.insts.inc"],
+    tool_files: ["utils/generate_grammar_tables.py"],
+    vendor_available: true,
+    host_supported: true,
+}
+
+cc_genrule {
+    name: "SPIRV-Tools_nonsemantic_clspvreflection_insts_inc",
+    cmd: "$(location) --extinst-vendor-grammar=$(location :SpirvHeaders_include_spirv_unified1_extinst_nonsemantic_clspvreflection_grammar_json) --vendor-insts-output=$(location nonsemantic.clspvreflection.insts.inc) --vendor-operand-kind-prefix=",
+    srcs: [":SpirvHeaders_include_spirv_unified1_extinst_nonsemantic_clspvreflection_grammar_json"],
+    out: ["nonsemantic.clspvreflection.insts.inc"],
+    tool_files: ["utils/generate_grammar_tables.py"],
+    vendor_available: true,
+    host_supported: true,
+}
+
+cc_genrule {
+    name: "SPIRV-Tools_opencl_debuginfo_100_insts_inc",
+    cmd: "$(location) --extinst-vendor-grammar=$(location :SpirvHeaders_include_spirv_unified1_extinst_opencl_debuginfo_100_grammar_json) --vendor-insts-output=$(location opencl.debuginfo.100.insts.inc) --vendor-operand-kind-prefix=CLDEBUG100_",
+    srcs: [":SpirvHeaders_include_spirv_unified1_extinst_opencl_debuginfo_100_grammar_json"],
+    out: ["opencl.debuginfo.100.insts.inc"],
+    tool_files: ["utils/generate_grammar_tables.py"],
+    vendor_available: true,
+    host_supported: true,
+}
+
+cc_genrule {
+    name: "SPIRV-Tools_OpenCLDebugInfo100_h",
+    cmd: "$(location) --extinst-grammar=$(location :SpirvHeaders_include_spirv_unified1_extinst_opencl_debuginfo_100_grammar_json) --extinst-output-path=$(location OpenCLDebugInfo100.h)",
+    srcs: [":SpirvHeaders_include_spirv_unified1_extinst_opencl_debuginfo_100_grammar_json"],
+    out: ["OpenCLDebugInfo100.h"],
+    tool_files: ["utils/generate_language_headers.py"],
+    vendor_available: true,
+    host_supported: true,
+}
+
+cc_genrule {
+    name: "SPIRV-Tools_NonSemanticShaderDebugInfo100_h",
+    cmd: "$(location) --extinst-grammar=$(location :SpirvHeaders_include_spirv_unified1_extinst_nonsemantic_shader_debuginfo_100_grammar_json) --extinst-output-path=$(location NonSemanticShaderDebugInfo100.h)",
+    srcs: [":SpirvHeaders_include_spirv_unified1_extinst_nonsemantic_shader_debuginfo_100_grammar_json"],
+    out: ["NonSemanticShaderDebugInfo100.h"],
+    tool_files: ["utils/generate_language_headers.py"],
+    vendor_available: true,
+    host_supported: true,
+}
+
+cc_genrule {
+    name: "SPIRV-Tools_DebugInfo_h",
+    cmd: "$(location) --extinst-grammar=$(location :SpirvHeaders_include_spirv_unified1_extinst_debuginfo_grammar_json) --extinst-output-path=$(location DebugInfo.h)",
+    srcs: [":SpirvHeaders_include_spirv_unified1_extinst_debuginfo_grammar_json"],
+    out: ["DebugInfo.h"],
+    tool_files: ["utils/generate_language_headers.py"],
+    vendor_available: true,
+    host_supported: true,
+}
+
+cc_genrule {
+    name: "SPIRV-Tools_opencl_std_insts_inc",
+    cmd: "$(location) --extinst-opencl-grammar=$(location :SpirvHeaders_include_spirv_unified1_extinst_opencl_std_100_grammar_json) --opencl-insts-output=$(location opencl.std.insts.inc)",
+    srcs: [
+        ":SpirvHeaders_include_spirv_unified1_extinst_opencl_std_100_grammar_json",
+        ":SpirvHeaders_include_spirv_unified1_spirv_core_grammar_json",
+    ],
+    out: ["opencl.std.insts.inc"],
+    tool_files: ["utils/generate_grammar_tables.py"],
+    vendor_available: true,
+    host_supported: true,
+}
+
+cc_genrule {
+    name: "SPIRV-Tools_glsl_std_450_insts_inc",
+    cmd: "$(location) --extinst-glsl-grammar=$(location :SpirvHeaders_include_spirv_unified1_extinst_glsl_std_450_grammar_json) --glsl-insts-output=$(location glsl.std.450.insts.inc) --output-language=c++",
+    srcs: [
+        ":SpirvHeaders_include_spirv_unified1_extinst_glsl_std_450_grammar_json",
+        ":SpirvHeaders_include_spirv_unified1_spirv_core_grammar_json",
+    ],
+    out: ["glsl.std.450.insts.inc"],
+    tool_files: ["utils/generate_grammar_tables.py"],
+    vendor_available: true,
+    host_supported: true,
+}
+
+cc_genrule {
+    name: "SPIRV-Tools_extension_enum_inc",
+    cmd: "$(location) --spirv-core-grammar=$(location :SpirvHeaders_include_spirv_unified1_spirv_core_grammar_json) --extinst-debuginfo-grammar=$(location :SpirvHeaders_include_spirv_unified1_extinst_debuginfo_grammar_json) --extinst-cldebuginfo100-grammar=$(location :SpirvHeaders_include_spirv_unified1_extinst_opencl_debuginfo_100_grammar_json) --extension-enum-output=$(location extension_enum.inc) --enum-string-mapping-output=$(location enum_string_mapping.inc) --output-language=c++",
+    srcs: [
+        ":SpirvHeaders_include_spirv_unified1_extinst_debuginfo_grammar_json",
+        ":SpirvHeaders_include_spirv_unified1_extinst_opencl_debuginfo_100_grammar_json",
+        ":SpirvHeaders_include_spirv_unified1_spirv_core_grammar_json",
+    ],
+    out: [
+        "enum_string_mapping.inc",
+        "extension_enum.inc",
+    ],
+    tool_files: ["utils/generate_grammar_tables.py"],
+    vendor_available: true,
+    host_supported: true,
+}
+
+cc_genrule {
+    name: "SPIRV-Tools_generators_inc",
+    cmd: "$(location) --xml=$(location :SpirvHeaders_include_spirv_spir-v_xml) --generator-output=$(location generators.inc)",
+    srcs: [":SpirvHeaders_include_spirv_spir-v_xml"],
+    out: ["generators.inc"],
+    tool_files: ["utils/generate_registry_tables.py"],
+    vendor_available: true,
+    host_supported: true,
+}
+
+cc_genrule {
+    name: "SPIRV-Tools_core_insts-unified1_inc",
+    cmd: "$(location) --spirv-core-grammar=$(location :SpirvHeaders_include_spirv_unified1_spirv_core_grammar_json) --extinst-debuginfo-grammar=$(location :SpirvHeaders_include_spirv_unified1_extinst_debuginfo_grammar_json) --extinst-cldebuginfo100-grammar=$(location :SpirvHeaders_include_spirv_unified1_extinst_opencl_debuginfo_100_grammar_json) --core-insts-output=$(location core.insts-unified1.inc) --operand-kinds-output=$(location operand.kinds-unified1.inc) --output-language=c++",
+    srcs: [
+        ":SpirvHeaders_include_spirv_unified1_extinst_debuginfo_grammar_json",
+        ":SpirvHeaders_include_spirv_unified1_extinst_opencl_debuginfo_100_grammar_json",
+        ":SpirvHeaders_include_spirv_unified1_spirv_core_grammar_json",
+    ],
+    out: [
+        "core.insts-unified1.inc",
+        "operand.kinds-unified1.inc",
+    ],
+    tool_files: ["utils/generate_grammar_tables.py"],
+    vendor_available: true,
+    host_supported: true,
 }
 
 cc_library_static {
@@ -168,301 +517,10 @@ cc_library_static {
         "SPIRV-Tools_spv-amd-shader-explicit-vertex-parameter_insts_inc",
         "SPIRV-Tools_spv-amd-shader-trinary-minmax_insts_inc",
     ],
-    vendor_available: true,
-    header_libs: ["SPIRV-Headers-includes"],
     export_include_dirs: ["include"],
     export_header_lib_headers: ["SPIRV-Headers-includes"],
-}
-
-cc_library_static {
-    name: "SPIRV-Tools_source_libSPIRV-Tools_a",
-    srcs: [
-        "source/assembly_grammar.cpp",
-        "source/binary.cpp",
-        "source/diagnostic.cpp",
-        "source/disassemble.cpp",
-        "source/enum_string_mapping.cpp",
-        "source/ext_inst.cpp",
-        "source/extensions.cpp",
-        "source/libspirv.cpp",
-        "source/name_mapper.cpp",
-        "source/opcode.cpp",
-        "source/operand.cpp",
-        "source/parsed_operand.cpp",
-        "source/print.cpp",
-        "source/software_version.cpp",
-        "source/spirv_endian.cpp",
-        "source/spirv_fuzzer_options.cpp",
-        "source/spirv_optimizer_options.cpp",
-        "source/spirv_reducer_options.cpp",
-        "source/spirv_target_env.cpp",
-        "source/spirv_validator_options.cpp",
-        "source/table.cpp",
-        "source/text.cpp",
-        "source/text_handler.cpp",
-        "source/to_string.cpp",
-        "source/util/bit_vector.cpp",
-        "source/util/parse_number.cpp",
-        "source/util/string_utils.cpp",
-        "source/util/timer.cpp",
-        "source/val/basic_block.cpp",
-        "source/val/construct.cpp",
-        "source/val/function.cpp",
-        "source/val/instruction.cpp",
-        "source/val/validate.cpp",
-        "source/val/validate_adjacency.cpp",
-        "source/val/validate_annotation.cpp",
-        "source/val/validate_arithmetics.cpp",
-        "source/val/validate_atomics.cpp",
-        "source/val/validate_barriers.cpp",
-        "source/val/validate_bitwise.cpp",
-        "source/val/validate_builtins.cpp",
-        "source/val/validate_capability.cpp",
-        "source/val/validate_cfg.cpp",
-        "source/val/validate_composites.cpp",
-        "source/val/validate_constants.cpp",
-        "source/val/validate_conversion.cpp",
-        "source/val/validate_debug.cpp",
-        "source/val/validate_decorations.cpp",
-        "source/val/validate_derivatives.cpp",
-        "source/val/validate_execution_limitations.cpp",
-        "source/val/validate_extensions.cpp",
-        "source/val/validate_function.cpp",
-        "source/val/validate_id.cpp",
-        "source/val/validate_image.cpp",
-        "source/val/validate_instruction.cpp",
-        "source/val/validate_interfaces.cpp",
-        "source/val/validate_invalid_type.cpp",
-        "source/val/validate_layout.cpp",
-        "source/val/validate_literals.cpp",
-        "source/val/validate_logicals.cpp",
-        "source/val/validate_memory.cpp",
-        "source/val/validate_memory_semantics.cpp",
-        "source/val/validate_mesh_shading.cpp",
-        "source/val/validate_misc.cpp",
-        "source/val/validate_mode_setting.cpp",
-        "source/val/validate_non_uniform.cpp",
-        "source/val/validate_primitives.cpp",
-        "source/val/validate_ray_query.cpp",
-        "source/val/validate_ray_tracing.cpp",
-        "source/val/validate_ray_tracing_reorder.cpp",
-        "source/val/validate_scopes.cpp",
-        "source/val/validate_small_type_uses.cpp",
-        "source/val/validate_tensor_layout.cpp",
-        "source/val/validate_type.cpp",
-        "source/val/validation_state.cpp",
-    ],
-    cflags: ["-Wno-implicit-fallthrough"],
-    local_include_dirs: [
-        "",
-        "include",
-    ],
-    generated_headers: [
-        "SPIRV-Tools_DebugInfo_h",
-        "SPIRV-Tools_NonSemanticShaderDebugInfo100_h",
-        "SPIRV-Tools_OpenCLDebugInfo100_h",
-        "SPIRV-Tools_build-version_inc",
-        "SPIRV-Tools_core_insts-unified1_inc",
-        "SPIRV-Tools_debuginfo_insts_inc",
-        "SPIRV-Tools_extension_enum_inc",
-        "SPIRV-Tools_generators_inc",
-        "SPIRV-Tools_glsl_std_450_insts_inc",
-        "SPIRV-Tools_nonsemantic_clspvreflection_insts_inc",
-        "SPIRV-Tools_nonsemantic_shader_debuginfo_100_insts_inc",
-        "SPIRV-Tools_nonsemantic_vkspreflection_insts_inc",
-        "SPIRV-Tools_opencl_debuginfo_100_insts_inc",
-        "SPIRV-Tools_opencl_std_insts_inc",
-        "SPIRV-Tools_spv-amd-gcn-shader_insts_inc",
-        "SPIRV-Tools_spv-amd-shader-ballot_insts_inc",
-        "SPIRV-Tools_spv-amd-shader-explicit-vertex-parameter_insts_inc",
-        "SPIRV-Tools_spv-amd-shader-trinary-minmax_insts_inc",
-    ],
     vendor_available: true,
     header_libs: ["SPIRV-Headers-includes"],
-    export_include_dirs: ["include"],
-    export_header_lib_headers: ["SPIRV-Headers-includes"],
-}
-
-cc_genrule {
-    name: "SPIRV-Tools_build-version_inc",
-    cmd: "$(location) $(location CHANGES) $(location build-version.inc)",
-    srcs: ["CHANGES"],
-    out: ["build-version.inc"],
-    tool_files: ["utils/update_build_version.py"],
-    vendor_available: true,
-}
-
-cc_genrule {
-    name: "SPIRV-Tools_nonsemantic_vkspreflection_insts_inc",
-    cmd: "$(location) --extinst-vendor-grammar=$(location :SpirvHeaders_include_spirv_unified1_extinst_nonsemantic_vkspreflection_grammar_json) --vendor-insts-output=$(location nonsemantic.vkspreflection.insts.inc) --vendor-operand-kind-prefix=",
-    srcs: [":SpirvHeaders_include_spirv_unified1_extinst_nonsemantic_vkspreflection_grammar_json"],
-    out: ["nonsemantic.vkspreflection.insts.inc"],
-    tool_files: ["utils/generate_grammar_tables.py"],
-    vendor_available: true,
-}
-
-cc_genrule {
-    name: "SPIRV-Tools_spv-amd-shader-trinary-minmax_insts_inc",
-    cmd: "$(location) --extinst-vendor-grammar=$(location :SpirvHeaders_include_spirv_unified1_extinst_spv-amd-shader-trinary-minmax_grammar_json) --vendor-insts-output=$(location spv-amd-shader-trinary-minmax.insts.inc) --vendor-operand-kind-prefix=",
-    srcs: [":SpirvHeaders_include_spirv_unified1_extinst_spv-amd-shader-trinary-minmax_grammar_json"],
-    out: ["spv-amd-shader-trinary-minmax.insts.inc"],
-    tool_files: ["utils/generate_grammar_tables.py"],
-    vendor_available: true,
-}
-
-cc_genrule {
-    name: "SPIRV-Tools_spv-amd-shader-explicit-vertex-parameter_insts_inc",
-    cmd: "$(location) --extinst-vendor-grammar=$(location :SpirvHeaders_include_spirv_unified1_extinst_spv-amd-shader-explicit-vertex-parameter_grammar_json) --vendor-insts-output=$(location spv-amd-shader-explicit-vertex-parameter.insts.inc) --vendor-operand-kind-prefix=",
-    srcs: [":SpirvHeaders_include_spirv_unified1_extinst_spv-amd-shader-explicit-vertex-parameter_grammar_json"],
-    out: ["spv-amd-shader-explicit-vertex-parameter.insts.inc"],
-    tool_files: ["utils/generate_grammar_tables.py"],
-    vendor_available: true,
-}
-
-cc_genrule {
-    name: "SPIRV-Tools_spv-amd-shader-ballot_insts_inc",
-    cmd: "$(location) --extinst-vendor-grammar=$(location :SpirvHeaders_include_spirv_unified1_extinst_spv-amd-shader-ballot_grammar_json) --vendor-insts-output=$(location spv-amd-shader-ballot.insts.inc) --vendor-operand-kind-prefix=",
-    srcs: [":SpirvHeaders_include_spirv_unified1_extinst_spv-amd-shader-ballot_grammar_json"],
-    out: ["spv-amd-shader-ballot.insts.inc"],
-    tool_files: ["utils/generate_grammar_tables.py"],
-    vendor_available: true,
-}
-
-cc_genrule {
-    name: "SPIRV-Tools_spv-amd-gcn-shader_insts_inc",
-    cmd: "$(location) --extinst-vendor-grammar=$(location :SpirvHeaders_include_spirv_unified1_extinst_spv-amd-gcn-shader_grammar_json) --vendor-insts-output=$(location spv-amd-gcn-shader.insts.inc) --vendor-operand-kind-prefix=",
-    srcs: [":SpirvHeaders_include_spirv_unified1_extinst_spv-amd-gcn-shader_grammar_json"],
-    out: ["spv-amd-gcn-shader.insts.inc"],
-    tool_files: ["utils/generate_grammar_tables.py"],
-    vendor_available: true,
-}
-
-cc_genrule {
-    name: "SPIRV-Tools_nonsemantic_shader_debuginfo_100_insts_inc",
-    cmd: "$(location) --extinst-vendor-grammar=$(location :SpirvHeaders_include_spirv_unified1_extinst_nonsemantic_shader_debuginfo_100_grammar_json) --vendor-insts-output=$(location nonsemantic.shader.debuginfo.100.insts.inc) --vendor-operand-kind-prefix=SHDEBUG100_",
-    srcs: [":SpirvHeaders_include_spirv_unified1_extinst_nonsemantic_shader_debuginfo_100_grammar_json"],
-    out: ["nonsemantic.shader.debuginfo.100.insts.inc"],
-    tool_files: ["utils/generate_grammar_tables.py"],
-    vendor_available: true,
-}
-
-cc_genrule {
-    name: "SPIRV-Tools_debuginfo_insts_inc",
-    cmd: "$(location) --extinst-vendor-grammar=$(location :SpirvHeaders_include_spirv_unified1_extinst_debuginfo_grammar_json) --vendor-insts-output=$(location debuginfo.insts.inc) --vendor-operand-kind-prefix=",
-    srcs: [":SpirvHeaders_include_spirv_unified1_extinst_debuginfo_grammar_json"],
-    out: ["debuginfo.insts.inc"],
-    tool_files: ["utils/generate_grammar_tables.py"],
-    vendor_available: true,
-}
-
-cc_genrule {
-    name: "SPIRV-Tools_nonsemantic_clspvreflection_insts_inc",
-    cmd: "$(location) --extinst-vendor-grammar=$(location :SpirvHeaders_include_spirv_unified1_extinst_nonsemantic_clspvreflection_grammar_json) --vendor-insts-output=$(location nonsemantic.clspvreflection.insts.inc) --vendor-operand-kind-prefix=",
-    srcs: [":SpirvHeaders_include_spirv_unified1_extinst_nonsemantic_clspvreflection_grammar_json"],
-    out: ["nonsemantic.clspvreflection.insts.inc"],
-    tool_files: ["utils/generate_grammar_tables.py"],
-    vendor_available: true,
-}
-
-cc_genrule {
-    name: "SPIRV-Tools_opencl_debuginfo_100_insts_inc",
-    cmd: "$(location) --extinst-vendor-grammar=$(location :SpirvHeaders_include_spirv_unified1_extinst_opencl_debuginfo_100_grammar_json) --vendor-insts-output=$(location opencl.debuginfo.100.insts.inc) --vendor-operand-kind-prefix=CLDEBUG100_",
-    srcs: [":SpirvHeaders_include_spirv_unified1_extinst_opencl_debuginfo_100_grammar_json"],
-    out: ["opencl.debuginfo.100.insts.inc"],
-    tool_files: ["utils/generate_grammar_tables.py"],
-    vendor_available: true,
-}
-
-cc_genrule {
-    name: "SPIRV-Tools_OpenCLDebugInfo100_h",
-    cmd: "$(location) --extinst-grammar=$(location :SpirvHeaders_include_spirv_unified1_extinst_opencl_debuginfo_100_grammar_json) --extinst-output-path=$(location OpenCLDebugInfo100.h)",
-    srcs: [":SpirvHeaders_include_spirv_unified1_extinst_opencl_debuginfo_100_grammar_json"],
-    out: ["OpenCLDebugInfo100.h"],
-    tool_files: ["utils/generate_language_headers.py"],
-    vendor_available: true,
-}
-
-cc_genrule {
-    name: "SPIRV-Tools_NonSemanticShaderDebugInfo100_h",
-    cmd: "$(location) --extinst-grammar=$(location :SpirvHeaders_include_spirv_unified1_extinst_nonsemantic_shader_debuginfo_100_grammar_json) --extinst-output-path=$(location NonSemanticShaderDebugInfo100.h)",
-    srcs: [":SpirvHeaders_include_spirv_unified1_extinst_nonsemantic_shader_debuginfo_100_grammar_json"],
-    out: ["NonSemanticShaderDebugInfo100.h"],
-    tool_files: ["utils/generate_language_headers.py"],
-    vendor_available: true,
-}
-
-cc_genrule {
-    name: "SPIRV-Tools_DebugInfo_h",
-    cmd: "$(location) --extinst-grammar=$(location :SpirvHeaders_include_spirv_unified1_extinst_debuginfo_grammar_json) --extinst-output-path=$(location DebugInfo.h)",
-    srcs: [":SpirvHeaders_include_spirv_unified1_extinst_debuginfo_grammar_json"],
-    out: ["DebugInfo.h"],
-    tool_files: ["utils/generate_language_headers.py"],
-    vendor_available: true,
-}
-
-cc_genrule {
-    name: "SPIRV-Tools_opencl_std_insts_inc",
-    cmd: "$(location) --extinst-opencl-grammar=$(location :SpirvHeaders_include_spirv_unified1_extinst_opencl_std_100_grammar_json) --opencl-insts-output=$(location opencl.std.insts.inc)",
-    srcs: [
-        ":SpirvHeaders_include_spirv_unified1_extinst_opencl_std_100_grammar_json",
-        ":SpirvHeaders_include_spirv_unified1_spirv_core_grammar_json",
-    ],
-    out: ["opencl.std.insts.inc"],
-    tool_files: ["utils/generate_grammar_tables.py"],
-    vendor_available: true,
-}
-
-cc_genrule {
-    name: "SPIRV-Tools_glsl_std_450_insts_inc",
-    cmd: "$(location) --extinst-glsl-grammar=$(location :SpirvHeaders_include_spirv_unified1_extinst_glsl_std_450_grammar_json) --glsl-insts-output=$(location glsl.std.450.insts.inc) --output-language=c++",
-    srcs: [
-        ":SpirvHeaders_include_spirv_unified1_extinst_glsl_std_450_grammar_json",
-        ":SpirvHeaders_include_spirv_unified1_spirv_core_grammar_json",
-    ],
-    out: ["glsl.std.450.insts.inc"],
-    tool_files: ["utils/generate_grammar_tables.py"],
-    vendor_available: true,
-}
-
-cc_genrule {
-    name: "SPIRV-Tools_extension_enum_inc",
-    cmd: "$(location) --spirv-core-grammar=$(location :SpirvHeaders_include_spirv_unified1_spirv_core_grammar_json) --extinst-debuginfo-grammar=$(location :SpirvHeaders_include_spirv_unified1_extinst_debuginfo_grammar_json) --extinst-cldebuginfo100-grammar=$(location :SpirvHeaders_include_spirv_unified1_extinst_opencl_debuginfo_100_grammar_json) --extension-enum-output=$(location extension_enum.inc) --enum-string-mapping-output=$(location enum_string_mapping.inc) --output-language=c++",
-    srcs: [
-        ":SpirvHeaders_include_spirv_unified1_extinst_debuginfo_grammar_json",
-        ":SpirvHeaders_include_spirv_unified1_extinst_opencl_debuginfo_100_grammar_json",
-        ":SpirvHeaders_include_spirv_unified1_spirv_core_grammar_json",
-    ],
-    out: [
-        "enum_string_mapping.inc",
-        "extension_enum.inc",
-    ],
-    tool_files: ["utils/generate_grammar_tables.py"],
-    vendor_available: true,
-}
-
-cc_genrule {
-    name: "SPIRV-Tools_generators_inc",
-    cmd: "$(location) --xml=$(location :SpirvHeaders_include_spirv_spir-v_xml) --generator-output=$(location generators.inc)",
-    srcs: [":SpirvHeaders_include_spirv_spir-v_xml"],
-    out: ["generators.inc"],
-    tool_files: ["utils/generate_registry_tables.py"],
-    vendor_available: true,
-}
-
-cc_genrule {
-    name: "SPIRV-Tools_core_insts-unified1_inc",
-    cmd: "$(location) --spirv-core-grammar=$(location :SpirvHeaders_include_spirv_unified1_spirv_core_grammar_json) --extinst-debuginfo-grammar=$(location :SpirvHeaders_include_spirv_unified1_extinst_debuginfo_grammar_json) --extinst-cldebuginfo100-grammar=$(location :SpirvHeaders_include_spirv_unified1_extinst_opencl_debuginfo_100_grammar_json) --core-insts-output=$(location core.insts-unified1.inc) --operand-kinds-output=$(location operand.kinds-unified1.inc) --output-language=c++",
-    srcs: [
-        ":SpirvHeaders_include_spirv_unified1_extinst_debuginfo_grammar_json",
-        ":SpirvHeaders_include_spirv_unified1_extinst_opencl_debuginfo_100_grammar_json",
-        ":SpirvHeaders_include_spirv_unified1_spirv_core_grammar_json",
-    ],
-    out: [
-        "core.insts-unified1.inc",
-        "operand.kinds-unified1.inc",
-    ],
-    tool_files: ["utils/generate_grammar_tables.py"],
-    vendor_available: true,
 }
 
 cc_library_static {
@@ -493,10 +551,10 @@ cc_library_static {
         "SPIRV-Tools_spv-amd-shader-explicit-vertex-parameter_insts_inc",
         "SPIRV-Tools_spv-amd-shader-trinary-minmax_insts_inc",
     ],
-    vendor_available: true,
-    header_libs: ["SPIRV-Headers-includes"],
     export_include_dirs: ["include"],
     export_header_lib_headers: ["SPIRV-Headers-includes"],
+    vendor_available: true,
+    header_libs: ["SPIRV-Headers-includes"],
 }
 
 cc_library_headers {

@@ -115,6 +115,13 @@ pub trait Project {
     fn extend_module(&self, _target: &Path, module: SoongModule) -> Result<SoongModule, String> {
         Ok(module)
     }
+    fn extend_custom_command(
+        &self,
+        _target: &Path,
+        module: SoongModule,
+    ) -> Result<SoongModule, String> {
+        Ok(module)
+    }
     // MAP FUNCTIONS
     fn map_cmd_output(&self, output: &Path) -> PathBuf {
         PathBuf::from(output)

@@ -123,6 +123,13 @@ impl Project for Clspv {
             )
             .extend_prop("export_include_dirs", vec!["include"])
     }
+    fn extend_custom_command(
+        &self,
+        _target: &Path,
+        module: SoongModule,
+    ) -> Result<SoongModule, String> {
+        Ok(module.add_prop("vendor_available", SoongProp::Bool(true)))
+    }
 
     fn map_cmd_output(&self, output: &Path) -> PathBuf {
         let mut prefix = output;

@@ -14,7 +14,7 @@ pub fn get_ndk_path(temp_path: &Path, ctx: &Context) -> Result<PathBuf, String> 
     let android_ndk = if let Ok(android_ndk) = env::var("N2S_NDK") {
         android_ndk
     } else {
-        String::from("android-ndk-r27c")
+        String::from("android-ndk-r27d")
     };
     let ndk_path = if let Ok(ndk_path) = env::var("N2S_NDK_PATH") {
         PathBuf::from(ndk_path)
@@ -81,19 +81,23 @@ pub fn file_name(path: &Path) -> String {
     )
 }
 
+pub fn file_ext(path: &Path) -> String {
+    String::from(
+        path.extension()
+            .unwrap_or_default()
+            .to_str()
+            .unwrap_or_default(),
+    )
+}
+
 pub fn strip_prefix<F: AsRef<Path>, P: AsRef<Path>>(from: F, prefix: P) -> PathBuf {
     PathBuf::from(from.as_ref().strip_prefix(prefix).unwrap_or(from.as_ref()))
 }
 
 pub fn wildcardize_path(path: &Path) -> PathBuf {
-    path.parent().unwrap().join(
-        String::from("*.")
-            + path
-                .extension()
-                .unwrap_or_default()
-                .to_str()
-                .unwrap_or_default(),
-    )
+    path.parent()
+        .unwrap()
+        .join(String::from("*.") + &file_ext(path))
 }
 
 pub fn wildcardize_paths(paths: Vec<String>, src_path: &Path) -> Vec<String> {

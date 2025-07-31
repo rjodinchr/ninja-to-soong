@@ -35,10 +35,13 @@ impl Project for SpirvHeaders {
             &["SPDX-license-identifier-MIT"],
             &["LICENSE"],
         )
-        .add_module(SoongModule::new_cc_library_headers(
-            CcLibraryHeaders::SpirvHeaders,
-            vec![String::from("include")],
-        ));
+        .add_module(
+            SoongModule::new_cc_library_headers(
+                CcLibraryHeaders::SpirvHeaders,
+                vec![String::from("include")],
+            )
+            .add_prop("host_supported", SoongProp::Bool(true)),
+        );
 
         for file in Dep::SpirvHeaders.get(projects_map)? {
             package = package.add_module(SoongModule::new_filegroup(

@@ -1310,7 +1310,6 @@ cc_genrule {
     ],
     out: ["ANGLEShaderProgramVersion.h"],
     tool_files: ["src/program_serialize_data_version.py"],
-    vendor_available: true,
     arch: {
         arm64: {
             cmd: "echo \"$(in)\" > $(genDir)/___angle_program_version_id___build_toolchain_android_android_clang_arm64__rule.rsp && $(location) $(location ANGLEShaderProgramVersion.h) $(genDir)/___angle_program_version_id___build_toolchain_android_android_clang_arm64__rule.rsp",
@@ -1332,7 +1331,6 @@ cc_genrule {
     cmd: "$(location) gen $(location angle_commit.h)",
     out: ["angle_commit.h"],
     tool_files: ["src/commit_id.py"],
-    vendor_available: true,
 }
 
 cc_library_static {

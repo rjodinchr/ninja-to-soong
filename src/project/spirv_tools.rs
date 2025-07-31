@@ -30,7 +30,7 @@ impl Project for SpirvTools {
     ) -> Result<String, String> {
         let src_path = self.get_android_path(ctx)?;
         self.build_path = ctx.temp_path.join(self.get_name());
-        let ndk_path = get_ndk_path(&ctx.temp_path, ctx)?;
+        let ndk_path = PathBuf::from("SPIRV-Tools-ndk");
         self.spirv_headers_path = ProjectId::SpirvHeaders.get_android_path(projects_map, ctx)?;
 
         if !ctx.skip_gen_ninja {
@@ -40,20 +40,21 @@ impl Project for SpirvTools {
                     &path_to_string(self.get_test_path(ctx)?.join("gen-ninja.sh")),
                     &path_to_string(&src_path),
                     &path_to_string(&self.build_path),
-                    &path_to_string(&ndk_path),
                     &path_to_string(&self.spirv_headers_path),
                 ]
             )?;
         }
 
         let mut package = SoongPackage::new(
-            &["//external/clvk"],
+            &["//external/clvk", "//external/OpenCL-CTS"],
             "SPIRV-Tools_license",
             &["SPDX-license-identifier-Apache-2.0"],
             &["LICENSE"],
         )
         .generate(
-            NinjaTargetsToGenMap::from_dep(Dep::SpirvToolsTargets.get(projects_map)?),
+            NinjaTargetsToGenMap::from_dep(Dep::SpirvToolsTargets.get(projects_map)?).push(
+                target_typed!("tools/spirv-as", "cc_binary_host", "spirv-as"),
+            ),
             parse_build_ninja::<CmakeNinjaTarget>(&self.build_path)?,
             &src_path,
             &ndk_path,
@@ -85,19 +86,34 @@ impl Project for SpirvTools {
         }
     }
 
-    fn extend_module(&self, _target: &Path, module: SoongModule) -> Result<SoongModule, String> {
+    fn extend_module(&self, target: &Path, mut module: SoongModule) -> Result<SoongModule, String> {
+        if !target.ends_with("spirv-as") {
+            module = module
+                .extend_prop("export_include_dirs", vec!["include"])?
+                .add_prop(
+                    "export_header_lib_headers",
+                    SoongProp::VecStr(vec![CcLibraryHeaders::SpirvHeaders.str()]),
+                )
+                .add_prop("vendor_available", SoongProp::Bool(true));
+            if target.ends_with("libSPIRV-Tools.a") {
+                module = module.add_prop("host_supported", SoongProp::Bool(true));
+            }
+        }
         module
-            .add_prop("vendor_available", SoongProp::Bool(true))
             .add_prop(
                 "header_libs",
                 SoongProp::VecStr(vec![CcLibraryHeaders::SpirvHeaders.str()]),
             )
-            .extend_prop("export_include_dirs", vec!["include"])?
-            .add_prop(
-                "export_header_lib_headers",
-                SoongProp::VecStr(vec![CcLibraryHeaders::SpirvHeaders.str()]),
-            )
             .extend_prop("cflags", vec!["-Wno-implicit-fallthrough"])
+    }
+    fn extend_custom_command(
+        &self,
+        _target: &Path,
+        module: SoongModule,
+    ) -> Result<SoongModule, String> {
+        Ok(module
+            .add_prop("vendor_available", SoongProp::Bool(true))
+            .add_prop("host_supported", SoongProp::Bool(true)))
     }
 
     fn filter_cflag(&self, _cflag: &str) -> bool {
@@ -108,5 +124,11 @@ impl Project for SpirvTools {
     }
     fn filter_define(&self, _define: &str) -> bool {
         false
+    }
+    fn filter_link_flag(&self, _flag: &str) -> bool {
+        false
+    }
+    fn filter_lib(&self, lib: &str) -> bool {
+        lib != "librt"
     }
 }

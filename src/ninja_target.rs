@@ -127,25 +127,25 @@ impl NinjaTargetsToGenMap {
         vec.sort_unstable();
         vec
     }
+    fn target_to_entry(target: &NinjaTargetToGen) -> NinjaTargetsToGenMapEntry {
+        NinjaTargetsToGenMapEntry {
+            name: match target.name {
+                Some(name) => Some(PathBuf::from(name)),
+                None => None,
+            },
+            stem: match target.stem {
+                Some(stem) => Some(String::from(stem)),
+                None => None,
+            },
+            module_type: match target.module_type {
+                Some(module_name) => Some(String::from(module_name)),
+                None => None,
+            },
+        }
+    }
     pub fn from(targets: &[NinjaTargetToGen]) -> Self {
         Self(targets.iter().fold(HashMap::new(), |mut map, target| {
-            map.insert(
-                PathBuf::from(target.path),
-                NinjaTargetsToGenMapEntry {
-                    name: match target.name {
-                        Some(name) => Some(PathBuf::from(name)),
-                        None => None,
-                    },
-                    stem: match target.stem {
-                        Some(stem) => Some(String::from(stem)),
-                        None => None,
-                    },
-                    module_type: match target.module_type {
-                        Some(module_name) => Some(String::from(module_name)),
-                        None => None,
-                    },
-                },
-            );
+            map.insert(PathBuf::from(target.path), Self::target_to_entry(target));
             map
         }))
     }
@@ -161,6 +161,11 @@ impl NinjaTargetsToGenMap {
             );
             map
         }))
+    }
+    pub fn push(mut self, target: NinjaTargetToGen) -> Self {
+        self.0
+            .insert(PathBuf::from(target.path), Self::target_to_entry(&target));
+        self
     }
 }
 
