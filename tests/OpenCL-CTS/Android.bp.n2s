@@ -36,7 +36,7 @@ cc_test {
         "test_conformance/workgroups/test_wg_broadcast.cpp",
         "test_conformance/workgroups/test_wg_scan_reduce.cpp",
     ],
-    test_config: "android/test_workgroups.xml",
+    test_config: "android/OpenCL-CTS-test_workgroups.xml",
     rtti: false,
     defaults: ["OpenCL-CTS-defaults"],
 }
@@ -95,7 +95,7 @@ cc_test {
         "test_conformance/vectors/test_vec_align.cpp",
         "test_conformance/vectors/type_replacer.cpp",
     ],
-    test_config: "android/test_vectors.xml",
+    test_config: "android/OpenCL-CTS-test_vectors.xml",
     rtti: false,
     defaults: ["OpenCL-CTS-defaults"],
 }
@@ -106,7 +106,7 @@ cc_test {
         "test_conformance/thread_dimensions/main.cpp",
         "test_conformance/thread_dimensions/test_thread_dimensions.cpp",
     ],
-    test_config: "android/test_thread_dimensions.xml",
+    test_config: "android/OpenCL-CTS-test_thread_dimensions.xml",
     rtti: false,
     defaults: ["OpenCL-CTS-defaults"],
 }
@@ -131,7 +131,7 @@ cc_test {
         "test_conformance/subgroups/test_subgroup_shuffle_relative.cpp",
         "test_conformance/subgroups/test_workitem.cpp",
     ],
-    test_config: "android/test_subgroups.xml",
+    test_config: "android/OpenCL-CTS-test_subgroups.xml",
     rtti: false,
     defaults: ["OpenCL-CTS-defaults"],
 }
@@ -172,10 +172,10 @@ cc_test {
         "test_conformance/spirv_new/test_spirv_15.cpp",
         "test_conformance/spirv_new/test_spirv_16.cpp",
     ],
-    test_config: "android/test_spirv_new.xml",
+    test_config: "android/OpenCL-CTS-test_spirv_new.xml",
     rtti: false,
     defaults: ["OpenCL-CTS-defaults"],
-    data: ["cmake_generated/test_conformance/spirv_new/spirv_bin/*"],
+    data: [":OpenCL-CTS-spirv_new_data"],
 }
 
 cc_test {
@@ -187,10 +187,10 @@ cc_test {
         "test_conformance/spir/run_build_test.cpp",
         "test_conformance/spir/run_services.cpp",
     ],
-    test_config: "android/test_spir.xml",
+    test_config: "android/OpenCL-CTS-test_spir.xml",
     rtti: true,
     defaults: ["OpenCL-CTS-defaults"],
-    data: ["test_conformance/spir/*.zip"],
+    data: [":OpenCL-CTS-spir_data"],
 }
 
 cc_test {
@@ -199,7 +199,7 @@ cc_test {
         "test_conformance/select/test_select.cpp",
         "test_conformance/select/util_select.cpp",
     ],
-    test_config: "android/test_select.xml",
+    test_config: "android/OpenCL-CTS-test_select.xml",
     rtti: false,
     defaults: ["OpenCL-CTS-defaults"],
 }
@@ -212,7 +212,7 @@ cc_test {
         "test_conformance/relationals/test_relationals.cpp",
         "test_conformance/relationals/test_shuffles.cpp",
     ],
-    test_config: "android/test_relationals.xml",
+    test_config: "android/OpenCL-CTS-test_relationals.xml",
     rtti: false,
     defaults: ["OpenCL-CTS-defaults"],
 }
@@ -230,7 +230,7 @@ cc_test {
         "test_conformance/profiling/writeArray.cpp",
         "test_conformance/profiling/writeImage.cpp",
     ],
-    test_config: "android/test_profiling.xml",
+    test_config: "android/OpenCL-CTS-test_profiling.xml",
     rtti: false,
     defaults: ["OpenCL-CTS-defaults"],
 }
@@ -241,7 +241,7 @@ cc_test {
         "test_conformance/printf/test_printf.cpp",
         "test_conformance/printf/util_printf.cpp",
     ],
-    test_config: "android/test_printf.xml",
+    test_config: "android/OpenCL-CTS-test_printf.xml",
     rtti: false,
     defaults: ["OpenCL-CTS-defaults"],
 }
@@ -257,7 +257,7 @@ cc_test {
         "test_conformance/pipes/test_pipe_readwrite_errors.cpp",
         "test_conformance/pipes/test_pipe_subgroups.cpp",
     ],
-    test_config: "android/test_pipes.xml",
+    test_config: "android/OpenCL-CTS-test_pipes.xml",
     rtti: false,
     defaults: ["OpenCL-CTS-defaults"],
 }
@@ -273,7 +273,7 @@ cc_test {
         "test_conformance/non_uniform_work_group/test_basic.cpp",
         "test_conformance/non_uniform_work_group/tools.cpp",
     ],
-    test_config: "android/test_non_uniform_work_group.xml",
+    test_config: "android/OpenCL-CTS-test_non_uniform_work_group.xml",
     rtti: false,
     defaults: ["OpenCL-CTS-defaults"],
 }
@@ -285,7 +285,7 @@ cc_test {
         "test_conformance/multiple_device_context/test_multiple_contexts.cpp",
         "test_conformance/multiple_device_context/test_multiple_devices.cpp",
     ],
-    test_config: "android/test_multiples.xml",
+    test_config: "android/OpenCL-CTS-test_multiples.xml",
     rtti: false,
     defaults: ["OpenCL-CTS-defaults"],
 }
@@ -297,7 +297,7 @@ cc_test {
         "test_conformance/mem_host_flags/mem_host_buffer.cpp",
         "test_conformance/mem_host_flags/mem_host_image.cpp",
     ],
-    test_config: "android/test_mem_host_flags.xml",
+    test_config: "android/OpenCL-CTS-test_mem_host_flags.xml",
     rtti: false,
     defaults: ["OpenCL-CTS-defaults"],
 }
@@ -351,7 +351,7 @@ cc_test {
         "test_conformance/math_brute_force/unary_u_half.cpp",
         "test_conformance/math_brute_force/utility.cpp",
     ],
-    test_config: "android/test_bruteforce.xml",
+    test_config: "android/OpenCL-CTS-test_bruteforce.xml",
     rtti: false,
     defaults: ["OpenCL-CTS-defaults"],
 }
@@ -377,7 +377,7 @@ cc_test {
         "test_conformance/integer_ops/test_upsample.cpp",
         "test_conformance/integer_ops/verification_and_generation_functions.cpp",
     ],
-    test_config: "android/test_integer_ops.xml",
+    test_config: "android/OpenCL-CTS-test_integer_ops.xml",
     rtti: false,
     defaults: ["OpenCL-CTS-defaults"],
 }
@@ -395,7 +395,7 @@ cc_test {
         "test_conformance/images/samplerlessReads/test_read_2D_array.cpp",
         "test_conformance/images/samplerlessReads/test_read_3D.cpp",
     ],
-    test_config: "android/test_samplerless_reads.xml",
+    test_config: "android/OpenCL-CTS-test_samplerless_reads.xml",
     rtti: false,
     defaults: ["OpenCL-CTS-defaults"],
 }
@@ -421,7 +421,7 @@ cc_test {
         "test_conformance/images/kernel_read_write/test_write_3D.cpp",
         "test_conformance/images/kernel_read_write/test_write_image.cpp",
     ],
-    test_config: "android/test_image_streams.xml",
+    test_config: "android/OpenCL-CTS-test_image_streams.xml",
     rtti: false,
     defaults: ["OpenCL-CTS-defaults"],
 }
@@ -439,7 +439,7 @@ cc_test {
         "test_conformance/images/kernel_image_methods/test_3D.cpp",
         "test_conformance/images/kernel_image_methods/test_loops.cpp",
     ],
-    test_config: "android/test_kernel_image_methods.xml",
+    test_config: "android/OpenCL-CTS-test_kernel_image_methods.xml",
     rtti: false,
     defaults: ["OpenCL-CTS-defaults"],
 }
@@ -457,7 +457,7 @@ cc_test {
         "test_conformance/images/clReadWriteImage/test_read_3D.cpp",
         "test_conformance/images/common.cpp",
     ],
-    test_config: "android/test_cl_read_write_images.xml",
+    test_config: "android/OpenCL-CTS-test_cl_read_write_images.xml",
     rtti: false,
     defaults: ["OpenCL-CTS-defaults"],
 }
@@ -474,7 +474,7 @@ cc_test {
         "test_conformance/images/clGetInfo/test_loops.cpp",
         "test_conformance/images/common.cpp",
     ],
-    test_config: "android/test_cl_get_info.xml",
+    test_config: "android/OpenCL-CTS-test_cl_get_info.xml",
     rtti: false,
     defaults: ["OpenCL-CTS-defaults"],
 }
@@ -493,7 +493,7 @@ cc_test {
         "test_conformance/images/clFillImage/test_loops.cpp",
         "test_conformance/images/common.cpp",
     ],
-    test_config: "android/test_cl_fill_images.xml",
+    test_config: "android/OpenCL-CTS-test_cl_fill_images.xml",
     rtti: false,
     defaults: ["OpenCL-CTS-defaults"],
 }
@@ -515,7 +515,7 @@ cc_test {
         "test_conformance/images/clCopyImage/test_loops.cpp",
         "test_conformance/images/common.cpp",
     ],
-    test_config: "android/test_cl_copy_images.xml",
+    test_config: "android/OpenCL-CTS-test_cl_copy_images.xml",
     rtti: false,
     defaults: ["OpenCL-CTS-defaults"],
 }
@@ -529,7 +529,7 @@ cc_test {
         "test_conformance/half/cl_utils.cpp",
         "test_conformance/half/main.cpp",
     ],
-    test_config: "android/test_half.xml",
+    test_config: "android/OpenCL-CTS-test_half.xml",
     rtti: false,
     defaults: ["OpenCL-CTS-defaults"],
 }
@@ -541,7 +541,7 @@ cc_test {
         "test_conformance/geometrics/test_geometrics.cpp",
         "test_conformance/geometrics/test_geometrics_double.cpp",
     ],
-    test_config: "android/test_geometrics.xml",
+    test_config: "android/OpenCL-CTS-test_geometrics.xml",
     rtti: false,
     defaults: ["OpenCL-CTS-defaults"],
 }
@@ -555,7 +555,7 @@ cc_test {
         "test_conformance/generic_address_space/main.cpp",
         "test_conformance/generic_address_space/stress_tests.cpp",
     ],
-    test_config: "android/test_generic_address_space.xml",
+    test_config: "android/OpenCL-CTS-test_generic_address_space.xml",
     rtti: false,
     defaults: ["OpenCL-CTS-defaults"],
 }
@@ -572,7 +572,7 @@ cc_test {
         "test_conformance/extensions/cl_khr_semaphore/test_semaphores_negative_wait_signal.cpp",
         "test_conformance/extensions/cl_khr_semaphore/test_semaphores_queries.cpp",
     ],
-    test_config: "android/test_cl_khr_semaphore.xml",
+    test_config: "android/OpenCL-CTS-test_cl_khr_semaphore.xml",
     rtti: false,
     defaults: ["OpenCL-CTS-defaults"],
 }
@@ -583,7 +583,7 @@ cc_test {
         "test_conformance/extensions/cl_khr_kernel_clock/kernel_clock.cpp",
         "test_conformance/extensions/cl_khr_kernel_clock/main.cpp",
     ],
-    test_config: "android/test_cl_khr_kernel_clock.xml",
+    test_config: "android/OpenCL-CTS-test_cl_khr_kernel_clock.xml",
     rtti: false,
     defaults: ["OpenCL-CTS-defaults"],
 }
@@ -619,7 +619,7 @@ cc_test {
         "test_conformance/extensions/cl_khr_command_buffer/negative_command_nd_range_kernel.cpp",
         "test_conformance/extensions/cl_khr_command_buffer/svm_command_basic.cpp",
     ],
-    test_config: "android/test_cl_khr_command_buffer.xml",
+    test_config: "android/OpenCL-CTS-test_cl_khr_command_buffer.xml",
     rtti: false,
     defaults: ["OpenCL-CTS-defaults"],
 }
@@ -642,7 +642,7 @@ cc_test {
         "test_conformance/extensions/cl_khr_command_buffer/cl_khr_command_buffer_mutable_dispatch/mutable_command_simultaneous.cpp",
         "test_conformance/extensions/cl_khr_command_buffer/cl_khr_command_buffer_mutable_dispatch/mutable_command_work_groups.cpp",
     ],
-    test_config: "android/test_cl_khr_mutable_dispatch.xml",
+    test_config: "android/OpenCL-CTS-test_cl_khr_mutable_dispatch.xml",
     rtti: false,
     defaults: ["OpenCL-CTS-defaults"],
 }
@@ -654,7 +654,7 @@ cc_test {
         "test_conformance/extensions/cl_ext_cxx_for_opencl/cxx_for_opencl_ver.cpp",
         "test_conformance/extensions/cl_ext_cxx_for_opencl/main.cpp",
     ],
-    test_config: "android/test_cl_ext_cxx_for_opencl.xml",
+    test_config: "android/OpenCL-CTS-test_cl_ext_cxx_for_opencl.xml",
     rtti: false,
     defaults: ["OpenCL-CTS-defaults"],
 }
@@ -671,7 +671,7 @@ cc_test {
         "test_conformance/events/test_userevents_multithreaded.cpp",
         "test_conformance/events/test_waitlists.cpp",
     ],
-    test_config: "android/test_events.xml",
+    test_config: "android/OpenCL-CTS-test_events.xml",
     rtti: false,
     defaults: ["OpenCL-CTS-defaults"],
 }
@@ -682,7 +682,7 @@ cc_test {
         "test_conformance/device_timer/main.cpp",
         "test_conformance/device_timer/test_device_timer.cpp",
     ],
-    test_config: "android/test_device_timer.xml",
+    test_config: "android/OpenCL-CTS-test_device_timer.xml",
     rtti: false,
     defaults: ["OpenCL-CTS-defaults"],
 }
@@ -693,7 +693,7 @@ cc_test {
         "test_conformance/device_partition/main.cpp",
         "test_conformance/device_partition/test_device_partition.cpp",
     ],
-    test_config: "android/test_device_partition.xml",
+    test_config: "android/OpenCL-CTS-test_device_partition.xml",
     rtti: false,
     defaults: ["OpenCL-CTS-defaults"],
 }
@@ -716,7 +716,7 @@ cc_test {
         "test_conformance/device_execution/nested_blocks.cpp",
         "test_conformance/device_execution/utils.cpp",
     ],
-    test_config: "android/test_device_execution.xml",
+    test_config: "android/OpenCL-CTS-test_device_execution.xml",
     rtti: false,
     defaults: ["OpenCL-CTS-defaults"],
 }
@@ -729,7 +729,7 @@ cc_test {
         "test_conformance/conversions/fplib.cpp",
         "test_conformance/conversions/test_conversions.cpp",
     ],
-    test_config: "android/test_conversions.xml",
+    test_config: "android/OpenCL-CTS-test_conversions.xml",
     rtti: false,
     defaults: ["OpenCL-CTS-defaults"],
 }
@@ -737,7 +737,7 @@ cc_test {
 cc_test {
     name: "OpenCL-CTS-test_contractions",
     srcs: ["test_conformance/contractions/contractions.cpp"],
-    test_config: "android/test_contractions.xml",
+    test_config: "android/OpenCL-CTS-test_contractions.xml",
     rtti: false,
     defaults: ["OpenCL-CTS-defaults"],
 }
@@ -751,7 +751,7 @@ cc_test {
         "test_conformance/computeinfo/main.cpp",
         "test_conformance/computeinfo/pci_bus_info.cpp",
     ],
-    test_config: "android/test_computeinfo.xml",
+    test_config: "android/OpenCL-CTS-test_computeinfo.xml",
     rtti: false,
     defaults: ["OpenCL-CTS-defaults"],
 }
@@ -772,13 +772,10 @@ cc_test {
         "test_conformance/compiler/test_preprocessor.cpp",
         "test_conformance/compiler/test_unload_platform_compiler.cpp",
     ],
-    test_config: "android/test_compiler.xml",
+    test_config: "android/OpenCL-CTS-test_compiler.xml",
     rtti: false,
     defaults: ["OpenCL-CTS-defaults"],
-    data: [
-        "test_conformance/compiler/includeTestDirectory/testIncludeFile.h",
-        "test_conformance/compiler/secondIncludeTestDirectory/testIncludeFile.h",
-    ],
+    data: [":OpenCL-CTS-compiler_data"],
 }
 
 cc_test {
@@ -792,7 +789,7 @@ cc_test {
         "test_conformance/commonfns/test_step.cpp",
         "test_conformance/commonfns/test_unary_fn.cpp",
     ],
-    test_config: "android/test_commonfns.xml",
+    test_config: "android/OpenCL-CTS-test_commonfns.xml",
     rtti: false,
     defaults: ["OpenCL-CTS-defaults"],
 }
@@ -805,7 +802,7 @@ cc_test {
         "test_conformance/c11_atomics/main.cpp",
         "test_conformance/c11_atomics/test_atomics.cpp",
     ],
-    test_config: "android/test_c11_atomics.xml",
+    test_config: "android/OpenCL-CTS-test_c11_atomics.xml",
     rtti: false,
     defaults: ["OpenCL-CTS-defaults"],
 }
@@ -825,7 +822,7 @@ cc_test {
         "test_conformance/buffers/test_image_migrate.cpp",
         "test_conformance/buffers/test_sub_buffers.cpp",
     ],
-    test_config: "android/test_buffers.xml",
+    test_config: "android/OpenCL-CTS-test_buffers.xml",
     rtti: false,
     defaults: ["OpenCL-CTS-defaults"],
 }
@@ -895,7 +892,7 @@ cc_test {
         "test_conformance/basic/test_work_item_functions.cpp",
         "test_conformance/basic/test_writeimage.cpp",
     ],
-    test_config: "android/test_basic.xml",
+    test_config: "android/OpenCL-CTS-test_basic.xml",
     rtti: false,
     defaults: ["OpenCL-CTS-defaults"],
 }
@@ -907,7 +904,7 @@ cc_test {
         "test_conformance/atomics/test_atomics.cpp",
         "test_conformance/atomics/test_indexed_cases.cpp",
     ],
-    test_config: "android/test_atomics.xml",
+    test_config: "android/OpenCL-CTS-test_atomics.xml",
     rtti: false,
     defaults: ["OpenCL-CTS-defaults"],
 }
@@ -954,7 +951,7 @@ cc_test {
         "test_conformance/api/test_wg_suggested_local_work_size.cpp",
         "test_conformance/api/test_zero_sized_enqueue.cpp",
     ],
-    test_config: "android/test_api.xml",
+    test_config: "android/OpenCL-CTS-test_api.xml",
     rtti: false,
     defaults: ["OpenCL-CTS-defaults"],
 }
@@ -968,7 +965,7 @@ cc_test {
         "test_conformance/allocations/allocation_utils.cpp",
         "test_conformance/allocations/main.cpp",
     ],
-    test_config: "android/test_allocations.xml",
+    test_config: "android/OpenCL-CTS-test_allocations.xml",
     rtti: false,
     defaults: ["OpenCL-CTS-defaults"],
 }
@@ -992,9 +989,4150 @@ cc_test {
         "test_conformance/SVM/test_shared_address_space_fine_grain_buffers.cpp",
         "test_conformance/SVM/test_shared_sub_buffers.cpp",
     ],
-    test_config: "android/test_svm.xml",
+    test_config: "android/OpenCL-CTS-test_svm.xml",
     rtti: false,
     defaults: ["OpenCL-CTS-defaults"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-assume_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/assume.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-assume_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/assume.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-atomic_dec_global_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/atomic_dec_global.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-atomic_dec_global_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/atomic_dec_global.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-atomic_inc_global_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/atomic_inc_global.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-atomic_inc_global_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/atomic_inc_global.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-basic_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/basic.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-basic_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/basic.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-branch_conditional_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/branch_conditional.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-branch_conditional_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/branch_conditional.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-branch_conditional_weighted_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/branch_conditional_weighted.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-branch_conditional_weighted_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/branch_conditional_weighted.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-branch_simple_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/branch_simple.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-branch_simple_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/branch_simple.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-composite_construct_int4_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/composite_construct_int4.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-composite_construct_int4_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/composite_construct_int4.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-composite_construct_struct_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/composite_construct_struct.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-composite_construct_struct_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/composite_construct_struct.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-constant_char_simple_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/constant_char_simple.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-constant_char_simple_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/constant_char_simple.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-constant_double_simple_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/constant_double_simple.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-constant_double_simple_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/constant_double_simple.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-constant_false_simple_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/constant_false_simple.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-constant_false_simple_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/constant_false_simple.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-constant_float_simple_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/constant_float_simple.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-constant_float_simple_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/constant_float_simple.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-constant_half_simple_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/constant_half_simple.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-constant_half_simple_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/constant_half_simple.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-constant_int3_simple_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/constant_int3_simple.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-constant_int3_simple_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/constant_int3_simple.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-constant_int4_simple_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/constant_int4_simple.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-constant_int4_simple_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/constant_int4_simple.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-constant_int_simple_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/constant_int_simple.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-constant_int_simple_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/constant_int_simple.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-constant_long_simple_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/constant_long_simple.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-constant_long_simple_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/constant_long_simple.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-constant_short_simple_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/constant_short_simple.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-constant_short_simple_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/constant_short_simple.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-constant_struct_int_char_simple_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/constant_struct_int_char_simple.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-constant_struct_int_char_simple_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/constant_struct_int_char_simple.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-constant_struct_int_float_simple_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/constant_struct_int_float_simple.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-constant_struct_int_float_simple_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/constant_struct_int_float_simple.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-constant_struct_struct_simple_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/constant_struct_struct_simple.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-constant_struct_struct_simple_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/constant_struct_struct_simple.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-constant_true_simple_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/constant_true_simple.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-constant_true_simple_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/constant_true_simple.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-constant_uchar_simple_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/constant_uchar_simple.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-constant_uchar_simple_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/constant_uchar_simple.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-constant_uint_simple_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/constant_uint_simple.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-constant_uint_simple_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/constant_uint_simple.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-constant_ulong_simple_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/constant_ulong_simple.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-constant_ulong_simple_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/constant_ulong_simple.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-constant_ushort_simple_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/constant_ushort_simple.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-constant_ushort_simple_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/constant_ushort_simple.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-copy_char_simple_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/copy_char_simple.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-copy_char_simple_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/copy_char_simple.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-copy_double_simple_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/copy_double_simple.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-copy_double_simple_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/copy_double_simple.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-copy_float_simple_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/copy_float_simple.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-copy_float_simple_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/copy_float_simple.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-copy_half_simple_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/copy_half_simple.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-copy_half_simple_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/copy_half_simple.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-copy_int3_simple_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/copy_int3_simple.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-copy_int3_simple_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/copy_int3_simple.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-copy_int4_simple_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/copy_int4_simple.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-copy_int4_simple_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/copy_int4_simple.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-copy_int_simple_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/copy_int_simple.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-copy_int_simple_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/copy_int_simple.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-copy_long_simple_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/copy_long_simple.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-copy_long_simple_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/copy_long_simple.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-copy_short_simple_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/copy_short_simple.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-copy_short_simple_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/copy_short_simple.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-copy_struct_int_char_simple_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/copy_struct_int_char_simple.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-copy_struct_int_char_simple_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/copy_struct_int_char_simple.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-copy_struct_int_float_simple_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/copy_struct_int_float_simple.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-copy_struct_int_float_simple_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/copy_struct_int_float_simple.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-copy_struct_struct_simple_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/copy_struct_struct_simple.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-copy_struct_struct_simple_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/copy_struct_struct_simple.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-copy_uchar_simple_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/copy_uchar_simple.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-copy_uchar_simple_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/copy_uchar_simple.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-copy_uint_simple_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/copy_uint_simple.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-copy_uint_simple_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/copy_uint_simple.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-copy_ulong_simple_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/copy_ulong_simple.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-copy_ulong_simple_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/copy_ulong_simple.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-copy_ushort_simple_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/copy_ushort_simple.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-copy_ushort_simple_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/copy_ushort_simple.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-decorate_aliased_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/decorate_aliased.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-decorate_aliased_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/decorate_aliased.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-decorate_alignment_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/decorate_alignment.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-decorate_alignment_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/decorate_alignment.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-decorate_constant_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/decorate_constant.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-decorate_constant_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/decorate_constant.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-decorate_constant_fail_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/decorate_constant_fail.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-decorate_constant_fail_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/decorate_constant_fail.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-decorate_cpacked_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/decorate_cpacked.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-decorate_cpacked_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/decorate_cpacked.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-decorate_restrict_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/decorate_restrict.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-decorate_restrict_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/decorate_restrict.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-decorate_rounding_rte_double_long_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/decorate_rounding_rte_double_long.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-decorate_rounding_rte_double_long_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/decorate_rounding_rte_double_long.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-decorate_rounding_rte_float_int_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/decorate_rounding_rte_float_int.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-decorate_rounding_rte_float_int_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/decorate_rounding_rte_float_int.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-decorate_rounding_rte_half_short_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/decorate_rounding_rte_half_short.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-decorate_rounding_rte_half_short_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/decorate_rounding_rte_half_short.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-decorate_rounding_rtn_double_long_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/decorate_rounding_rtn_double_long.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-decorate_rounding_rtn_double_long_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/decorate_rounding_rtn_double_long.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-decorate_rounding_rtn_float_int_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/decorate_rounding_rtn_float_int.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-decorate_rounding_rtn_float_int_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/decorate_rounding_rtn_float_int.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-decorate_rounding_rtn_half_short_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/decorate_rounding_rtn_half_short.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-decorate_rounding_rtn_half_short_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/decorate_rounding_rtn_half_short.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-decorate_rounding_rtp_double_long_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/decorate_rounding_rtp_double_long.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-decorate_rounding_rtp_double_long_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/decorate_rounding_rtp_double_long.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-decorate_rounding_rtp_float_int_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/decorate_rounding_rtp_float_int.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-decorate_rounding_rtp_float_int_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/decorate_rounding_rtp_float_int.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-decorate_rounding_rtp_half_short_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/decorate_rounding_rtp_half_short.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-decorate_rounding_rtp_half_short_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/decorate_rounding_rtp_half_short.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-decorate_rounding_rtz_double_long_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/decorate_rounding_rtz_double_long.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-decorate_rounding_rtz_double_long_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/decorate_rounding_rtz_double_long.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-decorate_rounding_rtz_float_int_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/decorate_rounding_rtz_float_int.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-decorate_rounding_rtz_float_int_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/decorate_rounding_rtz_float_int.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-decorate_rounding_rtz_half_short_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/decorate_rounding_rtz_half_short.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-decorate_rounding_rtz_half_short_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/decorate_rounding_rtz_half_short.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-decorate_saturated_conversion_double_to_int_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/decorate_saturated_conversion_double_to_int.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-decorate_saturated_conversion_double_to_int_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/decorate_saturated_conversion_double_to_int.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-decorate_saturated_conversion_double_to_uint_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/decorate_saturated_conversion_double_to_uint.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-decorate_saturated_conversion_double_to_uint_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/decorate_saturated_conversion_double_to_uint.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-decorate_saturated_conversion_float_to_char_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/decorate_saturated_conversion_float_to_char.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-decorate_saturated_conversion_float_to_char_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/decorate_saturated_conversion_float_to_char.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-decorate_saturated_conversion_float_to_short_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/decorate_saturated_conversion_float_to_short.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-decorate_saturated_conversion_float_to_short_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/decorate_saturated_conversion_float_to_short.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-decorate_saturated_conversion_float_to_uchar_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/decorate_saturated_conversion_float_to_uchar.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-decorate_saturated_conversion_float_to_uchar_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/decorate_saturated_conversion_float_to_uchar.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-decorate_saturated_conversion_float_to_ushort_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/decorate_saturated_conversion_float_to_ushort.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-decorate_saturated_conversion_float_to_ushort_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/decorate_saturated_conversion_float_to_ushort.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-decorate_saturated_conversion_half_to_char_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/decorate_saturated_conversion_half_to_char.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-decorate_saturated_conversion_half_to_char_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/decorate_saturated_conversion_half_to_char.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-decorate_saturated_conversion_half_to_uchar_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/decorate_saturated_conversion_half_to_uchar.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-decorate_saturated_conversion_half_to_uchar_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/decorate_saturated_conversion_half_to_uchar.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-expect_bool_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/expect_bool.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-expect_bool_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/expect_bool.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-expect_char_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/expect_char.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-expect_char_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/expect_char.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-expect_int_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/expect_int.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-expect_int_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/expect_int.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-expect_long_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/expect_long.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-expect_long_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/expect_long.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-expect_short_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/expect_short.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-expect_short_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/expect_short.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-ext_cl_khr_spirv_no_integer_wrap_decoration_fadd_int_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/ext_cl_khr_spirv_no_integer_wrap_decoration_fadd_int.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-ext_cl_khr_spirv_no_integer_wrap_decoration_fadd_int_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/ext_cl_khr_spirv_no_integer_wrap_decoration_fadd_int.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-ext_cl_khr_spirv_no_integer_wrap_decoration_fadd_uint_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/ext_cl_khr_spirv_no_integer_wrap_decoration_fadd_uint.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-ext_cl_khr_spirv_no_integer_wrap_decoration_fadd_uint_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/ext_cl_khr_spirv_no_integer_wrap_decoration_fadd_uint.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-ext_cl_khr_spirv_no_integer_wrap_decoration_fmul_int_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/ext_cl_khr_spirv_no_integer_wrap_decoration_fmul_int.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-ext_cl_khr_spirv_no_integer_wrap_decoration_fmul_int_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/ext_cl_khr_spirv_no_integer_wrap_decoration_fmul_int.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-ext_cl_khr_spirv_no_integer_wrap_decoration_fmul_uint_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/ext_cl_khr_spirv_no_integer_wrap_decoration_fmul_uint.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-ext_cl_khr_spirv_no_integer_wrap_decoration_fmul_uint_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/ext_cl_khr_spirv_no_integer_wrap_decoration_fmul_uint.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-ext_cl_khr_spirv_no_integer_wrap_decoration_fnegate_int_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/ext_cl_khr_spirv_no_integer_wrap_decoration_fnegate_int.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-ext_cl_khr_spirv_no_integer_wrap_decoration_fnegate_int_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/ext_cl_khr_spirv_no_integer_wrap_decoration_fnegate_int.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-ext_cl_khr_spirv_no_integer_wrap_decoration_fshiftleft_int_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/ext_cl_khr_spirv_no_integer_wrap_decoration_fshiftleft_int.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-ext_cl_khr_spirv_no_integer_wrap_decoration_fshiftleft_int_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/ext_cl_khr_spirv_no_integer_wrap_decoration_fshiftleft_int.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-ext_cl_khr_spirv_no_integer_wrap_decoration_fshiftleft_uint_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/ext_cl_khr_spirv_no_integer_wrap_decoration_fshiftleft_uint.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-ext_cl_khr_spirv_no_integer_wrap_decoration_fshiftleft_uint_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/ext_cl_khr_spirv_no_integer_wrap_decoration_fshiftleft_uint.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-ext_cl_khr_spirv_no_integer_wrap_decoration_fsub_int_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/ext_cl_khr_spirv_no_integer_wrap_decoration_fsub_int.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-ext_cl_khr_spirv_no_integer_wrap_decoration_fsub_int_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/ext_cl_khr_spirv_no_integer_wrap_decoration_fsub_int.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-ext_cl_khr_spirv_no_integer_wrap_decoration_fsub_uint_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/ext_cl_khr_spirv_no_integer_wrap_decoration_fsub_uint.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-ext_cl_khr_spirv_no_integer_wrap_decoration_fsub_uint_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/ext_cl_khr_spirv_no_integer_wrap_decoration_fsub_uint.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-fadd_double_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/fadd_double.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-fadd_double_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/fadd_double.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-fadd_double2_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/fadd_double2.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-fadd_double2_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/fadd_double2.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-fadd_float_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/fadd_float.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-fadd_float_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/fadd_float.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-fadd_float4_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/fadd_float4.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-fadd_float4_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/fadd_float4.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-fadd_half_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/fadd_half.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-fadd_half_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/fadd_half.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-fdiv_double_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/fdiv_double.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-fdiv_double_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/fdiv_double.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-fdiv_double2_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/fdiv_double2.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-fdiv_double2_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/fdiv_double2.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-fdiv_float_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/fdiv_float.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-fdiv_float_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/fdiv_float.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-fdiv_float4_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/fdiv_float4.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-fdiv_float4_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/fdiv_float4.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-fdiv_half_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/fdiv_half.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-fdiv_half_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/fdiv_half.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-fmod_double_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/fmod_double.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-fmod_double_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/fmod_double.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-fmod_double2_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/fmod_double2.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-fmod_double2_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/fmod_double2.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-fmod_float_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/fmod_float.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-fmod_float_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/fmod_float.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-fmod_float4_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/fmod_float4.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-fmod_float4_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/fmod_float4.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-fmod_half_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/fmod_half.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-fmod_half_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/fmod_half.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-fmul_double_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/fmul_double.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-fmul_double_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/fmul_double.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-fmul_double2_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/fmul_double2.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-fmul_double2_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/fmul_double2.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-fmul_float_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/fmul_float.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-fmul_float_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/fmul_float.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-fmul_float4_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/fmul_float4.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-fmul_float4_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/fmul_float4.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-fmul_half_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/fmul_half.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-fmul_half_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/fmul_half.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-frem_double_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/frem_double.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-frem_double_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/frem_double.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-frem_double2_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/frem_double2.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-frem_double2_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/frem_double2.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-frem_float_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/frem_float.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-frem_float_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/frem_float.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-frem_float4_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/frem_float4.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-frem_float4_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/frem_float4.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-frem_half_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/frem_half.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-frem_half_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/frem_half.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-fsub_double_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/fsub_double.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-fsub_double_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/fsub_double.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-fsub_double2_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/fsub_double2.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-fsub_double2_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/fsub_double2.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-fsub_float_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/fsub_float.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-fsub_float_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/fsub_float.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-fsub_float4_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/fsub_float4.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-fsub_float4_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/fsub_float4.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-fsub_half_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/fsub_half.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-fsub_half_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/fsub_half.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-label_simple_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/label_simple.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-label_simple_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/label_simple.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-lifetime_simple_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/lifetime_simple.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-lifetime_simple_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/lifetime_simple.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-linkage_export_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/linkage_export.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-linkage_export_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/linkage_export.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-linkage_import_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/linkage_import.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-linkage_import_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/linkage_import.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-linkage_linkonce_odr_main_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/linkage_linkonce_odr_main.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-linkage_linkonce_odr_main_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/linkage_linkonce_odr_main.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-linkage_linkonce_odr_noa_main_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/linkage_linkonce_odr_noa_main.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-linkage_linkonce_odr_noa_main_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/linkage_linkonce_odr_noa_main.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-linkage_linkonce_odr_obj_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/linkage_linkonce_odr_obj.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-linkage_linkonce_odr_obj_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/linkage_linkonce_odr_obj.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-loop_merge_branch_conditional_dont_unroll_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/loop_merge_branch_conditional_dont_unroll.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-loop_merge_branch_conditional_dont_unroll_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/loop_merge_branch_conditional_dont_unroll.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-loop_merge_branch_conditional_none_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/loop_merge_branch_conditional_none.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-loop_merge_branch_conditional_none_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/loop_merge_branch_conditional_none.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-loop_merge_branch_conditional_unroll_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/loop_merge_branch_conditional_unroll.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-loop_merge_branch_conditional_unroll_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/loop_merge_branch_conditional_unroll.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-loop_merge_branch_dont_unroll_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/loop_merge_branch_dont_unroll.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-loop_merge_branch_dont_unroll_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/loop_merge_branch_dont_unroll.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-loop_merge_branch_none_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/loop_merge_branch_none.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-loop_merge_branch_none_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/loop_merge_branch_none.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-loop_merge_branch_unroll_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/loop_merge_branch_unroll.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-loop_merge_branch_unroll_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/loop_merge_branch_unroll.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-op_function_const_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/op_function_const.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-op_function_const_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/op_function_const.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-op_function_inline_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/op_function_inline.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-op_function_inline_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/op_function_inline.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-op_function_noinline_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/op_function_noinline.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-op_function_noinline_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/op_function_noinline.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-op_function_none_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/op_function_none.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-op_function_none_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/op_function_none.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-op_function_pure_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/op_function_pure.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-op_function_pure_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/op_function_pure.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-op_function_pure_ptr_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/op_function_pure_ptr.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-op_function_pure_ptr_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/op_function_pure_ptr.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-op_neg_double_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/op_neg_double.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-op_neg_double_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/op_neg_double.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-op_neg_float_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/op_neg_float.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-op_neg_float_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/op_neg_float.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-op_neg_float4_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/op_neg_float4.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-op_neg_float4_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/op_neg_float4.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-op_neg_half_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/op_neg_half.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-op_neg_half_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/op_neg_half.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-op_neg_int_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/op_neg_int.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-op_neg_int_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/op_neg_int.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-op_neg_int4_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/op_neg_int4.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-op_neg_int4_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/op_neg_int4.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-op_neg_long_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/op_neg_long.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-op_neg_long_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/op_neg_long.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-op_neg_short_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/op_neg_short.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-op_neg_short_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/op_neg_short.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-op_not_int_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/op_not_int.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-op_not_int_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/op_not_int.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-op_not_int4_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/op_not_int4.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-op_not_int4_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/op_not_int4.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-op_not_long_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/op_not_long.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-op_not_long_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/op_not_long.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-op_not_short_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/op_not_short.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-op_not_short_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/op_not_short.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-op_spec_constant_double_simple_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/op_spec_constant_double_simple.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-op_spec_constant_double_simple_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/op_spec_constant_double_simple.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-op_spec_constant_false_simple_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/op_spec_constant_false_simple.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-op_spec_constant_false_simple_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/op_spec_constant_false_simple.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-op_spec_constant_float_simple_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/op_spec_constant_float_simple.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-op_spec_constant_float_simple_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/op_spec_constant_float_simple.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-op_spec_constant_half_simple_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/op_spec_constant_half_simple.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-op_spec_constant_half_simple_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/op_spec_constant_half_simple.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-op_spec_constant_true_simple_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/op_spec_constant_true_simple.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-op_spec_constant_true_simple_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/op_spec_constant_true_simple.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-op_spec_constant_uchar_simple_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/op_spec_constant_uchar_simple.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-op_spec_constant_uchar_simple_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/op_spec_constant_uchar_simple.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-op_spec_constant_uint_simple_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/op_spec_constant_uint_simple.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-op_spec_constant_uint_simple_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/op_spec_constant_uint_simple.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-op_spec_constant_ulong_simple_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/op_spec_constant_ulong_simple.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-op_spec_constant_ulong_simple_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/op_spec_constant_ulong_simple.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-op_spec_constant_ushort_simple_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/op_spec_constant_ushort_simple.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-op_spec_constant_ushort_simple_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/op_spec_constant_ushort_simple.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-opaque_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/opaque.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-opaque_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/opaque.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-phi_2_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/phi_2.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-phi_2_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/phi_2.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-phi_3_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/phi_3.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-phi_3_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/phi_3.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-phi_4_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/phi_4.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-phi_4_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/phi_4.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-select_if_dont_flatten_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/select_if_dont_flatten.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-select_if_dont_flatten_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/select_if_dont_flatten.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-select_if_flatten_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/select_if_flatten.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-select_if_flatten_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/select_if_flatten.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-select_if_none_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/select_if_none.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-select_if_none_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/select_if_none.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-select_switch_dont_flatten_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/select_switch_dont_flatten.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-select_switch_dont_flatten_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/select_switch_dont_flatten.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-select_switch_flatten_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/select_switch_flatten.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-select_switch_flatten_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/select_switch_flatten.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-select_switch_none_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/select_switch_none.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-select_switch_none_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/select_switch_none.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-spv1_1_basic_spv32",
+    cmd: "$(location) --target-env spv1.1 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/spv1.1/basic.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-spv1_1_basic_spv64",
+    cmd: "$(location) --target-env spv1.1 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/spv1.1/basic.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-spv1_2_basic_spv32",
+    cmd: "$(location) --target-env spv1.2 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/spv1.2/basic.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-spv1_2_basic_spv64",
+    cmd: "$(location) --target-env spv1.2 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/spv1.2/basic.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-spv1_3_basic_spv32",
+    cmd: "$(location) --target-env spv1.3 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/spv1.3/basic.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-spv1_3_basic_spv64",
+    cmd: "$(location) --target-env spv1.3 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/spv1.3/basic.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-spv1_4_basic_spv32",
+    cmd: "$(location) --target-env spv1.4 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/spv1.4/basic.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-spv1_4_basic_spv64",
+    cmd: "$(location) --target-env spv1.4 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/spv1.4/basic.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-spv1_4_copylogical_struct_spv32",
+    cmd: "$(location) --target-env spv1.4 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/spv1.4/copylogical_struct.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-spv1_4_copylogical_struct_spv64",
+    cmd: "$(location) --target-env spv1.4 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/spv1.4/copylogical_struct.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-spv1_4_copymemory_memory_operands_spv32",
+    cmd: "$(location) --target-env spv1.4 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/spv1.4/copymemory_memory_operands.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-spv1_4_copymemory_memory_operands_spv64",
+    cmd: "$(location) --target-env spv1.4 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/spv1.4/copymemory_memory_operands.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-spv1_4_image_operand_signextend_spv32",
+    cmd: "$(location) --target-env spv1.4 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/spv1.4/image_operand_signextend.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-spv1_4_image_operand_signextend_spv64",
+    cmd: "$(location) --target-env spv1.4 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/spv1.4/image_operand_signextend.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-spv1_4_image_operand_zeroextend_spv32",
+    cmd: "$(location) --target-env spv1.4 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/spv1.4/image_operand_zeroextend.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-spv1_4_image_operand_zeroextend_spv64",
+    cmd: "$(location) --target-env spv1.4 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/spv1.4/image_operand_zeroextend.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-spv1_4_loop_control_iterationmultiple_spv32",
+    cmd: "$(location) --target-env spv1.4 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/spv1.4/loop_control_iterationmultiple.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-spv1_4_loop_control_iterationmultiple_spv64",
+    cmd: "$(location) --target-env spv1.4 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/spv1.4/loop_control_iterationmultiple.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-spv1_4_loop_control_maxiterations_spv32",
+    cmd: "$(location) --target-env spv1.4 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/spv1.4/loop_control_maxiterations.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-spv1_4_loop_control_maxiterations_spv64",
+    cmd: "$(location) --target-env spv1.4 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/spv1.4/loop_control_maxiterations.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-spv1_4_loop_control_miniterations_spv32",
+    cmd: "$(location) --target-env spv1.4 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/spv1.4/loop_control_miniterations.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-spv1_4_loop_control_miniterations_spv64",
+    cmd: "$(location) --target-env spv1.4 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/spv1.4/loop_control_miniterations.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-spv1_4_loop_control_partialcount_spv32",
+    cmd: "$(location) --target-env spv1.4 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/spv1.4/loop_control_partialcount.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-spv1_4_loop_control_partialcount_spv64",
+    cmd: "$(location) --target-env spv1.4 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/spv1.4/loop_control_partialcount.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-spv1_4_loop_control_peelcount_spv32",
+    cmd: "$(location) --target-env spv1.4 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/spv1.4/loop_control_peelcount.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-spv1_4_loop_control_peelcount_spv64",
+    cmd: "$(location) --target-env spv1.4 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/spv1.4/loop_control_peelcount.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-spv1_4_no_integer_wrap_decoration_fadd_int_spv32",
+    cmd: "$(location) --target-env spv1.4 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/spv1.4/no_integer_wrap_decoration_fadd_int.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-spv1_4_no_integer_wrap_decoration_fadd_int_spv64",
+    cmd: "$(location) --target-env spv1.4 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/spv1.4/no_integer_wrap_decoration_fadd_int.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-spv1_4_no_integer_wrap_decoration_fadd_uint_spv32",
+    cmd: "$(location) --target-env spv1.4 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/spv1.4/no_integer_wrap_decoration_fadd_uint.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-spv1_4_no_integer_wrap_decoration_fadd_uint_spv64",
+    cmd: "$(location) --target-env spv1.4 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/spv1.4/no_integer_wrap_decoration_fadd_uint.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-spv1_4_no_integer_wrap_decoration_fmul_int_spv32",
+    cmd: "$(location) --target-env spv1.4 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/spv1.4/no_integer_wrap_decoration_fmul_int.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-spv1_4_no_integer_wrap_decoration_fmul_int_spv64",
+    cmd: "$(location) --target-env spv1.4 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/spv1.4/no_integer_wrap_decoration_fmul_int.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-spv1_4_no_integer_wrap_decoration_fmul_uint_spv32",
+    cmd: "$(location) --target-env spv1.4 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/spv1.4/no_integer_wrap_decoration_fmul_uint.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-spv1_4_no_integer_wrap_decoration_fmul_uint_spv64",
+    cmd: "$(location) --target-env spv1.4 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/spv1.4/no_integer_wrap_decoration_fmul_uint.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-spv1_4_no_integer_wrap_decoration_fnegate_int_spv32",
+    cmd: "$(location) --target-env spv1.4 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/spv1.4/no_integer_wrap_decoration_fnegate_int.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-spv1_4_no_integer_wrap_decoration_fnegate_int_spv64",
+    cmd: "$(location) --target-env spv1.4 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/spv1.4/no_integer_wrap_decoration_fnegate_int.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-spv1_4_no_integer_wrap_decoration_fshiftleft_int_spv32",
+    cmd: "$(location) --target-env spv1.4 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/spv1.4/no_integer_wrap_decoration_fshiftleft_int.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-spv1_4_no_integer_wrap_decoration_fshiftleft_int_spv64",
+    cmd: "$(location) --target-env spv1.4 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/spv1.4/no_integer_wrap_decoration_fshiftleft_int.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-spv1_4_no_integer_wrap_decoration_fshiftleft_uint_spv32",
+    cmd: "$(location) --target-env spv1.4 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/spv1.4/no_integer_wrap_decoration_fshiftleft_uint.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-spv1_4_no_integer_wrap_decoration_fshiftleft_uint_spv64",
+    cmd: "$(location) --target-env spv1.4 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/spv1.4/no_integer_wrap_decoration_fshiftleft_uint.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-spv1_4_no_integer_wrap_decoration_fsub_int_spv32",
+    cmd: "$(location) --target-env spv1.4 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/spv1.4/no_integer_wrap_decoration_fsub_int.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-spv1_4_no_integer_wrap_decoration_fsub_int_spv64",
+    cmd: "$(location) --target-env spv1.4 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/spv1.4/no_integer_wrap_decoration_fsub_int.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-spv1_4_no_integer_wrap_decoration_fsub_uint_spv32",
+    cmd: "$(location) --target-env spv1.4 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/spv1.4/no_integer_wrap_decoration_fsub_uint.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-spv1_4_no_integer_wrap_decoration_fsub_uint_spv64",
+    cmd: "$(location) --target-env spv1.4 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/spv1.4/no_integer_wrap_decoration_fsub_uint.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-spv1_4_nonwriteable_decoration_function_storage_class_spv32",
+    cmd: "$(location) --target-env spv1.4 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/spv1.4/nonwriteable_decoration_function_storage_class.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-spv1_4_nonwriteable_decoration_function_storage_class_spv64",
+    cmd: "$(location) --target-env spv1.4 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/spv1.4/nonwriteable_decoration_function_storage_class.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-spv1_4_ptrops_spv32",
+    cmd: "$(location) --target-env spv1.4 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/spv1.4/ptrops.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-spv1_4_ptrops_spv64",
+    cmd: "$(location) --target-env spv1.4 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/spv1.4/ptrops.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-spv1_4_select_struct_spv32",
+    cmd: "$(location) --target-env spv1.4 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/spv1.4/select_struct.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-spv1_4_select_struct_spv64",
+    cmd: "$(location) --target-env spv1.4 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/spv1.4/select_struct.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-spv1_4_usersemantic_decoratestring_spv32",
+    cmd: "$(location) --target-env spv1.4 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/spv1.4/usersemantic_decoratestring.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-spv1_4_usersemantic_decoratestring_spv64",
+    cmd: "$(location) --target-env spv1.4 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/spv1.4/usersemantic_decoratestring.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-spv1_4_usersemantic_memberdecoratestring_spv32",
+    cmd: "$(location) --target-env spv1.4 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/spv1.4/usersemantic_memberdecoratestring.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-spv1_4_usersemantic_memberdecoratestring_spv64",
+    cmd: "$(location) --target-env spv1.4 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/spv1.4/usersemantic_memberdecoratestring.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-spv1_5_basic_spv32",
+    cmd: "$(location) --target-env spv1.5 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/spv1.5/basic.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-spv1_5_basic_spv64",
+    cmd: "$(location) --target-env spv1.5 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/spv1.5/basic.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-spv1_6_basic_spv32",
+    cmd: "$(location) --target-env spv1.6 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/spv1.6/basic.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-spv1_6_basic_spv64",
+    cmd: "$(location) --target-env spv1.6 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/spv1.6/basic.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-spv1_6_image_operand_nontemporal_spv32",
+    cmd: "$(location) --target-env spv1.6 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/spv1.6/image_operand_nontemporal.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-spv1_6_image_operand_nontemporal_spv64",
+    cmd: "$(location) --target-env spv1.6 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/spv1.6/image_operand_nontemporal.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-spv1_6_uniformdecoration_uniform_spv32",
+    cmd: "$(location) --target-env spv1.6 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/spv1.6/uniformdecoration_uniform.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-spv1_6_uniformdecoration_uniform_spv64",
+    cmd: "$(location) --target-env spv1.6 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/spv1.6/uniformdecoration_uniform.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-spv1_6_uniformdecoration_uniformid_spv32",
+    cmd: "$(location) --target-env spv1.6 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/spv1.6/uniformdecoration_uniformid.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-spv1_6_uniformdecoration_uniformid_spv64",
+    cmd: "$(location) --target-env spv1.6 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/spv1.6/uniformdecoration_uniformid.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-undef_char_simple_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/undef_char_simple.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-undef_char_simple_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/undef_char_simple.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-undef_double_simple_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/undef_double_simple.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-undef_double_simple_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/undef_double_simple.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-undef_false_simple_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/undef_false_simple.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-undef_false_simple_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/undef_false_simple.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-undef_float_simple_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/undef_float_simple.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-undef_float_simple_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/undef_float_simple.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-undef_half_simple_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/undef_half_simple.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-undef_half_simple_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/undef_half_simple.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-undef_int3_simple_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/undef_int3_simple.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-undef_int3_simple_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/undef_int3_simple.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-undef_int4_simple_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/undef_int4_simple.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-undef_int4_simple_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/undef_int4_simple.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-undef_int_simple_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/undef_int_simple.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-undef_int_simple_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/undef_int_simple.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-undef_long_simple_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/undef_long_simple.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-undef_long_simple_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/undef_long_simple.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-undef_short_simple_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/undef_short_simple.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-undef_short_simple_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/undef_short_simple.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-undef_struct_int_char_simple_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/undef_struct_int_char_simple.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-undef_struct_int_char_simple_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/undef_struct_int_char_simple.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-undef_struct_int_float_simple_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/undef_struct_int_float_simple.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-undef_struct_int_float_simple_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/undef_struct_int_float_simple.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-undef_struct_struct_simple_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/undef_struct_struct_simple.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-undef_struct_struct_simple_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/undef_struct_struct_simple.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-undef_true_simple_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/undef_true_simple.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-undef_true_simple_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/undef_true_simple.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-undef_uchar_simple_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/undef_uchar_simple.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-undef_uchar_simple_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/undef_uchar_simple.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-undef_uint_simple_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/undef_uint_simple.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-undef_uint_simple_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/undef_uint_simple.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-undef_ulong_simple_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/undef_ulong_simple.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-undef_ulong_simple_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/undef_ulong_simple.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-undef_ushort_simple_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/undef_ushort_simple.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-undef_ushort_simple_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/undef_ushort_simple.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-unreachable_simple_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/unreachable_simple.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-unreachable_simple_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/unreachable_simple.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-vector_char16_extract_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/vector_char16_extract.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-vector_char16_extract_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/vector_char16_extract.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-vector_char16_insert_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/vector_char16_insert.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-vector_char16_insert_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/vector_char16_insert.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-vector_double2_extract_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/vector_double2_extract.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-vector_double2_extract_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/vector_double2_extract.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-vector_double2_insert_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/vector_double2_insert.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-vector_double2_insert_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/vector_double2_insert.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-vector_float4_extract_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/vector_float4_extract.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-vector_float4_extract_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/vector_float4_extract.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-vector_float4_insert_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/vector_float4_insert.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-vector_float4_insert_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/vector_float4_insert.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-vector_half8_extract_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/vector_half8_extract.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-vector_half8_extract_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/vector_half8_extract.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-vector_half8_insert_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/vector_half8_insert.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-vector_half8_insert_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/vector_half8_insert.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-vector_int4_extract_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/vector_int4_extract.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-vector_int4_extract_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/vector_int4_extract.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-vector_int4_insert_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/vector_int4_insert.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-vector_int4_insert_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/vector_int4_insert.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-vector_long2_extract_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/vector_long2_extract.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-vector_long2_extract_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/vector_long2_extract.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-vector_long2_insert_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/vector_long2_insert.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-vector_long2_insert_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/vector_long2_insert.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-vector_times_scalar_double_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/vector_times_scalar_double.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-vector_times_scalar_double_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/vector_times_scalar_double.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-vector_times_scalar_float_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/vector_times_scalar_float.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-vector_times_scalar_float_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/vector_times_scalar_float.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-vector_times_scalar_half_spv32",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/vector_times_scalar_half.spvasm32"],
+    output_extension: "spv32",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+gensrcs {
+    name: "OpenCL-CTS-vector_times_scalar_half_spv64",
+    cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
+    srcs: ["test_conformance/spirv_new/spirv_asm/vector_times_scalar_half.spvasm64"],
+    output_extension: "spv64",
+    tools: ["//external/SPIRV-Tools:spirv-as"],
+}
+
+filegroup {
+    name: "OpenCL-CTS-spirv_new_data",
+    srcs: [
+        ":OpenCL-CTS-assume_spv32",
+        ":OpenCL-CTS-assume_spv64",
+        ":OpenCL-CTS-atomic_dec_global_spv32",
+        ":OpenCL-CTS-atomic_dec_global_spv64",
+        ":OpenCL-CTS-atomic_inc_global_spv32",
+        ":OpenCL-CTS-atomic_inc_global_spv64",
+        ":OpenCL-CTS-basic_spv32",
+        ":OpenCL-CTS-basic_spv64",
+        ":OpenCL-CTS-branch_conditional_spv32",
+        ":OpenCL-CTS-branch_conditional_spv64",
+        ":OpenCL-CTS-branch_conditional_weighted_spv32",
+        ":OpenCL-CTS-branch_conditional_weighted_spv64",
+        ":OpenCL-CTS-branch_simple_spv32",
+        ":OpenCL-CTS-branch_simple_spv64",
+        ":OpenCL-CTS-composite_construct_int4_spv32",
+        ":OpenCL-CTS-composite_construct_int4_spv64",
+        ":OpenCL-CTS-composite_construct_struct_spv32",
+        ":OpenCL-CTS-composite_construct_struct_spv64",
+        ":OpenCL-CTS-constant_char_simple_spv32",
+        ":OpenCL-CTS-constant_char_simple_spv64",
+        ":OpenCL-CTS-constant_double_simple_spv32",
+        ":OpenCL-CTS-constant_double_simple_spv64",
+        ":OpenCL-CTS-constant_false_simple_spv32",
+        ":OpenCL-CTS-constant_false_simple_spv64",
+        ":OpenCL-CTS-constant_float_simple_spv32",
+        ":OpenCL-CTS-constant_float_simple_spv64",
+        ":OpenCL-CTS-constant_half_simple_spv32",
+        ":OpenCL-CTS-constant_half_simple_spv64",
+        ":OpenCL-CTS-constant_int3_simple_spv32",
+        ":OpenCL-CTS-constant_int3_simple_spv64",
+        ":OpenCL-CTS-constant_int4_simple_spv32",
+        ":OpenCL-CTS-constant_int4_simple_spv64",
+        ":OpenCL-CTS-constant_int_simple_spv32",
+        ":OpenCL-CTS-constant_int_simple_spv64",
+        ":OpenCL-CTS-constant_long_simple_spv32",
+        ":OpenCL-CTS-constant_long_simple_spv64",
+        ":OpenCL-CTS-constant_short_simple_spv32",
+        ":OpenCL-CTS-constant_short_simple_spv64",
+        ":OpenCL-CTS-constant_struct_int_char_simple_spv32",
+        ":OpenCL-CTS-constant_struct_int_char_simple_spv64",
+        ":OpenCL-CTS-constant_struct_int_float_simple_spv32",
+        ":OpenCL-CTS-constant_struct_int_float_simple_spv64",
+        ":OpenCL-CTS-constant_struct_struct_simple_spv32",
+        ":OpenCL-CTS-constant_struct_struct_simple_spv64",
+        ":OpenCL-CTS-constant_true_simple_spv32",
+        ":OpenCL-CTS-constant_true_simple_spv64",
+        ":OpenCL-CTS-constant_uchar_simple_spv32",
+        ":OpenCL-CTS-constant_uchar_simple_spv64",
+        ":OpenCL-CTS-constant_uint_simple_spv32",
+        ":OpenCL-CTS-constant_uint_simple_spv64",
+        ":OpenCL-CTS-constant_ulong_simple_spv32",
+        ":OpenCL-CTS-constant_ulong_simple_spv64",
+        ":OpenCL-CTS-constant_ushort_simple_spv32",
+        ":OpenCL-CTS-constant_ushort_simple_spv64",
+        ":OpenCL-CTS-copy_char_simple_spv32",
+        ":OpenCL-CTS-copy_char_simple_spv64",
+        ":OpenCL-CTS-copy_double_simple_spv32",
+        ":OpenCL-CTS-copy_double_simple_spv64",
+        ":OpenCL-CTS-copy_float_simple_spv32",
+        ":OpenCL-CTS-copy_float_simple_spv64",
+        ":OpenCL-CTS-copy_half_simple_spv32",
+        ":OpenCL-CTS-copy_half_simple_spv64",
+        ":OpenCL-CTS-copy_int3_simple_spv32",
+        ":OpenCL-CTS-copy_int3_simple_spv64",
+        ":OpenCL-CTS-copy_int4_simple_spv32",
+        ":OpenCL-CTS-copy_int4_simple_spv64",
+        ":OpenCL-CTS-copy_int_simple_spv32",
+        ":OpenCL-CTS-copy_int_simple_spv64",
+        ":OpenCL-CTS-copy_long_simple_spv32",
+        ":OpenCL-CTS-copy_long_simple_spv64",
+        ":OpenCL-CTS-copy_short_simple_spv32",
+        ":OpenCL-CTS-copy_short_simple_spv64",
+        ":OpenCL-CTS-copy_struct_int_char_simple_spv32",
+        ":OpenCL-CTS-copy_struct_int_char_simple_spv64",
+        ":OpenCL-CTS-copy_struct_int_float_simple_spv32",
+        ":OpenCL-CTS-copy_struct_int_float_simple_spv64",
+        ":OpenCL-CTS-copy_struct_struct_simple_spv32",
+        ":OpenCL-CTS-copy_struct_struct_simple_spv64",
+        ":OpenCL-CTS-copy_uchar_simple_spv32",
+        ":OpenCL-CTS-copy_uchar_simple_spv64",
+        ":OpenCL-CTS-copy_uint_simple_spv32",
+        ":OpenCL-CTS-copy_uint_simple_spv64",
+        ":OpenCL-CTS-copy_ulong_simple_spv32",
+        ":OpenCL-CTS-copy_ulong_simple_spv64",
+        ":OpenCL-CTS-copy_ushort_simple_spv32",
+        ":OpenCL-CTS-copy_ushort_simple_spv64",
+        ":OpenCL-CTS-decorate_aliased_spv32",
+        ":OpenCL-CTS-decorate_aliased_spv64",
+        ":OpenCL-CTS-decorate_alignment_spv32",
+        ":OpenCL-CTS-decorate_alignment_spv64",
+        ":OpenCL-CTS-decorate_constant_fail_spv32",
+        ":OpenCL-CTS-decorate_constant_fail_spv64",
+        ":OpenCL-CTS-decorate_constant_spv32",
+        ":OpenCL-CTS-decorate_constant_spv64",
+        ":OpenCL-CTS-decorate_cpacked_spv32",
+        ":OpenCL-CTS-decorate_cpacked_spv64",
+        ":OpenCL-CTS-decorate_restrict_spv32",
+        ":OpenCL-CTS-decorate_restrict_spv64",
+        ":OpenCL-CTS-decorate_rounding_rte_double_long_spv32",
+        ":OpenCL-CTS-decorate_rounding_rte_double_long_spv64",
+        ":OpenCL-CTS-decorate_rounding_rte_float_int_spv32",
+        ":OpenCL-CTS-decorate_rounding_rte_float_int_spv64",
+        ":OpenCL-CTS-decorate_rounding_rte_half_short_spv32",
+        ":OpenCL-CTS-decorate_rounding_rte_half_short_spv64",
+        ":OpenCL-CTS-decorate_rounding_rtn_double_long_spv32",
+        ":OpenCL-CTS-decorate_rounding_rtn_double_long_spv64",
+        ":OpenCL-CTS-decorate_rounding_rtn_float_int_spv32",
+        ":OpenCL-CTS-decorate_rounding_rtn_float_int_spv64",
+        ":OpenCL-CTS-decorate_rounding_rtn_half_short_spv32",
+        ":OpenCL-CTS-decorate_rounding_rtn_half_short_spv64",
+        ":OpenCL-CTS-decorate_rounding_rtp_double_long_spv32",
+        ":OpenCL-CTS-decorate_rounding_rtp_double_long_spv64",
+        ":OpenCL-CTS-decorate_rounding_rtp_float_int_spv32",
+        ":OpenCL-CTS-decorate_rounding_rtp_float_int_spv64",
+        ":OpenCL-CTS-decorate_rounding_rtp_half_short_spv32",
+        ":OpenCL-CTS-decorate_rounding_rtp_half_short_spv64",
+        ":OpenCL-CTS-decorate_rounding_rtz_double_long_spv32",
+        ":OpenCL-CTS-decorate_rounding_rtz_double_long_spv64",
+        ":OpenCL-CTS-decorate_rounding_rtz_float_int_spv32",
+        ":OpenCL-CTS-decorate_rounding_rtz_float_int_spv64",
+        ":OpenCL-CTS-decorate_rounding_rtz_half_short_spv32",
+        ":OpenCL-CTS-decorate_rounding_rtz_half_short_spv64",
+        ":OpenCL-CTS-decorate_saturated_conversion_double_to_int_spv32",
+        ":OpenCL-CTS-decorate_saturated_conversion_double_to_int_spv64",
+        ":OpenCL-CTS-decorate_saturated_conversion_double_to_uint_spv32",
+        ":OpenCL-CTS-decorate_saturated_conversion_double_to_uint_spv64",
+        ":OpenCL-CTS-decorate_saturated_conversion_float_to_char_spv32",
+        ":OpenCL-CTS-decorate_saturated_conversion_float_to_char_spv64",
+        ":OpenCL-CTS-decorate_saturated_conversion_float_to_short_spv32",
+        ":OpenCL-CTS-decorate_saturated_conversion_float_to_short_spv64",
+        ":OpenCL-CTS-decorate_saturated_conversion_float_to_uchar_spv32",
+        ":OpenCL-CTS-decorate_saturated_conversion_float_to_uchar_spv64",
+        ":OpenCL-CTS-decorate_saturated_conversion_float_to_ushort_spv32",
+        ":OpenCL-CTS-decorate_saturated_conversion_float_to_ushort_spv64",
+        ":OpenCL-CTS-decorate_saturated_conversion_half_to_char_spv32",
+        ":OpenCL-CTS-decorate_saturated_conversion_half_to_char_spv64",
+        ":OpenCL-CTS-decorate_saturated_conversion_half_to_uchar_spv32",
+        ":OpenCL-CTS-decorate_saturated_conversion_half_to_uchar_spv64",
+        ":OpenCL-CTS-expect_bool_spv32",
+        ":OpenCL-CTS-expect_bool_spv64",
+        ":OpenCL-CTS-expect_char_spv32",
+        ":OpenCL-CTS-expect_char_spv64",
+        ":OpenCL-CTS-expect_int_spv32",
+        ":OpenCL-CTS-expect_int_spv64",
+        ":OpenCL-CTS-expect_long_spv32",
+        ":OpenCL-CTS-expect_long_spv64",
+        ":OpenCL-CTS-expect_short_spv32",
+        ":OpenCL-CTS-expect_short_spv64",
+        ":OpenCL-CTS-ext_cl_khr_spirv_no_integer_wrap_decoration_fadd_int_spv32",
+        ":OpenCL-CTS-ext_cl_khr_spirv_no_integer_wrap_decoration_fadd_int_spv64",
+        ":OpenCL-CTS-ext_cl_khr_spirv_no_integer_wrap_decoration_fadd_uint_spv32",
+        ":OpenCL-CTS-ext_cl_khr_spirv_no_integer_wrap_decoration_fadd_uint_spv64",
+        ":OpenCL-CTS-ext_cl_khr_spirv_no_integer_wrap_decoration_fmul_int_spv32",
+        ":OpenCL-CTS-ext_cl_khr_spirv_no_integer_wrap_decoration_fmul_int_spv64",
+        ":OpenCL-CTS-ext_cl_khr_spirv_no_integer_wrap_decoration_fmul_uint_spv32",
+        ":OpenCL-CTS-ext_cl_khr_spirv_no_integer_wrap_decoration_fmul_uint_spv64",
+        ":OpenCL-CTS-ext_cl_khr_spirv_no_integer_wrap_decoration_fnegate_int_spv32",
+        ":OpenCL-CTS-ext_cl_khr_spirv_no_integer_wrap_decoration_fnegate_int_spv64",
+        ":OpenCL-CTS-ext_cl_khr_spirv_no_integer_wrap_decoration_fshiftleft_int_spv32",
+        ":OpenCL-CTS-ext_cl_khr_spirv_no_integer_wrap_decoration_fshiftleft_int_spv64",
+        ":OpenCL-CTS-ext_cl_khr_spirv_no_integer_wrap_decoration_fshiftleft_uint_spv32",
+        ":OpenCL-CTS-ext_cl_khr_spirv_no_integer_wrap_decoration_fshiftleft_uint_spv64",
+        ":OpenCL-CTS-ext_cl_khr_spirv_no_integer_wrap_decoration_fsub_int_spv32",
+        ":OpenCL-CTS-ext_cl_khr_spirv_no_integer_wrap_decoration_fsub_int_spv64",
+        ":OpenCL-CTS-ext_cl_khr_spirv_no_integer_wrap_decoration_fsub_uint_spv32",
+        ":OpenCL-CTS-ext_cl_khr_spirv_no_integer_wrap_decoration_fsub_uint_spv64",
+        ":OpenCL-CTS-fadd_double2_spv32",
+        ":OpenCL-CTS-fadd_double2_spv64",
+        ":OpenCL-CTS-fadd_double_spv32",
+        ":OpenCL-CTS-fadd_double_spv64",
+        ":OpenCL-CTS-fadd_float4_spv32",
+        ":OpenCL-CTS-fadd_float4_spv64",
+        ":OpenCL-CTS-fadd_float_spv32",
+        ":OpenCL-CTS-fadd_float_spv64",
+        ":OpenCL-CTS-fadd_half_spv32",
+        ":OpenCL-CTS-fadd_half_spv64",
+        ":OpenCL-CTS-fdiv_double2_spv32",
+        ":OpenCL-CTS-fdiv_double2_spv64",
+        ":OpenCL-CTS-fdiv_double_spv32",
+        ":OpenCL-CTS-fdiv_double_spv64",
+        ":OpenCL-CTS-fdiv_float4_spv32",
+        ":OpenCL-CTS-fdiv_float4_spv64",
+        ":OpenCL-CTS-fdiv_float_spv32",
+        ":OpenCL-CTS-fdiv_float_spv64",
+        ":OpenCL-CTS-fdiv_half_spv32",
+        ":OpenCL-CTS-fdiv_half_spv64",
+        ":OpenCL-CTS-fmod_double2_spv32",
+        ":OpenCL-CTS-fmod_double2_spv64",
+        ":OpenCL-CTS-fmod_double_spv32",
+        ":OpenCL-CTS-fmod_double_spv64",
+        ":OpenCL-CTS-fmod_float4_spv32",
+        ":OpenCL-CTS-fmod_float4_spv64",
+        ":OpenCL-CTS-fmod_float_spv32",
+        ":OpenCL-CTS-fmod_float_spv64",
+        ":OpenCL-CTS-fmod_half_spv32",
+        ":OpenCL-CTS-fmod_half_spv64",
+        ":OpenCL-CTS-fmul_double2_spv32",
+        ":OpenCL-CTS-fmul_double2_spv64",
+        ":OpenCL-CTS-fmul_double_spv32",
+        ":OpenCL-CTS-fmul_double_spv64",
+        ":OpenCL-CTS-fmul_float4_spv32",
+        ":OpenCL-CTS-fmul_float4_spv64",
+        ":OpenCL-CTS-fmul_float_spv32",
+        ":OpenCL-CTS-fmul_float_spv64",
+        ":OpenCL-CTS-fmul_half_spv32",
+        ":OpenCL-CTS-fmul_half_spv64",
+        ":OpenCL-CTS-frem_double2_spv32",
+        ":OpenCL-CTS-frem_double2_spv64",
+        ":OpenCL-CTS-frem_double_spv32",
+        ":OpenCL-CTS-frem_double_spv64",
+        ":OpenCL-CTS-frem_float4_spv32",
+        ":OpenCL-CTS-frem_float4_spv64",
+        ":OpenCL-CTS-frem_float_spv32",
+        ":OpenCL-CTS-frem_float_spv64",
+        ":OpenCL-CTS-frem_half_spv32",
+        ":OpenCL-CTS-frem_half_spv64",
+        ":OpenCL-CTS-fsub_double2_spv32",
+        ":OpenCL-CTS-fsub_double2_spv64",
+        ":OpenCL-CTS-fsub_double_spv32",
+        ":OpenCL-CTS-fsub_double_spv64",
+        ":OpenCL-CTS-fsub_float4_spv32",
+        ":OpenCL-CTS-fsub_float4_spv64",
+        ":OpenCL-CTS-fsub_float_spv32",
+        ":OpenCL-CTS-fsub_float_spv64",
+        ":OpenCL-CTS-fsub_half_spv32",
+        ":OpenCL-CTS-fsub_half_spv64",
+        ":OpenCL-CTS-label_simple_spv32",
+        ":OpenCL-CTS-label_simple_spv64",
+        ":OpenCL-CTS-lifetime_simple_spv32",
+        ":OpenCL-CTS-lifetime_simple_spv64",
+        ":OpenCL-CTS-linkage_export_spv32",
+        ":OpenCL-CTS-linkage_export_spv64",
+        ":OpenCL-CTS-linkage_import_spv32",
+        ":OpenCL-CTS-linkage_import_spv64",
+        ":OpenCL-CTS-linkage_linkonce_odr_main_spv32",
+        ":OpenCL-CTS-linkage_linkonce_odr_main_spv64",
+        ":OpenCL-CTS-linkage_linkonce_odr_noa_main_spv32",
+        ":OpenCL-CTS-linkage_linkonce_odr_noa_main_spv64",
+        ":OpenCL-CTS-linkage_linkonce_odr_obj_spv32",
+        ":OpenCL-CTS-linkage_linkonce_odr_obj_spv64",
+        ":OpenCL-CTS-loop_merge_branch_conditional_dont_unroll_spv32",
+        ":OpenCL-CTS-loop_merge_branch_conditional_dont_unroll_spv64",
+        ":OpenCL-CTS-loop_merge_branch_conditional_none_spv32",
+        ":OpenCL-CTS-loop_merge_branch_conditional_none_spv64",
+        ":OpenCL-CTS-loop_merge_branch_conditional_unroll_spv32",
+        ":OpenCL-CTS-loop_merge_branch_conditional_unroll_spv64",
+        ":OpenCL-CTS-loop_merge_branch_dont_unroll_spv32",
+        ":OpenCL-CTS-loop_merge_branch_dont_unroll_spv64",
+        ":OpenCL-CTS-loop_merge_branch_none_spv32",
+        ":OpenCL-CTS-loop_merge_branch_none_spv64",
+        ":OpenCL-CTS-loop_merge_branch_unroll_spv32",
+        ":OpenCL-CTS-loop_merge_branch_unroll_spv64",
+        ":OpenCL-CTS-op_function_const_spv32",
+        ":OpenCL-CTS-op_function_const_spv64",
+        ":OpenCL-CTS-op_function_inline_spv32",
+        ":OpenCL-CTS-op_function_inline_spv64",
+        ":OpenCL-CTS-op_function_noinline_spv32",
+        ":OpenCL-CTS-op_function_noinline_spv64",
+        ":OpenCL-CTS-op_function_none_spv32",
+        ":OpenCL-CTS-op_function_none_spv64",
+        ":OpenCL-CTS-op_function_pure_ptr_spv32",
+        ":OpenCL-CTS-op_function_pure_ptr_spv64",
+        ":OpenCL-CTS-op_function_pure_spv32",
+        ":OpenCL-CTS-op_function_pure_spv64",
+        ":OpenCL-CTS-op_neg_double_spv32",
+        ":OpenCL-CTS-op_neg_double_spv64",
+        ":OpenCL-CTS-op_neg_float4_spv32",
+        ":OpenCL-CTS-op_neg_float4_spv64",
+        ":OpenCL-CTS-op_neg_float_spv32",
+        ":OpenCL-CTS-op_neg_float_spv64",
+        ":OpenCL-CTS-op_neg_half_spv32",
+        ":OpenCL-CTS-op_neg_half_spv64",
+        ":OpenCL-CTS-op_neg_int4_spv32",
+        ":OpenCL-CTS-op_neg_int4_spv64",
+        ":OpenCL-CTS-op_neg_int_spv32",
+        ":OpenCL-CTS-op_neg_int_spv64",
+        ":OpenCL-CTS-op_neg_long_spv32",
+        ":OpenCL-CTS-op_neg_long_spv64",
+        ":OpenCL-CTS-op_neg_short_spv32",
+        ":OpenCL-CTS-op_neg_short_spv64",
+        ":OpenCL-CTS-op_not_int4_spv32",
+        ":OpenCL-CTS-op_not_int4_spv64",
+        ":OpenCL-CTS-op_not_int_spv32",
+        ":OpenCL-CTS-op_not_int_spv64",
+        ":OpenCL-CTS-op_not_long_spv32",
+        ":OpenCL-CTS-op_not_long_spv64",
+        ":OpenCL-CTS-op_not_short_spv32",
+        ":OpenCL-CTS-op_not_short_spv64",
+        ":OpenCL-CTS-op_spec_constant_double_simple_spv32",
+        ":OpenCL-CTS-op_spec_constant_double_simple_spv64",
+        ":OpenCL-CTS-op_spec_constant_false_simple_spv32",
+        ":OpenCL-CTS-op_spec_constant_false_simple_spv64",
+        ":OpenCL-CTS-op_spec_constant_float_simple_spv32",
+        ":OpenCL-CTS-op_spec_constant_float_simple_spv64",
+        ":OpenCL-CTS-op_spec_constant_half_simple_spv32",
+        ":OpenCL-CTS-op_spec_constant_half_simple_spv64",
+        ":OpenCL-CTS-op_spec_constant_true_simple_spv32",
+        ":OpenCL-CTS-op_spec_constant_true_simple_spv64",
+        ":OpenCL-CTS-op_spec_constant_uchar_simple_spv32",
+        ":OpenCL-CTS-op_spec_constant_uchar_simple_spv64",
+        ":OpenCL-CTS-op_spec_constant_uint_simple_spv32",
+        ":OpenCL-CTS-op_spec_constant_uint_simple_spv64",
+        ":OpenCL-CTS-op_spec_constant_ulong_simple_spv32",
+        ":OpenCL-CTS-op_spec_constant_ulong_simple_spv64",
+        ":OpenCL-CTS-op_spec_constant_ushort_simple_spv32",
+        ":OpenCL-CTS-op_spec_constant_ushort_simple_spv64",
+        ":OpenCL-CTS-opaque_spv32",
+        ":OpenCL-CTS-opaque_spv64",
+        ":OpenCL-CTS-phi_2_spv32",
+        ":OpenCL-CTS-phi_2_spv64",
+        ":OpenCL-CTS-phi_3_spv32",
+        ":OpenCL-CTS-phi_3_spv64",
+        ":OpenCL-CTS-phi_4_spv32",
+        ":OpenCL-CTS-phi_4_spv64",
+        ":OpenCL-CTS-select_if_dont_flatten_spv32",
+        ":OpenCL-CTS-select_if_dont_flatten_spv64",
+        ":OpenCL-CTS-select_if_flatten_spv32",
+        ":OpenCL-CTS-select_if_flatten_spv64",
+        ":OpenCL-CTS-select_if_none_spv32",
+        ":OpenCL-CTS-select_if_none_spv64",
+        ":OpenCL-CTS-select_switch_dont_flatten_spv32",
+        ":OpenCL-CTS-select_switch_dont_flatten_spv64",
+        ":OpenCL-CTS-select_switch_flatten_spv32",
+        ":OpenCL-CTS-select_switch_flatten_spv64",
+        ":OpenCL-CTS-select_switch_none_spv32",
+        ":OpenCL-CTS-select_switch_none_spv64",
+        ":OpenCL-CTS-spv1_1_basic_spv32",
+        ":OpenCL-CTS-spv1_1_basic_spv64",
+        ":OpenCL-CTS-spv1_2_basic_spv32",
+        ":OpenCL-CTS-spv1_2_basic_spv64",
+        ":OpenCL-CTS-spv1_3_basic_spv32",
+        ":OpenCL-CTS-spv1_3_basic_spv64",
+        ":OpenCL-CTS-spv1_4_basic_spv32",
+        ":OpenCL-CTS-spv1_4_basic_spv64",
+        ":OpenCL-CTS-spv1_4_copylogical_struct_spv32",
+        ":OpenCL-CTS-spv1_4_copylogical_struct_spv64",
+        ":OpenCL-CTS-spv1_4_copymemory_memory_operands_spv32",
+        ":OpenCL-CTS-spv1_4_copymemory_memory_operands_spv64",
+        ":OpenCL-CTS-spv1_4_image_operand_signextend_spv32",
+        ":OpenCL-CTS-spv1_4_image_operand_signextend_spv64",
+        ":OpenCL-CTS-spv1_4_image_operand_zeroextend_spv32",
+        ":OpenCL-CTS-spv1_4_image_operand_zeroextend_spv64",
+        ":OpenCL-CTS-spv1_4_loop_control_iterationmultiple_spv32",
+        ":OpenCL-CTS-spv1_4_loop_control_iterationmultiple_spv64",
+        ":OpenCL-CTS-spv1_4_loop_control_maxiterations_spv32",
+        ":OpenCL-CTS-spv1_4_loop_control_maxiterations_spv64",
+        ":OpenCL-CTS-spv1_4_loop_control_miniterations_spv32",
+        ":OpenCL-CTS-spv1_4_loop_control_miniterations_spv64",
+        ":OpenCL-CTS-spv1_4_loop_control_partialcount_spv32",
+        ":OpenCL-CTS-spv1_4_loop_control_partialcount_spv64",
+        ":OpenCL-CTS-spv1_4_loop_control_peelcount_spv32",
+        ":OpenCL-CTS-spv1_4_loop_control_peelcount_spv64",
+        ":OpenCL-CTS-spv1_4_no_integer_wrap_decoration_fadd_int_spv32",
+        ":OpenCL-CTS-spv1_4_no_integer_wrap_decoration_fadd_int_spv64",
+        ":OpenCL-CTS-spv1_4_no_integer_wrap_decoration_fadd_uint_spv32",
+        ":OpenCL-CTS-spv1_4_no_integer_wrap_decoration_fadd_uint_spv64",
+        ":OpenCL-CTS-spv1_4_no_integer_wrap_decoration_fmul_int_spv32",
+        ":OpenCL-CTS-spv1_4_no_integer_wrap_decoration_fmul_int_spv64",
+        ":OpenCL-CTS-spv1_4_no_integer_wrap_decoration_fmul_uint_spv32",
+        ":OpenCL-CTS-spv1_4_no_integer_wrap_decoration_fmul_uint_spv64",
+        ":OpenCL-CTS-spv1_4_no_integer_wrap_decoration_fnegate_int_spv32",
+        ":OpenCL-CTS-spv1_4_no_integer_wrap_decoration_fnegate_int_spv64",
+        ":OpenCL-CTS-spv1_4_no_integer_wrap_decoration_fshiftleft_int_spv32",
+        ":OpenCL-CTS-spv1_4_no_integer_wrap_decoration_fshiftleft_int_spv64",
+        ":OpenCL-CTS-spv1_4_no_integer_wrap_decoration_fshiftleft_uint_spv32",
+        ":OpenCL-CTS-spv1_4_no_integer_wrap_decoration_fshiftleft_uint_spv64",
+        ":OpenCL-CTS-spv1_4_no_integer_wrap_decoration_fsub_int_spv32",
+        ":OpenCL-CTS-spv1_4_no_integer_wrap_decoration_fsub_int_spv64",
+        ":OpenCL-CTS-spv1_4_no_integer_wrap_decoration_fsub_uint_spv32",
+        ":OpenCL-CTS-spv1_4_no_integer_wrap_decoration_fsub_uint_spv64",
+        ":OpenCL-CTS-spv1_4_nonwriteable_decoration_function_storage_class_spv32",
+        ":OpenCL-CTS-spv1_4_nonwriteable_decoration_function_storage_class_spv64",
+        ":OpenCL-CTS-spv1_4_ptrops_spv32",
+        ":OpenCL-CTS-spv1_4_ptrops_spv64",
+        ":OpenCL-CTS-spv1_4_select_struct_spv32",
+        ":OpenCL-CTS-spv1_4_select_struct_spv64",
+        ":OpenCL-CTS-spv1_4_usersemantic_decoratestring_spv32",
+        ":OpenCL-CTS-spv1_4_usersemantic_decoratestring_spv64",
+        ":OpenCL-CTS-spv1_4_usersemantic_memberdecoratestring_spv32",
+        ":OpenCL-CTS-spv1_4_usersemantic_memberdecoratestring_spv64",
+        ":OpenCL-CTS-spv1_5_basic_spv32",
+        ":OpenCL-CTS-spv1_5_basic_spv64",
+        ":OpenCL-CTS-spv1_6_basic_spv32",
+        ":OpenCL-CTS-spv1_6_basic_spv64",
+        ":OpenCL-CTS-spv1_6_image_operand_nontemporal_spv32",
+        ":OpenCL-CTS-spv1_6_image_operand_nontemporal_spv64",
+        ":OpenCL-CTS-spv1_6_uniformdecoration_uniform_spv32",
+        ":OpenCL-CTS-spv1_6_uniformdecoration_uniform_spv64",
+        ":OpenCL-CTS-spv1_6_uniformdecoration_uniformid_spv32",
+        ":OpenCL-CTS-spv1_6_uniformdecoration_uniformid_spv64",
+        ":OpenCL-CTS-undef_char_simple_spv32",
+        ":OpenCL-CTS-undef_char_simple_spv64",
+        ":OpenCL-CTS-undef_double_simple_spv32",
+        ":OpenCL-CTS-undef_double_simple_spv64",
+        ":OpenCL-CTS-undef_false_simple_spv32",
+        ":OpenCL-CTS-undef_false_simple_spv64",
+        ":OpenCL-CTS-undef_float_simple_spv32",
+        ":OpenCL-CTS-undef_float_simple_spv64",
+        ":OpenCL-CTS-undef_half_simple_spv32",
+        ":OpenCL-CTS-undef_half_simple_spv64",
+        ":OpenCL-CTS-undef_int3_simple_spv32",
+        ":OpenCL-CTS-undef_int3_simple_spv64",
+        ":OpenCL-CTS-undef_int4_simple_spv32",
+        ":OpenCL-CTS-undef_int4_simple_spv64",
+        ":OpenCL-CTS-undef_int_simple_spv32",
+        ":OpenCL-CTS-undef_int_simple_spv64",
+        ":OpenCL-CTS-undef_long_simple_spv32",
+        ":OpenCL-CTS-undef_long_simple_spv64",
+        ":OpenCL-CTS-undef_short_simple_spv32",
+        ":OpenCL-CTS-undef_short_simple_spv64",
+        ":OpenCL-CTS-undef_struct_int_char_simple_spv32",
+        ":OpenCL-CTS-undef_struct_int_char_simple_spv64",
+        ":OpenCL-CTS-undef_struct_int_float_simple_spv32",
+        ":OpenCL-CTS-undef_struct_int_float_simple_spv64",
+        ":OpenCL-CTS-undef_struct_struct_simple_spv32",
+        ":OpenCL-CTS-undef_struct_struct_simple_spv64",
+        ":OpenCL-CTS-undef_true_simple_spv32",
+        ":OpenCL-CTS-undef_true_simple_spv64",
+        ":OpenCL-CTS-undef_uchar_simple_spv32",
+        ":OpenCL-CTS-undef_uchar_simple_spv64",
+        ":OpenCL-CTS-undef_uint_simple_spv32",
+        ":OpenCL-CTS-undef_uint_simple_spv64",
+        ":OpenCL-CTS-undef_ulong_simple_spv32",
+        ":OpenCL-CTS-undef_ulong_simple_spv64",
+        ":OpenCL-CTS-undef_ushort_simple_spv32",
+        ":OpenCL-CTS-undef_ushort_simple_spv64",
+        ":OpenCL-CTS-unreachable_simple_spv32",
+        ":OpenCL-CTS-unreachable_simple_spv64",
+        ":OpenCL-CTS-vector_char16_extract_spv32",
+        ":OpenCL-CTS-vector_char16_extract_spv64",
+        ":OpenCL-CTS-vector_char16_insert_spv32",
+        ":OpenCL-CTS-vector_char16_insert_spv64",
+        ":OpenCL-CTS-vector_double2_extract_spv32",
+        ":OpenCL-CTS-vector_double2_extract_spv64",
+        ":OpenCL-CTS-vector_double2_insert_spv32",
+        ":OpenCL-CTS-vector_double2_insert_spv64",
+        ":OpenCL-CTS-vector_float4_extract_spv32",
+        ":OpenCL-CTS-vector_float4_extract_spv64",
+        ":OpenCL-CTS-vector_float4_insert_spv32",
+        ":OpenCL-CTS-vector_float4_insert_spv64",
+        ":OpenCL-CTS-vector_half8_extract_spv32",
+        ":OpenCL-CTS-vector_half8_extract_spv64",
+        ":OpenCL-CTS-vector_half8_insert_spv32",
+        ":OpenCL-CTS-vector_half8_insert_spv64",
+        ":OpenCL-CTS-vector_int4_extract_spv32",
+        ":OpenCL-CTS-vector_int4_extract_spv64",
+        ":OpenCL-CTS-vector_int4_insert_spv32",
+        ":OpenCL-CTS-vector_int4_insert_spv64",
+        ":OpenCL-CTS-vector_long2_extract_spv32",
+        ":OpenCL-CTS-vector_long2_extract_spv64",
+        ":OpenCL-CTS-vector_long2_insert_spv32",
+        ":OpenCL-CTS-vector_long2_insert_spv64",
+        ":OpenCL-CTS-vector_times_scalar_double_spv32",
+        ":OpenCL-CTS-vector_times_scalar_double_spv64",
+        ":OpenCL-CTS-vector_times_scalar_float_spv32",
+        ":OpenCL-CTS-vector_times_scalar_float_spv64",
+        ":OpenCL-CTS-vector_times_scalar_half_spv32",
+        ":OpenCL-CTS-vector_times_scalar_half_spv64",
+    ],
+}
+
+filegroup {
+    name: "OpenCL-CTS-spir_data",
+    srcs: ["test_conformance/spir/*.zip"],
+}
+
+filegroup {
+    name: "OpenCL-CTS-compiler_data",
+    srcs: [
+        "test_conformance/compiler/includeTestDirectory/testIncludeFile.h",
+        "test_conformance/compiler/secondIncludeTestDirectory/testIncludeFile.h",
+    ],
 }
 
 cc_defaults {
@@ -1035,4 +5173,64 @@ cc_defaults {
     test_options: {
         unit_test: false,
     },
+}
+
+cc_test {
+    name: "OpenCL-CTS",
+    data: [
+        ":OpenCL-CTS-test_svm",
+        ":OpenCL-CTS-test_allocations",
+        ":OpenCL-CTS-test_api",
+        ":OpenCL-CTS-test_atomics",
+        ":OpenCL-CTS-test_basic",
+        ":OpenCL-CTS-test_buffers",
+        ":OpenCL-CTS-test_c11_atomics",
+        ":OpenCL-CTS-test_commonfns",
+        ":OpenCL-CTS-test_compiler",
+        ":OpenCL-CTS-test_computeinfo",
+        ":OpenCL-CTS-test_contractions",
+        ":OpenCL-CTS-test_conversions",
+        ":OpenCL-CTS-test_device_execution",
+        ":OpenCL-CTS-test_device_partition",
+        ":OpenCL-CTS-test_device_timer",
+        ":OpenCL-CTS-test_events",
+        ":OpenCL-CTS-test_cl_ext_cxx_for_opencl",
+        ":OpenCL-CTS-test_cl_khr_mutable_dispatch",
+        ":OpenCL-CTS-test_cl_khr_command_buffer",
+        ":OpenCL-CTS-test_cl_khr_kernel_clock",
+        ":OpenCL-CTS-test_cl_khr_semaphore",
+        ":OpenCL-CTS-test_generic_address_space",
+        ":OpenCL-CTS-test_geometrics",
+        ":OpenCL-CTS-test_half",
+        ":OpenCL-CTS-test_cl_copy_images",
+        ":OpenCL-CTS-test_cl_fill_images",
+        ":OpenCL-CTS-test_cl_get_info",
+        ":OpenCL-CTS-test_cl_read_write_images",
+        ":OpenCL-CTS-test_kernel_image_methods",
+        ":OpenCL-CTS-test_image_streams",
+        ":OpenCL-CTS-test_samplerless_reads",
+        ":OpenCL-CTS-test_integer_ops",
+        ":OpenCL-CTS-test_bruteforce",
+        ":OpenCL-CTS-test_mem_host_flags",
+        ":OpenCL-CTS-test_multiples",
+        ":OpenCL-CTS-test_non_uniform_work_group",
+        ":OpenCL-CTS-test_pipes",
+        ":OpenCL-CTS-test_printf",
+        ":OpenCL-CTS-test_profiling",
+        ":OpenCL-CTS-test_relationals",
+        ":OpenCL-CTS-test_select",
+        ":OpenCL-CTS-test_spir",
+        ":OpenCL-CTS-test_spirv_new",
+        ":OpenCL-CTS-test_subgroups",
+        ":OpenCL-CTS-test_thread_dimensions",
+        ":OpenCL-CTS-test_vectors",
+        ":OpenCL-CTS-test_workgroups",
+        ":OpenCL-CTS-compiler_data",
+        ":OpenCL-CTS-spir_data",
+        ":OpenCL-CTS-spirv_new_data",
+    ],
+    test_options: {
+        unit_test: false,
+    },
+    test_config: "android/OpenCL-CTS.xml",
 }

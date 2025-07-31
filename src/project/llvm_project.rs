@@ -169,6 +169,13 @@ cc_defaults {{
             .extend_prop("cflags", cflags)?
             .extend_prop("shared_libs", libs)
     }
+    fn extend_custom_command(
+        &self,
+        _target: &Path,
+        module: SoongModule,
+    ) -> Result<SoongModule, String> {
+        Ok(module.add_prop("vendor_available", SoongProp::Bool(true)))
+    }
 
     fn filter_cflag(&self, _cflag: &str) -> bool {
         false

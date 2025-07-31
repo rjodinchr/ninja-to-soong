@@ -416,7 +416,11 @@ where
             })
             .collect()
     }
-    pub fn generate_custom_command(&mut self, target: &T, rule_cmd: NinjaRuleCmd) -> SoongModule {
+    pub fn generate_custom_command(
+        &mut self,
+        target: &T,
+        rule_cmd: NinjaRuleCmd,
+    ) -> Result<SoongModule, String> {
         let mut inputs = Vec::new();
         let mut deps = Vec::new();
         inputs.extend(self.get_cmd_inputs(target.get_inputs().clone(), &mut deps));
@@ -443,12 +447,14 @@ where
             .collect();
         let module_name = path_to_id(Path::new(self.project.get_name()).join(target.get_name()));
 
-        SoongModule::new("cc_genrule")
-            .add_prop("name", SoongProp::Str(module_name))
-            .add_prop("cmd", SoongProp::Str(cmd))
-            .add_prop("srcs", SoongProp::VecStr(sources))
-            .add_prop("out", SoongProp::VecStr(outputs))
-            .add_prop("tool_files", SoongProp::VecStr(vec![tool]))
-            .add_prop("vendor_available", SoongProp::Bool(true))
+        self.project.extend_custom_command(
+            &target.get_name(),
+            SoongModule::new("cc_genrule")
+                .add_prop("name", SoongProp::Str(module_name))
+                .add_prop("cmd", SoongProp::Str(cmd))
+                .add_prop("srcs", SoongProp::VecStr(sources))
+                .add_prop("out", SoongProp::VecStr(outputs))
+                .add_prop("tool_files", SoongProp::VecStr(vec![tool])),
+        )
     }
 }

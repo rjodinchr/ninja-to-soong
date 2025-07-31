@@ -406,7 +406,6 @@ cc_genrule {
     ],
     out: ["src/util/format/u_format_gen.h"],
     tool_files: ["raspberry-vanilla/aosp16/external/mesa3d-rpi/src/util/format/u_format_table.py"],
-    vendor_available: true,
 }
 
 cc_genrule {
@@ -419,7 +418,6 @@ cc_genrule {
     ],
     out: ["src/broadcom/cle/v3d_packet_v71_pack.h"],
     tool_files: ["raspberry-vanilla/aosp16/external/mesa3d-rpi/src/broadcom/cle/gen_pack_header.py"],
-    vendor_available: true,
 }
 
 cc_genrule {
@@ -432,7 +430,6 @@ cc_genrule {
     ],
     out: ["src/broadcom/cle/v3d_packet_v42_pack.h"],
     tool_files: ["raspberry-vanilla/aosp16/external/mesa3d-rpi/src/broadcom/cle/gen_pack_header.py"],
-    vendor_available: true,
 }
 
 cc_genrule {
@@ -445,7 +442,6 @@ cc_genrule {
     ],
     out: ["src/broadcom/cle/v3d_packet_v21_pack.h"],
     tool_files: ["raspberry-vanilla/aosp16/external/mesa3d-rpi/src/broadcom/cle/gen_pack_header.py"],
-    vendor_available: true,
 }
 
 cc_genrule {
@@ -459,7 +455,6 @@ cc_genrule {
     ],
     out: ["src/compiler/nir/nir_opcodes.h"],
     tool_files: ["raspberry-vanilla/aosp16/external/mesa3d-rpi/src/compiler/nir/nir_opcodes_h.py"],
-    vendor_available: true,
 }
 
 cc_genrule {
@@ -472,7 +467,6 @@ cc_genrule {
     ],
     out: ["src/compiler/nir/nir_intrinsics_indices.h"],
     tool_files: ["raspberry-vanilla/aosp16/external/mesa3d-rpi/src/compiler/nir/nir_intrinsics_indices_h.py"],
-    vendor_available: true,
 }
 
 cc_genrule {
@@ -485,7 +479,6 @@ cc_genrule {
     ],
     out: ["src/compiler/nir/nir_intrinsics.h"],
     tool_files: ["raspberry-vanilla/aosp16/external/mesa3d-rpi/src/compiler/nir/nir_intrinsics_h.py"],
-    vendor_available: true,
 }
 
 cc_genrule {
@@ -499,7 +492,6 @@ cc_genrule {
     ],
     out: ["src/compiler/nir/nir_builder_opcodes.h"],
     tool_files: ["raspberry-vanilla/aosp16/external/mesa3d-rpi/src/compiler/nir/nir_builder_opcodes_h.py"],
-    vendor_available: true,
 }
 
 cc_genrule {
@@ -511,7 +503,6 @@ cc_genrule {
     ],
     out: ["src/compiler/ir_expression_operation.h"],
     tool_files: ["raspberry-vanilla/aosp16/external/mesa3d-rpi/src/compiler/glsl/ir_expression_operation.py"],
-    vendor_available: true,
 }
 
 cc_genrule {
@@ -525,7 +516,6 @@ cc_genrule {
     ],
     out: ["src/compiler/builtin_types.h"],
     tool_files: ["raspberry-vanilla/aosp16/external/mesa3d-rpi/src/compiler/builtin_types_h.py"],
-    vendor_available: true,
 }
 
 cc_genrule {
@@ -539,5 +529,4 @@ cc_genrule {
     ],
     out: ["src/broadcom/compiler/v3d_nir_lower_algebraic.c"],
     tool_files: ["raspberry-vanilla/aosp16/external/mesa3d-rpi/src/broadcom/compiler/v3d_nir_lower_algebraic.py"],
-    vendor_available: true,
 }
