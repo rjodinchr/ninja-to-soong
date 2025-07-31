@@ -5,7 +5,6 @@ extern crate ninja_to_soong;
 use ninja_to_soong::context::*;
 use ninja_to_soong::ninja_parser::*;
 use ninja_to_soong::ninja_target::*;
-use ninja_to_soong::project::common;
 use ninja_to_soong::project::*;
 use ninja_to_soong::soong_module::*;
 use ninja_to_soong::soong_package::*;
@@ -21,7 +20,9 @@ pub struct OpenclCts();
 
 const DEFAULTS: &str = "OpenCL-CTS-defaults";
 const DEFAULTS_MANUAL: &str = "OpenCL-CTS-manual-defaults";
-const CMAKE_GENERATED: &str = "cmake_generated";
+const SPIRV_NEW_DATA: &str = "OpenCL-CTS-spirv_new_data";
+const SPIR_DATA: &str = "OpenCL-CTS-spir_data";
+const COMPILER_DATA: &str = "OpenCL-CTS-compiler_data";
 
 fn parse_test(line: &str) -> Option<String> {
     let split_comma = line.split(",");
@@ -78,21 +79,22 @@ impl Project for OpenclCts {
         let ndk_path = get_ndk_path(&ctx.temp_path, ctx)?;
 
         if !ctx.skip_gen_ninja {
-            common::cmake_configure(
-                &src_path,
-                &build_path,
-                &ndk_path,
-                None,
-                None,
-                None,
-                &[
+            execute_cmd!(
+                "cmake",
+                [
+                    "-S",
+                    &path_to_string(&src_path),
+                    "-B",
+                    &path_to_string(&build_path),
+                    "-G",
+                    "Ninja",
                     &format!(
                         "-DCL_INCLUDE_DIR={}/../OpenCL-Headers",
                         path_to_string(&src_path)
                     ),
                     &format!("-DCL_LIB_DIR={}", path_to_string(&src_path)),
                     "-DOPENCL_LIBRARIES=-lOpenCL",
-                ],
+                ]
             )?;
         }
         let tests = parse_tests(&src_path)?
@@ -125,16 +127,46 @@ impl Project for OpenclCts {
             &src_path,
             &ndk_path,
             &build_path,
-            Some(CMAKE_GENERATED),
+            None,
             self,
             ctx,
         )?;
 
         let gen_deps = package.get_gen_deps();
-        if !ctx.skip_build {
-            common::ninja_build(&build_path, &gen_deps)?;
+        let mut spirv_new_data = Vec::new();
+        for dep in gen_deps {
+            let folder = file_name(dep.clone().parent().unwrap());
+            let basename = PathBuf::from("test_conformance/spirv_new/spirv_asm");
+            let (target_env, dirname) = if folder.starts_with("spv") {
+                (folder.clone(), basename.join(folder))
+            } else {
+                (String::from("spv1.0"), basename)
+            };
+            let source = dirname.join(file_name(&dep).replace(".spv", ".spvasm"));
+            let name = String::from(self.get_name())
+                + "-"
+                + &path_to_id(strip_prefix(
+                    dep.clone(),
+                    "test_conformance/spirv_new/spirv_bin",
+                ));
+            spirv_new_data.push(String::from(":") + &name);
+            package = package.add_module(
+                SoongModule::new("gensrcs")
+                    .add_prop("name", SoongProp::Str(name))
+                    .add_prop(
+                        "cmd",
+                        SoongProp::Str(format!(
+                            "$(location) --target-env {target_env} $(in) -o $(out)"
+                        )),
+                    )
+                    .add_prop("srcs", SoongProp::VecStr(vec![path_to_string(source)]))
+                    .add_prop("output_extension", SoongProp::Str(file_ext(&dep)))
+                    .add_prop(
+                        "tools",
+                        SoongProp::VecStr(vec![String::from("//external/SPIRV-Tools:spirv-as")]),
+                    ),
+            );
         }
-        common::copy_gen_deps(gen_deps, CMAKE_GENERATED, &build_path, ctx, self)?;
 
         let default_module = SoongModule::new("cc_defaults")
             .add_prop("name", SoongProp::Str(String::from(DEFAULTS)))
@@ -147,6 +179,25 @@ impl Project for OpenclCts {
                 SoongProp::VecStr(vec![String::from(DEFAULTS_MANUAL)]),
             );
         package
+            .add_module(SoongModule::new_filegroup(
+                String::from(SPIRV_NEW_DATA),
+                spirv_new_data,
+            ))
+            .add_module(SoongModule::new_filegroup(
+                String::from(SPIR_DATA),
+                vec![String::from("test_conformance/spir/*.zip")],
+            ))
+            .add_module(SoongModule::new_filegroup(
+                String::from(COMPILER_DATA),
+                vec![
+                    String::from(
+                        "test_conformance/compiler/includeTestDirectory/testIncludeFile.h",
+                    ),
+                    String::from(
+                        "test_conformance/compiler/secondIncludeTestDirectory/testIncludeFile.h",
+                    ),
+                ],
+            ))
             .add_module(default_module)
             .add_raw_suffix(&format!(
                 r#"
@@ -165,36 +216,70 @@ cc_defaults {{
         unit_test: false,
     }},
 }}
-"#
+
+cc_test {{
+    name: "{0}",
+    data: [
+{1}
+        ":{COMPILER_DATA}",
+        ":{SPIR_DATA}",
+        ":{SPIRV_NEW_DATA}",
+    ],
+    test_options: {{
+        unit_test: false,
+    }},
+    test_config: "android/{0}.xml",
+}}
+"#,
+                self.get_name(),
+                tests
+                    .iter()
+                    .map(|(_, test)| String::from("        \":") + test + "\",")
+                    .collect::<Vec<_>>()
+                    .join("\n")
             ))
             .print(ctx)
     }
 
     fn extend_module(&self, target: &Path, mut module: SoongModule) -> Result<SoongModule, String> {
-        let mut data = Vec::new();
         let is_test_spir = target.ends_with("test_spir");
-        let spirv_bin = format!("{CMAKE_GENERATED}/test_conformance/spirv_new/spirv_bin/*");
-        if target.ends_with("test_compiler") {
-            data.push("test_conformance/compiler/includeTestDirectory/testIncludeFile.h");
-            data.push("test_conformance/compiler/secondIncludeTestDirectory/testIncludeFile.h")
+        let data = if target.ends_with("test_compiler") {
+            COMPILER_DATA
         } else if is_test_spir {
-            data.push("test_conformance/spir/*.zip");
+            SPIR_DATA
         } else if target.ends_with("test_spirv_new") {
-            data.push(&spirv_bin);
-        }
+            SPIRV_NEW_DATA
+        } else {
+            ""
+        };
         let defaults = if target.ends_with("libharness.a") {
             DEFAULTS_MANUAL
         } else {
             module = module.add_prop(
                 "test_config",
-                SoongProp::Str(String::from("android/") + &file_name(target) + ".xml"),
+                SoongProp::Str(
+                    String::from("android/") + self.get_name() + "-" + &file_name(target) + ".xml",
+                ),
             );
             DEFAULTS
         };
-        module
+        module = module
             .add_prop("rtti", SoongProp::Bool(is_test_spir))
-            .extend_prop("defaults", vec![defaults])?
-            .extend_prop("data", data)
+            .extend_prop("defaults", vec![defaults])?;
+        if !data.is_empty() {
+            let data_str = format!(":{data}");
+            module = module.extend_prop("data", vec![&data_str])?;
+        }
+        Ok(module)
+    }
+    fn extend_custom_command(
+        &self,
+        _target: &Path,
+        module: SoongModule,
+    ) -> Result<SoongModule, String> {
+        Ok(module
+            .add_prop("vendor_available", SoongProp::Bool(true))
+            .add_prop("host_supported", SoongProp::Bool(true)))
     }
 
     fn map_lib(&self, lib: &Path) -> Option<PathBuf> {
