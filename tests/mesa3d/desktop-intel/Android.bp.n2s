@@ -52,6 +52,7 @@ cc_binary {
         "libz",
     ],
     static_libs: [
+        "libperfetto_client_experimental",
         "mesa3d_desktop-intel_src_c11_impl_libmesa_util_c11_a",
         "mesa3d_desktop-intel_src_intel_common_libintel_clflushopt_a",
         "mesa3d_desktop-intel_src_intel_common_libintel_common_a",
@@ -77,29 +78,14 @@ cc_binary {
         "mesa3d_desktop-intel_src_util_blake3_libblake3_a",
         "mesa3d_desktop-intel_src_util_libmesa_util_a",
         "mesa3d_desktop-intel_src_util_libmesa_util_sse41_a",
-        "mesa3d_desktop-intel_subprojects_perfetto_libperfetto_a",
     ],
     local_include_dirs: [
         "meson_generated/src",
         "src",
         "src/tool",
         "src/tool/pps",
-        "subprojects/perfetto/sdk",
     ],
     defaults: ["mesa3d-desktop-intel-defaults"],
-}
-
-cc_library_static {
-    name: "mesa3d_desktop-intel_subprojects_perfetto_libperfetto_a",
-    srcs: ["subprojects/perfetto/sdk/perfetto.cc"],
-    cflags: [
-        "-DNDEBUG",
-        "-D_FILE_OFFSET_BITS=64",
-        "-Wno-error",
-        "-Wno-non-virtual-dtor",
-    ],
-    local_include_dirs: ["subprojects/perfetto"],
-    defaults: ["mesa3d-desktop-intel-raw-defaults"],
 }
 
 cc_library_static {
@@ -203,6 +189,7 @@ cc_library_static {
         "src/util/vma.c",
     ],
     shared_libs: ["libz"],
+    static_libs: ["libperfetto_client_experimental"],
     local_include_dirs: [
         "include",
         "meson_generated/src",
@@ -211,7 +198,6 @@ cc_library_static {
         "src",
         "src/util",
         "src/util/format",
-        "subprojects/perfetto/sdk",
     ],
     header_libs: ["libdrm_headers"],
     defaults: ["mesa3d-desktop-intel-defaults"],
@@ -241,13 +227,13 @@ cc_library_static {
         "src/tool/pps/pps_driver.cc",
     ],
     cflags: ["-DPPS_INTEL"],
+    static_libs: ["libperfetto_client_experimental"],
     local_include_dirs: [
         "include",
         "meson_generated/src",
         "src",
         "src/tool",
         "src/tool/pps",
-        "subprojects/perfetto/sdk",
     ],
     header_libs: ["libdrm_headers"],
     defaults: ["mesa3d-desktop-intel-defaults"],
@@ -274,7 +260,6 @@ cc_library_static {
         "src",
         "src/intel",
         "src/intel/perf",
-        "subprojects/perfetto/sdk",
     ],
     defaults: ["mesa3d-desktop-intel-defaults"],
 }
@@ -292,7 +277,6 @@ cc_library_static {
         "src",
         "src/intel",
         "src/intel/isl",
-        "subprojects/perfetto/sdk",
     ],
     defaults: ["mesa3d-desktop-intel-defaults"],
 }
@@ -310,7 +294,6 @@ cc_library_static {
         "src",
         "src/intel",
         "src/intel/isl",
-        "subprojects/perfetto/sdk",
     ],
     defaults: ["mesa3d-desktop-intel-defaults"],
 }
@@ -336,7 +319,6 @@ cc_library_static {
         "src/intel",
         "src/intel/genxml",
         "src/intel/isl",
-        "subprojects/perfetto/sdk",
     ],
     defaults: ["mesa3d-desktop-intel-defaults"],
 }
@@ -362,7 +344,6 @@ cc_library_static {
         "src/intel",
         "src/intel/genxml",
         "src/intel/isl",
-        "subprojects/perfetto/sdk",
     ],
     defaults: ["mesa3d-desktop-intel-defaults"],
 }
@@ -387,7 +368,6 @@ cc_library_static {
         "src/intel",
         "src/intel/genxml",
         "src/intel/isl",
-        "subprojects/perfetto/sdk",
     ],
     defaults: ["mesa3d-desktop-intel-defaults"],
 }
@@ -413,7 +393,6 @@ cc_library_static {
         "src/intel",
         "src/intel/genxml",
         "src/intel/isl",
-        "subprojects/perfetto/sdk",
     ],
     defaults: ["mesa3d-desktop-intel-defaults"],
 }
@@ -439,7 +418,6 @@ cc_library_static {
         "src/intel",
         "src/intel/genxml",
         "src/intel/isl",
-        "subprojects/perfetto/sdk",
     ],
     defaults: ["mesa3d-desktop-intel-defaults"],
 }
@@ -464,7 +442,6 @@ cc_library_static {
         "src/intel",
         "src/intel/genxml",
         "src/intel/isl",
-        "subprojects/perfetto/sdk",
     ],
     defaults: ["mesa3d-desktop-intel-defaults"],
 }
@@ -490,7 +467,6 @@ cc_library_static {
         "src/intel",
         "src/intel/genxml",
         "src/intel/isl",
-        "subprojects/perfetto/sdk",
     ],
     defaults: ["mesa3d-desktop-intel-defaults"],
 }
@@ -516,7 +492,6 @@ cc_library_static {
         "src/intel",
         "src/intel/genxml",
         "src/intel/isl",
-        "subprojects/perfetto/sdk",
     ],
     defaults: ["mesa3d-desktop-intel-defaults"],
 }
@@ -542,7 +517,6 @@ cc_library_static {
         "src/intel",
         "src/intel/genxml",
         "src/intel/isl",
-        "subprojects/perfetto/sdk",
     ],
     defaults: ["mesa3d-desktop-intel-defaults"],
 }
@@ -568,7 +542,6 @@ cc_library_static {
         "src/intel",
         "src/intel/genxml",
         "src/intel/isl",
-        "subprojects/perfetto/sdk",
     ],
     defaults: ["mesa3d-desktop-intel-defaults"],
 }
@@ -594,7 +567,6 @@ cc_library_static {
         "src/intel",
         "src/intel/genxml",
         "src/intel/isl",
-        "subprojects/perfetto/sdk",
     ],
     defaults: ["mesa3d-desktop-intel-defaults"],
 }
@@ -619,7 +591,6 @@ cc_library_static {
         "src/intel",
         "src/intel/genxml",
         "src/intel/isl",
-        "subprojects/perfetto/sdk",
     ],
     defaults: ["mesa3d-desktop-intel-defaults"],
 }
@@ -645,7 +616,6 @@ cc_library_static {
         "src",
         "src/intel",
         "src/intel/isl",
-        "subprojects/perfetto/sdk",
     ],
     defaults: ["mesa3d-desktop-intel-defaults"],
 }
@@ -656,6 +626,7 @@ cc_library_static {
         "src/intel/ds/intel_pps_driver.cc",
         "src/intel/ds/intel_pps_perf.cc",
     ],
+    static_libs: ["libperfetto_client_experimental"],
     local_include_dirs: [
         "include",
         "meson_generated/src",
@@ -667,7 +638,6 @@ cc_library_static {
         "src/intel",
         "src/intel/ds",
         "src/tool",
-        "subprojects/perfetto/sdk",
     ],
     defaults: ["mesa3d-desktop-intel-defaults"],
 }
@@ -692,7 +662,6 @@ cc_library_static {
         "src",
         "src/intel",
         "src/intel/dev",
-        "subprojects/perfetto/sdk",
     ],
     header_libs: ["libdrm_headers"],
     defaults: ["mesa3d-desktop-intel-defaults"],
@@ -732,7 +701,6 @@ cc_library_static {
         "src/intel",
         "src/intel/common",
         "src/intel/genxml",
-        "subprojects/perfetto/sdk",
     ],
     defaults: ["mesa3d-desktop-intel-defaults"],
 }
@@ -778,6 +746,7 @@ cc_library_shared {
         "libz",
     ],
     static_libs: [
+        "libperfetto_client_experimental",
         "mesa3d_desktop-intel_src_c11_impl_libmesa_util_c11_a",
         "mesa3d_desktop-intel_src_intel_common_libintel_clflushopt_a",
         "mesa3d_desktop-intel_src_intel_common_libintel_common_a",
@@ -803,14 +772,12 @@ cc_library_shared {
         "mesa3d_desktop-intel_src_util_blake3_libblake3_a",
         "mesa3d_desktop-intel_src_util_libmesa_util_a",
         "mesa3d_desktop-intel_src_util_libmesa_util_sse41_a",
-        "mesa3d_desktop-intel_subprojects_perfetto_libperfetto_a",
     ],
     local_include_dirs: [
         "meson_generated/src",
         "src",
         "src/tool",
         "src/tool/pps",
-        "subprojects/perfetto/sdk",
     ],
     defaults: ["mesa3d-desktop-intel-defaults"],
 }
@@ -857,6 +824,7 @@ cc_library_shared {
         "libz",
     ],
     static_libs: [
+        "libperfetto_client_experimental",
         "mesa3d_desktop-intel_src_c11_impl_libmesa_util_c11_a",
         "mesa3d_desktop-intel_src_compiler_glsl_glcpp_libglcpp_a",
         "mesa3d_desktop-intel_src_compiler_glsl_libglsl_a",
@@ -910,7 +878,6 @@ cc_library_shared {
         "mesa3d_desktop-intel_src_util_libmesa_util_a",
         "mesa3d_desktop-intel_src_util_libmesa_util_sse41_a",
         "mesa3d_desktop-intel_src_util_libxmlconfig_a",
-        "mesa3d_desktop-intel_subprojects_perfetto_libperfetto_a",
     ],
     whole_static_libs: ["mesa3d_desktop-intel_src_gallium_frontends_dri_libdri_a"],
     local_include_dirs: [
@@ -929,7 +896,6 @@ cc_library_shared {
         "src/gallium/winsys",
         "src/mapi",
         "src/mesa",
-        "subprojects/perfetto/sdk",
     ],
     defaults: ["mesa3d-desktop-intel-defaults"],
 }
@@ -949,7 +915,6 @@ cc_library_static {
         "meson_generated/src/util/format",
         "src",
         "src/util",
-        "subprojects/perfetto/sdk",
     ],
     defaults: ["mesa3d-desktop-intel-defaults"],
 }
@@ -1215,7 +1180,6 @@ cc_library_static {
         "src/mapi",
         "src/mesa",
         "src/mesa/main",
-        "subprojects/perfetto/sdk",
     ],
     defaults: ["mesa3d-desktop-intel-defaults"],
 }
@@ -1242,7 +1206,6 @@ cc_library_static {
         "src",
         "src/mapi",
         "src/mapi/shared-glapi",
-        "subprojects/perfetto/sdk",
     ],
     defaults: ["mesa3d-desktop-intel-defaults"],
 }
@@ -1261,7 +1224,6 @@ cc_library_static {
         "src",
         "src/gallium/include",
         "src/loader",
-        "subprojects/perfetto/sdk",
     ],
     header_libs: ["libdrm_headers"],
     defaults: ["mesa3d-desktop-intel-defaults"],
@@ -1273,6 +1235,7 @@ cc_library_static {
         "meson_generated/src/intel/ds/intel_tracepoints.c",
         "src/intel/ds/intel_driver_ds.cc",
     ],
+    static_libs: ["libperfetto_client_experimental"],
     local_include_dirs: [
         "include",
         "meson_generated/src",
@@ -1287,7 +1250,6 @@ cc_library_static {
         "src/compiler/nir",
         "src/intel",
         "src/intel/ds",
-        "subprojects/perfetto/sdk",
     ],
     defaults: ["mesa3d-desktop-intel-defaults"],
 }
@@ -1314,7 +1276,6 @@ cc_library_static {
         "src",
         "src/intel",
         "src/intel/decoder",
-        "subprojects/perfetto/sdk",
     ],
     defaults: ["mesa3d-desktop-intel-defaults"],
 }
@@ -1426,7 +1387,6 @@ cc_library_static {
         "src/compiler/nir",
         "src/intel",
         "src/intel/compiler",
-        "subprojects/perfetto/sdk",
     ],
     defaults: ["mesa3d-desktop-intel-defaults"],
 }
@@ -1454,7 +1414,6 @@ cc_library_static {
         "src/intel",
         "src/intel/blorp",
         "src/intel/genxml",
-        "subprojects/perfetto/sdk",
     ],
     defaults: ["mesa3d-desktop-intel-defaults"],
 }
@@ -1471,7 +1430,6 @@ cc_library_static {
         "src/gallium/auxiliary",
         "src/gallium/include",
         "src/gallium/winsys/sw/wrapper",
-        "subprojects/perfetto/sdk",
     ],
     defaults: ["mesa3d-desktop-intel-defaults"],
 }
@@ -1488,7 +1446,6 @@ cc_library_static {
         "src/gallium/auxiliary",
         "src/gallium/include",
         "src/gallium/winsys/sw/null",
-        "subprojects/perfetto/sdk",
     ],
     defaults: ["mesa3d-desktop-intel-defaults"],
 }
@@ -1505,7 +1462,6 @@ cc_library_static {
         "src/gallium/auxiliary",
         "src/gallium/include",
         "src/gallium/winsys/sw/kms-dri",
-        "subprojects/perfetto/sdk",
     ],
     header_libs: ["libdrm_headers"],
     defaults: ["mesa3d-desktop-intel-defaults"],
@@ -1523,7 +1479,6 @@ cc_library_static {
         "src/gallium/auxiliary",
         "src/gallium/include",
         "src/gallium/winsys/sw/dri",
-        "subprojects/perfetto/sdk",
     ],
     defaults: ["mesa3d-desktop-intel-defaults"],
 }
@@ -1541,7 +1496,6 @@ cc_library_static {
         "src/gallium/drivers",
         "src/gallium/include",
         "src/gallium/winsys/iris/drm",
-        "subprojects/perfetto/sdk",
     ],
     defaults: ["mesa3d-desktop-intel-defaults"],
 }
@@ -1575,7 +1529,6 @@ cc_library_static {
         "src/loader",
         "src/mapi",
         "src/mesa",
-        "subprojects/perfetto/sdk",
     ],
     header_libs: ["libdrm_headers"],
     defaults: ["mesa3d-desktop-intel-defaults"],
@@ -1615,7 +1568,6 @@ cc_library_static {
         "src/intel/shaders",
         "src/mapi",
         "src/mesa",
-        "subprojects/perfetto/sdk",
     ],
     defaults: ["mesa3d-desktop-intel-defaults"],
 }
@@ -1654,7 +1606,6 @@ cc_library_static {
         "src/intel/shaders",
         "src/mapi",
         "src/mesa",
-        "subprojects/perfetto/sdk",
     ],
     defaults: ["mesa3d-desktop-intel-defaults"],
 }
@@ -1693,7 +1644,6 @@ cc_library_static {
         "src/intel/shaders",
         "src/mapi",
         "src/mesa",
-        "subprojects/perfetto/sdk",
     ],
     defaults: ["mesa3d-desktop-intel-defaults"],
 }
@@ -1732,7 +1682,6 @@ cc_library_static {
         "src/intel/shaders",
         "src/mapi",
         "src/mesa",
-        "subprojects/perfetto/sdk",
     ],
     defaults: ["mesa3d-desktop-intel-defaults"],
 }
@@ -1771,7 +1720,6 @@ cc_library_static {
         "src/intel/shaders",
         "src/mapi",
         "src/mesa",
-        "subprojects/perfetto/sdk",
     ],
     defaults: ["mesa3d-desktop-intel-defaults"],
 }
@@ -1810,7 +1758,6 @@ cc_library_static {
         "src/intel/shaders",
         "src/mapi",
         "src/mesa",
-        "subprojects/perfetto/sdk",
     ],
     defaults: ["mesa3d-desktop-intel-defaults"],
 }
@@ -1873,7 +1820,6 @@ cc_library_static {
         "src/intel/genxml",
         "src/mapi",
         "src/mesa",
-        "subprojects/perfetto/sdk",
     ],
     header_libs: ["libdrm_headers"],
     defaults: ["mesa3d-desktop-intel-defaults"],
@@ -1899,7 +1845,6 @@ cc_library_static {
         "src/gallium/include",
         "src/gallium/winsys",
         "src/loader",
-        "subprojects/perfetto/sdk",
     ],
     header_libs: ["libdrm_headers"],
     defaults: ["mesa3d-desktop-intel-defaults"],
@@ -1939,7 +1884,6 @@ cc_library_static {
         "src/compiler/nir",
         "src/gallium/auxiliary",
         "src/gallium/include",
-        "subprojects/perfetto/sdk",
     ],
     defaults: ["mesa3d-desktop-intel-defaults"],
 }
@@ -2113,7 +2057,6 @@ cc_library_static {
         "src/gallium/auxiliary/util",
         "src/gallium/include",
         "src/loader",
-        "subprojects/perfetto/sdk",
     ],
     header_libs: ["libdrm_headers"],
     defaults: ["mesa3d-desktop-intel-defaults"],
@@ -2152,7 +2095,6 @@ cc_library_static {
         "src/compiler/spirv",
         "src/mapi",
         "src/mesa",
-        "subprojects/perfetto/sdk",
     ],
     defaults: ["mesa3d-desktop-intel-defaults"],
 }
@@ -2379,7 +2321,6 @@ cc_library_static {
         "src",
         "src/compiler",
         "src/compiler/nir",
-        "subprojects/perfetto/sdk",
     ],
     defaults: ["mesa3d-desktop-intel-defaults"],
 }
@@ -2496,7 +2437,6 @@ cc_library_static {
         "src/gallium/include",
         "src/mapi",
         "src/mesa",
-        "subprojects/perfetto/sdk",
     ],
     defaults: ["mesa3d-desktop-intel-defaults"],
 }
@@ -2522,7 +2462,6 @@ cc_library_static {
         "src/gallium/include",
         "src/mapi",
         "src/mesa",
-        "subprojects/perfetto/sdk",
     ],
     defaults: ["mesa3d-desktop-intel-defaults"],
 }
@@ -2573,6 +2512,7 @@ cc_library_shared {
         "libz",
     ],
     static_libs: [
+        "libperfetto_client_experimental",
         "mesa3d_desktop-intel_src_c11_impl_libmesa_util_c11_a",
         "mesa3d_desktop-intel_src_compiler_libcompiler_a",
         "mesa3d_desktop-intel_src_compiler_nir_libnir_a",
@@ -2607,7 +2547,6 @@ cc_library_shared {
         "mesa3d_desktop-intel_src_util_libxmlconfig_a",
         "mesa3d_desktop-intel_src_util_u_gralloc_lib_mesa_u_gralloc_a",
         "mesa3d_desktop-intel_src_vulkan_util_libvulkan_util_a",
-        "mesa3d_desktop-intel_subprojects_perfetto_libperfetto_a",
     ],
     whole_static_libs: [
         "mesa3d_desktop-intel_src_intel_vulkan_libanv_common_a",
@@ -2651,7 +2590,6 @@ cc_library_shared {
         "src/vulkan/runtime/bvh",
         "src/vulkan/util",
         "src/vulkan/wsi",
-        "subprojects/perfetto/sdk",
     ],
     relative_install_path: "hw",
     afdo: true,
@@ -2682,7 +2620,6 @@ cc_library_static {
         "src/vulkan/runtime/bvh",
         "src/vulkan/util",
         "src/vulkan/wsi",
-        "subprojects/perfetto/sdk",
     ],
     header_libs: ["libdrm_headers"],
     defaults: ["mesa3d-desktop-intel-defaults"],
@@ -2710,7 +2647,6 @@ cc_library_static {
         "src/compiler",
         "src/compiler/nir",
         "src/vulkan/util",
-        "subprojects/perfetto/sdk",
     ],
     defaults: ["mesa3d-desktop-intel-defaults"],
 }
@@ -2754,7 +2690,6 @@ cc_library_static {
         "src/compiler/nir",
         "src/vulkan/runtime",
         "src/vulkan/util",
-        "subprojects/perfetto/sdk",
     ],
     defaults: ["mesa3d-desktop-intel-defaults"],
 }
@@ -2836,7 +2771,6 @@ cc_library_static {
         "src/compiler/nir",
         "src/vulkan/runtime",
         "src/vulkan/util",
-        "subprojects/perfetto/sdk",
     ],
     header_libs: ["libdrm_headers"],
     defaults: ["mesa3d-desktop-intel-defaults"],
@@ -2863,7 +2797,6 @@ cc_library_static {
         "src/compiler/nir",
         "src/vulkan/runtime",
         "src/vulkan/util",
-        "subprojects/perfetto/sdk",
     ],
     header_libs: ["libdrm_headers"],
     defaults: ["mesa3d-desktop-intel-defaults"],
@@ -2942,7 +2875,6 @@ cc_library_static {
         "src/vulkan/runtime/bvh",
         "src/vulkan/util",
         "src/vulkan/wsi",
-        "subprojects/perfetto/sdk",
     ],
     defaults: ["mesa3d-desktop-intel-defaults"],
 }
@@ -3001,7 +2933,6 @@ cc_library_static {
         "src/vulkan/runtime/bvh",
         "src/vulkan/util",
         "src/vulkan/wsi",
-        "subprojects/perfetto/sdk",
     ],
     defaults: ["mesa3d-desktop-intel-defaults"],
 }
@@ -3060,7 +2991,6 @@ cc_library_static {
         "src/vulkan/runtime/bvh",
         "src/vulkan/util",
         "src/vulkan/wsi",
-        "subprojects/perfetto/sdk",
     ],
     defaults: ["mesa3d-desktop-intel-defaults"],
 }
@@ -3119,7 +3049,6 @@ cc_library_static {
         "src/vulkan/runtime/bvh",
         "src/vulkan/util",
         "src/vulkan/wsi",
-        "subprojects/perfetto/sdk",
     ],
     defaults: ["mesa3d-desktop-intel-defaults"],
 }
@@ -3178,7 +3107,6 @@ cc_library_static {
         "src/vulkan/runtime/bvh",
         "src/vulkan/util",
         "src/vulkan/wsi",
-        "subprojects/perfetto/sdk",
     ],
     defaults: ["mesa3d-desktop-intel-defaults"],
 }
@@ -3237,7 +3165,6 @@ cc_library_static {
         "src/vulkan/runtime/bvh",
         "src/vulkan/util",
         "src/vulkan/wsi",
-        "subprojects/perfetto/sdk",
     ],
     defaults: ["mesa3d-desktop-intel-defaults"],
 }
@@ -3338,7 +3265,6 @@ cc_library_static {
         "src/vulkan/runtime/bvh",
         "src/vulkan/util",
         "src/vulkan/wsi",
-        "subprojects/perfetto/sdk",
     ],
     header_libs: [
         "hwvulkan_headers",
@@ -3385,6 +3311,7 @@ cc_library_shared {
         "mesa3d_desktop-intel_libgallium_dri",
     ],
     static_libs: [
+        "libperfetto_client_experimental",
         "mesa3d_desktop-intel_src_c11_impl_libmesa_util_c11_a",
         "mesa3d_desktop-intel_src_gallium_auxiliary_pipe-loader_libpipe_loader_dynamic_a",
         "mesa3d_desktop-intel_src_loader_libloader_a",
@@ -3393,7 +3320,6 @@ cc_library_shared {
         "mesa3d_desktop-intel_src_util_libmesa_util_sse41_a",
         "mesa3d_desktop-intel_src_util_libxmlconfig_a",
         "mesa3d_desktop-intel_src_util_u_gralloc_lib_mesa_u_gralloc_a",
-        "mesa3d_desktop-intel_subprojects_perfetto_libperfetto_a",
     ],
     local_include_dirs: [
         "include",
@@ -3411,7 +3337,6 @@ cc_library_shared {
         "src/loader",
         "src/mesa",
         "src/x11",
-        "subprojects/perfetto/sdk",
     ],
     relative_install_path: "egl",
     header_libs: ["libnativebase_headers"],
@@ -3438,7 +3363,6 @@ cc_library_static {
         "src/gallium/include",
         "src/gallium/winsys",
         "src/loader",
-        "subprojects/perfetto/sdk",
     ],
     header_libs: ["libdrm_headers"],
     defaults: ["mesa3d-desktop-intel-defaults"],
