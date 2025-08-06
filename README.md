@@ -19,7 +19,7 @@
 * [Rust](https://www.rust-lang.org/)
 * [Ninja](https://ninja-build.org/)
 * [CMake](https://cmake.org/)
-* [GN](https://github.com/o-lim/generate-ninja)
+* [GN](https://gn.googlesource.com/gn/)
 * [Meson](https://mesonbuild.com/)
 * Linux commands (`wget`, `unzip`, ...)
 
