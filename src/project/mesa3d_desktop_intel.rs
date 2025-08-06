@@ -60,9 +60,7 @@ impl Project for Mesa3DDesktopIntel {
                 ]
             )?;
         }
-        if !ctx.skip_build {
-            execute_cmd!("meson", ["compile", "-C", &path_to_string(&build_path)])?;
-        }
+        common::ninja_build(&build_path, &Vec::new(), ctx)?;
 
         const MESON_GENERATED: &str = "meson_generated";
         let mut package = SoongPackage::new(
