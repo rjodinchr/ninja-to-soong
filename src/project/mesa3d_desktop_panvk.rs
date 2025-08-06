@@ -59,9 +59,7 @@ impl Project for Mesa3DDesktopPanVK {
                 ]
             )?;
         }
-        if !ctx.skip_build {
-            execute_cmd!("meson", ["compile", "-C", &path_to_string(&build_path)])?;
-        }
+        common::ninja_build(&build_path, &Vec::new(), ctx)?;
 
         const MESON_GENERATED: &str = "meson_generated";
         let mut package = SoongPackage::new(
@@ -131,14 +129,11 @@ soong_namespace {
     }
 
     fn extend_module(&self, target: &Path, module: SoongModule) -> Result<SoongModule, String> {
-        let relative_install = |module: SoongModule| -> SoongModule {
-            if target.ends_with("libvulkan_panfrost.so") {
-                return module
-                    .add_prop("relative_install_path", SoongProp::Str(String::from("hw")));
-            }
+        let module = if target.ends_with("libvulkan_panfrost.so") {
+            module.add_prop("relative_install_path", SoongProp::Str(String::from("hw")))
+        } else {
             module
         };
-        let module = relative_install(module);
 
         let module = if target.ends_with("libvulkan_panfrost.so") {
             module.add_prop("afdo", SoongProp::Bool(true))

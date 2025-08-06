@@ -60,7 +60,10 @@ pub fn clean_gen_deps(
     Ok(())
 }
 
-pub fn ninja_build(build_path: &Path, targets: &Vec<PathBuf>) -> Result<(), String> {
+pub fn ninja_build(build_path: &Path, targets: &Vec<PathBuf>, ctx: &Context) -> Result<(), String> {
+    if ctx.skip_build {
+        return Ok(());
+    }
     let mut args = vec![String::from("-C"), path_to_string(&build_path)];
     for target in targets {
         args.push(path_to_string(target));

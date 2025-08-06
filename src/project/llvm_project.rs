@@ -107,9 +107,7 @@ impl Project for LlvmProject {
 
         let mut gen_deps = package.get_gen_deps();
         gen_deps.extend(libclc_binaries);
-        if !ctx.skip_build {
-            common::ninja_build(&build_path, &gen_deps)?;
-        }
+        common::ninja_build(&build_path, &gen_deps, ctx)?;
         gen_deps.extend(
             [
                 "include/llvm/Config/llvm-config.h",
@@ -149,32 +147,23 @@ cc_defaults {{
     }
 
     fn extend_module(&self, target: &Path, module: SoongModule) -> Result<SoongModule, String> {
-        let cflags = if target.ends_with("libLLVMSupport.a") {
-            vec![
-                "-DBLAKE3_NO_AVX512",
-                "-DBLAKE3_NO_AVX2",
-                "-DBLAKE3_NO_SSE41",
-                "-DBLAKE3_NO_SSE2",
-            ]
+        let (cflags, libs) = if target.ends_with("libLLVMSupport.a") {
+            (
+                vec![
+                    "-DBLAKE3_NO_AVX512",
+                    "-DBLAKE3_NO_AVX2",
+                    "-DBLAKE3_NO_SSE41",
+                    "-DBLAKE3_NO_SSE2",
+                ],
+                vec!["libz"],
+            )
         } else {
-            Vec::new()
-        };
-        let libs = if target.ends_with("libLLVMSupport.a") {
-            vec!["libz"]
-        } else {
-            Vec::new()
+            (Vec::new(), Vec::new())
         };
         module
             .add_prop("defaults", SoongProp::VecStr(vec![String::from(DEFAULTS)]))
             .extend_prop("cflags", cflags)?
             .extend_prop("shared_libs", libs)
-    }
-    fn extend_custom_command(
-        &self,
-        _target: &Path,
-        module: SoongModule,
-    ) -> Result<SoongModule, String> {
-        Ok(module.add_prop("vendor_available", SoongProp::Bool(true)))
     }
 
     fn filter_cflag(&self, _cflag: &str) -> bool {
