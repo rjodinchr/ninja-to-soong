@@ -6,7 +6,7 @@ set -xe
 DEST="$1"
 SCRIPT_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
 
-bash "${SCRIPT_DIR}/../../../utils/checkout.sh" https://gitlab.freedesktop.org/mattst88/mesa 5486c0e6326b9855ffd380b566699f1e099488b5 "${DEST}/vendor/google/graphics/mesa3d/desktop-intel"
+bash "${SCRIPT_DIR}/../../../utils/checkout.sh" https://gitlab.freedesktop.org/mattst88/mesa c1b97c42d170f1b4f9b735464bf6424fc810e88d "${DEST}/vendor/google/graphics/mesa3d/desktop-intel"
 
 MAJOR_VERSION=17
 sudo apt install \

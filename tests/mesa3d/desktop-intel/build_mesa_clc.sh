@@ -28,5 +28,5 @@ meson setup \
 meson compile -C "${BUILD_PATH}"
 
 mkdir -p "${BUILD_PATH}/bin"
-cp "${BUILD_PATH}/src/compiler/clc/mesa_clc"      "${BUILD_PATH}/bin"
-cp "${BUILD_PATH}/src/compiler/spirv/vtn_bindgen" "${BUILD_PATH}/bin"
+cp "${BUILD_PATH}/src/compiler/clc/mesa_clc"       "${BUILD_PATH}/bin"
+cp "${BUILD_PATH}/src/compiler/spirv/vtn_bindgen2" "${BUILD_PATH}/bin"
