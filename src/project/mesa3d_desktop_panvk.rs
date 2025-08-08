@@ -59,7 +59,6 @@ impl Project for Mesa3DDesktopPanVK {
                 ]
             )?;
         }
-        common::ninja_build(&build_path, &Vec::new(), ctx)?;
 
         const MESON_GENERATED: &str = "meson_generated";
         let mut package = SoongPackage::new(
@@ -104,6 +103,9 @@ impl Project for Mesa3DDesktopPanVK {
             .into_iter()
             .filter(|include| !include.starts_with("subprojects"))
             .collect();
+
+        common::ninja_build(&build_path, &gen_deps, ctx)?;
+
         package.filter_local_include_dirs(MESON_GENERATED, &gen_deps)?;
         common::clean_gen_deps(&gen_deps, &build_path, ctx)?;
         common::copy_gen_deps(gen_deps, MESON_GENERATED, &build_path, ctx, self)?;
