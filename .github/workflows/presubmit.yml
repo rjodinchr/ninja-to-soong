@@ -10,7 +10,7 @@ jobs:
     name: Code formatting check
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           fetch-depth: 0
       - name: Check format
@@ -28,7 +28,7 @@ jobs:
       matrix:
         project: [clvk, mesa, OpenCL-CTS, angle, clpeak, unittests]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           fetch-depth: 0
       - name: Setup Ninja
