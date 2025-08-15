@@ -15,35 +15,41 @@ impl NinjaTarget for CmakeNinjaTarget {
     }
 
     fn get_rule(&self) -> Result<NinjaRule, String> {
-        Ok(if self.0.rule.starts_with("CXX_SHARED_LIBRARY") {
-            NinjaRule::SharedLibrary
-        } else if self.0.rule.starts_with("CXX_STATIC_LIBRARY") {
-            NinjaRule::StaticLibrary
-        } else if self.0.rule.starts_with("CUSTOM_COMMAND") {
-            let Some(command) = self.0.variables.get("COMMAND") else {
-                return error!("No command in: {self:#?}");
-            };
-            let mut split = command.split(" && ");
-            let split_count = split.clone().count();
-            if split_count < 2 {
-                return error!(
+        Ok(
+            if self.0.rule.starts_with("CXX_SHARED_LIBRARY")
+                || self.0.rule.starts_with("C_SHARED_LIBRARY")
+            {
+                NinjaRule::SharedLibrary
+            } else if self.0.rule.starts_with("CXX_STATIC_LIBRARY")
+                || self.0.rule.starts_with("C_STATIC_LIBRARY")
+            {
+                NinjaRule::StaticLibrary
+            } else if self.0.rule.starts_with("CUSTOM_COMMAND") {
+                let Some(command) = self.0.variables.get("COMMAND") else {
+                    return error!("No command in: {self:#?}");
+                };
+                let mut split = command.split(" && ");
+                let split_count = split.clone().count();
+                if split_count < 2 {
+                    return error!(
                     "Could not find enough split in command (expected at least 2, got {split_count}"
                 );
-            }
-            let command = split.nth(1).unwrap();
-            if command.contains("bin/cmake ") {
-                NinjaRule::None
+                }
+                let command = split.nth(1).unwrap();
+                if command.contains("bin/cmake ") {
+                    NinjaRule::None
+                } else {
+                    NinjaRule::CustomCommand(NinjaRuleCmd {
+                        command: String::from(command),
+                        rsp_info: None,
+                    })
+                }
+            } else if self.0.rule.starts_with("CXX_EXECUTABLE") {
+                NinjaRule::Binary
             } else {
-                NinjaRule::CustomCommand(NinjaRuleCmd {
-                    command: String::from(command),
-                    rsp_info: None,
-                })
-            }
-        } else if self.0.rule.starts_with("CXX_EXECUTABLE") {
-            NinjaRule::Binary
-        } else {
-            NinjaRule::None
-        })
+                NinjaRule::None
+            },
+        )
     }
     fn get_sources(&self, build_path: &Path) -> Result<Vec<PathBuf>, String> {
         if self.0.inputs.len() != 1 {

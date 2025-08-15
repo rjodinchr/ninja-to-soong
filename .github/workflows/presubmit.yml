@@ -26,7 +26,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        project: [clvk, mesa, OpenCL-CTS, angle, clpeak, unittests]
+        project: [clvk, mesa, OpenCL-CTS, OpenCL-ICD-Loader, angle, clpeak, unittests]
     steps:
       - uses: actions/checkout@v5
         with:
@@ -53,6 +53,9 @@ jobs:
             echo "key=$(git rev-parse HEAD)-OpenCL-CTS" >> $GITHUB_ENV # Never use cache as checkout is needed for opencl_conformance_tests_full.csv
             echo "projects=OpenCL-CTS" >> $GITHUB_ENV
             echo "extra_args=--ext-proj-path ${{ github.workspace }}/tests/OpenCL-CTS/external/opencl_cts.rs" >> $GITHUB_ENV
+          elif [ "${{ matrix.project }}" == "OpenCL-ICD-Loader" ]; then
+            echo "key=$(git log -1 --format='%h' .github/workflows/*.yml tests/OpenCL-ICD-Loader/*.sh)-OpenCL-ICD-Loader" >> $GITHUB_ENV
+            echo "projects=OpenCL-ICD-Loader" >> $GITHUB_ENV
           elif [ "${{ matrix.project }}" == "angle" ]; then
             echo "key=$(git log -1 --format='%h' .github/workflows/*.yml tests/angle/*.sh tests/angle/build-*)-angle" >> $GITHUB_ENV
             echo "projects=angle" >> $GITHUB_ENV

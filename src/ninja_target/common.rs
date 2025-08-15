@@ -91,9 +91,17 @@ pub fn get_includes(includes: &str, build_path: &Path) -> Vec<PathBuf> {
 pub fn get_link_flags(flags: &str) -> (Option<PathBuf>, Vec<String>) {
     let mut link_flags = Vec::new();
     let mut version_script = None;
+    let mut next_is_version_script = false;
     for flag in flags.split(" ") {
         if let Some(vs) = flag.strip_prefix("-Wl,--version-script=") {
             version_script = Some(PathBuf::from(vs));
+        } else if flag == "-Wl,--version-script" {
+            next_is_version_script = true;
+        } else if next_is_version_script {
+            next_is_version_script = false;
+            if let Some(vs) = flag.strip_prefix("-Wl,") {
+                version_script = Some(PathBuf::from(vs));
+            }
         }
         link_flags.push(String::from(flag));
     }

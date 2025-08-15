@@ -50,15 +50,16 @@
 
 | Project | Ninja Generator | Targets |
 |-|-|-|
-| [clvk](https://github.com/kpet/clvk) | `CMake` | `libclvk.so` |
+| [angle](https://github.com/google/angle) (WIP) | `GN` | `libEGL_angle.so`, `libGLESv2_angle.so`, `libGLESv1_CM_angle.so` |
+| [clpeak](https://github.com/krrishnarraj/clpeak) | `CMake` | `clpeak` |
 | [clspv](https://github.com/google/clspv) | `CMake` | `clvk` dependencies |
+| [clvk](https://github.com/kpet/clvk) | `CMake` | `libclvk.so` |
 | [llvm-project](https://github.com/llvm/llvm-project) | `CMake` | `clvk` & `clspv` dependencies |
+| [mesa](https://www.mesa3d.org/) | `meson` | `libgallium_dri.so`, `libglapi.so`, `libEGL_mesa.so`, `libGLESv2_mesa.so`, `libGLESv1_CM_mesa.so`, `libvulkan_${VENDOR}.so` |
+| [OpenCL-CTS](https://github.com/KhronosGroup/OpenCL-CTS) | `CMake` | Every binary in `test_conformance/opencl_conformance_tests_full.csv` |
+| [OpenCL-ICD-Loader](https://github.com/KhronosGroup/OpenCL-ICD-Loader) | `CMake` | `libOpenCL.so` |
 | [SPIRV-Tools](https://github.com/KhronosGroup/SPIRV-Tools) | `CMake` | `clvk` dependencies |
 | [SPIRV-Headers](https://github.com/KhronosGroup/SPIRV-Headers) | `CMake` | `clspv` & `SPIRV-Tools` dependencies |
-| [angle](https://github.com/google/angle) (WIP) | `GN` | `libEGL_angle.so`, `libGLESv2_angle.so`, `libGLESv1_CM_angle.so` |
-| [mesa](https://www.mesa3d.org/) | `meson` | `libgallium_dri.so`, `libglapi.so`, `libEGL_mesa.so`, `libGLESv2_mesa.so`, `libGLESv1_CM_mesa.so`, `libvulkan_${VENDOR}.so` |
-| [OpenCl-CTS](https://github.com/KhronosGroup/OpenCL-CTS) | `CMake` | Every binary in `test_conformance/opencl_conformance_tests_full.csv` |
-| [clpeak](https://github.com/krrishnarraj/clpeak) | `CMake` | `clpeak` |
 
 ## Adding a project
 
