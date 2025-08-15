@@ -23,6 +23,7 @@ meson setup \
     --cross-file "${AOSP_X86_64}" \
     --libdir lib64 \
     --sysconfdir=/system/vendor/etc \
+    -Dandroid-libbacktrace=disabled \
     -Dallow-fallback-for=libdrm \
     -Dllvm=disabled \
     -Dglx=disabled \
