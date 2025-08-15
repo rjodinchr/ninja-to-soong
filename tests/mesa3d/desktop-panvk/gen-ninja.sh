@@ -22,6 +22,7 @@ meson setup \
     --cross-file "${AOSP_AARCH64}" \
     --libdir lib64 \
     --sysconfdir=/system/vendor/etc \
+    -Dandroid-libbacktrace=disabled \
     -Dllvm=disabled \
     -Degl=disabled \
     -Dplatform-sdk-version=${ANDROID_PLATFORM} \
