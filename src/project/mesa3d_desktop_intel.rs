@@ -297,9 +297,6 @@ soong_namespace {
     fn filter_cflag(&self, cflag: &str) -> bool {
         cflag == "-mclflushopt"
     }
-    fn filter_define(&self, define: &str) -> bool {
-        define != "WITH_LIBBACKTRACE" // b/120606663
-    }
     fn filter_include(&self, include: &Path) -> bool {
         let inc = path_to_string(include);
         !include.ends_with("android_stub")
@@ -310,9 +307,6 @@ soong_namespace {
     }
     fn filter_gen_header(&self, _header: &Path) -> bool {
         false
-    }
-    fn filter_lib(&self, lib: &str) -> bool {
-        !lib.contains("libbacktrace")
     }
     fn filter_target(&self, target: &Path) -> bool {
         let file_name = file_name(target);
