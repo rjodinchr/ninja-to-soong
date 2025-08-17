@@ -17,6 +17,7 @@ mkdir -p "${MESON_LOCAL_PATH}"
 ANDROID_PLATFORM="${ANDROID_PLATFORM}" NDK_PATH="${NDK_PATH}" \
 envsubst < "${SCRIPT_DIR}/${AOSP_AARCH64}.template" > "${MESON_LOCAL_PATH}/${AOSP_AARCH64}"
 
+PKG_CONFIG_PATH="${PKG_CONFIG_PATH}:${SCRIPT_DIR}" \
 PATH="${MESA_CLC_PATH}:${PATH}" \
 meson setup \
     --cross-file "${AOSP_AARCH64}" \
@@ -27,6 +28,7 @@ meson setup \
     -Degl=disabled \
     -Dplatform-sdk-version=${ANDROID_PLATFORM} \
     -Dandroid-stub=true \
+    -Dandroid-libperfetto=enabled \
     -Dplatforms=android \
     -Dperfetto=true \
     -Dcpp_rtti=false \

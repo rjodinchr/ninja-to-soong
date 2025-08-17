@@ -128,6 +128,7 @@ cc_defaults {{
     name: "{RAW_DEFAULTS}",
     soc_specific: true,
     header_libs: ["libdrm_headers"],
+    static_libs: ["libperfetto_client_experimental"],
 }}
 "#
             ))
@@ -158,17 +159,9 @@ cc_defaults {{
         if target.ends_with("libmesa_util.a") {
             module = module.extend_prop("shared_libs", vec!["libz"])?;
         }
-        if !["libperfetto.a"].contains(&file_name(target).as_str()) {
-            module.add_prop("defaults", SoongProp::VecStr(vec![String::from(DEFAULTS)]))
-        } else {
-            module
-                .add_prop(
-                    "header_libs",
-                    SoongProp::VecStr(vec!["liblog_headers".to_string()]),
-                )
-                .add_prop("soc_specific", SoongProp::Bool(true))
-        }
-        .extend_prop("cflags", cflags)
+        module
+            .add_prop("defaults", SoongProp::VecStr(vec![String::from(DEFAULTS)]))
+            .extend_prop("cflags", cflags)
     }
 
     fn map_lib(&self, library: &Path) -> Option<PathBuf> {
@@ -185,10 +178,7 @@ cc_defaults {{
         false
     }
     fn filter_include(&self, include: &Path) -> bool {
-        let inc = path_to_string(include);
-        let subprojects = self.src_path.join("subprojects");
-        !inc.contains(&path_to_string(&subprojects))
-            || inc.contains(&path_to_string(&subprojects.join("perfetto")))
+        !path_to_string(include).contains(&path_to_string(self.src_path.join("subprojects")))
     }
     fn filter_link_flag(&self, flag: &str) -> bool {
         flag == "-Wl,--build-id=sha1"
