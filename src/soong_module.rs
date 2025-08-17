@@ -270,16 +270,27 @@ impl SoongModule {
             SoongProp::Str(name) => name,
             _ => return error!("Unexpected SoongProp 'name' in {default:#?}"),
         };
+        let find_prop_idx = |name: &str, props: &Vec<SoongNamedProp>| {
+            for idx in 0..props.len() {
+                if props[idx].name == name {
+                    return Some(idx);
+                }
+            }
+            return None;
+        };
         for default_prop in &default.props {
             let name = &default_prop.name;
-            for idx in 0..self.props.len() {
-                if &self.props[idx].name == name && name != "name" {
-                    let self_prop = self.props.remove(idx);
-                    self.props.insert(
-                        idx,
-                        self_prop.filter_default(default_prop.get_prop(), &my_name)?,
-                    );
-                }
+            if name == "name" {
+                continue;
+            }
+            if let Some(idx) = find_prop_idx(name, &self.props) {
+                let self_prop = self.props.remove(idx);
+                self.props.insert(
+                    idx,
+                    self_prop.filter_default(default_prop.get_prop(), &my_name)?,
+                );
+            } else {
+                return error!("Could not find prop '{name}' in module properties:\n{self:#?}");
             }
         }
         Ok(())
