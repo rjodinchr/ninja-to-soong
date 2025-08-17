@@ -125,7 +125,7 @@ soong_namespace {
             .add_raw_suffix(&format!(
                 r#"
 cc_defaults {{
-    name: {RAW_DEFAULTS},
+    name: "{RAW_DEFAULTS}",
     soc_specific: true,
     header_libs: ["libdrm_headers"],
 }}
