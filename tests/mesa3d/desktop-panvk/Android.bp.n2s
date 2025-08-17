@@ -2603,7 +2603,7 @@ cc_defaults {
 }
 
 cc_defaults {
-    name: mesa3d-desktop-intel-raw-defaults,
+    name: "mesa3d-desktop-intel-raw-defaults",
     soc_specific: true,
     header_libs: ["libdrm_headers"],
 }
