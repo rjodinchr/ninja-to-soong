@@ -93,6 +93,7 @@ cc_library_static {
     srcs: ["src/util/streaming-load-memcpy.c"],
     local_include_dirs: [
         "include",
+        "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/util",
         "src",
@@ -192,9 +193,9 @@ cc_library_static {
         "src/util/vma.c",
     ],
     shared_libs: ["libz"],
-    static_libs: ["libperfetto_client_experimental"],
     local_include_dirs: [
         "include",
+        "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/util",
         "meson_generated/src/util/format",
@@ -202,7 +203,6 @@ cc_library_static {
         "src/util",
         "src/util/format",
     ],
-    header_libs: ["libdrm_headers"],
     defaults: ["mesa3d-desktop-intel-defaults"],
 }
 
@@ -230,15 +230,14 @@ cc_library_static {
         "src/tool/pps/pps_driver.cc",
     ],
     cflags: ["-DPPS_INTEL"],
-    static_libs: ["libperfetto_client_experimental"],
     local_include_dirs: [
         "include",
+        "include/android_stub",
         "meson_generated/src",
         "src",
         "src/tool",
         "src/tool/pps",
     ],
-    header_libs: ["libdrm_headers"],
     defaults: ["mesa3d-desktop-intel-defaults"],
 }
 
@@ -255,6 +254,7 @@ cc_library_static {
     ],
     local_include_dirs: [
         "include",
+        "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/intel",
         "meson_generated/src/intel/dev",
@@ -272,6 +272,7 @@ cc_library_static {
     srcs: ["src/intel/isl/isl_tiled_memcpy_sse41.c"],
     local_include_dirs: [
         "include",
+        "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/intel",
         "meson_generated/src/intel/dev",
@@ -289,6 +290,7 @@ cc_library_static {
     srcs: ["src/intel/isl/isl_tiled_memcpy_normal.c"],
     local_include_dirs: [
         "include",
+        "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/intel",
         "meson_generated/src/intel/dev",
@@ -312,6 +314,7 @@ cc_library_static {
     cflags: ["-DGFX_VERx10=90"],
     local_include_dirs: [
         "include",
+        "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/intel",
         "meson_generated/src/intel/dev",
@@ -337,6 +340,7 @@ cc_library_static {
     cflags: ["-DGFX_VERx10=80"],
     local_include_dirs: [
         "include",
+        "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/intel",
         "meson_generated/src/intel/dev",
@@ -361,6 +365,7 @@ cc_library_static {
     cflags: ["-DGFX_VERx10=75"],
     local_include_dirs: [
         "include",
+        "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/intel",
         "meson_generated/src/intel/dev",
@@ -386,6 +391,7 @@ cc_library_static {
     cflags: ["-DGFX_VERx10=70"],
     local_include_dirs: [
         "include",
+        "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/intel",
         "meson_generated/src/intel/dev",
@@ -411,6 +417,7 @@ cc_library_static {
     cflags: ["-DGFX_VERx10=60"],
     local_include_dirs: [
         "include",
+        "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/intel",
         "meson_generated/src/intel/dev",
@@ -435,6 +442,7 @@ cc_library_static {
     cflags: ["-DGFX_VERx10=50"],
     local_include_dirs: [
         "include",
+        "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/intel",
         "meson_generated/src/intel/dev",
@@ -460,6 +468,7 @@ cc_library_static {
     cflags: ["-DGFX_VERx10=40"],
     local_include_dirs: [
         "include",
+        "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/intel",
         "meson_generated/src/intel/dev",
@@ -485,6 +494,7 @@ cc_library_static {
     cflags: ["-DGFX_VERx10=300"],
     local_include_dirs: [
         "include",
+        "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/intel",
         "meson_generated/src/intel/dev",
@@ -510,6 +520,7 @@ cc_library_static {
     cflags: ["-DGFX_VERx10=200"],
     local_include_dirs: [
         "include",
+        "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/intel",
         "meson_generated/src/intel/dev",
@@ -535,6 +546,7 @@ cc_library_static {
     cflags: ["-DGFX_VERx10=125"],
     local_include_dirs: [
         "include",
+        "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/intel",
         "meson_generated/src/intel/dev",
@@ -560,6 +572,7 @@ cc_library_static {
     cflags: ["-DGFX_VERx10=120"],
     local_include_dirs: [
         "include",
+        "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/intel",
         "meson_generated/src/intel/dev",
@@ -584,6 +597,7 @@ cc_library_static {
     cflags: ["-DGFX_VERx10=110"],
     local_include_dirs: [
         "include",
+        "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/intel",
         "meson_generated/src/intel/dev",
@@ -610,6 +624,7 @@ cc_library_static {
     ],
     local_include_dirs: [
         "include",
+        "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/intel",
         "meson_generated/src/intel/dev",
@@ -629,9 +644,9 @@ cc_library_static {
         "src/intel/ds/intel_pps_driver.cc",
         "src/intel/ds/intel_pps_perf.cc",
     ],
-    static_libs: ["libperfetto_client_experimental"],
     local_include_dirs: [
         "include",
+        "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/intel",
         "meson_generated/src/intel/dev",
@@ -658,6 +673,7 @@ cc_library_static {
     ],
     local_include_dirs: [
         "include",
+        "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/intel",
         "meson_generated/src/intel/dev",
@@ -666,7 +682,6 @@ cc_library_static {
         "src/intel",
         "src/intel/dev",
     ],
-    header_libs: ["libdrm_headers"],
     defaults: ["mesa3d-desktop-intel-defaults"],
 }
 
@@ -695,6 +710,7 @@ cc_library_static {
     ],
     local_include_dirs: [
         "include",
+        "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/intel",
         "meson_generated/src/intel/dev",
@@ -714,6 +730,7 @@ cc_library_static {
     cflags: ["-mclflushopt"],
     local_include_dirs: [
         "include",
+        "include/android_stub",
         "meson_generated/src",
         "src",
         "src/intel/common",
@@ -796,6 +813,7 @@ cc_library_shared {
     static_libs: ["mesa3d_desktop-intel_src_c11_impl_libmesa_util_c11_a"],
     local_include_dirs: [
         "include",
+        "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/mapi",
         "meson_generated/src/mapi/es2api",
@@ -882,6 +900,7 @@ cc_library_shared {
     whole_static_libs: ["mesa3d_desktop-intel_src_gallium_frontends_dri_libdri_a"],
     local_include_dirs: [
         "include",
+        "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/gallium/auxiliary",
         "meson_generated/src/mapi",
@@ -910,6 +929,7 @@ cc_library_static {
     ],
     local_include_dirs: [
         "include",
+        "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/util",
         "meson_generated/src/util/format",
@@ -924,6 +944,7 @@ cc_library_static {
     srcs: ["src/mesa/main/sse_minmax.c"],
     local_include_dirs: [
         "include",
+        "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/gallium/auxiliary",
         "meson_generated/src/mapi",
@@ -1161,6 +1182,7 @@ cc_library_static {
     ],
     local_include_dirs: [
         "include",
+        "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/compiler",
         "meson_generated/src/compiler/glsl",
@@ -1190,6 +1212,7 @@ cc_library_static {
     cflags: ["-DMAPI_MODE_SHARED_GLAPI"],
     local_include_dirs: [
         "include",
+        "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/mapi",
         "meson_generated/src/mapi/shared-glapi",
@@ -1210,13 +1233,13 @@ cc_library_static {
     cflags: ["-DUSE_DRICONF"],
     local_include_dirs: [
         "include",
+        "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/util/format",
         "src",
         "src/gallium/include",
         "src/loader",
     ],
-    header_libs: ["libdrm_headers"],
     defaults: ["mesa3d-desktop-intel-defaults"],
 }
 
@@ -1233,6 +1256,7 @@ cc_library_static {
     ],
     local_include_dirs: [
         "include",
+        "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/compiler",
         "meson_generated/src/compiler/nir",
@@ -1252,9 +1276,9 @@ cc_library_static {
         "meson_generated/src/intel/ds/intel_tracepoints.c",
         "src/intel/ds/intel_driver_ds.cc",
     ],
-    static_libs: ["libperfetto_client_experimental"],
     local_include_dirs: [
         "include",
+        "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/compiler",
         "meson_generated/src/compiler/nir",
@@ -1285,6 +1309,7 @@ cc_library_static {
     srcs: ["src/intel/decoder/intel_batch_decoder_stub.c"],
     local_include_dirs: [
         "include",
+        "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/intel",
         "meson_generated/src/intel/dev",
@@ -1399,6 +1424,7 @@ cc_library_static {
     ],
     local_include_dirs: [
         "include",
+        "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/compiler",
         "meson_generated/src/compiler/nir",
@@ -1425,6 +1451,7 @@ cc_library_static {
     ],
     local_include_dirs: [
         "include",
+        "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/compiler",
         "meson_generated/src/compiler/nir",
@@ -1447,6 +1474,7 @@ cc_library_static {
     srcs: ["src/gallium/winsys/sw/wrapper/wrapper_sw_winsys.c"],
     local_include_dirs: [
         "include",
+        "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/gallium/auxiliary",
         "meson_generated/src/util/format",
@@ -1463,6 +1491,7 @@ cc_library_static {
     srcs: ["src/gallium/winsys/sw/null/null_sw_winsys.c"],
     local_include_dirs: [
         "include",
+        "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/gallium/auxiliary",
         "meson_generated/src/util/format",
@@ -1479,6 +1508,7 @@ cc_library_static {
     srcs: ["src/gallium/winsys/sw/kms-dri/kms_dri_sw_winsys.c"],
     local_include_dirs: [
         "include",
+        "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/gallium/auxiliary",
         "meson_generated/src/util/format",
@@ -1487,7 +1517,6 @@ cc_library_static {
         "src/gallium/include",
         "src/gallium/winsys/sw/kms-dri",
     ],
-    header_libs: ["libdrm_headers"],
     defaults: ["mesa3d-desktop-intel-defaults"],
 }
 
@@ -1496,6 +1525,7 @@ cc_library_static {
     srcs: ["src/gallium/winsys/sw/dri/dri_sw_winsys.c"],
     local_include_dirs: [
         "include",
+        "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/gallium/auxiliary",
         "meson_generated/src/util/format",
@@ -1512,6 +1542,7 @@ cc_library_static {
     srcs: ["src/gallium/winsys/iris/drm/iris_drm_winsys.c"],
     local_include_dirs: [
         "include",
+        "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/gallium/auxiliary",
         "meson_generated/src/util/format",
@@ -1537,9 +1568,9 @@ cc_library_static {
         "src/gallium/frontends/dri/drisw.c",
         "src/gallium/frontends/dri/kopper_stubs.c",
     ],
-    shared_libs: ["libsync"],
     local_include_dirs: [
         "include",
+        "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/gallium/auxiliary",
         "meson_generated/src/mapi",
@@ -1554,7 +1585,6 @@ cc_library_static {
         "src/mapi",
         "src/mesa",
     ],
-    header_libs: ["libdrm_headers"],
     defaults: ["mesa3d-desktop-intel-defaults"],
 }
 
@@ -1569,6 +1599,7 @@ cc_library_static {
     cflags: ["-DGFX_VERx10=90"],
     local_include_dirs: [
         "include",
+        "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/compiler",
         "meson_generated/src/compiler/nir",
@@ -1607,6 +1638,7 @@ cc_library_static {
     cflags: ["-DGFX_VERx10=300"],
     local_include_dirs: [
         "include",
+        "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/compiler",
         "meson_generated/src/compiler/nir",
@@ -1645,6 +1677,7 @@ cc_library_static {
     cflags: ["-DGFX_VERx10=200"],
     local_include_dirs: [
         "include",
+        "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/compiler",
         "meson_generated/src/compiler/nir",
@@ -1683,6 +1716,7 @@ cc_library_static {
     cflags: ["-DGFX_VERx10=125"],
     local_include_dirs: [
         "include",
+        "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/compiler",
         "meson_generated/src/compiler/nir",
@@ -1721,6 +1755,7 @@ cc_library_static {
     cflags: ["-DGFX_VERx10=120"],
     local_include_dirs: [
         "include",
+        "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/compiler",
         "meson_generated/src/compiler/nir",
@@ -1759,6 +1794,7 @@ cc_library_static {
     cflags: ["-DGFX_VERx10=110"],
     local_include_dirs: [
         "include",
+        "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/compiler",
         "meson_generated/src/compiler/nir",
@@ -1822,6 +1858,7 @@ cc_library_static {
     ],
     local_include_dirs: [
         "include",
+        "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/compiler",
         "meson_generated/src/compiler/nir",
@@ -1846,7 +1883,6 @@ cc_library_static {
         "src/mapi",
         "src/mesa",
     ],
-    header_libs: ["libdrm_headers"],
     defaults: ["mesa3d-desktop-intel-defaults"],
 }
 
@@ -1859,6 +1895,7 @@ cc_library_static {
     ],
     local_include_dirs: [
         "include",
+        "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/gallium/auxiliary",
         "meson_generated/src/util/format",
@@ -1870,7 +1907,6 @@ cc_library_static {
         "src/gallium/winsys",
         "src/loader",
     ],
-    header_libs: ["libdrm_headers"],
     defaults: ["mesa3d-desktop-intel-defaults"],
 }
 
@@ -1898,6 +1934,7 @@ cc_library_static {
     ],
     local_include_dirs: [
         "include",
+        "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/compiler",
         "meson_generated/src/compiler/nir",
@@ -2067,6 +2104,7 @@ cc_library_static {
     ],
     local_include_dirs: [
         "include",
+        "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/compiler",
         "meson_generated/src/compiler/nir",
@@ -2080,7 +2118,6 @@ cc_library_static {
         "src/gallium/include",
         "src/loader",
     ],
-    header_libs: ["libdrm_headers"],
     defaults: ["mesa3d-desktop-intel-defaults"],
 }
 
@@ -2104,6 +2141,7 @@ cc_library_static {
     ],
     local_include_dirs: [
         "include",
+        "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/compiler",
         "meson_generated/src/compiler/nir",
@@ -2348,6 +2386,7 @@ cc_library_static {
     ],
     local_include_dirs: [
         "include",
+        "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/compiler",
         "meson_generated/src/compiler/nir",
@@ -2368,6 +2407,7 @@ cc_library_static {
     ],
     local_include_dirs: [
         "include",
+        "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/compiler",
         "src",
@@ -2453,6 +2493,7 @@ cc_library_static {
     ],
     local_include_dirs: [
         "include",
+        "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/compiler",
         "meson_generated/src/compiler/glsl",
@@ -2482,6 +2523,7 @@ cc_library_static {
     ],
     local_include_dirs: [
         "include",
+        "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/compiler/glsl/glcpp",
         "meson_generated/src/gallium/auxiliary",
@@ -2509,6 +2551,7 @@ cc_library_shared {
     static_libs: ["mesa3d_desktop-intel_src_c11_impl_libmesa_util_c11_a"],
     local_include_dirs: [
         "include",
+        "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/mapi",
         "meson_generated/src/mapi/es1api",
@@ -2591,6 +2634,7 @@ cc_library_shared {
     ],
     local_include_dirs: [
         "include",
+        "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/compiler",
         "meson_generated/src/compiler/nir",
@@ -2633,9 +2677,9 @@ cc_library_static {
         "src/vulkan/wsi/wsi_common_headless.c",
     ],
     cflags: ["-DVK_USE_PLATFORM_ANDROID_KHR"],
-    shared_libs: ["libsync"],
     local_include_dirs: [
         "include",
+        "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/compiler/spirv",
         "meson_generated/src/util/format",
@@ -2649,7 +2693,6 @@ cc_library_static {
         "src/vulkan/util",
         "src/vulkan/wsi",
     ],
-    header_libs: ["libdrm_headers"],
     defaults: ["mesa3d-desktop-intel-defaults"],
 }
 
@@ -2666,6 +2709,7 @@ cc_library_static {
     cflags: ["-DVK_USE_PLATFORM_ANDROID_KHR"],
     local_include_dirs: [
         "include",
+        "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/compiler",
         "meson_generated/src/compiler/nir",
@@ -2704,6 +2748,7 @@ cc_library_static {
     cflags: ["-DVK_USE_PLATFORM_ANDROID_KHR"],
     local_include_dirs: [
         "include",
+        "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/compiler",
         "meson_generated/src/compiler/nir",
@@ -2719,7 +2764,6 @@ cc_library_static {
         "src/vulkan/runtime",
         "src/vulkan/util",
     ],
-    header_libs: ["hwvulkan_headers"],
     defaults: ["mesa3d-desktop-intel-defaults"],
 }
 
@@ -2782,12 +2826,9 @@ cc_library_static {
         "-DVK_USE_PLATFORM_ANDROID_KHR",
         "-Wno-unreachable-code-loop-increment",
     ],
-    shared_libs: [
-        "libnativewindow",
-        "libsync",
-    ],
     local_include_dirs: [
         "include",
+        "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/compiler",
         "meson_generated/src/compiler/nir",
@@ -2800,10 +2841,6 @@ cc_library_static {
         "src/compiler/nir",
         "src/vulkan/runtime",
         "src/vulkan/util",
-    ],
-    header_libs: [
-        "hwvulkan_headers",
-        "libdrm_headers",
     ],
     defaults: ["mesa3d-desktop-intel-defaults"],
 }
@@ -2817,6 +2854,7 @@ cc_library_static {
     ],
     local_include_dirs: [
         "include",
+        "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/compiler",
         "meson_generated/src/compiler/nir",
@@ -2830,7 +2868,6 @@ cc_library_static {
         "src/vulkan/runtime",
         "src/vulkan/util",
     ],
-    header_libs: ["libdrm_headers"],
     defaults: ["mesa3d-desktop-intel-defaults"],
 }
 
@@ -2846,6 +2883,7 @@ cc_library_static {
     ],
     local_include_dirs: [
         "include",
+        "include/android_stub",
         "meson_generated/src",
         "src",
         "src/util/u_gralloc",
@@ -2876,9 +2914,9 @@ cc_library_static {
         "-DGFX_VERx10=90",
         "-DVK_USE_PLATFORM_ANDROID_KHR",
     ],
-    shared_libs: ["libnativewindow"],
     local_include_dirs: [
         "include",
+        "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/compiler",
         "meson_generated/src/compiler/nir",
@@ -2933,9 +2971,9 @@ cc_library_static {
         "-DGFX_VERx10=300",
         "-DVK_USE_PLATFORM_ANDROID_KHR",
     ],
-    shared_libs: ["libnativewindow"],
     local_include_dirs: [
         "include",
+        "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/compiler",
         "meson_generated/src/compiler/nir",
@@ -2990,9 +3028,9 @@ cc_library_static {
         "-DGFX_VERx10=200",
         "-DVK_USE_PLATFORM_ANDROID_KHR",
     ],
-    shared_libs: ["libnativewindow"],
     local_include_dirs: [
         "include",
+        "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/compiler",
         "meson_generated/src/compiler/nir",
@@ -3047,9 +3085,9 @@ cc_library_static {
         "-DGFX_VERx10=125",
         "-DVK_USE_PLATFORM_ANDROID_KHR",
     ],
-    shared_libs: ["libnativewindow"],
     local_include_dirs: [
         "include",
+        "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/compiler",
         "meson_generated/src/compiler/nir",
@@ -3104,9 +3142,9 @@ cc_library_static {
         "-DGFX_VERx10=120",
         "-DVK_USE_PLATFORM_ANDROID_KHR",
     ],
-    shared_libs: ["libnativewindow"],
     local_include_dirs: [
         "include",
+        "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/compiler",
         "meson_generated/src/compiler/nir",
@@ -3161,9 +3199,9 @@ cc_library_static {
         "-DGFX_VERx10=110",
         "-DVK_USE_PLATFORM_ANDROID_KHR",
     ],
-    shared_libs: ["libnativewindow"],
     local_include_dirs: [
         "include",
+        "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/compiler",
         "meson_generated/src/compiler/nir",
@@ -3257,12 +3295,9 @@ cc_library_static {
         "-DANV_SUPPORT_RT=1",
         "-DVK_USE_PLATFORM_ANDROID_KHR",
     ],
-    shared_libs: [
-        "libnativewindow",
-        "libsync",
-    ],
     local_include_dirs: [
         "include",
+        "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/compiler",
         "meson_generated/src/compiler/nir",
@@ -3290,7 +3325,6 @@ cc_library_static {
         "src/vulkan/util",
         "src/vulkan/wsi",
     ],
-    header_libs: ["libdrm_headers"],
     defaults: ["mesa3d-desktop-intel-defaults"],
 }
 
@@ -3343,6 +3377,7 @@ cc_library_shared {
     ],
     local_include_dirs: [
         "include",
+        "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/egl",
         "meson_generated/src/gallium/auxiliary",
@@ -3359,7 +3394,6 @@ cc_library_shared {
         "src/mesa",
     ],
     relative_install_path: "egl",
-    header_libs: ["libnativebase_headers"],
     defaults: ["mesa3d-desktop-intel-defaults"],
 }
 
@@ -3475,9 +3509,11 @@ cc_defaults {
 cc_defaults {
     name: "mesa3d-desktop-intel-raw-defaults",
     soc_specific: true,
+    static_libs: ["libperfetto_client_experimental"],
     header_libs: [
         "libcutils_headers",
         "libhardware_headers",
         "liblog_headers",
+        "libdrm_headers",
     ],
 }

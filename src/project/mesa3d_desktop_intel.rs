@@ -157,10 +157,12 @@ impl Project for Mesa3DDesktopIntel {
 cc_defaults {{
     name: "{RAW_DEFAULTS}",
     soc_specific: true,
+    static_libs: ["libperfetto_client_experimental"],
     header_libs: [
         "libcutils_headers",
         "libhardware_headers",
         "liblog_headers",
+        "libdrm_headers",
     ],
 }}
 "#,
@@ -174,7 +176,7 @@ soong_namespace {
             .print(ctx)
     }
 
-    fn extend_module(&self, target: &Path, module: SoongModule) -> Result<SoongModule, String> {
+    fn extend_module(&self, target: &Path, mut module: SoongModule) -> Result<SoongModule, String> {
         let relative_install = |module: SoongModule| -> SoongModule {
             for lib in [
                 "libGLESv1_CM_mesa.so.1.1.0",
@@ -192,85 +194,21 @@ soong_namespace {
             }
             module
         };
-        let module = relative_install(module);
+        module = relative_install(module);
 
-        let mut libs = Vec::new();
-        for lib in [
-            "libgallium.a",
-            "libpipe_loader_static.a",
-            "libiris.a",
-            "libdri.a",
-            "libswkmsdri.a",
-            "libintel_dev.a",
-            "libanv_common.a",
-            "libloader.a",
-            "libmesa_util.a",
-            "libpipe_loader_dynamic.a",
-            "libpps.a",
-            "libvulkan_instance.a",
-            "libvulkan_lite_runtime.a",
-            "libvulkan_wsi.a",
-        ] {
-            if target.ends_with(lib) {
-                libs.push("libdrm_headers");
-                break;
-            }
+        if target.ends_with("libvulkan_intel.so") {
+            module = module.add_prop("afdo", SoongProp::Bool(true))
         }
-        for lib in ["libvulkan_runtime.a", "libvulkan_lite_runtime.a"] {
-            if target.ends_with(lib) {
-                libs.push("hwvulkan_headers");
-            }
-        }
-        if target.ends_with("libEGL_mesa.so.1.0.0") {
-            libs.push("libnativebase_headers");
-        }
-
-        let module = module.add_prop(
-            "header_libs",
-            SoongProp::VecStr(libs.into_iter().map(|lib| String::from(lib)).collect()),
-        );
-
-        let module = if target.ends_with("libvulkan_intel.so") {
-            module.add_prop("afdo", SoongProp::Bool(true))
-        } else {
-            module
-        };
 
         let mut cflags = vec!["-Wno-non-virtual-dtor", "-Wno-error"];
         if target.ends_with("libvulkan_lite_runtime.a") {
             cflags.push("-Wno-unreachable-code-loop-increment");
         }
-        let mut shared_libs = Vec::new();
-        if target.ends_with("libdri.a")
-            || target.ends_with("libanv_common.a")
-            || target.ends_with("libvulkan_wsi.a")
-            || target.ends_with("libvulkan_lite_runtime.a")
-        {
-            shared_libs.push("libsync");
-        }
         if target.ends_with("libmesa_util.a") {
-            shared_libs.push("libz");
+            module = module.extend_prop("shared_libs", vec!["libz"])?;
         }
-        if target.starts_with("src/intel/vulkan") || target.ends_with("libvulkan_lite_runtime.a") {
-            shared_libs.push("libnativewindow");
-        }
-        let mut static_libs = Vec::new();
-        if [
-            "libmesa_util.a",
-            "libintel-driver-ds.a",
-            "libpps.a",
-            "libpps-intel.a",
-        ]
-        .contains(&file_name(target).as_str())
-        {
-            static_libs.push("libperfetto_client_experimental");
-        }
-        if ![
-            "libintel_decoder_brw.a",
-            "libintel_decoder_elk.a",
-            "libperfetto.a",
-        ]
-        .contains(&file_name(target).as_str())
+        if !["libintel_decoder_brw.a", "libintel_decoder_elk.a"]
+            .contains(&file_name(target).as_str())
         {
             module.add_prop("defaults", SoongProp::VecStr(vec![String::from(DEFAULTS)]))
         } else {
@@ -279,9 +217,7 @@ soong_namespace {
                 SoongProp::VecStr(vec![String::from(RAW_DEFAULTS)]),
             )
         }
-        .extend_prop("cflags", cflags)?
-        .extend_prop("static_libs", static_libs)?
-        .extend_prop("shared_libs", shared_libs)
+        .extend_prop("cflags", cflags)
     }
 
     fn map_lib(&self, library: &Path) -> Option<PathBuf> {
@@ -298,9 +234,7 @@ soong_namespace {
         cflag == "-mclflushopt"
     }
     fn filter_include(&self, include: &Path) -> bool {
-        let inc = path_to_string(include);
-        !include.ends_with("android_stub")
-            && !inc.contains(&path_to_string(&self.src_path.join("subprojects")))
+        !path_to_string(include).contains(&path_to_string(&self.src_path.join("subprojects")))
     }
     fn filter_link_flag(&self, flag: &str) -> bool {
         flag == "-Wl,--build-id=sha1"
