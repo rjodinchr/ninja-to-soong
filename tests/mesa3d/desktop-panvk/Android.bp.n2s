@@ -2495,8 +2495,6 @@ cc_library_static {
 
 cc_defaults {
     name: "mesa3d-desktop-panvk-defaults",
-    soc_specific: true,
-    header_libs: ["libdrm_headers"],
     cflags: [
         "-DAMD_LLVM_AVAILABLE=0",
         "-DANDROID_API_LEVEL=35",
@@ -2601,4 +2599,11 @@ cc_defaults {
         "-Wno-pointer-arith",
         "-Wno-unused-parameter",
     ],
+    defaults: ["mesa3d-desktop-intel-raw-defaults"],
+}
+
+cc_defaults {
+    name: mesa3d-desktop-intel-raw-defaults,
+    soc_specific: true,
+    header_libs: ["libdrm_headers"],
 }
