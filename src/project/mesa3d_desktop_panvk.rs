@@ -107,12 +107,10 @@ impl Project for Mesa3DDesktopPanVK {
 
         let default_module = SoongModule::new("cc_defaults")
             .add_prop("name", SoongProp::Str(String::from(DEFAULTS)))
-            .add_prop("soc_specific", SoongProp::Bool(true))
-            .add_prop(
-                "header_libs",
-                SoongProp::VecStr(vec!["libdrm_headers".to_string()]),
-            )
-            .add_props(package.get_props("mesa3d_desktop-panvk_pps-producer", vec!["cflags"])?);
+            .add_props(package.get_props(
+                "mesa3d_desktop-panvk_pps-producer",
+                vec!["soc_specific", "header_libs", "cflags"],
+            )?);
 
         package
             .add_module(default_module)
@@ -127,13 +125,9 @@ soong_namespace {
 
     fn extend_module(&self, target: &Path, module: SoongModule) -> Result<SoongModule, String> {
         let module = if target.ends_with("libvulkan_panfrost.so") {
-            module.add_prop("relative_install_path", SoongProp::Str(String::from("hw")))
-        } else {
             module
-        };
-
-        let module = if target.ends_with("libvulkan_panfrost.so") {
-            module.add_prop("afdo", SoongProp::Bool(true))
+                .add_prop("relative_install_path", SoongProp::Str(String::from("hw")))
+                .add_prop("afdo", SoongProp::Bool(true))
         } else {
             module
         };
@@ -157,15 +151,19 @@ soong_namespace {
             libs.push("libz");
         }
         if !["libperfetto.a"].contains(&file_name(target).as_str()) {
-            module.add_prop("defaults", SoongProp::VecStr(vec![String::from(DEFAULTS)]))
-        } else {
             module
-                .add_prop("soc_specific", SoongProp::Bool(true))
+                .add_prop("defaults", SoongProp::VecStr(vec![String::from(DEFAULTS)]))
                 .add_prop(
                     "header_libs",
-                    SoongProp::VecStr(vec!["liblog_headers".to_string()]),
+                    SoongProp::VecStr(vec!["libdrm_headers".to_string()]),
                 )
+        } else {
+            module.add_prop(
+                "header_libs",
+                SoongProp::VecStr(vec!["liblog_headers".to_string()]),
+            )
         }
+        .add_prop("soc_specific", SoongProp::Bool(true))
         .extend_prop("cflags", cflags)?
         .extend_prop("shared_libs", libs)
     }
