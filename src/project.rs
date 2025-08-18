@@ -12,6 +12,7 @@ use crate::soong_package_merger::*;
 use crate::utils::*;
 
 pub mod common;
+pub mod mesa3d_desktop;
 
 define_ProjectId!(
     (Angle, angle),

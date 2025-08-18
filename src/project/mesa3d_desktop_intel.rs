@@ -11,58 +11,25 @@ pub struct Mesa3DDesktopIntel {
 const DEFAULTS: &str = "mesa3d-desktop-intel-defaults";
 const RAW_DEFAULTS: &str = "mesa3d-desktop-intel-raw-defaults";
 
-impl Project for Mesa3DDesktopIntel {
+impl mesa3d_desktop::Mesa3dProject for Mesa3DDesktopIntel {
     fn get_name(&self) -> &'static str {
         "mesa3d/desktop-intel"
     }
-    fn get_android_path(&self, ctx: &Context) -> Result<PathBuf, String> {
-        Ok(ctx
-            .get_android_path()?
-            .join("vendor/google/graphics")
-            .join(self.get_name()))
+
+    fn get_subprojects_path(&self) -> String {
+        path_to_string(&self.src_path.join("subprojects"))
     }
-    fn get_test_path(&self, ctx: &Context) -> Result<PathBuf, String> {
-        Ok(ctx.test_path.join(self.get_name()))
-    }
-    fn generate_package(
+
+    fn create_package(
         &mut self,
         ctx: &Context,
-        _projects_map: &ProjectsMap,
-    ) -> Result<String, String> {
-        self.src_path = self.get_android_path(ctx)?;
-        let ndk_path = get_ndk_path(&ctx.temp_path, ctx)?;
-        let build_path = ctx.temp_path.join(self.get_name());
-
-        let mesa_clc_path = if !ctx.skip_build {
-            let mesa_clc_build_path = ctx.temp_path.join("mesa_clc");
-            execute_cmd!(
-                "bash",
-                [
-                    &path_to_string(self.get_test_path(ctx)?.join("build_mesa_clc.sh")),
-                    &path_to_string(&self.src_path),
-                    &path_to_string(&mesa_clc_build_path)
-                ]
-            )?;
-            mesa_clc_build_path.join("bin")
-        } else {
-            self.get_test_path(ctx)?
-        };
-
-        if !ctx.skip_gen_ninja {
-            execute_cmd!(
-                "bash",
-                [
-                    &path_to_string(self.get_test_path(ctx)?.join("gen-ninja.sh")),
-                    &path_to_string(&self.src_path),
-                    &path_to_string(&build_path),
-                    &path_to_string(mesa_clc_path),
-                    &path_to_string(&ndk_path)
-                ]
-            )?;
-        }
-
-        const MESON_GENERATED: &str = "meson_generated";
-        let mut package = SoongPackage::new(
+        src_path: &Path,
+        build_path: &Path,
+        ndk_path: &Path,
+        meson_generated: &str,
+    ) -> Result<SoongPackage, String> {
+        self.src_path = PathBuf::from(src_path);
+        SoongPackage::new(
             &["//visibility:public"],
             "mesa3d_desktop_intel_licenses",
             &[
@@ -125,35 +92,25 @@ impl Project for Mesa3DDesktopIntel {
             &self.src_path,
             &ndk_path,
             &build_path,
-            Some(MESON_GENERATED),
+            Some(meson_generated),
             self,
             ctx,
-        )?;
+        )
+    }
 
-        let gen_deps = package
-            .get_gen_deps()
-            .into_iter()
-            .filter(|include| !include.starts_with("subprojects"))
-            .collect();
-
-        common::ninja_build(&build_path, &gen_deps, ctx)?;
-
-        package.filter_local_include_dirs(MESON_GENERATED, &gen_deps)?;
-        common::clean_gen_deps(&gen_deps, &build_path, ctx)?;
-        common::copy_gen_deps(gen_deps, MESON_GENERATED, &build_path, ctx, self)?;
-
-        let default_module = SoongModule::new("cc_defaults")
+    fn get_default_module(&self, package: &SoongPackage) -> Result<SoongModule, String> {
+        Ok(SoongModule::new("cc_defaults")
             .add_prop("name", SoongProp::Str(String::from(DEFAULTS)))
             .add_props(package.get_props("mesa3d_desktop-intel_pps-producer", vec!["cflags"])?)
             .add_prop(
                 "defaults",
                 SoongProp::VecStr(vec![String::from(RAW_DEFAULTS)]),
-            );
+            ))
+    }
 
-        package
-            .add_module(default_module)
-            .add_raw_suffix(&format!(
-                r#"
+    fn get_raw_suffix(&self) -> String {
+        format!(
+            r#"
 cc_defaults {{
     name: "{RAW_DEFAULTS}",
     soc_specific: true,
@@ -166,14 +123,7 @@ cc_defaults {{
     ],
 }}
 "#,
-            ))
-            .add_raw_prefix(
-                r#"
-soong_namespace {
-}
-"#,
-            )
-            .print(ctx)
+        )
     }
 
     fn extend_module(&self, target: &Path, mut module: SoongModule) -> Result<SoongModule, String> {
@@ -218,35 +168,5 @@ soong_namespace {
             )
         }
         .extend_prop("cflags", cflags)
-    }
-
-    fn map_lib(&self, library: &Path) -> Option<PathBuf> {
-        if library.starts_with("src/android_stub")
-            || (!library.starts_with("src") && !library.starts_with("subprojects/perfetto"))
-        {
-            Some(PathBuf::from(file_stem(library)))
-        } else {
-            None
-        }
-    }
-
-    fn filter_cflag(&self, cflag: &str) -> bool {
-        cflag == "-mclflushopt"
-    }
-    fn filter_include(&self, include: &Path) -> bool {
-        !path_to_string(include).contains(&path_to_string(&self.src_path.join("subprojects")))
-    }
-    fn filter_link_flag(&self, flag: &str) -> bool {
-        flag == "-Wl,--build-id=sha1"
-    }
-    fn filter_gen_header(&self, _header: &Path) -> bool {
-        false
-    }
-    fn filter_target(&self, target: &Path) -> bool {
-        let file_name = file_name(target);
-        !file_name.ends_with(".o")
-            && !file_name.ends_with(".def")
-            && !file_name.contains("libdrm")
-            && !target.starts_with("src/android_stub")
     }
 }
