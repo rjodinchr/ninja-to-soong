@@ -1,0 +1,115 @@
+// Copyright 2025 ninja-to-soong authors
+// SPDX-License-Identifier: Apache-2.0
+
+use super::*;
+
+#[derive(Default)]
+pub struct OpenclIcdLoader();
+
+const GENERATED_CMAKE_CONFIG: &str = "generate_cmake_config";
+
+impl Project for OpenclIcdLoader {
+    fn get_name(&self) -> &'static str {
+        "OpenCL-ICD-Loader"
+    }
+    fn get_android_path(&self, ctx: &Context) -> Result<PathBuf, String> {
+        Ok(ctx
+            .get_android_path()?
+            .join("external")
+            .join(self.get_name()))
+    }
+    fn get_test_path(&self, ctx: &Context) -> Result<PathBuf, String> {
+        Ok(ctx.test_path.join(self.get_name()))
+    }
+    fn generate_package(
+        &mut self,
+        ctx: &Context,
+        _projects_map: &ProjectsMap,
+    ) -> Result<String, String> {
+        let src_path = self.get_android_path(ctx)?;
+        let build_path = ctx.temp_path.join(self.get_name());
+        let ndk_path = get_ndk_path(&ctx.temp_path, ctx)?;
+
+        if !ctx.skip_gen_ninja {
+            execute_cmd!(
+                "bash",
+                [
+                    &path_to_string(self.get_test_path(ctx)?.join("gen-ninja.sh")),
+                    &path_to_string(&src_path),
+                    &path_to_string(&build_path),
+                    &path_to_string(&ndk_path),
+                ]
+            )?;
+        }
+        SoongPackage::new(
+            &["//visibility:public"],
+            "OpenCL-ICD-Loader_license",
+            &["SPDX-license-identifier-Apache-2.0"],
+            &["LICENSE"],
+        )
+        .generate(
+            NinjaTargetsToGenMap::from(&[target!("libOpenCL.so", "libOpenCL")]),
+            parse_build_ninja::<CmakeNinjaTarget>(&build_path)?,
+            &src_path,
+            &ndk_path,
+            &build_path,
+            None,
+            self,
+            ctx,
+        )?
+        .add_raw_prefix(
+            r#"
+soong_namespace {}
+"#,
+        )
+        .add_raw_suffix(&format!(
+            r#"
+genrule {{
+    name: "{GENERATED_CMAKE_CONFIG}",
+    out: ["icd_cmake_config.h"],
+    /*
+        Android's libc doesn't implement `secure_getenv` or `__secure_getenv`
+        so we just create an empty $(out) file.
+    */
+    cmd: "touch $(out)",
+    visibility: ["//visibility:private"],
+}}
+"#
+        ))
+        .print(ctx)
+    }
+
+    fn extend_module(&self, _target: &Path, module: SoongModule) -> Result<SoongModule, String> {
+        module
+            .add_prop(
+                "header_libs",
+                SoongProp::VecStr(vec![String::from("OpenCL-Headers")]),
+            )
+            .add_prop(
+                "export_header_lib_headers",
+                SoongProp::VecStr(vec![String::from("OpenCL-Headers")]),
+            )
+            .add_prop(
+                "generated_headers",
+                SoongProp::VecStr(vec![String::from(GENERATED_CMAKE_CONFIG)]),
+            )
+            .add_prop("soc_specific", SoongProp::Bool(true))
+            .extend_prop("cflags", vec!["-DMODERN_ANDROID_VENDOR_PATH"])
+    }
+
+    fn filter_cflag(&self, _cflag: &str) -> bool {
+        false
+    }
+    fn filter_define(&self, define: &str) -> bool {
+        define.starts_with("CL_") || define.starts_with("OPENCL")
+    }
+    fn filter_include(&self, include: &Path) -> bool {
+        path_to_string(include).contains("external/OpenCL-ICD-Loader")
+    }
+    fn filter_link_flag(&self, _flag: &str) -> bool {
+        false
+    }
+    fn filter_lib(&self, _lib: &str) -> bool {
+        false
+    }
+}

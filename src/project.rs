@@ -22,6 +22,7 @@ define_ProjectId!(
     (Mesa3DDesktopIntel, mesa3d_desktop_intel),
     (Mesa3DDesktopPanVK, mesa3d_desktop_panvk),
     (OpenclCts, opencl_cts),
+    (OpenclIcdLoader, opencl_icd_loader),
     (SpirvHeaders, spirv_headers),
     (SpirvTools, spirv_tools),
     (UnitTest, unittest)
