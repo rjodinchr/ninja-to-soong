@@ -1,0 +1,1 @@
+build external_project_library: CXX_SHARED_LIBRARY source.c
