@@ -27,9 +27,9 @@ fn parse_test(line: &str) -> Option<String> {
     Some(String::from("test_conformance/") + binary)
 }
 
-fn parse_tests(src_path: &Path) -> Result<Vec<String>, String> {
+fn parse_tests(file_path: &Path) -> Result<Vec<String>, String> {
     let mut tests = Vec::new();
-    let content = read_file(&src_path.join("test_conformance/opencl_conformance_tests_full.csv"))?;
+    let content = read_file(file_path)?;
     let mut lines = content.lines();
     while let Some(line) = lines.next() {
         if line.is_empty() || line.starts_with("#") || line.starts_with("OpenCL-GL") {
@@ -68,6 +68,8 @@ impl Project for OpenclCts {
         let ndk_path = get_ndk_path(&ctx.temp_path, ctx)?;
         self.spirv_headers_path = ProjectId::SpirvHeaders.get_android_path(projects_map, ctx)?;
 
+        const CSV_FILENAME: &str = "opencl_conformance_tests_full.csv";
+        let csv_file_path = build_path.join(CSV_FILENAME);
         if !ctx.skip_gen_ninja {
             execute_cmd!(
                 "bash",
@@ -79,8 +81,12 @@ impl Project for OpenclCts {
                     &path_to_string(&self.spirv_headers_path),
                 ]
             )?;
+            write_file(
+                &csv_file_path,
+                &read_file(&self.src_path.join("test_conformance").join(CSV_FILENAME))?,
+            )?;
         }
-        let tests = parse_tests(&self.src_path)?
+        let tests = parse_tests(&csv_file_path)?
             .into_iter()
             .map(|test| {
                 (
