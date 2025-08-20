@@ -446,7 +446,7 @@ cc_genrule {
 
 cc_genrule {
     name: "unittests_src_compiler_nir_nir_opcodes_h",
-    cmd: "$(location) ",
+    cmd: "python3 $(location) ",
     srcs: [
         "/usr/bin/python3",
         ":unittests_raspberry-vanilla_aosp16_external_mesa3d-rpi_src_compiler_nir_nir_intrinsics_py",
@@ -483,7 +483,7 @@ cc_genrule {
 
 cc_genrule {
     name: "unittests_src_compiler_nir_nir_builder_opcodes_h",
-    cmd: "$(location) ",
+    cmd: "python3 $(location) ",
     srcs: [
         "/usr/bin/python3",
         ":unittests_raspberry-vanilla_aosp16_external_mesa3d-rpi_src_compiler_nir_nir_builder_opcodes_h_py",
