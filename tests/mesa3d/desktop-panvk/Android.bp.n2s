@@ -50,6 +50,7 @@ cc_binary {
         "libz",
     ],
     static_libs: [
+        "libperfetto_client_experimental",
         "mesa3d_desktop-panvk_src_c11_impl_libmesa_util_c11_a",
         "mesa3d_desktop-panvk_src_compiler_libcompiler_a",
         "mesa3d_desktop-panvk_src_compiler_nir_libnir_a",
@@ -91,37 +92,14 @@ cc_binary {
         "mesa3d_desktop-panvk_src_util_blake3_libblake3_a",
         "mesa3d_desktop-panvk_src_util_libmesa_util_a",
         "mesa3d_desktop-panvk_src_util_libmesa_util_simd_a",
-        "mesa3d_desktop-panvk_subprojects_perfetto_libperfetto_a",
     ],
     local_include_dirs: [
         "meson_generated/src",
         "src",
         "src/tool",
         "src/tool/pps",
-        "subprojects/perfetto/sdk",
     ],
     defaults: ["mesa3d-desktop-panvk-defaults"],
-}
-
-cc_library_static {
-    name: "mesa3d_desktop-panvk_subprojects_perfetto_libperfetto_a",
-    srcs: ["subprojects/perfetto/sdk/perfetto.cc"],
-    cflags: [
-        "-DNDEBUG",
-        "-D_FILE_OFFSET_BITS=64",
-        "-Wno-constant-conversion",
-        "-Wno-enum-conversion",
-        "-Wno-error",
-        "-Wno-ignored-qualifiers",
-        "-Wno-initializer-overrides",
-        "-Wno-macro-redefined",
-        "-Wno-non-virtual-dtor",
-        "-Wno-pointer-arith",
-        "-Wno-unused-parameter",
-    ],
-    local_include_dirs: ["subprojects/perfetto"],
-    header_libs: ["liblog_headers"],
-    soc_specific: true,
 }
 
 cc_library_static {
@@ -239,7 +217,6 @@ cc_library_static {
         "src",
         "src/util",
         "src/util/format",
-        "subprojects/perfetto/sdk",
     ],
     defaults: ["mesa3d-desktop-panvk-defaults"],
 }
@@ -272,7 +249,6 @@ cc_library_static {
         "src",
         "src/tool",
         "src/tool/pps",
-        "subprojects/perfetto/sdk",
     ],
     defaults: ["mesa3d-desktop-panvk-defaults"],
 }
@@ -305,7 +281,6 @@ cc_library_static {
         "src/compiler",
         "src/compiler/nir",
         "src/panfrost/util",
-        "subprojects/perfetto/sdk",
     ],
     defaults: ["mesa3d-desktop-panvk-defaults"],
 }
@@ -340,7 +315,6 @@ cc_library_static {
         "src/panfrost/midgard",
         "src/panfrost/perf",
         "src/panfrost/shared",
-        "subprojects/perfetto/sdk",
     ],
     defaults: ["mesa3d-desktop-panvk-defaults"],
 }
@@ -402,7 +376,6 @@ cc_library_static {
         "src/compiler",
         "src/compiler/nir",
         "src/panfrost/midgard",
-        "subprojects/perfetto/sdk",
     ],
     defaults: ["mesa3d-desktop-panvk-defaults"],
 }
@@ -443,7 +416,6 @@ cc_library_static {
         "src/panfrost/libpan",
         "src/panfrost/midgard",
         "src/panfrost/shared",
-        "subprojects/perfetto/sdk",
     ],
     defaults: ["mesa3d-desktop-panvk-defaults"],
 }
@@ -470,7 +442,6 @@ cc_library_static {
         "src/panfrost/libpan",
         "src/panfrost/midgard",
         "src/panfrost/shared",
-        "subprojects/perfetto/sdk",
     ],
     defaults: ["mesa3d-desktop-panvk-defaults"],
 }
@@ -497,7 +468,6 @@ cc_library_static {
         "src/panfrost/libpan",
         "src/panfrost/midgard",
         "src/panfrost/shared",
-        "subprojects/perfetto/sdk",
     ],
     defaults: ["mesa3d-desktop-panvk-defaults"],
 }
@@ -524,7 +494,6 @@ cc_library_static {
         "src/panfrost/libpan",
         "src/panfrost/midgard",
         "src/panfrost/shared",
-        "subprojects/perfetto/sdk",
     ],
     defaults: ["mesa3d-desktop-panvk-defaults"],
 }
@@ -551,7 +520,6 @@ cc_library_static {
         "src/panfrost/libpan",
         "src/panfrost/midgard",
         "src/panfrost/shared",
-        "subprojects/perfetto/sdk",
     ],
     defaults: ["mesa3d-desktop-panvk-defaults"],
 }
@@ -578,7 +546,6 @@ cc_library_static {
         "src/panfrost/libpan",
         "src/panfrost/midgard",
         "src/panfrost/shared",
-        "subprojects/perfetto/sdk",
     ],
     defaults: ["mesa3d-desktop-panvk-defaults"],
 }
@@ -605,7 +572,6 @@ cc_library_static {
         "src/panfrost/libpan",
         "src/panfrost/midgard",
         "src/panfrost/shared",
-        "subprojects/perfetto/sdk",
     ],
     defaults: ["mesa3d-desktop-panvk-defaults"],
 }
@@ -632,7 +598,6 @@ cc_library_static {
         "src/panfrost/libpan",
         "src/panfrost/midgard",
         "src/panfrost/shared",
-        "subprojects/perfetto/sdk",
     ],
     defaults: ["mesa3d-desktop-panvk-defaults"],
 }
@@ -668,7 +633,6 @@ cc_library_static {
         "src/panfrost/libpan",
         "src/panfrost/midgard",
         "src/panfrost/shared",
-        "subprojects/perfetto/sdk",
     ],
     defaults: ["mesa3d-desktop-panvk-defaults"],
 }
@@ -704,7 +668,6 @@ cc_library_static {
         "src/panfrost/libpan",
         "src/panfrost/midgard",
         "src/panfrost/shared",
-        "subprojects/perfetto/sdk",
     ],
     defaults: ["mesa3d-desktop-panvk-defaults"],
 }
@@ -740,7 +703,6 @@ cc_library_static {
         "src/panfrost/libpan",
         "src/panfrost/midgard",
         "src/panfrost/shared",
-        "subprojects/perfetto/sdk",
     ],
     defaults: ["mesa3d-desktop-panvk-defaults"],
 }
@@ -776,7 +738,6 @@ cc_library_static {
         "src/panfrost/libpan",
         "src/panfrost/midgard",
         "src/panfrost/shared",
-        "subprojects/perfetto/sdk",
     ],
     defaults: ["mesa3d-desktop-panvk-defaults"],
 }
@@ -812,7 +773,6 @@ cc_library_static {
         "src/panfrost/libpan",
         "src/panfrost/midgard",
         "src/panfrost/shared",
-        "subprojects/perfetto/sdk",
     ],
     defaults: ["mesa3d-desktop-panvk-defaults"],
 }
@@ -848,7 +808,6 @@ cc_library_static {
         "src/panfrost/libpan",
         "src/panfrost/midgard",
         "src/panfrost/shared",
-        "subprojects/perfetto/sdk",
     ],
     defaults: ["mesa3d-desktop-panvk-defaults"],
 }
@@ -884,7 +843,6 @@ cc_library_static {
         "src/panfrost/libpan",
         "src/panfrost/midgard",
         "src/panfrost/shared",
-        "subprojects/perfetto/sdk",
     ],
     defaults: ["mesa3d-desktop-panvk-defaults"],
 }
@@ -920,7 +878,6 @@ cc_library_static {
         "src/panfrost/libpan",
         "src/panfrost/midgard",
         "src/panfrost/shared",
-        "subprojects/perfetto/sdk",
     ],
     defaults: ["mesa3d-desktop-panvk-defaults"],
 }
@@ -951,7 +908,6 @@ cc_library_static {
         "src/panfrost/libpan",
         "src/panfrost/midgard",
         "src/panfrost/shared",
-        "subprojects/perfetto/sdk",
     ],
     defaults: ["mesa3d-desktop-panvk-defaults"],
 }
@@ -977,7 +933,6 @@ cc_library_static {
         "src/panfrost/libpan",
         "src/panfrost/midgard",
         "src/panfrost/shared",
-        "subprojects/perfetto/sdk",
     ],
     defaults: ["mesa3d-desktop-panvk-defaults"],
 }
@@ -1012,7 +967,6 @@ cc_library_static {
         "src/panfrost/libpan",
         "src/panfrost/midgard",
         "src/panfrost/shared",
-        "subprojects/perfetto/sdk",
     ],
     defaults: ["mesa3d-desktop-panvk-defaults"],
 }
@@ -1047,7 +1001,6 @@ cc_library_static {
         "src/panfrost/libpan",
         "src/panfrost/midgard",
         "src/panfrost/shared",
-        "subprojects/perfetto/sdk",
     ],
     defaults: ["mesa3d-desktop-panvk-defaults"],
 }
@@ -1082,7 +1035,6 @@ cc_library_static {
         "src/panfrost/libpan",
         "src/panfrost/midgard",
         "src/panfrost/shared",
-        "subprojects/perfetto/sdk",
     ],
     defaults: ["mesa3d-desktop-panvk-defaults"],
 }
@@ -1117,7 +1069,6 @@ cc_library_static {
         "src/panfrost/libpan",
         "src/panfrost/midgard",
         "src/panfrost/shared",
-        "subprojects/perfetto/sdk",
     ],
     defaults: ["mesa3d-desktop-panvk-defaults"],
 }
@@ -1152,7 +1103,6 @@ cc_library_static {
         "src/panfrost/libpan",
         "src/panfrost/midgard",
         "src/panfrost/shared",
-        "subprojects/perfetto/sdk",
     ],
     defaults: ["mesa3d-desktop-panvk-defaults"],
 }
@@ -1187,7 +1137,6 @@ cc_library_static {
         "src/panfrost/libpan",
         "src/panfrost/midgard",
         "src/panfrost/shared",
-        "subprojects/perfetto/sdk",
     ],
     defaults: ["mesa3d-desktop-panvk-defaults"],
 }
@@ -1222,7 +1171,6 @@ cc_library_static {
         "src/panfrost/libpan",
         "src/panfrost/midgard",
         "src/panfrost/shared",
-        "subprojects/perfetto/sdk",
     ],
     defaults: ["mesa3d-desktop-panvk-defaults"],
 }
@@ -1257,7 +1205,6 @@ cc_library_static {
         "src/panfrost/libpan",
         "src/panfrost/midgard",
         "src/panfrost/shared",
-        "subprojects/perfetto/sdk",
     ],
     defaults: ["mesa3d-desktop-panvk-defaults"],
 }
@@ -1292,7 +1239,6 @@ cc_library_static {
         "src/panfrost/midgard",
         "src/panfrost/shared",
         "src/tool",
-        "subprojects/perfetto/sdk",
     ],
     defaults: ["mesa3d-desktop-panvk-defaults"],
 }
@@ -1330,7 +1276,6 @@ cc_library_static {
         "src/compiler",
         "src/compiler/nir",
         "src/panfrost/compiler",
-        "subprojects/perfetto/sdk",
     ],
     defaults: ["mesa3d-desktop-panvk-defaults"],
 }
@@ -1395,7 +1340,6 @@ cc_library_static {
         "src/compiler/nir",
         "src/panfrost/compiler",
         "src/panfrost/compiler/valhall",
-        "subprojects/perfetto/sdk",
     ],
     defaults: ["mesa3d-desktop-panvk-defaults"],
 }
@@ -1638,7 +1582,6 @@ cc_library_static {
         "src",
         "src/compiler",
         "src/compiler/nir",
-        "subprojects/perfetto/sdk",
     ],
     defaults: ["mesa3d-desktop-panvk-defaults"],
 }
@@ -1704,6 +1647,7 @@ cc_library_shared {
         "libz",
     ],
     static_libs: [
+        "libperfetto_client_experimental",
         "mesa3d_desktop-panvk_src_c11_impl_libmesa_util_c11_a",
         "mesa3d_desktop-panvk_src_compiler_libcompiler_a",
         "mesa3d_desktop-panvk_src_compiler_nir_libnir_a",
@@ -1747,7 +1691,6 @@ cc_library_shared {
         "mesa3d_desktop-panvk_src_util_libxmlconfig_a",
         "mesa3d_desktop-panvk_src_util_u_gralloc_lib_mesa_u_gralloc_a",
         "mesa3d_desktop-panvk_src_vulkan_util_libvulkan_util_a",
-        "mesa3d_desktop-panvk_subprojects_perfetto_libperfetto_a",
     ],
     whole_static_libs: [
         "mesa3d_desktop-panvk_src_panfrost_vulkan_libpanvk_v10_a",
@@ -1793,7 +1736,6 @@ cc_library_shared {
         "src/vulkan/runtime/bvh",
         "src/vulkan/util",
         "src/vulkan/wsi",
-        "subprojects/perfetto/sdk",
     ],
     relative_install_path: "hw",
     afdo: true,
@@ -1824,7 +1766,6 @@ cc_library_static {
         "src/vulkan/runtime/bvh",
         "src/vulkan/util",
         "src/vulkan/wsi",
-        "subprojects/perfetto/sdk",
     ],
     defaults: ["mesa3d-desktop-panvk-defaults"],
 }
@@ -1852,7 +1793,6 @@ cc_library_static {
         "src/compiler",
         "src/compiler/nir",
         "src/vulkan/util",
-        "subprojects/perfetto/sdk",
     ],
     defaults: ["mesa3d-desktop-panvk-defaults"],
 }
@@ -1897,7 +1837,6 @@ cc_library_static {
         "src/compiler/nir",
         "src/vulkan/runtime",
         "src/vulkan/util",
-        "subprojects/perfetto/sdk",
     ],
     defaults: ["mesa3d-desktop-panvk-defaults"],
 }
@@ -1976,7 +1915,6 @@ cc_library_static {
         "src/compiler/nir",
         "src/vulkan/runtime",
         "src/vulkan/util",
-        "subprojects/perfetto/sdk",
     ],
     defaults: ["mesa3d-desktop-panvk-defaults"],
 }
@@ -2003,7 +1941,6 @@ cc_library_static {
         "src/compiler/nir",
         "src/vulkan/runtime",
         "src/vulkan/util",
-        "subprojects/perfetto/sdk",
     ],
     defaults: ["mesa3d-desktop-panvk-defaults"],
 }
@@ -2044,7 +1981,6 @@ cc_library_static {
         "meson_generated/src/util/format",
         "src",
         "src/util",
-        "subprojects/perfetto/sdk",
     ],
     defaults: ["mesa3d-desktop-panvk-defaults"],
 }
@@ -2121,7 +2057,6 @@ cc_library_static {
         "src/vulkan/runtime/bvh",
         "src/vulkan/util",
         "src/vulkan/wsi",
-        "subprojects/perfetto/sdk",
     ],
     defaults: ["mesa3d-desktop-panvk-defaults"],
 }
@@ -2198,7 +2133,6 @@ cc_library_static {
         "src/vulkan/runtime/bvh",
         "src/vulkan/util",
         "src/vulkan/wsi",
-        "subprojects/perfetto/sdk",
     ],
     defaults: ["mesa3d-desktop-panvk-defaults"],
 }
@@ -2277,7 +2211,6 @@ cc_library_static {
         "src/vulkan/runtime/bvh",
         "src/vulkan/util",
         "src/vulkan/wsi",
-        "subprojects/perfetto/sdk",
     ],
     defaults: ["mesa3d-desktop-panvk-defaults"],
 }
@@ -2356,7 +2289,6 @@ cc_library_static {
         "src/vulkan/runtime/bvh",
         "src/vulkan/util",
         "src/vulkan/wsi",
-        "subprojects/perfetto/sdk",
     ],
     defaults: ["mesa3d-desktop-panvk-defaults"],
 }
@@ -2435,7 +2367,6 @@ cc_library_static {
         "src/vulkan/runtime/bvh",
         "src/vulkan/util",
         "src/vulkan/wsi",
-        "subprojects/perfetto/sdk",
     ],
     defaults: ["mesa3d-desktop-panvk-defaults"],
 }
@@ -2453,7 +2384,6 @@ cc_library_static {
         "meson_generated/src/util/format",
         "src",
         "src/panfrost/shared",
-        "subprojects/perfetto/sdk",
     ],
     defaults: ["mesa3d-desktop-panvk-defaults"],
 }
@@ -2488,7 +2418,6 @@ cc_library_static {
         "src/compiler",
         "src/compiler/nir",
         "src/compiler/spirv",
-        "subprojects/perfetto/sdk",
     ],
     defaults: ["mesa3d-desktop-panvk-defaults"],
 }
@@ -2498,6 +2427,7 @@ cc_defaults {
     cflags: [
         "-DAMD_LLVM_AVAILABLE=0",
         "-DANDROID_API_LEVEL=35",
+        "-DANDROID_LIBPERFETTO",
         "-DANDROID_STRICT",
         "-DDRAW_LLVM_AVAILABLE=0",
         "-DENABLE_SHADER_CACHE",
@@ -2605,4 +2535,5 @@ cc_defaults {
     name: "mesa3d-desktop-intel-raw-defaults",
     soc_specific: true,
     header_libs: ["libdrm_headers"],
+    static_libs: ["libperfetto_client_experimental"],
 }
