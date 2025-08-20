@@ -640,6 +640,7 @@ cc_test {
         "test_conformance/extensions/cl_khr_command_buffer/cl_khr_command_buffer_mutable_dispatch/mutable_command_multiple_dispatches.cpp",
         "test_conformance/extensions/cl_khr_command_buffer/cl_khr_command_buffer_mutable_dispatch/mutable_command_overwrite_update.cpp",
         "test_conformance/extensions/cl_khr_command_buffer/cl_khr_command_buffer_mutable_dispatch/mutable_command_simultaneous.cpp",
+        "test_conformance/extensions/cl_khr_command_buffer/cl_khr_command_buffer_mutable_dispatch/mutable_command_work_dim.cpp",
         "test_conformance/extensions/cl_khr_command_buffer/cl_khr_command_buffer_mutable_dispatch/mutable_command_work_groups.cpp",
     ],
     test_config: "android/OpenCL-CTS-test_cl_khr_mutable_dispatch.xml",
@@ -913,6 +914,7 @@ cc_test {
     name: "OpenCL-CTS-test_api",
     srcs: [
         "test_conformance/api/main.cpp",
+        "test_conformance/api/negative_enqueue_map_image.cpp",
         "test_conformance/api/negative_platform.cpp",
         "test_conformance/api/negative_queue.cpp",
         "test_conformance/api/test_api_consistency.cpp",
@@ -947,13 +949,25 @@ cc_test {
         "test_conformance/api/test_queue_properties_queries.cpp",
         "test_conformance/api/test_retain.cpp",
         "test_conformance/api/test_retain_program.cpp",
+        "test_conformance/api/test_spirv_queries.cpp",
         "test_conformance/api/test_sub_group_dispatch.cpp",
         "test_conformance/api/test_wg_suggested_local_work_size.cpp",
         "test_conformance/api/test_zero_sized_enqueue.cpp",
     ],
+    generated_headers: ["OpenCL-CTS_test_conformance_api_spirv_capability_deps_def"],
     test_config: "android/OpenCL-CTS-test_api.xml",
     rtti: false,
     defaults: ["OpenCL-CTS-defaults"],
+}
+
+cc_genrule {
+    name: "OpenCL-CTS_test_conformance_api_spirv_capability_deps_def",
+    cmd: "python3 $(location) --grammar $(location :SpirvHeaders_include_spirv_unified1_spirv_core_grammar_json) --output $(location spirv_capability_deps.def)",
+    srcs: [":SpirvHeaders_include_spirv_unified1_spirv_core_grammar_json"],
+    out: ["spirv_capability_deps.def"],
+    tool_files: ["test_conformance/api/generate_spirv_capability_deps.py"],
+    vendor_available: true,
+    host_supported: true,
 }
 
 cc_test {
@@ -5161,7 +5175,10 @@ cc_defaults {
 
 cc_defaults {
     name: "OpenCL-CTS-manual-defaults",
-    header_libs: ["OpenCL-Headers"],
+    header_libs: [
+        "OpenCL-Headers",
+        "SPIRV-Headers-includes",
+    ],
     cflags: [
         "-Wno-error",
         "-Wno-c++11-narrowing",

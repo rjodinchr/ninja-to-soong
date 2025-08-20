@@ -26,7 +26,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        project: [clvk, mesa, OpenCL-CTS, OpenCL-ICD-Loader, angle, clpeak, unittests]
+        project: [clvk, mesa, OpenCL-CTS, OpenCL-ICD-Loader, angle, clpeak, unittests, external-project]
     steps:
       - uses: actions/checkout@v5
         with:
@@ -50,9 +50,8 @@ jobs:
             echo "key=$(git log -1 --format='%h' .github/workflows/*.yml tests/mesa3d/desktop-intel/*.sh tests/mesa3d/desktop-panvk/*.sh)-mesa" >> $GITHUB_ENV
             echo "projects=mesa3d/desktop-intel mesa3d/desktop-panvk" >> $GITHUB_ENV
           elif [ "${{ matrix.project }}" == "OpenCL-CTS" ]; then
-            echo "key=$(git rev-parse HEAD)-OpenCL-CTS" >> $GITHUB_ENV # Never use cache as checkout is needed for opencl_conformance_tests_full.csv
+            echo "key=$(git log -1 --format='%h' .github/workflows/*.yml tests/OpenCL-CTS/*.sh)-OpenCL-CTS" >> $GITHUB_ENV
             echo "projects=OpenCL-CTS" >> $GITHUB_ENV
-            echo "extra_args=--ext-proj-path ${{ github.workspace }}/tests/OpenCL-CTS/external/opencl_cts.rs" >> $GITHUB_ENV
           elif [ "${{ matrix.project }}" == "OpenCL-ICD-Loader" ]; then
             echo "key=$(git log -1 --format='%h' .github/workflows/*.yml tests/OpenCL-ICD-Loader/*.sh)-OpenCL-ICD-Loader" >> $GITHUB_ENV
             echo "projects=OpenCL-ICD-Loader" >> $GITHUB_ENV
@@ -62,6 +61,10 @@ jobs:
           elif [ "${{ matrix.project }}" == "clpeak" ]; then
             echo "key=$(git log -1 --format='%h' .github/workflows/*.yml tests/clpeak/*.sh)-clpeak" >> $GITHUB_ENV
             echo "projects=clpeak" >> $GITHUB_ENV
+          elif [ "${{ matrix.project }}" == "external-project" ]; then
+            echo "key=$(git rev-parse HEAD)-external-project" >> $GITHUB_ENV # Never use cache as there is nothing to cache
+            echo "projects=" >> $GITHUB_ENV
+            echo "extra_args=--ext-proj-path ${{ github.workspace }}/tests/external-project/project.rs" >> $GITHUB_ENV
           elif [ "${{ matrix.project }}" == "unittests" ]; then
             echo "key=$(git rev-parse HEAD)-unittests" >> $GITHUB_ENV # Never use cache as there is nothing to cache
             echo "projects=unittests" >> $GITHUB_ENV

@@ -1312,23 +1312,23 @@ cc_genrule {
     tool_files: ["src/program_serialize_data_version.py"],
     arch: {
         arm64: {
-            cmd: "echo \"$(in)\" > $(genDir)/___angle_program_version_id___build_toolchain_android_android_clang_arm64__rule.rsp && $(location) $(location ANGLEShaderProgramVersion.h) $(genDir)/___angle_program_version_id___build_toolchain_android_android_clang_arm64__rule.rsp",
+            cmd: "echo \"$(in)\" > $(genDir)/___angle_program_version_id___build_toolchain_android_android_clang_arm64__rule.rsp && python3 $(location) $(location ANGLEShaderProgramVersion.h) $(genDir)/___angle_program_version_id___build_toolchain_android_android_clang_arm64__rule.rsp",
         },
         arm: {
-            cmd: "echo \"$(in)\" > $(genDir)/___angle_program_version_id___build_toolchain_android_android_clang_arm__rule.rsp && $(location) $(location ANGLEShaderProgramVersion.h) $(genDir)/___angle_program_version_id___build_toolchain_android_android_clang_arm__rule.rsp",
+            cmd: "echo \"$(in)\" > $(genDir)/___angle_program_version_id___build_toolchain_android_android_clang_arm__rule.rsp && python3 $(location) $(location ANGLEShaderProgramVersion.h) $(genDir)/___angle_program_version_id___build_toolchain_android_android_clang_arm__rule.rsp",
         },
         x64: {
-            cmd: "echo \"$(in)\" > $(genDir)/___angle_program_version_id___build_toolchain_android_android_clang_x64__rule.rsp && $(location) $(location ANGLEShaderProgramVersion.h) $(genDir)/___angle_program_version_id___build_toolchain_android_android_clang_x64__rule.rsp",
+            cmd: "echo \"$(in)\" > $(genDir)/___angle_program_version_id___build_toolchain_android_android_clang_x64__rule.rsp && python3 $(location) $(location ANGLEShaderProgramVersion.h) $(genDir)/___angle_program_version_id___build_toolchain_android_android_clang_x64__rule.rsp",
         },
         x86: {
-            cmd: "echo \"$(in)\" > $(genDir)/___angle_program_version_id___build_toolchain_android_android_clang_x86__rule.rsp && $(location) $(location ANGLEShaderProgramVersion.h) $(genDir)/___angle_program_version_id___build_toolchain_android_android_clang_x86__rule.rsp",
+            cmd: "echo \"$(in)\" > $(genDir)/___angle_program_version_id___build_toolchain_android_android_clang_x86__rule.rsp && python3 $(location) $(location ANGLEShaderProgramVersion.h) $(genDir)/___angle_program_version_id___build_toolchain_android_android_clang_x86__rule.rsp",
         },
     },
 }
 
 cc_genrule {
     name: "angle_gen_angle_angle_commit_h",
-    cmd: "$(location) gen $(location angle_commit.h)",
+    cmd: "python3 $(location) gen $(location angle_commit.h)",
     out: ["angle_commit.h"],
     tool_files: ["src/commit_id.py"],
 }

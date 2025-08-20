@@ -12,6 +12,7 @@
 
 package {
     default_visibility: [
+        "//external/OpenCL-CTS",
         "//external/SPIRV-Tools",
         "//external/clspv",
         "//external/clvk",
