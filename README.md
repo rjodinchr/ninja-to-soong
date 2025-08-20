@@ -78,7 +78,7 @@ The following feature can be used to output debug information when writting a ne
 
 This is useful for project where the configuration file cannot be shared upstream for example, or when a project prefer to have the configuration file hosted in the project repository.
 
-An example of such a configuration file can be found [here](tests/OpenCL-CTS/external/opencl_cts.rs)
+An example of such a configuration file can be found [here](tests/external-project/project.rs)
 
 The important points are:
 - Add `ninja-to-soong` crate: `extern crate ninja_to_soong;`, and use all modules needed for the project.
