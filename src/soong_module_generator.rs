@@ -312,7 +312,11 @@ where
         cmd = cmd.replace(&path_to_string_with_separator(self.build_path), "");
         let tool_location = String::from("$(location) ");
         let (tool, cmd) = if let Some((tool, cmd)) = cmd.split_once(" ") {
-            (String::from(tool), tool_location + cmd)
+            let mut cmd = tool_location + cmd;
+            if tool.ends_with(".py") {
+                cmd = String::from("python3 ") + &cmd;
+            }
+            (String::from(tool), cmd)
         } else {
             (String::from(cmd), tool_location)
         };

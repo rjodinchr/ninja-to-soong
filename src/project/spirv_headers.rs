@@ -27,6 +27,7 @@ impl Project for SpirvHeaders {
         let src_path = self.get_android_path(ctx)?;
         let mut package = SoongPackage::new(
             &[
+                "//external/OpenCL-CTS",
                 "//external/SPIRV-Tools",
                 "//external/clspv",
                 "//external/clvk",

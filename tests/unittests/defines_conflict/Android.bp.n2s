@@ -396,7 +396,7 @@ cc_library_static {
 
 cc_genrule {
     name: "unittests_src_util_format_u_format_gen_h",
-    cmd: "$(location) $(location :unittests_raspberry-vanilla_aosp16_external_mesa3d-rpi_src_util_format_u_format_yaml) --enums",
+    cmd: "python3 $(location) $(location :unittests_raspberry-vanilla_aosp16_external_mesa3d-rpi_src_util_format_u_format_yaml) --enums",
     srcs: [
         "/usr/bin/python3",
         ":unittests_raspberry-vanilla_aosp16_external_mesa3d-rpi_src_util_format_u_format_pack_py",
@@ -410,7 +410,7 @@ cc_genrule {
 
 cc_genrule {
     name: "unittests_src_broadcom_cle_v3d_packet_v71_pack_h",
-    cmd: "$(location) $(location :unittests_raspberry-vanilla_aosp16_external_mesa3d-rpi_src_broadcom_cle_v3d_packet_xml) 71",
+    cmd: "python3 $(location) $(location :unittests_raspberry-vanilla_aosp16_external_mesa3d-rpi_src_broadcom_cle_v3d_packet_xml) 71",
     srcs: [
         "/usr/bin/python3",
         ":unittests_raspberry-vanilla_aosp16_external_mesa3d-rpi_src_broadcom_cle_gen_pack_header_py",
@@ -422,7 +422,7 @@ cc_genrule {
 
 cc_genrule {
     name: "unittests_src_broadcom_cle_v3d_packet_v42_pack_h",
-    cmd: "$(location) $(location :unittests_raspberry-vanilla_aosp16_external_mesa3d-rpi_src_broadcom_cle_v3d_packet_xml) 42",
+    cmd: "python3 $(location) $(location :unittests_raspberry-vanilla_aosp16_external_mesa3d-rpi_src_broadcom_cle_v3d_packet_xml) 42",
     srcs: [
         "/usr/bin/python3",
         ":unittests_raspberry-vanilla_aosp16_external_mesa3d-rpi_src_broadcom_cle_gen_pack_header_py",
@@ -434,7 +434,7 @@ cc_genrule {
 
 cc_genrule {
     name: "unittests_src_broadcom_cle_v3d_packet_v21_pack_h",
-    cmd: "$(location) $(location :unittests_raspberry-vanilla_aosp16_external_mesa3d-rpi_src_broadcom_cle_vc4_packet_xml) 21",
+    cmd: "python3 $(location) $(location :unittests_raspberry-vanilla_aosp16_external_mesa3d-rpi_src_broadcom_cle_vc4_packet_xml) 21",
     srcs: [
         "/usr/bin/python3",
         ":unittests_raspberry-vanilla_aosp16_external_mesa3d-rpi_src_broadcom_cle_gen_pack_header_py",
@@ -459,7 +459,7 @@ cc_genrule {
 
 cc_genrule {
     name: "unittests_src_compiler_nir_nir_intrinsics_indices_h",
-    cmd: "$(location) --outdir /ninja-to-soong/src/src/compiler/nir",
+    cmd: "python3 $(location) --outdir /ninja-to-soong/src/src/compiler/nir",
     srcs: [
         "/usr/bin/python3",
         ":unittests_raspberry-vanilla_aosp16_external_mesa3d-rpi_src_compiler_nir_nir_intrinsics_indices_h_py",
@@ -471,7 +471,7 @@ cc_genrule {
 
 cc_genrule {
     name: "unittests_src_compiler_nir_nir_intrinsics_h",
-    cmd: "$(location) --outdir /ninja-to-soong/src/src/compiler/nir",
+    cmd: "python3 $(location) --outdir /ninja-to-soong/src/src/compiler/nir",
     srcs: [
         "/usr/bin/python3",
         ":unittests_raspberry-vanilla_aosp16_external_mesa3d-rpi_src_compiler_nir_nir_intrinsics_h_py",
@@ -496,7 +496,7 @@ cc_genrule {
 
 cc_genrule {
     name: "unittests_src_compiler_ir_expression_operation_h",
-    cmd: "$(location) enum",
+    cmd: "python3 $(location) enum",
     srcs: [
         "/usr/bin/python3",
         ":unittests_raspberry-vanilla_aosp16_external_mesa3d-rpi_src_compiler_glsl_ir_expression_operation_py",
@@ -507,7 +507,7 @@ cc_genrule {
 
 cc_genrule {
     name: "unittests_src_compiler_builtin_types_h",
-    cmd: "$(location) $(location src/compiler/builtin_types.h)",
+    cmd: "python3 $(location) $(location src/compiler/builtin_types.h)",
     srcs: [
         "/usr/bin/python3",
         ":unittests_raspberry-vanilla_aosp16_external_mesa3d-rpi_src_compiler_builtin_types_h_py",
@@ -520,7 +520,7 @@ cc_genrule {
 
 cc_genrule {
     name: "unittests_src_broadcom_compiler_v3d_nir_lower_algebraic_c",
-    cmd: "$(location) -p /ninja-to-soong/src/src/compiler/nir/",
+    cmd: "python3 $(location) -p /ninja-to-soong/src/src/compiler/nir/",
     srcs: [
         "/usr/bin/python3",
         ":unittests_raspberry-vanilla_aosp16_external_mesa3d-rpi_src_broadcom_compiler_v3d_nir_lower_algebraic_py",
