@@ -40,7 +40,7 @@ where
         let src_path = ctx.get_android_path(self)?;
         let ndk_path = get_ndk_path(&ctx.temp_path, ctx)?;
         let build_path = ctx.temp_path.join(self.get_name());
-        let test_path = ctx.get_test_path(self)?;
+        let test_path = self.get_test_path(ctx)?;
 
         let mesa_clc_path = if !ctx.skip_build {
             let mesa_clc_build_path = ctx.temp_path.join("mesa_clc");

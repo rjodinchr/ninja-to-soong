@@ -31,7 +31,7 @@ impl Project for Clvk {
             execute_cmd!(
                 "bash",
                 [
-                    &path_to_string(ctx.get_test_path(self)?.join("gen-ninja.sh")),
+                    &path_to_string(self.get_test_path(ctx)?.join("gen-ninja.sh")),
                     &path_to_string(&src_path),
                     &path_to_string(&build_path),
                     &path_to_string(&ndk_path),
@@ -67,6 +67,7 @@ impl Project for Clvk {
         .add_visibilities(vec![
             ProjectId::OpenclIcdLoader.get_visibility(projects_map)?
         ]);
+
         let gen_libs = package.get_gen_libs();
         for (dep, prefix) in [
             (Dep::ClspvTargets, "clspv"),

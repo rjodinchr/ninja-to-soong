@@ -36,7 +36,7 @@ impl Project for Clspv {
             execute_cmd!(
                 "bash",
                 [
-                    &path_to_string(ctx.get_test_path(self)?.join("gen-ninja.sh")),
+                    &path_to_string(self.get_test_path(ctx)?.join("gen-ninja.sh")),
                     &path_to_string(&src_path),
                     &path_to_string(&self.build_path),
                     &path_to_string(&ndk_path),
@@ -64,6 +64,7 @@ impl Project for Clspv {
             ctx,
         )?
         .add_visibilities(Dep::ClspvTargets.get_visibilities(projects_map)?);
+
         let gen_deps = package.get_gen_deps();
         self.gen_deps.insert(
             Dep::ClangHeaders,
