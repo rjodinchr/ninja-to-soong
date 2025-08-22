@@ -7,6 +7,7 @@ use super::*;
 pub struct OpenclCts {
     src_path: PathBuf,
     spirv_headers_path: PathBuf,
+    gen_deps: Vec<String>,
 }
 
 const DEFAULTS: &str = "OpenCL-CTS-defaults";
@@ -49,11 +50,8 @@ impl Project for OpenclCts {
     fn get_name(&self) -> &'static str {
         "OpenCL-CTS"
     }
-    fn get_android_path(&self, ctx: &Context) -> Result<PathBuf, String> {
-        Ok(ctx
-            .get_android_path()?
-            .join("external")
-            .join(self.get_name()))
+    fn get_android_path(&self) -> Result<PathBuf, String> {
+        Ok(Path::new("external").join(self.get_name()))
     }
     fn get_test_path(&self, ctx: &Context) -> Result<PathBuf, String> {
         Ok(ctx.test_path.join(self.get_name()))
@@ -63,7 +61,7 @@ impl Project for OpenclCts {
         ctx: &Context,
         projects_map: &ProjectsMap,
     ) -> Result<String, String> {
-        self.src_path = self.get_android_path(ctx)?;
+        self.src_path = ctx.get_android_path(self)?;
         let build_path = ctx.temp_path.join(self.get_name());
         let ndk_path = get_ndk_path(&ctx.temp_path, ctx)?;
         self.spirv_headers_path = ProjectId::SpirvHeaders.get_android_path(projects_map, ctx)?;
@@ -159,6 +157,16 @@ impl Project for OpenclCts {
                     ),
             );
         }
+        self.gen_deps = package
+            .get_gen_deps()
+            .into_iter()
+            .filter_map(|dep| {
+                if let Ok(strip) = dep.strip_prefix(&self.spirv_headers_path) {
+                    return Some(path_to_string(strip));
+                }
+                None
+            })
+            .collect();
 
         let default_module = SoongModule::new("cc_defaults")
             .add_prop("name", SoongProp::Str(String::from(DEFAULTS)))
@@ -239,6 +247,17 @@ cc_test {{
 
     fn get_deps_prefix(&self) -> Vec<(PathBuf, Dep)> {
         vec![(self.spirv_headers_path.clone(), Dep::SpirvHeaders)]
+    }
+    fn get_deps(&self, dep: Dep) -> Vec<NinjaTargetToGen> {
+        match dep {
+            Dep::SpirvToolsTargets => vec![target_typed!(
+                "tools/spirv-as",
+                "cc_binary_host",
+                "spirv-as"
+            )],
+            Dep::SpirvHeaders => self.gen_deps.iter().map(|lib| target!(lib)).collect(),
+            _ => Vec::new(),
+        }
     }
 
     fn extend_module(&self, target: &Path, mut module: SoongModule) -> Result<SoongModule, String> {

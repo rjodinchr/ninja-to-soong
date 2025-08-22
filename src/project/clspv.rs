@@ -8,18 +8,15 @@ pub struct Clspv {
     build_path: PathBuf,
     spirv_headers_path: PathBuf,
     llvm_project_path: PathBuf,
-    gen_deps: Vec<PathBuf>,
+    gen_deps: HashMap<Dep, Vec<String>>,
 }
 
 impl Project for Clspv {
     fn get_name(&self) -> &'static str {
         "clspv"
     }
-    fn get_android_path(&self, ctx: &Context) -> Result<PathBuf, String> {
-        Ok(ctx
-            .get_android_path()?
-            .join("external")
-            .join(self.get_name()))
+    fn get_android_path(&self) -> Result<PathBuf, String> {
+        Ok(Path::new("external").join(self.get_name()))
     }
     fn get_test_path(&self, ctx: &Context) -> Result<PathBuf, String> {
         Ok(ctx.test_path.join(self.get_name()))
@@ -29,7 +26,7 @@ impl Project for Clspv {
         ctx: &Context,
         projects_map: &ProjectsMap,
     ) -> Result<String, String> {
-        let src_path = self.get_android_path(ctx)?;
+        let src_path = ctx.get_android_path(self)?;
         self.build_path = ctx.temp_path.join(self.get_name());
         let ndk_path = get_ndk_path(&ctx.temp_path, ctx)?;
         self.spirv_headers_path = ProjectId::SpirvHeaders.get_android_path(projects_map, ctx)?;
@@ -51,13 +48,13 @@ impl Project for Clspv {
         }
 
         let mut package = SoongPackage::new(
-            &["//external/clvk"],
+            &[],
             "clspv_license",
             &["SPDX-license-identifier-Apache-2.0"],
             &["LICENSE"],
         )
         .generate(
-            NinjaTargetsToGenMap::from_dep(Dep::ClspvTargets.get(projects_map)?),
+            NinjaTargetsToGenMap::from(&Dep::ClspvTargets.get_ninja_targets(projects_map)?),
             parse_build_ninja::<CmakeNinjaTarget>(&self.build_path)?,
             &src_path,
             &ndk_path,
@@ -65,8 +62,46 @@ impl Project for Clspv {
             None,
             self,
             ctx,
-        )?;
-        self.gen_deps = package.get_gen_deps();
+        )?
+        .add_visibilities(Dep::ClspvTargets.get_visibilities(projects_map)?);
+
+        let gen_deps = package.get_gen_deps();
+        self.gen_deps.insert(
+            Dep::ClangHeaders,
+            gen_deps
+                .iter()
+                .filter_map(|dep| {
+                    if let Ok(strip) = dep.strip_prefix(&self.llvm_project_path) {
+                        return Some(path_to_string(strip));
+                    }
+                    None
+                })
+                .collect(),
+        );
+        self.gen_deps.insert(
+            Dep::LibclcBins,
+            gen_deps
+                .iter()
+                .filter_map(|dep| {
+                    if file_name(dep) == "clspv--.bc" || file_name(dep) == "clspv64--.bc" {
+                        return Some(path_to_string(strip_prefix(dep, "third_party/llvm")));
+                    }
+                    None
+                })
+                .collect(),
+        );
+        self.gen_deps.insert(
+            Dep::SpirvHeaders,
+            gen_deps
+                .iter()
+                .filter_map(|dep| {
+                    if let Ok(strip) = dep.strip_prefix(&self.spirv_headers_path) {
+                        return Some(path_to_string(strip));
+                    }
+                    None
+                })
+                .collect(),
+        );
 
         package.print(ctx)
     }
@@ -78,34 +113,10 @@ impl Project for Clspv {
             (PathBuf::from("third_party/llvm"), Dep::LibclcBins),
         ]
     }
-    fn get_deps(&self, dep: Dep) -> Vec<PathBuf> {
-        let iter = self.gen_deps.iter();
-        match dep {
-            Dep::ClangHeaders => iter
-                .filter_map(|dep| {
-                    if let Ok(strip) = dep.strip_prefix(&self.llvm_project_path) {
-                        return Some(PathBuf::from(strip));
-                    }
-                    None
-                })
-                .collect(),
-            Dep::LibclcBins => iter
-                .filter_map(|dep| {
-                    if file_name(dep) == "clspv--.bc" || file_name(dep) == "clspv64--.bc" {
-                        return Some(strip_prefix(dep, "third_party/llvm"));
-                    }
-                    None
-                })
-                .collect(),
-            Dep::SpirvHeaders => iter
-                .filter_map(|dep| {
-                    if let Ok(strip) = dep.strip_prefix(&self.spirv_headers_path) {
-                        return Some(PathBuf::from(strip));
-                    }
-                    None
-                })
-                .collect(),
-            _ => Vec::new(),
+    fn get_deps(&self, dep: Dep) -> Vec<NinjaTargetToGen> {
+        match self.gen_deps.get(&dep) {
+            Some(gen_deps) => gen_deps.iter().map(|lib| target!(lib)).collect(),
+            None => Vec::new(),
         }
     }
 

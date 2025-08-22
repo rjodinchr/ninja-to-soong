@@ -92,11 +92,8 @@ impl Project for Angle {
     fn get_name(&self) -> &'static str {
         "angle"
     }
-    fn get_android_path(&self, ctx: &Context) -> Result<PathBuf, String> {
-        Ok(ctx
-            .get_android_path()?
-            .join("external")
-            .join(self.get_name()))
+    fn get_android_path(&self) -> Result<PathBuf, String> {
+        Ok(Path::new("external").join(self.get_name()))
     }
     fn get_test_path(&self, ctx: &Context) -> Result<PathBuf, String> {
         Ok(ctx.test_path.join(self.get_name()))

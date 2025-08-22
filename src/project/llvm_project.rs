@@ -13,11 +13,8 @@ impl Project for LlvmProject {
     fn get_name(&self) -> &'static str {
         "llvm-project"
     }
-    fn get_android_path(&self, ctx: &Context) -> Result<PathBuf, String> {
-        Ok(ctx
-            .get_android_path()?
-            .join("external/opencl")
-            .join(self.get_name()))
+    fn get_android_path(&self) -> Result<PathBuf, String> {
+        Ok(Path::new("external/opencl").join(self.get_name()))
     }
     fn get_test_path(&self, ctx: &Context) -> Result<PathBuf, String> {
         Ok(ctx.test_path.join(self.get_name()))
@@ -27,7 +24,7 @@ impl Project for LlvmProject {
         ctx: &Context,
         projects_map: &ProjectsMap,
     ) -> Result<String, String> {
-        let src_path = self.get_android_path(ctx)?;
+        let src_path = ctx.get_android_path(self)?;
         let build_path = ctx.temp_path.join(self.get_name());
         let ndk_path = get_ndk_path(&ctx.temp_path, ctx)?;
 
@@ -46,13 +43,13 @@ impl Project for LlvmProject {
         const CMAKE_GENERATED: &str = "cmake_generated";
         let cmake_generated_path = Path::new(CMAKE_GENERATED);
         let mut package = SoongPackage::new(
-            &["//external/clspv", "//external/clvk"],
+            &[],
             "llvm-project_license",
             &["SPDX-license-identifier-Apache-2.0"],
             &["LICENSE.TXT"],
         )
         .generate(
-            NinjaTargetsToGenMap::from_dep(Dep::LlvmProjectTargets.get(projects_map)?),
+            NinjaTargetsToGenMap::from(&Dep::LlvmProjectTargets.get_ninja_targets(projects_map)?),
             parse_build_ninja::<CmakeNinjaTarget>(&build_path)?,
             &src_path,
             &ndk_path,
@@ -61,6 +58,9 @@ impl Project for LlvmProject {
             self,
             ctx,
         )?
+        .add_visibilities(Dep::ClangHeaders.get_visibilities(projects_map)?)
+        .add_visibilities(Dep::LibclcBins.get_visibilities(projects_map)?)
+        .add_visibilities(Dep::LlvmProjectTargets.get_visibilities(projects_map)?)
         .add_module(SoongModule::new_cc_library_headers(
             CcLibraryHeaders::Llvm,
             vec![

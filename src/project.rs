@@ -23,6 +23,7 @@ define_ProjectId!(
     (Mesa3DDesktopIntel, mesa3d_desktop_intel),
     (Mesa3DDesktopPanVK, mesa3d_desktop_panvk),
     (OpenclCts, opencl_cts),
+    (OpenclHeaders, opencl_headers),
     (OpenclIcdLoader, opencl_icd_loader),
     (SpirvHeaders, spirv_headers),
     (SpirvTools, spirv_tools),
@@ -40,7 +41,10 @@ impl ProjectId {
         Vec::from_iter(projects)
     }
     pub fn get_android_path(self, map: &ProjectsMap, ctx: &Context) -> Result<PathBuf, String> {
-        Ok(map.get(self)?.get_android_path(ctx)?)
+        ctx.get_android_path(map.get(self)?.as_ref())
+    }
+    pub fn get_visibility(self, map: &ProjectsMap) -> Result<String, String> {
+        Ok(String::from("//") + &path_to_string(map.get(self)?.as_ref().get_android_path()?))
     }
 }
 
@@ -49,8 +53,8 @@ define_Dep!(
     (ClspvTargets, Clspv, (Clvk)),
     (LibclcBins, LlvmProject, (Clspv)),
     (LlvmProjectTargets, LlvmProject, (Clvk)),
-    (SpirvHeaders, SpirvHeaders, (Clspv, SpirvTools)),
-    (SpirvToolsTargets, SpirvTools, (Clvk))
+    (SpirvHeaders, SpirvHeaders, (Clspv, SpirvTools, OpenclCts)),
+    (SpirvToolsTargets, SpirvTools, (Clvk, OpenclCts))
 );
 impl Dep {
     pub fn get_id(self, input: &Path, prefix: &Path, build_path: &Path) -> String {
@@ -59,15 +63,32 @@ impl Dep {
             canonicalize_path(prefix, build_path),
         )))
     }
-    pub fn get(self, projects_map: &ProjectsMap) -> Result<Vec<PathBuf>, String> {
+    pub fn get_ninja_targets(
+        self,
+        projects_map: &ProjectsMap,
+    ) -> Result<Vec<NinjaTargetToGen>, String> {
         let mut all_deps = Vec::new();
-        let projects = self.projects().1;
-        for project in projects {
+        for project in self.projects().1 {
             all_deps.extend(projects_map.get(project)?.get_deps(self));
         }
+        Ok(all_deps)
+    }
+    pub fn get(self, projects_map: &ProjectsMap) -> Result<Vec<PathBuf>, String> {
+        let mut all_deps = self
+            .get_ninja_targets(projects_map)?
+            .into_iter()
+            .map(|target| PathBuf::from(target.path))
+            .collect::<Vec<_>>();
         all_deps.sort_unstable();
         all_deps.dedup();
         Ok(all_deps)
+    }
+    pub fn get_visibilities(self, projects_map: &ProjectsMap) -> Result<Vec<String>, String> {
+        let mut projects = Vec::new();
+        for project in self.projects().1 {
+            projects.push(project.get_visibility(projects_map)?);
+        }
+        Ok(projects)
     }
 }
 
@@ -99,7 +120,7 @@ impl ProjectsMap {
 pub trait Project {
     // MANDATORY FUNCTIONS
     fn get_name(&self) -> &'static str;
-    fn get_android_path(&self, ctx: &Context) -> Result<PathBuf, String>;
+    fn get_android_path(&self) -> Result<PathBuf, String>;
     fn get_test_path(&self, ctx: &Context) -> Result<PathBuf, String>;
     fn generate_package(
         &mut self,
@@ -110,7 +131,7 @@ pub trait Project {
     fn get_deps_prefix(&self) -> Vec<(PathBuf, Dep)> {
         Vec::new()
     }
-    fn get_deps(&self, _dep: Dep) -> Vec<PathBuf> {
+    fn get_deps(&self, _dep: Dep) -> Vec<NinjaTargetToGen> {
         Vec::new()
     }
     // EXTEND FUNCTIONS

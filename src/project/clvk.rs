@@ -5,18 +5,15 @@ use super::*;
 
 #[derive(Default)]
 pub struct Clvk {
-    gen_libs: Vec<PathBuf>,
+    gen_libs: HashMap<Dep, Vec<String>>,
 }
 
 impl Project for Clvk {
     fn get_name(&self) -> &'static str {
         "clvk"
     }
-    fn get_android_path(&self, ctx: &Context) -> Result<PathBuf, String> {
-        Ok(ctx
-            .get_android_path()?
-            .join("external")
-            .join(self.get_name()))
+    fn get_android_path(&self) -> Result<PathBuf, String> {
+        Ok(Path::new("external").join(self.get_name()))
     }
     fn get_test_path(&self, ctx: &Context) -> Result<PathBuf, String> {
         Ok(ctx.test_path.join(self.get_name()))
@@ -26,7 +23,7 @@ impl Project for Clvk {
         ctx: &Context,
         projects_map: &ProjectsMap,
     ) -> Result<String, String> {
-        let src_path = self.get_android_path(ctx)?;
+        let src_path = ctx.get_android_path(self)?;
         let build_path = ctx.temp_path.join(self.get_name());
         let ndk_path = get_ndk_path(&ctx.temp_path, ctx)?;
 
@@ -48,7 +45,7 @@ impl Project for Clvk {
 
         const LIBCLVK: &str = "libclvk";
         let mut package = SoongPackage::new(
-            &["//external/OpenCL-ICD-Loader"],
+            &[],
             "clvk_license",
             &["SPDX-license-identifier-Apache-2.0"],
             &["LICENSE"],
@@ -66,8 +63,30 @@ impl Project for Clvk {
             None,
             self,
             ctx,
-        )?;
-        self.gen_libs = package.get_gen_libs();
+        )?
+        .add_visibilities(vec![
+            ProjectId::OpenclIcdLoader.get_visibility(projects_map)?
+        ]);
+
+        let gen_libs = package.get_gen_libs();
+        for (dep, prefix) in [
+            (Dep::ClspvTargets, "clspv"),
+            (Dep::LlvmProjectTargets, "llvm-project"),
+            (Dep::SpirvToolsTargets, "SPIRV-Tools"),
+        ] {
+            self.gen_libs.insert(
+                dep,
+                gen_libs
+                    .iter()
+                    .filter_map(|lib| {
+                        if let Ok(strip) = self.map_lib(lib).unwrap().strip_prefix(prefix) {
+                            return Some(path_to_string(strip));
+                        }
+                        None
+                    })
+                    .collect(),
+            );
+        }
 
         const CLVK_ICD_GENRULE: &str = "clvk_icd_genrule";
         package
@@ -92,22 +111,11 @@ prebuilt_etc {{
             .print(ctx)
     }
 
-    fn get_deps(&self, dep: Dep) -> Vec<PathBuf> {
-        let prefix = match dep {
-            Dep::ClspvTargets => "clspv",
-            Dep::LlvmProjectTargets => "llvm-project",
-            Dep::SpirvToolsTargets => "SPIRV-Tools",
-            _ => return Vec::new(),
-        };
-        self.gen_libs
-            .iter()
-            .filter_map(|lib| {
-                if let Ok(strip) = self.map_lib(lib).unwrap().strip_prefix(prefix) {
-                    return Some(PathBuf::from(strip));
-                }
-                None
-            })
-            .collect()
+    fn get_deps(&self, dep: Dep) -> Vec<NinjaTargetToGen> {
+        match self.gen_libs.get(&dep) {
+            Some(gen_libs) => gen_libs.iter().map(|lib| target!(lib)).collect(),
+            None => Vec::new(),
+        }
     }
 
     fn extend_module(&self, target: &Path, mut module: SoongModule) -> Result<SoongModule, String> {

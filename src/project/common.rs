@@ -16,7 +16,7 @@ pub fn copy_gen_deps(
             &format!("{0:#?}", &gen_deps),
         )?;
     } else {
-        let dst = project.get_android_path(ctx)?.join(from);
+        let dst = ctx.get_android_path(project)?.join(from);
         if remove_dir(&dst)? {
             print_verbose!("{dst:#?} removed");
         }

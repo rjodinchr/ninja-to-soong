@@ -7,18 +7,15 @@ use super::*;
 pub struct SpirvTools {
     build_path: PathBuf,
     spirv_headers_path: PathBuf,
-    gen_deps: Vec<PathBuf>,
+    gen_deps: Vec<String>,
 }
 
 impl Project for SpirvTools {
     fn get_name(&self) -> &'static str {
         "SPIRV-Tools"
     }
-    fn get_android_path(&self, ctx: &Context) -> Result<PathBuf, String> {
-        Ok(ctx
-            .get_android_path()?
-            .join("external")
-            .join(self.get_name()))
+    fn get_android_path(&self) -> Result<PathBuf, String> {
+        Ok(Path::new("external").join(self.get_name()))
     }
     fn get_test_path(&self, ctx: &Context) -> Result<PathBuf, String> {
         Ok(ctx.test_path.join(self.get_name()))
@@ -28,7 +25,7 @@ impl Project for SpirvTools {
         ctx: &Context,
         projects_map: &ProjectsMap,
     ) -> Result<String, String> {
-        let src_path = self.get_android_path(ctx)?;
+        let src_path = ctx.get_android_path(self)?;
         self.build_path = ctx.temp_path.join(self.get_name());
         let ndk_path = PathBuf::from("SPIRV-Tools-ndk");
         self.spirv_headers_path = ProjectId::SpirvHeaders.get_android_path(projects_map, ctx)?;
@@ -46,15 +43,13 @@ impl Project for SpirvTools {
         }
 
         let mut package = SoongPackage::new(
-            &["//external/clvk", "//external/OpenCL-CTS"],
+            &[],
             "SPIRV-Tools_license",
             &["SPDX-license-identifier-Apache-2.0"],
             &["LICENSE"],
         )
         .generate(
-            NinjaTargetsToGenMap::from_dep(Dep::SpirvToolsTargets.get(projects_map)?).push(
-                target_typed!("tools/spirv-as", "cc_binary_host", "spirv-as"),
-            ),
+            NinjaTargetsToGenMap::from(&Dep::SpirvToolsTargets.get_ninja_targets(projects_map)?),
             parse_build_ninja::<CmakeNinjaTarget>(&self.build_path)?,
             &src_path,
             &ndk_path,
@@ -63,11 +58,16 @@ impl Project for SpirvTools {
             self,
             ctx,
         )?
+        .add_visibilities(Dep::SpirvToolsTargets.get_visibilities(projects_map)?)
         .add_module(SoongModule::new_cc_library_headers(
             CcLibraryHeaders::SpirvTools,
             vec![String::from("include")],
         ));
-        self.gen_deps = package.get_gen_deps();
+        self.gen_deps = package
+            .get_gen_deps()
+            .into_iter()
+            .map(|header| path_to_string(strip_prefix(header, &self.spirv_headers_path)))
+            .collect();
 
         package.print(ctx)
     }
@@ -75,12 +75,12 @@ impl Project for SpirvTools {
     fn get_deps_prefix(&self) -> Vec<(PathBuf, Dep)> {
         vec![(self.spirv_headers_path.clone(), Dep::SpirvHeaders)]
     }
-    fn get_deps(&self, dep: Dep) -> Vec<PathBuf> {
+    fn get_deps(&self, dep: Dep) -> Vec<NinjaTargetToGen> {
         match dep {
             Dep::SpirvHeaders => self
                 .gen_deps
                 .iter()
-                .map(|header| strip_prefix(header, &self.spirv_headers_path))
+                .map(|header| target!(&header))
                 .collect(),
             _ => Vec::new(),
         }

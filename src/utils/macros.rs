@@ -108,7 +108,7 @@ macro_rules! define_ProjectId {
 #[macro_export]
 macro_rules! define_Dep {
     ($(($deps:ident, $project:ident, ($($projects:ident),*))),*) => {
-        #[derive(Debug, Copy, Clone)]
+        #[derive(Debug, Copy, Clone, Eq, Hash, PartialEq)]
         pub enum Dep {
             $($deps,)*
         }
