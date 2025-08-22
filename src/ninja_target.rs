@@ -149,19 +149,6 @@ impl NinjaTargetsToGenMap {
             map
         }))
     }
-    pub fn from_dep(targets: Vec<PathBuf>) -> Self {
-        Self(targets.into_iter().fold(HashMap::new(), |mut map, target| {
-            map.insert(
-                target.clone(),
-                NinjaTargetsToGenMapEntry {
-                    name: None,
-                    stem: None,
-                    module_type: None,
-                },
-            );
-            map
-        }))
-    }
     pub fn push(mut self, target: NinjaTargetToGen) -> Self {
         self.0
             .insert(PathBuf::from(target.path), Self::target_to_entry(&target));

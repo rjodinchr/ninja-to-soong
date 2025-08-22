@@ -52,7 +52,7 @@ impl Project for LlvmProject {
             &["LICENSE.TXT"],
         )
         .generate(
-            NinjaTargetsToGenMap::from_dep(Dep::LlvmProjectTargets.get(projects_map)?),
+            NinjaTargetsToGenMap::from(&Dep::LlvmProjectTargets.get_ninja_targets(projects_map)?),
             parse_build_ninja::<CmakeNinjaTarget>(&build_path)?,
             &src_path,
             &ndk_path,

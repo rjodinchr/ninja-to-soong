@@ -8,7 +8,7 @@ pub struct UnitTest();
 
 fn generate_package<T>(
     targets: Vec<T>,
-    targets_to_gen: Vec<PathBuf>,
+    targets_to_gen: Vec<NinjaTargetToGen>,
     project: &mut UnitTest,
     ctx: &Context,
 ) -> Result<String, String>
@@ -17,7 +17,7 @@ where
 {
     SoongPackage::new(&[], "unittest_license", &[], &[])
         .generate(
-            NinjaTargetsToGenMap::from_dep(targets_to_gen),
+            NinjaTargetsToGenMap::from(&targets_to_gen),
             targets,
             &ctx.test_path,
             &ctx.test_path,
@@ -52,7 +52,7 @@ impl Project for UnitTest {
         };
         let mut targets_to_gen = Vec::new();
         while let Some(target) = lines.nth(0) {
-            targets_to_gen.push(PathBuf::from(target));
+            targets_to_gen.push(target!(target));
         }
         match ninja_generator {
             "cmake" => generate_package(

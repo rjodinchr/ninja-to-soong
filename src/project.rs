@@ -59,15 +59,23 @@ impl Dep {
             canonicalize_path(prefix, build_path),
         )))
     }
-    pub fn get(self, projects_map: &ProjectsMap) -> Result<Vec<PathBuf>, String> {
+    pub fn get_ninja_targets(
+        self,
+        projects_map: &ProjectsMap,
+    ) -> Result<Vec<NinjaTargetToGen>, String> {
         let mut all_deps = Vec::new();
         let projects = self.projects().1;
         for project in projects {
             all_deps.extend(projects_map.get(project)?.get_deps(self));
         }
-        all_deps.sort_unstable();
-        all_deps.dedup();
         Ok(all_deps)
+    }
+    pub fn get(self, projects_map: &ProjectsMap) -> Result<Vec<PathBuf>, String> {
+        Ok(self
+            .get_ninja_targets(projects_map)?
+            .into_iter()
+            .map(|target| PathBuf::from(target.path))
+            .collect())
     }
 }
 
@@ -110,7 +118,7 @@ pub trait Project {
     fn get_deps_prefix(&self) -> Vec<(PathBuf, Dep)> {
         Vec::new()
     }
-    fn get_deps(&self, _dep: Dep) -> Vec<PathBuf> {
+    fn get_deps(&self, _dep: Dep) -> Vec<NinjaTargetToGen> {
         Vec::new()
     }
     // EXTEND FUNCTIONS

@@ -5,7 +5,7 @@ use super::*;
 
 #[derive(Default)]
 pub struct Clvk {
-    gen_libs: Vec<PathBuf>,
+    gen_libs: HashMap<Dep, Vec<String>>,
 }
 
 impl Project for Clvk {
@@ -67,7 +67,25 @@ impl Project for Clvk {
             self,
             ctx,
         )?;
-        self.gen_libs = package.get_gen_libs();
+        let gen_libs = package.get_gen_libs();
+        for (dep, prefix) in [
+            (Dep::ClspvTargets, "clspv"),
+            (Dep::LlvmProjectTargets, "llvm-project"),
+            (Dep::SpirvToolsTargets, "SPIRV-Tools"),
+        ] {
+            self.gen_libs.insert(
+                dep,
+                gen_libs
+                    .iter()
+                    .filter_map(|lib| {
+                        if let Ok(strip) = self.map_lib(lib).unwrap().strip_prefix(prefix) {
+                            return Some(path_to_string(strip));
+                        }
+                        None
+                    })
+                    .collect(),
+            );
+        }
 
         const CLVK_ICD_GENRULE: &str = "clvk_icd_genrule";
         package
@@ -92,22 +110,11 @@ prebuilt_etc {{
             .print(ctx)
     }
 
-    fn get_deps(&self, dep: Dep) -> Vec<PathBuf> {
-        let prefix = match dep {
-            Dep::ClspvTargets => "clspv",
-            Dep::LlvmProjectTargets => "llvm-project",
-            Dep::SpirvToolsTargets => "SPIRV-Tools",
-            _ => return Vec::new(),
-        };
-        self.gen_libs
-            .iter()
-            .filter_map(|lib| {
-                if let Ok(strip) = self.map_lib(lib).unwrap().strip_prefix(prefix) {
-                    return Some(PathBuf::from(strip));
-                }
-                None
-            })
-            .collect()
+    fn get_deps(&self, dep: Dep) -> Vec<NinjaTargetToGen> {
+        match self.gen_libs.get(&dep) {
+            Some(gen_libs) => gen_libs.iter().map(|lib| target!(lib)).collect(),
+            None => Vec::new(),
+        }
     }
 
     fn extend_module(&self, target: &Path, mut module: SoongModule) -> Result<SoongModule, String> {

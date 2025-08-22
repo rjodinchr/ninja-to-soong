@@ -7,7 +7,7 @@ use super::*;
 pub struct SpirvTools {
     build_path: PathBuf,
     spirv_headers_path: PathBuf,
-    gen_deps: Vec<PathBuf>,
+    gen_deps: Vec<String>,
 }
 
 impl Project for SpirvTools {
@@ -52,9 +52,12 @@ impl Project for SpirvTools {
             &["LICENSE"],
         )
         .generate(
-            NinjaTargetsToGenMap::from_dep(Dep::SpirvToolsTargets.get(projects_map)?).push(
-                target_typed!("tools/spirv-as", "cc_binary_host", "spirv-as"),
-            ),
+            NinjaTargetsToGenMap::from(&Dep::SpirvToolsTargets.get_ninja_targets(projects_map)?)
+                .push(target_typed!(
+                    "tools/spirv-as",
+                    "cc_binary_host",
+                    "spirv-as"
+                )),
             parse_build_ninja::<CmakeNinjaTarget>(&self.build_path)?,
             &src_path,
             &ndk_path,
@@ -67,7 +70,11 @@ impl Project for SpirvTools {
             CcLibraryHeaders::SpirvTools,
             vec![String::from("include")],
         ));
-        self.gen_deps = package.get_gen_deps();
+        self.gen_deps = package
+            .get_gen_deps()
+            .into_iter()
+            .map(|header| path_to_string(strip_prefix(header, &self.spirv_headers_path)))
+            .collect();
 
         package.print(ctx)
     }
@@ -75,12 +82,12 @@ impl Project for SpirvTools {
     fn get_deps_prefix(&self) -> Vec<(PathBuf, Dep)> {
         vec![(self.spirv_headers_path.clone(), Dep::SpirvHeaders)]
     }
-    fn get_deps(&self, dep: Dep) -> Vec<PathBuf> {
+    fn get_deps(&self, dep: Dep) -> Vec<NinjaTargetToGen> {
         match dep {
             Dep::SpirvHeaders => self
                 .gen_deps
                 .iter()
-                .map(|header| strip_prefix(header, &self.spirv_headers_path))
+                .map(|header| target!(&header))
                 .collect(),
             _ => Vec::new(),
         }
