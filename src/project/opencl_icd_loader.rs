@@ -94,7 +94,13 @@ genrule {{
                 SoongProp::VecStr(vec![String::from(GENERATED_CMAKE_CONFIG)]),
             )
             .add_prop("soc_specific", SoongProp::Bool(true))
-            .extend_prop("cflags", vec!["-DMODERN_ANDROID_VENDOR_PATH"])
+            .extend_prop(
+                "cflags",
+                vec![
+                    "-DICD_VENDOR_PATH=\\\"/vendor/etc/Khronos/OpenCL/vendors\\\"",
+                    "-DLAYER_PATH=\\\"/vendor/etc/Khronos/OpenCL/layers\\\"",
+                ],
+            )
     }
 
     fn filter_cflag(&self, _cflag: &str) -> bool {
