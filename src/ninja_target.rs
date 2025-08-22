@@ -149,11 +149,6 @@ impl NinjaTargetsToGenMap {
             map
         }))
     }
-    pub fn push(mut self, target: NinjaTargetToGen) -> Self {
-        self.0
-            .insert(PathBuf::from(target.path), Self::target_to_entry(&target));
-        self
-    }
 }
 
 #[derive(Debug)]

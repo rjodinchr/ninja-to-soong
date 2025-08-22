@@ -14,6 +14,8 @@ pub struct SoongPackage {
     internals: SoongModuleGeneratorInternals,
     raw_suffix: String,
     raw_prefix: String,
+    license_module_name: String,
+    visibilities: Vec<String>,
 }
 
 impl SoongPackage {
@@ -23,49 +25,44 @@ impl SoongPackage {
         license_kinds: &[&str],
         license_text: &[&str],
     ) -> Self {
-        Self::default()
-            .add_module(
-                SoongModule::new("package")
-                    .add_prop(
-                        "default_visibility",
-                        SoongProp::VecStr(
-                            default_visibility
-                                .into_iter()
-                                .map(|visibility| String::from(*visibility))
-                                .collect(),
-                        ),
-                    )
-                    .add_prop(
-                        "default_applicable_licenses",
-                        SoongProp::VecStr(vec![String::from(license_module_name)]),
+        let mut package = Self::default();
+        let license_module_name = String::from(license_module_name);
+        package.license_module_name = license_module_name.clone();
+        package.visibilities = default_visibility
+            .into_iter()
+            .map(|visibility| String::from(*visibility))
+            .collect();
+        package.add_module(
+            SoongModule::new("license")
+                .add_prop("name", SoongProp::Str(license_module_name))
+                .add_prop(
+                    "visibility",
+                    SoongProp::VecStr(vec![String::from(":__subpackages__")]),
+                )
+                .add_prop(
+                    "license_kinds",
+                    SoongProp::VecStr(
+                        license_kinds
+                            .into_iter()
+                            .map(|kind| String::from(*kind))
+                            .collect(),
                     ),
-            )
-            .add_module(
-                SoongModule::new("license")
-                    .add_prop("name", SoongProp::Str(String::from(license_module_name)))
-                    .add_prop(
-                        "visibility",
-                        SoongProp::VecStr(vec![String::from(":__subpackages__")]),
-                    )
-                    .add_prop(
-                        "license_kinds",
-                        SoongProp::VecStr(
-                            license_kinds
-                                .into_iter()
-                                .map(|kind| String::from(*kind))
-                                .collect(),
-                        ),
-                    )
-                    .add_prop(
-                        "license_text",
-                        SoongProp::VecStr(
-                            license_text
-                                .into_iter()
-                                .map(|text| String::from(*text))
-                                .collect(),
-                        ),
+                )
+                .add_prop(
+                    "license_text",
+                    SoongProp::VecStr(
+                        license_text
+                            .into_iter()
+                            .map(|text| String::from(*text))
+                            .collect(),
                     ),
-            )
+                ),
+        )
+    }
+
+    pub fn add_visibilities(mut self, visibilities: Vec<String>) -> SoongPackage {
+        self.visibilities.extend(visibilities);
+        self
     }
 
     pub fn add_module(mut self, module: SoongModule) -> SoongPackage {
@@ -224,6 +221,15 @@ impl SoongPackage {
             self.modules
                 .insert(module_index, self.filter_default(module)?);
         }
+        self.visibilities.sort_unstable();
+        self.visibilities.dedup();
+        package += &SoongModule::new("package")
+            .add_prop("default_visibility", SoongProp::VecStr(self.visibilities))
+            .add_prop(
+                "default_applicable_licenses",
+                SoongProp::VecStr(vec![self.license_module_name]),
+            )
+            .print();
         for module in self.modules {
             package += &module.print();
         }

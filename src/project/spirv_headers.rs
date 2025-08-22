@@ -10,32 +10,26 @@ impl Project for SpirvHeaders {
     fn get_name(&self) -> &'static str {
         "SPIRV-Headers"
     }
-    fn get_android_path(&self, ctx: &Context) -> Result<PathBuf, String> {
-        Ok(ctx
-            .get_android_path()?
-            .join("external")
-            .join(self.get_name()))
+    fn get_android_path(&self) -> Result<PathBuf, String> {
+        Ok(Path::new("external").join(self.get_name()))
     }
-    fn get_test_path(&self, ctx: &Context) -> Result<PathBuf, String> {
-        Ok(ctx.test_path.join(self.get_name()))
+    fn get_test_path(&self) -> Result<PathBuf, String> {
+        Ok(PathBuf::from(self.get_name()))
     }
     fn generate_package(
         &mut self,
         ctx: &Context,
         projects_map: &ProjectsMap,
     ) -> Result<String, String> {
-        let src_path = self.get_android_path(ctx)?;
+        let src_path = ctx.get_android_path(self)?;
         let mut package = SoongPackage::new(
-            &[
-                "//external/OpenCL-CTS",
-                "//external/SPIRV-Tools",
-                "//external/clspv",
-                "//external/clvk",
-            ],
+            &[],
             "SPIRV-Headers_license",
             &["SPDX-license-identifier-MIT"],
             &["LICENSE"],
         )
+        .add_visibilities(Dep::SpirvHeaders.get_visibilities(projects_map)?)
+        .add_visibilities(vec![ProjectId::Clvk.get_visibility(projects_map)?])
         .add_module(
             SoongModule::new_cc_library_headers(
                 CcLibraryHeaders::SpirvHeaders,

@@ -29,11 +29,14 @@ const SKIP_BUILD: &str = "--skip-build";
 const SKIP_GEN_NINJA: &str = "--skip-gen-ninja";
 
 impl Context {
-    pub fn get_android_path(&self) -> Result<PathBuf, String> {
+    pub fn get_android_path(&self, project: &dyn Project) -> Result<PathBuf, String> {
         match &self.android_path {
-            Some(android_path) => Ok(android_path.clone()),
+            Some(android_path) => Ok(android_path.clone().join(project.get_android_path()?)),
             None => error!("'{AOSP_PATH}' has not been defined"),
         }
+    }
+    pub fn get_test_path(&self, project: &dyn Project) -> Result<PathBuf, String> {
+        Ok(self.test_path.clone().join(project.get_test_path()?))
     }
     pub fn get_external_project_path(&self) -> Result<PathBuf, String> {
         match &self.external_project_path {
@@ -151,17 +154,14 @@ OPTIONS:
         // TEST_PATH
         match env::current_exe() {
             Ok(exe_path) => {
-                ctx.test_path = PathBuf::from(
-                    exe_path // <ninja-to-soong>/target/<build-mode>/ninja-to-soong
-                        .parent() // <ninja-to-soong>/target/<build-mode>
-                        .unwrap()
-                        .parent() // <ninja-to-soong>/target
-                        .unwrap()
-                        .parent() // <ninja-to-soong>
-                        .unwrap()
-                        .join("tests"), // <ninja-to-soong>/tests
-                );
                 ctx.exe_path = PathBuf::from(exe_path.parent().unwrap());
+                ctx.test_path = ctx
+                    .exe_path // <ninja-to-soong>/target/<build-mode>
+                    .parent() // <ninja-to-soong>/target
+                    .unwrap()
+                    .parent() // <ninja-to-soong>
+                    .unwrap()
+                    .join("tests"); // <ninja-to-soong>/tests
             }
             Err(err) => return error!("Could not get current executable path: {err}"),
         };

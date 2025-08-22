@@ -12,21 +12,18 @@ impl Project for Clvk {
     fn get_name(&self) -> &'static str {
         "clvk"
     }
-    fn get_android_path(&self, ctx: &Context) -> Result<PathBuf, String> {
-        Ok(ctx
-            .get_android_path()?
-            .join("external")
-            .join(self.get_name()))
+    fn get_android_path(&self) -> Result<PathBuf, String> {
+        Ok(Path::new("external").join(self.get_name()))
     }
-    fn get_test_path(&self, ctx: &Context) -> Result<PathBuf, String> {
-        Ok(ctx.test_path.join(self.get_name()))
+    fn get_test_path(&self) -> Result<PathBuf, String> {
+        Ok(PathBuf::from(self.get_name()))
     }
     fn generate_package(
         &mut self,
         ctx: &Context,
         projects_map: &ProjectsMap,
     ) -> Result<String, String> {
-        let src_path = self.get_android_path(ctx)?;
+        let src_path = ctx.get_android_path(self)?;
         let build_path = ctx.temp_path.join(self.get_name());
         let ndk_path = get_ndk_path(&ctx.temp_path, ctx)?;
 
@@ -34,7 +31,7 @@ impl Project for Clvk {
             execute_cmd!(
                 "bash",
                 [
-                    &path_to_string(self.get_test_path(ctx)?.join("gen-ninja.sh")),
+                    &path_to_string(ctx.get_test_path(self)?.join("gen-ninja.sh")),
                     &path_to_string(&src_path),
                     &path_to_string(&build_path),
                     &path_to_string(&ndk_path),
@@ -48,7 +45,7 @@ impl Project for Clvk {
 
         const LIBCLVK: &str = "libclvk";
         let mut package = SoongPackage::new(
-            &["//external/OpenCL-ICD-Loader"],
+            &[],
             "clvk_license",
             &["SPDX-license-identifier-Apache-2.0"],
             &["LICENSE"],
@@ -66,7 +63,10 @@ impl Project for Clvk {
             None,
             self,
             ctx,
-        )?;
+        )?
+        .add_visibilities(vec![
+            ProjectId::OpenclIcdLoader.get_visibility(projects_map)?
+        ]);
         let gen_libs = package.get_gen_libs();
         for (dep, prefix) in [
             (Dep::ClspvTargets, "clspv"),

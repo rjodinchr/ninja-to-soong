@@ -12,21 +12,18 @@ impl Project for Clpeak {
     fn get_name(&self) -> &'static str {
         "clpeak"
     }
-    fn get_android_path(&self, ctx: &Context) -> Result<PathBuf, String> {
-        Ok(ctx
-            .get_android_path()?
-            .join("external")
-            .join(self.get_name()))
+    fn get_android_path(&self) -> Result<PathBuf, String> {
+        Ok(Path::new("external").join(self.get_name()))
     }
-    fn get_test_path(&self, ctx: &Context) -> Result<PathBuf, String> {
-        Ok(ctx.test_path.join(self.get_name()))
+    fn get_test_path(&self) -> Result<PathBuf, String> {
+        Ok(PathBuf::from(self.get_name()))
     }
     fn generate_package(
         &mut self,
         ctx: &Context,
         _projects_map: &ProjectsMap,
     ) -> Result<String, String> {
-        self.src_path = self.get_android_path(ctx)?;
+        self.src_path = ctx.get_android_path(self)?;
         let build_path = ctx.temp_path.join(self.get_name());
         let ndk_path = get_ndk_path(&ctx.temp_path, ctx)?;
 
@@ -34,7 +31,7 @@ impl Project for Clpeak {
             execute_cmd!(
                 "bash",
                 [
-                    &path_to_string(self.get_test_path(ctx)?.join("gen-ninja.sh")),
+                    &path_to_string(ctx.get_test_path(self)?.join("gen-ninja.sh")),
                     &path_to_string(&self.src_path),
                     &path_to_string(&build_path),
                     &path_to_string(&ndk_path),

@@ -10,6 +10,7 @@ fn generate_package<T>(
     targets: Vec<T>,
     targets_to_gen: Vec<NinjaTargetToGen>,
     project: &mut UnitTest,
+    test_path: &Path,
     ctx: &Context,
 ) -> Result<String, String>
 where
@@ -19,9 +20,9 @@ where
         .generate(
             NinjaTargetsToGenMap::from(&targets_to_gen),
             targets,
-            &ctx.test_path,
-            &ctx.test_path,
-            &ctx.test_path,
+            test_path,
+            test_path,
+            test_path,
             None,
             project,
             ctx,
@@ -33,19 +34,20 @@ impl Project for UnitTest {
     fn get_name(&self) -> &'static str {
         "unittests"
     }
-    fn get_android_path(&self, _ctx: &Context) -> Result<PathBuf, String> {
+    fn get_android_path(&self) -> Result<PathBuf, String> {
         error!("Should not be called")
     }
-    fn get_test_path(&self, ctx: &Context) -> Result<PathBuf, String> {
-        Ok(ctx.test_path.clone())
+    fn get_test_path(&self) -> Result<PathBuf, String> {
+        Ok(PathBuf::from(""))
     }
     fn generate_package(
         &mut self,
         ctx: &Context,
         _projects_map: &ProjectsMap,
     ) -> Result<String, String> {
-        print_verbose!("'{}'", file_name(&ctx.test_path));
-        let config = read_file(&ctx.test_path.join("config"))?;
+        let test_path = ctx.get_test_path(self)?;
+        print_verbose!("'{}'", file_name(&test_path));
+        let config = read_file(&test_path.join("config"))?;
         let mut lines = config.lines();
         let Some(ninja_generator) = lines.nth(0) else {
             return error!("Could not get ninja_generator from config file");
@@ -56,21 +58,24 @@ impl Project for UnitTest {
         }
         match ninja_generator {
             "cmake" => generate_package(
-                parse_build_ninja::<CmakeNinjaTarget>(&ctx.test_path)?,
+                parse_build_ninja::<CmakeNinjaTarget>(&test_path)?,
                 targets_to_gen,
                 self,
+                &test_path,
                 ctx,
             ),
             "meson" => generate_package(
-                parse_build_ninja::<MesonNinjaTarget>(&ctx.test_path)?,
+                parse_build_ninja::<MesonNinjaTarget>(&test_path)?,
                 targets_to_gen,
                 self,
+                &test_path,
                 ctx,
             ),
             "gn" => generate_package(
-                parse_build_ninja::<GnNinjaTarget>(&ctx.test_path)?,
+                parse_build_ninja::<GnNinjaTarget>(&test_path)?,
                 targets_to_gen,
                 self,
+                &test_path,
                 ctx,
             ),
             _ => return error!("Unknown Ninja Generator"),

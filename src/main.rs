@@ -34,9 +34,9 @@ fn generate_project(
 
         print_debug!("Writing soong file...");
         let file_path = if !ctx.copy_to_aosp {
-            project.get_test_path(ctx)?.join("Android.bp.n2s")
+            ctx.get_test_path(project.as_ref())?.join("Android.bp.n2s")
         } else {
-            project.get_android_path(ctx)?.join("Android.bp")
+            ctx.get_android_path(project.as_ref())?.join("Android.bp")
         };
         let Ok(current_package) = read_file(&file_path) else {
             write_file(&file_path, &package)?;
@@ -117,7 +117,7 @@ fn generate_projects(mut projects_map: ProjectsMap, ctx: &Context) -> Result<(),
             }
             ProjectId::UnitTest => {
                 let mut project = projects_map.remove(&project_id)?;
-                for dir in ls_dir(&ctx.test_path.join("unittests")) {
+                for dir in ls_dir(&ctx.get_test_path(project.as_ref())?.join("unittests")) {
                     let mut test_ctx = ctx.clone();
                     test_ctx.test_path = dir;
                     test_ctx.wildcardize_paths = true;
