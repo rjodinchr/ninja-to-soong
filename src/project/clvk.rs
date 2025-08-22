@@ -15,8 +15,8 @@ impl Project for Clvk {
     fn get_android_path(&self) -> Result<PathBuf, String> {
         Ok(Path::new("external").join(self.get_name()))
     }
-    fn get_test_path(&self) -> Result<PathBuf, String> {
-        Ok(PathBuf::from(self.get_name()))
+    fn get_test_path(&self, ctx: &Context) -> Result<PathBuf, String> {
+        Ok(ctx.test_path.join(self.get_name()))
     }
     fn generate_package(
         &mut self,

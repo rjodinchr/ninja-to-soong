@@ -44,8 +44,8 @@ jobs:
           echo "android=${android}" >> $GITHUB_ENV
           echo "tmp_dir=$(realpath ${{ github.workspace }}/../tmp)" >> $GITHUB_ENV
           if [ "${{ matrix.project }}" == "OpenCL" ]; then
-            echo "key=$(git log -1 --format='%h' .github/workflows/*.yml tests/clvk/*.sh tests/clspv/*.sh tests/llvm-project/*.sh tests/SPIRV-Tools/*.sh tests/SPIRV-Headers/*.sh tests/OpenCL-CTS/*.sh tests/OpenCL-ICD-Loader/*.sh tests/clpeak/*.sh)-OpenCL" >> $GITHUB_ENV
-            echo "projects=clvk clspv llvm-project SPIRV-Tools SPIRV-Headers OpenCL-CTS OpenCL-ICD-Loader clpeak" >> $GITHUB_ENV
+            echo "key=$(git log -1 --format='%h' .github/workflows/*.yml tests/clvk/*.sh tests/clspv/*.sh tests/llvm-project/*.sh tests/SPIRV-Tools/*.sh tests/SPIRV-Headers/*.sh tests/OpenCL-CTS/*.sh tests/OpenCL-ICD-Loader/*.sh tests/OpenCL-Headers/*.sh tests/clpeak/*.sh)-OpenCL" >> $GITHUB_ENV
+            echo "projects=clvk clspv llvm-project SPIRV-Tools SPIRV-Headers OpenCL-CTS OpenCL-ICD-Loader OpenCL-Headers clpeak" >> $GITHUB_ENV
           elif [ "${{ matrix.project }}" == "mesa" ]; then
             echo "key=$(git log -1 --format='%h' .github/workflows/*.yml tests/mesa3d/desktop-intel/*.sh tests/mesa3d/desktop-panvk/*.sh)-mesa" >> $GITHUB_ENV
             echo "projects=mesa3d/desktop-intel mesa3d/desktop-panvk" >> $GITHUB_ENV

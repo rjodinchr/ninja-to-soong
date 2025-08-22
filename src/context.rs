@@ -36,7 +36,7 @@ impl Context {
         }
     }
     pub fn get_test_path(&self, project: &dyn Project) -> Result<PathBuf, String> {
-        Ok(self.test_path.clone().join(project.get_test_path()?))
+        Ok(project.get_test_path(self)?)
     }
     pub fn get_external_project_path(&self) -> Result<PathBuf, String> {
         match &self.external_project_path {

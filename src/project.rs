@@ -23,6 +23,7 @@ define_ProjectId!(
     (Mesa3DDesktopIntel, mesa3d_desktop_intel),
     (Mesa3DDesktopPanVK, mesa3d_desktop_panvk),
     (OpenclCts, opencl_cts),
+    (OpenclHeaders, opencl_headers),
     (OpenclIcdLoader, opencl_icd_loader),
     (SpirvHeaders, spirv_headers),
     (SpirvTools, spirv_tools),
@@ -120,7 +121,7 @@ pub trait Project {
     // MANDATORY FUNCTIONS
     fn get_name(&self) -> &'static str;
     fn get_android_path(&self) -> Result<PathBuf, String>;
-    fn get_test_path(&self) -> Result<PathBuf, String>;
+    fn get_test_path(&self, ctx: &Context) -> Result<PathBuf, String>;
     fn generate_package(
         &mut self,
         ctx: &Context,
