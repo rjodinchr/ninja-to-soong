@@ -35,7 +35,7 @@ impl Context {
             None => error!("'{AOSP_PATH}' has not been defined"),
         }
     }
-    
+
     pub fn get_external_project_path(&self) -> Result<PathBuf, String> {
         match &self.external_project_path {
             Some(external_project_path) => Ok(external_project_path.clone()),
