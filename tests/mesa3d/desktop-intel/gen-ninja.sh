@@ -51,3 +51,5 @@ meson setup \
     --wipe \
     "${BUILD_PATH}" \
     "${SRC_PATH}"
+# Clean libdrm to prevent Soong from parsing blueprints that came with it
+git -C "${SRC_PATH}" clean -xfd subprojects/libdrm*
