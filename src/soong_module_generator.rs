@@ -359,6 +359,19 @@ where
         }
         cmd
     }
+    fn get_dep_id(&self, input: &PathBuf) -> String {
+        let Some(target) = self.targets_map.get(&input) else {
+            return path_to_id(Path::new(self.project.get_name()).join(&input));
+        };
+        return if target.get_outputs().len() > 1 {
+            path_to_id(Path::new(self.project.get_name()).join(target.get_name()))
+                + "{"
+                + &path_to_string(&input)
+                + "}"
+        } else {
+            path_to_id(Path::new(self.project.get_name()).join(target.get_name()))
+        };
+    }
     fn get_cmd_inputs(
         &self,
         inputs: Vec<PathBuf>,
@@ -375,8 +388,7 @@ where
                     }
                 }
                 if canonicalize_path(&input, self.build_path).starts_with(self.build_path) {
-                    let dep_id = path_to_id(Path::new(self.project.get_name()).join(&input));
-                    deps.push((input, dep_id));
+                    deps.push((input.clone(), self.get_dep_id(&input)));
                     return None;
                 }
                 Some(input)
@@ -486,7 +498,9 @@ where
             .collect::<Vec<String>>();
         for (dep, dep_target_name) in &deps {
             sources.push(format!(":{dep_target_name}"));
-            self.internals.deps.push(dep.clone());
+            if !dep_target_name.contains("{n2s/") {
+                self.internals.deps.push(dep.clone());
+            }
         }
         let target_outputs = target.get_outputs();
         let cmd = self.get_cmd(cmd, rule_cmd, inputs, target_outputs, deps);
