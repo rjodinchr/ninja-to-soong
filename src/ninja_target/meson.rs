@@ -6,6 +6,24 @@ use super::*;
 #[derive(Debug)]
 pub struct MesonNinjaTarget(NinjaTargetCommon);
 
+impl MesonNinjaTarget {
+    fn get_command(&self, command: &String) -> String {
+        let Some(split) = command.split_once(" -- ") else {
+            return command.clone();
+        };
+        let Some(capture) = split.0.split_once("--capture ") else {
+            return String::from(split.1);
+        };
+        return String::from(split.1)
+            + " > "
+            + if let Some(output) = capture.1.split_once(" ") {
+                output.0
+            } else {
+                capture.1
+            };
+    }
+}
+
 impl NinjaTarget for MesonNinjaTarget {
     fn new(common: NinjaTargetCommon) -> Self {
         Self(common)
@@ -30,7 +48,7 @@ impl NinjaTarget for MesonNinjaTarget {
                     return error!("No command in: {self:#?}");
                 };
                 NinjaRule::CustomCommand(NinjaRuleCmd {
-                    command: String::from(command.split_once(" -- ").unwrap_or(("", command)).1),
+                    command: self.get_command(command),
                     rsp_info: None,
                 })
             } else {
