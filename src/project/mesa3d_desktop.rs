@@ -17,6 +17,15 @@ pub trait Mesa3dProject {
     fn get_default_module(&self, package: &SoongPackage) -> Result<SoongModule, String>;
     fn get_raw_suffix(&self) -> String;
     fn extend_module(&self, target: &Path, module: SoongModule) -> Result<SoongModule, String>;
+    fn mesa_filter(&self, asset: &Path) -> bool {
+        let asset = path_to_string(asset);
+        !asset.contains("libdrm")
+            && !asset.ends_with("spv.h")
+            && !asset.contains("libpan/libpan_v")
+            && !asset.contains("libpan/libpan_shaders_v")
+            && !asset.ends_with("git_sha1.h")
+            && !asset.ends_with("_algebraic.c")
+    }
 }
 
 impl<T> Project for T
@@ -116,6 +125,33 @@ soong_namespace {
     fn extend_module(&self, target: &Path, module: SoongModule) -> Result<SoongModule, String> {
         self.extend_module(target, module)
     }
+    fn extend_custom_command(
+        &self,
+        _target: &Path,
+        module: SoongModule,
+    ) -> Result<SoongModule, String> {
+        Ok(module.add_prop("vendor_available", SoongProp::Bool(true)))
+    }
+    fn extend_python_binary_host(
+        &self,
+        _python_binary_path: &Path,
+        module: SoongModule,
+    ) -> Result<Option<SoongModule>, String> {
+        Ok(Some(
+            module
+                .extend_prop(
+                    "srcs",
+                    vec![
+                        "src/vulkan/util/*.py",
+                        "src/panfrost/compiler/valhall/valhall.py",
+                    ],
+                )?
+                .add_prop(
+                    "libs",
+                    SoongProp::VecStr(vec![String::from("mako"), String::from("pyyaml")]),
+                ),
+        ))
+    }
 
     fn map_lib(&self, library: &Path) -> Option<PathBuf> {
         if library.starts_with("src/android_stub")
@@ -136,14 +172,16 @@ soong_namespace {
     fn filter_link_flag(&self, flag: &str) -> bool {
         flag == "-Wl,--build-id=sha1"
     }
-    fn filter_gen_header(&self, _header: &Path) -> bool {
-        false
+    fn filter_gen_header(&self, header: &Path) -> bool {
+        self.mesa_filter(header)
+    }
+    fn filter_gen_source(&self, source: &Path) -> bool {
+        self.mesa_filter(source)
     }
     fn filter_target(&self, target: &Path) -> bool {
         let file_name = file_name(target);
-        !file_name.ends_with(".o")
+        self.mesa_filter(target)
             && !file_name.ends_with(".def")
-            && !file_name.contains("libdrm")
             && !target.starts_with("src/android_stub")
     }
 }
