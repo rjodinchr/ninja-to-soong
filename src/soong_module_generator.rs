@@ -454,19 +454,17 @@ where
             self.src_path,
         ));
 
-        let mut tool_files = Vec::new();
-        let mut tool_modules = Vec::new();
-        let mut modules = Vec::new();
-        if let Some((tool_module, some_module)) = self.get_tool_module(&tool)? {
-            tool_modules.push(tool_module);
-            if let Some(module_vec) = some_module {
-                modules.extend(module_vec);
-            }
-        } else {
-            tool_files.push(tool);
-        }
-
-        Ok((tool_files, tool_modules, modules, cmd))
+        Ok(
+            if let Some((tool_module, some_modules)) = self.get_tool_module(&tool)? {
+                if let Some(modules) = some_modules {
+                    (Vec::new(), vec![tool_module], modules, cmd)
+                } else {
+                    (Vec::new(), vec![tool_module], Vec::new(), cmd)
+                }
+            } else {
+                (vec![tool], Vec::new(), Vec::new(), cmd)
+            },
+        )
     }
     pub fn generate_custom_command(
         &mut self,
