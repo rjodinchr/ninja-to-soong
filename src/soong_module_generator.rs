@@ -454,17 +454,15 @@ where
             self.src_path,
         ));
 
-        Ok(
-            if let Some((tool_module, some_modules)) = self.get_tool_module(&tool)? {
-                if let Some(modules) = some_modules {
-                    (Vec::new(), vec![tool_module], modules, cmd)
-                } else {
-                    (Vec::new(), vec![tool_module], Vec::new(), cmd)
-                }
+        if let Some((tool_module, some_modules)) = self.get_tool_module(&tool)? {
+            if let Some(modules) = some_modules {
+                Ok((Vec::new(), vec![tool_module], modules, cmd))
             } else {
-                (vec![tool], Vec::new(), Vec::new(), cmd)
-            },
-        )
+                Ok((Vec::new(), vec![tool_module], Vec::new(), cmd))
+            }
+        } else {
+            Ok((vec![tool], Vec::new(), Vec::new(), cmd))
+        }
     }
     pub fn generate_custom_command(
         &mut self,
