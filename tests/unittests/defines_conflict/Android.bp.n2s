@@ -489,9 +489,7 @@ cc_genrule {
 cc_genrule {
     name: "unittests_src_compiler_ir_expression_operation_h",
     cmd: "python3 $(location) enum",
-    srcs: [
-        ":unittests_raspberry-vanilla_aosp16_external_mesa3d-rpi_src_compiler_glsl_ir_expression_operation_py",
-    ],
+    srcs: [":unittests_raspberry-vanilla_aosp16_external_mesa3d-rpi_src_compiler_glsl_ir_expression_operation_py"],
     out: ["src/compiler/ir_expression_operation.h"],
     tool_files: ["raspberry-vanilla/aosp16/external/mesa3d-rpi/src/compiler/glsl/ir_expression_operation.py"],
 }
