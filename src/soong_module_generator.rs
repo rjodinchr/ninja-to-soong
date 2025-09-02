@@ -296,44 +296,6 @@ where
         Ok(modules)
     }
 
-    fn get_tool(&self, mut cmd: String, inputs: &mut Vec<PathBuf>) -> (String, String) {
-        while let Some(index) = cmd.find("python") {
-            let begin = str::from_utf8(&cmd.as_bytes()[0..index])
-                .unwrap()
-                .rfind(" ")
-                .unwrap_or_default();
-            cmd = match str::from_utf8(&cmd.as_bytes()[index..]).unwrap().find(" ") {
-                Some(end) => cmd.replace(
-                    str::from_utf8(&cmd.as_bytes()[begin..index + end + 1]).unwrap(),
-                    "",
-                ),
-                None => cmd.replace(str::from_utf8(&cmd.as_bytes()[begin..]).unwrap(), ""),
-            };
-        }
-        cmd = cmd.replace(&path_to_string_with_separator(self.build_path), "");
-        let tool_location = String::from("$(location) ");
-        let (tool, mut cmd) = if let Some((tool, cmd)) = cmd.split_once(" ") {
-            (String::from(tool), tool_location + cmd)
-        } else {
-            (String::from(cmd), tool_location)
-        };
-        for idx in 0..inputs.len() {
-            if path_to_string(&inputs[idx]) == tool {
-                inputs.remove(idx);
-                break;
-            }
-        }
-        if tool.ends_with(".py") {
-            cmd = String::from("python3 ") + &cmd;
-        }
-        (
-            path_to_string(strip_prefix(
-                canonicalize_path(&tool, self.build_path),
-                self.src_path,
-            )),
-            cmd,
-        )
-    }
     fn get_cmd(
         &self,
         mut cmd: String,
@@ -445,6 +407,62 @@ where
         }
         Ok(Some((tool_module, None)))
     }
+    fn get_tools(
+        &mut self,
+        mut cmd: String,
+        inputs: &mut Vec<PathBuf>,
+    ) -> Result<(Vec<String>, Vec<String>, Vec<SoongModule>, String), String> {
+        if cmd.starts_with("cp") {
+            return Ok((Vec::new(), Vec::new(), Vec::new(), cmd));
+        }
+        while let Some(index) = cmd.find("python") {
+            let begin = str::from_utf8(&cmd.as_bytes()[0..index])
+                .unwrap()
+                .rfind(" ")
+                .unwrap_or_default();
+            cmd = match str::from_utf8(&cmd.as_bytes()[index..]).unwrap().find(" ") {
+                Some(end) => cmd.replace(
+                    str::from_utf8(&cmd.as_bytes()[begin..index + end + 1]).unwrap(),
+                    "",
+                ),
+                None => cmd.replace(str::from_utf8(&cmd.as_bytes()[begin..]).unwrap(), ""),
+            };
+        }
+        cmd = cmd.replace(&path_to_string_with_separator(self.build_path), "");
+        let tool_location = String::from("$(location) ");
+        let (tool, mut cmd) = if let Some((tool, cmd)) = cmd.split_once(" ") {
+            (String::from(tool), tool_location + cmd)
+        } else {
+            (String::from(cmd), tool_location)
+        };
+        for idx in 0..inputs.len() {
+            if path_to_string(&inputs[idx]) == tool {
+                inputs.remove(idx);
+                break;
+            }
+        }
+        if tool.ends_with(".py") {
+            cmd = String::from("python3 ") + &cmd;
+        }
+        let tool = path_to_string(strip_prefix(
+            canonicalize_path(&tool, self.build_path),
+            self.src_path,
+        ));
+
+        let mut tool_files = Vec::new();
+        let mut tool_modules = Vec::new();
+        let mut modules = Vec::new();
+        if let Some((tool_module, some_module)) = self.get_tool_module(&tool)? {
+            tool_modules.push(tool_module);
+            if let Some(module_vec) = some_module {
+                modules.extend(module_vec);
+            }
+        } else {
+            tool_files.push(tool);
+        }
+
+        Ok((tool_files, tool_modules, modules, cmd))
+    }
     pub fn generate_custom_command(
         &mut self,
         target: &T,
@@ -454,7 +472,8 @@ where
         let mut deps = Vec::new();
         inputs.extend(self.get_cmd_inputs(target.get_inputs().clone(), &mut deps));
         inputs.extend(self.get_cmd_inputs(target.get_implicit_deps().clone(), &mut deps));
-        let (tool, cmd) = self.get_tool(rule_cmd.command.clone(), &mut inputs);
+        let (tool_files, tool_modules, mut modules, cmd) =
+            self.get_tools(rule_cmd.command.clone(), &mut inputs)?;
         let mut sources = inputs
             .iter()
             .map(|input| {
@@ -475,18 +494,6 @@ where
             .map(|output| path_to_string(self.project.map_cmd_output(output)))
             .collect();
         let module_name = path_to_id(Path::new(self.project.get_name()).join(target.get_name()));
-
-        let mut modules = Vec::new();
-        let mut tool_files = Vec::new();
-        let mut tool_modules = Vec::new();
-        if let Some((tool_module, some_module)) = self.get_tool_module(&tool)? {
-            tool_modules.push(tool_module);
-            if let Some(module_vec) = some_module {
-                modules.extend(module_vec);
-            }
-        } else {
-            tool_files.push(tool);
-        }
 
         modules.push(
             self.project.extend_custom_command(
