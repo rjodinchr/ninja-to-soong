@@ -468,10 +468,8 @@ where
         target: &T,
         rule_cmd: NinjaRuleCmd,
     ) -> Result<Vec<SoongModule>, String> {
-        let mut inputs = Vec::new();
         let mut deps = Vec::new();
-        inputs.extend(self.get_cmd_inputs(target.get_inputs().clone(), &mut deps));
-        inputs.extend(self.get_cmd_inputs(target.get_implicit_deps().clone(), &mut deps));
+        let mut inputs = self.get_cmd_inputs(target.get_inputs().clone(), &mut deps);
         let (tool_files, tool_modules, mut modules, cmd) =
             self.get_tools(rule_cmd.command.clone(), &mut inputs)?;
         let mut sources = inputs
