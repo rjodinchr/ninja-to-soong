@@ -299,6 +299,13 @@ where
         Ok(modules)
     }
 
+    fn map_cmd_output(&self, output: &Path) -> String {
+        if output.starts_with("n2s") {
+            path_to_string(output)
+        } else {
+            path_to_string(self.project.map_cmd_output(output))
+        }
+    }
     fn get_cmd(
         &self,
         mut cmd: String,
@@ -309,7 +316,7 @@ where
     ) -> String {
         for output in outputs {
             let marker = "<output>";
-            let replace_output = path_to_string(self.project.map_cmd_output(output));
+            let replace_output = path_to_string(self.map_cmd_output(output));
             cmd = cmd
                 .replace(&path_to_string(output), marker)
                 .replace(&format!(" {0}", file_name(output)), &format!(" {marker}"))
@@ -362,6 +369,19 @@ where
         }
         cmd
     }
+    fn get_dep_id(&self, input: &PathBuf) -> String {
+        let Some(target) = self.targets_map.get(&input) else {
+            return path_to_id(Path::new(self.project.get_name()).join(&input));
+        };
+        return if target.get_outputs().len() > 1 {
+            path_to_id(Path::new(self.project.get_name()).join(target.get_name()))
+                + "{"
+                + &path_to_string(&input)
+                + "}"
+        } else {
+            path_to_id(Path::new(self.project.get_name()).join(target.get_name()))
+        };
+    }
     fn get_cmd_inputs(
         &self,
         inputs: Vec<PathBuf>,
@@ -378,8 +398,7 @@ where
                     }
                 }
                 if canonicalize_path(&input, self.build_path).starts_with(self.build_path) {
-                    let dep_id = path_to_id(Path::new(self.project.get_name()).join(&input));
-                    deps.push((input, dep_id));
+                    deps.push((input.clone(), self.get_dep_id(&input)));
                     return None;
                 }
                 Some(input)
@@ -489,13 +508,15 @@ where
             .collect::<Vec<String>>();
         for (dep, dep_target_name) in &deps {
             sources.push(format!(":{dep_target_name}"));
-            self.internals.deps.push(dep.clone());
+            if !dep_target_name.contains("{n2s/") {
+                self.internals.deps.push(dep.clone());
+            }
         }
         let target_outputs = target.get_outputs();
         let cmd = self.get_cmd(cmd, rule_cmd, inputs, target_outputs, deps);
         let outputs = target_outputs
             .iter()
-            .map(|output| path_to_string(self.project.map_cmd_output(output)))
+            .map(|output| path_to_string(self.map_cmd_output(output)))
             .collect();
         let target_name = target.get_name();
         let module_name = match self.targets_to_gen.get_name(&target_name) {

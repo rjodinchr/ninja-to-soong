@@ -110,7 +110,50 @@ fn parse_key_value(line: &str) -> Result<(String, String), String> {
     Ok((String::from(split.0.trim()), String::from(split.1.trim())))
 }
 
-fn parse_build_target<T>(line: &str, mut lines: str::Lines) -> Result<T, String>
+fn get_subtarget<T>(
+    rule: &String,
+    outputs: &mut Vec<PathBuf>,
+    variables: &mut HashMap<String, String>,
+) -> Result<Vec<T>, String>
+where
+    T: NinjaTarget,
+{
+    let mut targets = Vec::new();
+    if !variables.contains_key("COMMAND") {
+        return Ok(targets);
+    }
+
+    let rename_output = |output: &PathBuf| Path::new("n2s").join(output.clone());
+    for output in &outputs.clone() {
+        let input = rename_output(output);
+        let mut variables = variables.clone();
+        *variables.get_mut("COMMAND").unwrap() = String::from("cp $(in) $(out)");
+        targets.push(T::new(NinjaTargetCommon {
+            rule: rule.clone(),
+            outputs: vec![output.clone()],
+            implicit_outputs: Vec::new(),
+            inputs: vec![input],
+            implicit_deps: Vec::new(),
+            order_only_deps: Vec::new(),
+            variables,
+        }));
+    }
+    let old_outputs = outputs.clone();
+    outputs
+        .into_iter()
+        .for_each(|output| *output = rename_output(&output));
+    let cmd = variables.get_mut("COMMAND").unwrap();
+    for output_id in 0..old_outputs.len() {
+        *cmd = cmd.replace(
+            &path_to_string(&old_outputs[output_id]),
+            &path_to_string(&outputs[output_id]),
+        );
+    }
+
+    Ok(targets)
+}
+
+fn parse_build_target<T>(line: &str, mut lines: str::Lines) -> Result<Vec<T>, String>
 where
     T: NinjaTarget,
 {
@@ -120,7 +163,7 @@ where
 
     let (output_section, input_section) = split_output_and_input_sections(line_stripped)?;
 
-    let (outputs, implicit_outputs) = parse_output_section(output_section)?;
+    let (mut outputs, implicit_outputs) = parse_output_section(output_section)?;
     let (rule, inputs, implicit_deps, order_only_deps) = parse_input_section(input_section)?;
 
     let mut variables: HashMap<String, String> = HashMap::new();
@@ -132,7 +175,11 @@ where
         variables.insert(key, value);
     }
 
-    Ok(T::new(NinjaTargetCommon {
+    let mut targets = Vec::new();
+    if outputs.len() > 1 {
+        targets.extend(get_subtarget(&rule, &mut outputs, &mut variables)?)
+    }
+    targets.push(T::new(NinjaTargetCommon {
         rule,
         outputs,
         implicit_outputs,
@@ -140,7 +187,8 @@ where
         implicit_deps,
         order_only_deps,
         variables,
-    }))
+    }));
+    Ok(targets)
 }
 
 fn parse_ninja_rule(line: &str, mut lines: str::Lines) -> Result<(String, NinjaRuleCmd), String> {
@@ -217,7 +265,7 @@ where
             let (rule, rule_command) = parse_ninja_rule(line, lines.clone())?;
             all_rules.insert(rule, rule_command);
         } else if line.starts_with("build ") {
-            targets.push(parse_build_target(line, lines.clone())?);
+            targets.extend(parse_build_target(line, lines.clone())?);
         } else if line.starts_with("subninja ") || line.starts_with("include ") {
             let (subtargets, rules) = parse_subninja_file(line, build_path)?;
             all_targets.extend(subtargets);
