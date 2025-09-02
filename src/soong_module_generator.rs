@@ -436,18 +436,35 @@ where
         }
         let tool_module = path_to_id(Path::new(self.project.get_name()).join(&tool));
         if !self.internals.python_binaries.contains(&tool_module) {
+            let mut modules = Vec::new();
+            let (src, main) = if file_stem(Path::new(tool)).contains(".") {
+                let new_tool = path_to_id(PathBuf::from(tool)) + ".py";
+                let name = path_to_id(Path::new(self.project.get_name()).join(&new_tool));
+                modules.push(
+                    SoongModule::new("genrule")
+                        .add_prop("name", SoongProp::Str(name.clone()))
+                        .add_prop("cmd", SoongProp::Str(String::from("cp $(in) $(out)")))
+                        .add_prop("srcs", SoongProp::VecStr(vec![String::from(tool)]))
+                        .add_prop("out", SoongProp::VecStr(vec![new_tool.clone()])),
+                );
+                (String::from(":") + &name, new_tool)
+            } else {
+                (String::from(tool), String::from(tool))
+            };
+
             let Some(module) = self.project.extend_python_binary_host(
                 &self.src_path.join(&tool),
                 SoongModule::new("python_binary_host")
                     .add_prop("name", SoongProp::Str(tool_module.clone()))
-                    .add_prop("main", SoongProp::Str(String::from(tool)))
-                    .add_prop("srcs", SoongProp::VecStr(vec![String::from(tool)])),
+                    .add_prop("main", SoongProp::Str(main))
+                    .add_prop("srcs", SoongProp::VecStr(vec![src])),
             )?
             else {
                 return Ok(None);
             };
             self.internals.python_binaries.insert(tool_module.clone());
-            return Ok(Some((tool_module, Some(vec![module]))));
+            modules.push(module);
+            return Ok(Some((tool_module, Some(modules))));
         }
         Ok(Some((tool_module, None)))
     }

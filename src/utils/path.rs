@@ -69,7 +69,7 @@ pub fn path_to_id(path: PathBuf) -> String {
 
 pub fn file_stem(path: &Path) -> String {
     let file_name = file_name(path);
-    String::from(file_name.split_once(".").unwrap_or((&file_name, "")).0)
+    String::from(file_name.rsplit_once(".").unwrap_or((&file_name, "")).0)
 }
 
 pub fn file_name(path: &Path) -> String {
