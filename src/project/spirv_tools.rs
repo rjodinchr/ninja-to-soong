@@ -115,6 +115,13 @@ impl Project for SpirvTools {
             .add_prop("vendor_available", SoongProp::Bool(true))
             .add_prop("host_supported", SoongProp::Bool(true)))
     }
+    fn extend_python_binary_host(
+        &self,
+        _python_binary_path: &Path,
+        module: SoongModule,
+    ) -> Result<Option<SoongModule>, String> {
+        Ok(Some(module.extend_prop("srcs", vec!["utils/Table/*.py"])?))
+    }
 
     fn filter_cflag(&self, _cflag: &str) -> bool {
         false
