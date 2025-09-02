@@ -13,6 +13,7 @@ use crate::utils::*;
 pub struct SoongModuleGeneratorInternals {
     pub deps: Vec<PathBuf>,
     pub libs: Vec<PathBuf>,
+    python_binaries: std::collections::HashSet<String>,
 }
 
 pub struct SoongModuleGenerator<'a, T>
@@ -420,11 +421,35 @@ where
             })
             .collect()
     }
+    fn get_tool_module(
+        &mut self,
+        tool: &str,
+    ) -> Result<Option<(String, Option<Vec<SoongModule>>)>, String> {
+        if !tool.ends_with(".py") {
+            return Ok(None);
+        }
+        let tool_module = path_to_id(Path::new(self.project.get_name()).join(&tool));
+        if !self.internals.python_binaries.contains(&tool_module) {
+            let Some(module) = self.project.extend_python_binary_host(
+                &self.src_path.join(&tool),
+                SoongModule::new("python_binary_host")
+                    .add_prop("name", SoongProp::Str(tool_module.clone()))
+                    .add_prop("main", SoongProp::Str(String::from(tool)))
+                    .add_prop("srcs", SoongProp::VecStr(vec![String::from(tool)])),
+            )?
+            else {
+                return Ok(None);
+            };
+            self.internals.python_binaries.insert(tool_module.clone());
+            return Ok(Some((tool_module, Some(vec![module]))));
+        }
+        Ok(Some((tool_module, None)))
+    }
     pub fn generate_custom_command(
         &mut self,
         target: &T,
         rule_cmd: NinjaRuleCmd,
-    ) -> Result<SoongModule, String> {
+    ) -> Result<Vec<SoongModule>, String> {
         let mut inputs = Vec::new();
         let mut deps = Vec::new();
         inputs.extend(self.get_cmd_inputs(target.get_inputs().clone(), &mut deps));
@@ -451,14 +476,30 @@ where
             .collect();
         let module_name = path_to_id(Path::new(self.project.get_name()).join(target.get_name()));
 
-        self.project.extend_custom_command(
-            &target.get_name(),
-            SoongModule::new("cc_genrule")
-                .add_prop("name", SoongProp::Str(module_name))
-                .add_prop("cmd", SoongProp::Str(cmd))
-                .add_prop("srcs", SoongProp::VecStr(sources))
-                .add_prop("out", SoongProp::VecStr(outputs))
-                .add_prop("tool_files", SoongProp::VecStr(vec![tool])),
-        )
+        let mut modules = Vec::new();
+        let mut tool_files = Vec::new();
+        let mut tool_modules = Vec::new();
+        if let Some((tool_module, some_module)) = self.get_tool_module(&tool)? {
+            tool_modules.push(tool_module);
+            if let Some(module_vec) = some_module {
+                modules.extend(module_vec);
+            }
+        } else {
+            tool_files.push(tool);
+        }
+
+        modules.push(
+            self.project.extend_custom_command(
+                &target.get_name(),
+                SoongModule::new("cc_genrule")
+                    .add_prop("name", SoongProp::Str(module_name))
+                    .add_prop("cmd", SoongProp::Str(cmd))
+                    .add_prop("srcs", SoongProp::VecStr(sources))
+                    .add_prop("out", SoongProp::VecStr(outputs))
+                    .add_prop("tools", SoongProp::VecStr(tool_modules))
+                    .add_prop("tool_files", SoongProp::VecStr(tool_files)),
+            )?,
+        );
+        Ok(modules)
     }
 }

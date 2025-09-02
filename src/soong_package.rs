@@ -286,7 +286,7 @@ impl SoongPackage {
                     gen.generate_object("cc_library_static", target, ctx)?
                 }
                 NinjaRule::CustomCommand(rule_cmd) => {
-                    vec![gen.generate_custom_command(target, rule_cmd)?]
+                    gen.generate_custom_command(target, rule_cmd)?
                 }
                 NinjaRule::None => return Ok(true),
             });

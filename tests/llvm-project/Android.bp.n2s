@@ -142,6 +142,7 @@ cc_library_static {
         "llvm/lib/Support/PrettyStackTrace.cpp",
         "llvm/lib/Support/Process.cpp",
         "llvm/lib/Support/Program.cpp",
+        "llvm/lib/Support/ProgramStack.cpp",
         "llvm/lib/Support/RISCVAttributeParser.cpp",
         "llvm/lib/Support/RISCVAttributes.cpp",
         "llvm/lib/Support/RISCVISAUtils.cpp",
@@ -171,6 +172,7 @@ cc_library_static {
         "llvm/lib/Support/SuffixTreeNode.cpp",
         "llvm/lib/Support/SystemUtils.cpp",
         "llvm/lib/Support/TarWriter.cpp",
+        "llvm/lib/Support/TextEncoding.cpp",
         "llvm/lib/Support/ThreadPool.cpp",
         "llvm/lib/Support/Threading.cpp",
         "llvm/lib/Support/TimeProfiler.cpp",
@@ -210,6 +212,7 @@ cc_library_static {
     ],
     shared_libs: ["libz"],
     local_include_dirs: [
+        "llvm/../third-party/siphash/include",
         "llvm/lib/Support",
         "llvm/lib/Support/BLAKE3",
     ],
@@ -323,6 +326,7 @@ cc_library_static {
         "clang/lib/Sema/SemaOpenACC.cpp",
         "clang/lib/Sema/SemaOpenACCAtomic.cpp",
         "clang/lib/Sema/SemaOpenACCClause.cpp",
+        "clang/lib/Sema/SemaOpenACCClauseAppertainment.cpp",
         "clang/lib/Sema/SemaOpenCL.cpp",
         "clang/lib/Sema/SemaOpenMP.cpp",
         "clang/lib/Sema/SemaOverload.cpp",
@@ -343,6 +347,7 @@ cc_library_static {
         "clang/lib/Sema/SemaTemplateInstantiateDecl.cpp",
         "clang/lib/Sema/SemaTemplateVariadic.cpp",
         "clang/lib/Sema/SemaType.cpp",
+        "clang/lib/Sema/SemaTypeTraits.cpp",
         "clang/lib/Sema/SemaWasm.cpp",
         "clang/lib/Sema/SemaX86.cpp",
         "clang/lib/Sema/TypeLocBuilder.cpp",
@@ -418,6 +423,7 @@ cc_library_static {
         "clang/lib/Basic/Module.cpp",
         "clang/lib/Basic/NoSanitizeList.cpp",
         "clang/lib/Basic/ObjCRuntime.cpp",
+        "clang/lib/Basic/OffloadArch.cpp",
         "clang/lib/Basic/OpenCLOptions.cpp",
         "clang/lib/Basic/OpenMPKinds.cpp",
         "clang/lib/Basic/OperatorPrecedence.cpp",
@@ -426,6 +432,7 @@ cc_library_static {
         "clang/lib/Basic/SanitizerSpecialCaseList.cpp",
         "clang/lib/Basic/Sanitizers.cpp",
         "clang/lib/Basic/Sarif.cpp",
+        "clang/lib/Basic/SimpleTypoCorrection.cpp",
         "clang/lib/Basic/SourceLocation.cpp",
         "clang/lib/Basic/SourceManager.cpp",
         "clang/lib/Basic/SourceMgrAdapter.cpp",
@@ -450,7 +457,6 @@ cc_library_static {
         "clang/lib/Basic/Targets/Mips.cpp",
         "clang/lib/Basic/Targets/NVPTX.cpp",
         "clang/lib/Basic/Targets/OSTargets.cpp",
-        "clang/lib/Basic/Targets/PNaCl.cpp",
         "clang/lib/Basic/Targets/PPC.cpp",
         "clang/lib/Basic/Targets/RISCV.cpp",
         "clang/lib/Basic/Targets/SPIR.cpp",
@@ -503,6 +509,7 @@ cc_library_static {
         "llvm/lib/Transforms/Utils/CtorUtils.cpp",
         "llvm/lib/Transforms/Utils/DXILUpgrade.cpp",
         "llvm/lib/Transforms/Utils/Debugify.cpp",
+        "llvm/lib/Transforms/Utils/DeclareRuntimeLibcalls.cpp",
         "llvm/lib/Transforms/Utils/DemoteRegToStack.cpp",
         "llvm/lib/Transforms/Utils/EntryExitInstrumenter.cpp",
         "llvm/lib/Transforms/Utils/EscapeEnumerator.cpp",
@@ -549,6 +556,7 @@ cc_library_static {
         "llvm/lib/Transforms/Utils/MoveAutoInit.cpp",
         "llvm/lib/Transforms/Utils/NameAnonGlobals.cpp",
         "llvm/lib/Transforms/Utils/PredicateInfo.cpp",
+        "llvm/lib/Transforms/Utils/ProfileVerify.cpp",
         "llvm/lib/Transforms/Utils/PromoteMemoryToRegister.cpp",
         "llvm/lib/Transforms/Utils/RelLookupTableConverter.cpp",
         "llvm/lib/Transforms/Utils/SCCPSolver.cpp",
@@ -635,6 +643,7 @@ cc_library_static {
         "llvm/lib/BinaryFormat/MsgPackDocumentYAML.cpp",
         "llvm/lib/BinaryFormat/MsgPackReader.cpp",
         "llvm/lib/BinaryFormat/MsgPackWriter.cpp",
+        "llvm/lib/BinaryFormat/SFrame.cpp",
         "llvm/lib/BinaryFormat/Wasm.cpp",
         "llvm/lib/BinaryFormat/XCOFF.cpp",
     ],
@@ -708,8 +717,10 @@ cc_library_static {
         "llvm/lib/Object/Object.cpp",
         "llvm/lib/Object/ObjectFile.cpp",
         "llvm/lib/Object/OffloadBinary.cpp",
+        "llvm/lib/Object/OffloadBundle.cpp",
         "llvm/lib/Object/RecordStreamer.cpp",
         "llvm/lib/Object/RelocationResolver.cpp",
+        "llvm/lib/Object/SFrameParser.cpp",
         "llvm/lib/Object/SymbolSize.cpp",
         "llvm/lib/Object/SymbolicFile.cpp",
         "llvm/lib/Object/TapiFile.cpp",
@@ -792,12 +803,7 @@ cc_library_static {
         "llvm/lib/MC/MCSPIRVStreamer.cpp",
         "llvm/lib/MC/MCSchedule.cpp",
         "llvm/lib/MC/MCSection.cpp",
-        "llvm/lib/MC/MCSectionCOFF.cpp",
-        "llvm/lib/MC/MCSectionDXContainer.cpp",
-        "llvm/lib/MC/MCSectionELF.cpp",
         "llvm/lib/MC/MCSectionMachO.cpp",
-        "llvm/lib/MC/MCSectionWasm.cpp",
-        "llvm/lib/MC/MCSectionXCOFF.cpp",
         "llvm/lib/MC/MCStreamer.cpp",
         "llvm/lib/MC/MCSubtargetInfo.cpp",
         "llvm/lib/MC/MCSymbol.cpp",
@@ -912,7 +918,6 @@ cc_library_static {
         "llvm/lib/IR/VFABIDemangler.cpp",
         "llvm/lib/IR/Value.cpp",
         "llvm/lib/IR/ValueSymbolTable.cpp",
-        "llvm/lib/IR/VectorBuilder.cpp",
         "llvm/lib/IR/VectorTypeUtils.cpp",
         "llvm/lib/IR/Verifier.cpp",
     ],
@@ -1106,14 +1111,47 @@ cc_library_static {
 }
 
 cc_library_static {
+    name: "llvm-project_lib_libLLVMDebugInfoGSYM_a",
+    srcs: [
+        "llvm/lib/DebugInfo/GSYM/CallSiteInfo.cpp",
+        "llvm/lib/DebugInfo/GSYM/DwarfTransformer.cpp",
+        "llvm/lib/DebugInfo/GSYM/ExtractRanges.cpp",
+        "llvm/lib/DebugInfo/GSYM/FileWriter.cpp",
+        "llvm/lib/DebugInfo/GSYM/FunctionInfo.cpp",
+        "llvm/lib/DebugInfo/GSYM/GsymContext.cpp",
+        "llvm/lib/DebugInfo/GSYM/GsymCreator.cpp",
+        "llvm/lib/DebugInfo/GSYM/GsymReader.cpp",
+        "llvm/lib/DebugInfo/GSYM/Header.cpp",
+        "llvm/lib/DebugInfo/GSYM/InlineInfo.cpp",
+        "llvm/lib/DebugInfo/GSYM/LineTable.cpp",
+        "llvm/lib/DebugInfo/GSYM/LookupResult.cpp",
+        "llvm/lib/DebugInfo/GSYM/MergedFunctionsInfo.cpp",
+        "llvm/lib/DebugInfo/GSYM/ObjectFileTransformer.cpp",
+    ],
+    local_include_dirs: ["llvm/lib/DebugInfo/GSYM"],
+    defaults: ["llvm-project-defaults"],
+}
+
+cc_library_static {
+    name: "llvm-project_lib_libLLVMDebugInfoDWARFLowLevel_a",
+    srcs: [
+        "llvm/lib/DebugInfo/DWARF/LowLevel/DWARFCFIProgram.cpp",
+        "llvm/lib/DebugInfo/DWARF/LowLevel/DWARFExpression.cpp",
+        "llvm/lib/DebugInfo/DWARF/LowLevel/DWARFUnwindTable.cpp",
+    ],
+    local_include_dirs: ["llvm/lib/DebugInfo/DWARF/LowLevel"],
+    defaults: ["llvm-project-defaults"],
+}
+
+cc_library_static {
     name: "llvm-project_lib_libLLVMDebugInfoDWARF_a",
     srcs: [
         "llvm/lib/DebugInfo/DWARF/DWARFAbbreviationDeclaration.cpp",
         "llvm/lib/DebugInfo/DWARF/DWARFAcceleratorTable.cpp",
         "llvm/lib/DebugInfo/DWARF/DWARFAddressRange.cpp",
+        "llvm/lib/DebugInfo/DWARF/DWARFCFIPrinter.cpp",
         "llvm/lib/DebugInfo/DWARF/DWARFCompileUnit.cpp",
         "llvm/lib/DebugInfo/DWARF/DWARFContext.cpp",
-        "llvm/lib/DebugInfo/DWARF/DWARFDataExtractor.cpp",
         "llvm/lib/DebugInfo/DWARF/DWARFDebugAbbrev.cpp",
         "llvm/lib/DebugInfo/DWARF/DWARFDebugAddr.cpp",
         "llvm/lib/DebugInfo/DWARF/DWARFDebugArangeSet.cpp",
@@ -1127,7 +1165,7 @@ cc_library_static {
         "llvm/lib/DebugInfo/DWARF/DWARFDebugRangeList.cpp",
         "llvm/lib/DebugInfo/DWARF/DWARFDebugRnglists.cpp",
         "llvm/lib/DebugInfo/DWARF/DWARFDie.cpp",
-        "llvm/lib/DebugInfo/DWARF/DWARFExpression.cpp",
+        "llvm/lib/DebugInfo/DWARF/DWARFExpressionPrinter.cpp",
         "llvm/lib/DebugInfo/DWARF/DWARFFormValue.cpp",
         "llvm/lib/DebugInfo/DWARF/DWARFGdbIndex.cpp",
         "llvm/lib/DebugInfo/DWARF/DWARFListTable.cpp",
@@ -1135,6 +1173,7 @@ cc_library_static {
         "llvm/lib/DebugInfo/DWARF/DWARFTypeUnit.cpp",
         "llvm/lib/DebugInfo/DWARF/DWARFUnit.cpp",
         "llvm/lib/DebugInfo/DWARF/DWARFUnitIndex.cpp",
+        "llvm/lib/DebugInfo/DWARF/DWARFUnwindTablePrinter.cpp",
         "llvm/lib/DebugInfo/DWARF/DWARFVerifier.cpp",
     ],
     local_include_dirs: ["llvm/lib/DebugInfo/DWARF"],
@@ -1154,14 +1193,20 @@ cc_library_static {
 cc_library_static {
     name: "llvm-project_lib_libLLVMProfileData_a",
     srcs: [
+        "llvm/lib/ProfileData/DataAccessProf.cpp",
         "llvm/lib/ProfileData/GCOV.cpp",
+        "llvm/lib/ProfileData/IndexedMemProfData.cpp",
         "llvm/lib/ProfileData/InstrProf.cpp",
         "llvm/lib/ProfileData/InstrProfCorrelator.cpp",
         "llvm/lib/ProfileData/InstrProfReader.cpp",
         "llvm/lib/ProfileData/InstrProfWriter.cpp",
         "llvm/lib/ProfileData/ItaniumManglingCanonicalizer.cpp",
         "llvm/lib/ProfileData/MemProf.cpp",
+        "llvm/lib/ProfileData/MemProfCommon.cpp",
+        "llvm/lib/ProfileData/MemProfRadixTree.cpp",
         "llvm/lib/ProfileData/MemProfReader.cpp",
+        "llvm/lib/ProfileData/MemProfSummary.cpp",
+        "llvm/lib/ProfileData/MemProfSummaryBuilder.cpp",
         "llvm/lib/ProfileData/PGOCtxProfReader.cpp",
         "llvm/lib/ProfileData/PGOCtxProfWriter.cpp",
         "llvm/lib/ProfileData/ProfileSummaryBuilder.cpp",
@@ -1216,10 +1261,13 @@ cc_library_static {
         "llvm/lib/Analysis/DomTreeUpdater.cpp",
         "llvm/lib/Analysis/DominanceFrontier.cpp",
         "llvm/lib/Analysis/EphemeralValuesCache.cpp",
+        "llvm/lib/Analysis/FloatingPointPredicateUtils.cpp",
         "llvm/lib/Analysis/FunctionPropertiesAnalysis.cpp",
         "llvm/lib/Analysis/GlobalsModRef.cpp",
         "llvm/lib/Analysis/GuardUtils.cpp",
+        "llvm/lib/Analysis/HashRecognize.cpp",
         "llvm/lib/Analysis/HeatUtils.cpp",
+        "llvm/lib/Analysis/IR2Vec.cpp",
         "llvm/lib/Analysis/IRSimilarityIdentifier.cpp",
         "llvm/lib/Analysis/IVDescriptors.cpp",
         "llvm/lib/Analysis/IVUsers.cpp",
@@ -1465,6 +1513,7 @@ cc_library_static {
 cc_library_static {
     name: "llvm-project_lib_libLLVMFrontendOpenMP_a",
     srcs: [
+        "llvm/lib/Frontend/OpenMP/DirectiveNameParser.cpp",
         "llvm/lib/Frontend/OpenMP/OMP.cpp",
         "llvm/lib/Frontend/OpenMP/OMPContext.cpp",
         "llvm/lib/Frontend/OpenMP/OMPIRBuilder.cpp",
@@ -1480,6 +1529,13 @@ cc_library_static {
         "llvm/lib/Frontend/Offloading/Utility.cpp",
     ],
     local_include_dirs: ["llvm/lib/Frontend/Offloading"],
+    defaults: ["llvm-project-defaults"],
+}
+
+cc_library_static {
+    name: "llvm-project_lib_libLLVMFrontendDirective_a",
+    srcs: ["llvm/lib/Frontend/Directive/Spelling.cpp"],
+    local_include_dirs: ["llvm/lib/Frontend/Directive"],
     defaults: ["llvm-project-defaults"],
 }
 
@@ -1531,7 +1587,6 @@ cc_library_static {
         "clang/lib/AST/ByteCode/EvalEmitter.cpp",
         "clang/lib/AST/ByteCode/EvaluationResult.cpp",
         "clang/lib/AST/ByteCode/Floating.cpp",
-        "clang/lib/AST/ByteCode/Frame.cpp",
         "clang/lib/AST/ByteCode/Function.cpp",
         "clang/lib/AST/ByteCode/FunctionPointer.cpp",
         "clang/lib/AST/ByteCode/Interp.cpp",
@@ -1632,6 +1687,19 @@ cc_library_static {
 }
 
 cc_library_static {
+    name: "llvm-project_lib_libLLVMFrontendHLSL_a",
+    srcs: [
+        "llvm/lib/Frontend/HLSL/CBuffer.cpp",
+        "llvm/lib/Frontend/HLSL/HLSLResource.cpp",
+        "llvm/lib/Frontend/HLSL/HLSLRootSignature.cpp",
+        "llvm/lib/Frontend/HLSL/RootSignatureMetadata.cpp",
+        "llvm/lib/Frontend/HLSL/RootSignatureValidations.cpp",
+    ],
+    local_include_dirs: ["llvm/lib/Frontend/HLSL"],
+    defaults: ["llvm-project-defaults"],
+}
+
+cc_library_static {
     name: "llvm-project_lib_libclangAnalysis_a",
     srcs: [
         "clang/lib/Analysis/AnalysisDeclContext.cpp",
@@ -1651,6 +1719,7 @@ cc_library_static {
         "clang/lib/Analysis/FixitUtil.cpp",
         "clang/lib/Analysis/IntervalPartition.cpp",
         "clang/lib/Analysis/IssueHash.cpp",
+        "clang/lib/Analysis/LifetimeSafety.cpp",
         "clang/lib/Analysis/LiveVariables.cpp",
         "clang/lib/Analysis/MacroExpansionContext.cpp",
         "clang/lib/Analysis/ObjCNoReturn.cpp",
@@ -1704,16 +1773,6 @@ cc_library_static {
         "clang/lib/APINotes",
         "cmake_generated/tools/clang/include",
     ],
-    defaults: ["llvm-project-defaults"],
-}
-
-cc_library_static {
-    name: "llvm-project_lib_libLLVMFrontendHLSL_a",
-    srcs: [
-        "llvm/lib/Frontend/HLSL/CBuffer.cpp",
-        "llvm/lib/Frontend/HLSL/HLSLResource.cpp",
-    ],
-    local_include_dirs: ["llvm/lib/Frontend/HLSL"],
     defaults: ["llvm-project-defaults"],
 }
 
@@ -1830,6 +1889,7 @@ cc_library_static {
         "clang/lib/Driver/ToolChains/CommonArgs.cpp",
         "clang/lib/Driver/ToolChains/CrossWindows.cpp",
         "clang/lib/Driver/ToolChains/Cuda.cpp",
+        "clang/lib/Driver/ToolChains/Cygwin.cpp",
         "clang/lib/Driver/ToolChains/Darwin.cpp",
         "clang/lib/Driver/ToolChains/DragonFly.cpp",
         "clang/lib/Driver/ToolChains/Flang.cpp",
@@ -1847,16 +1907,15 @@ cc_library_static {
         "clang/lib/Driver/ToolChains/Linux.cpp",
         "clang/lib/Driver/ToolChains/MSP430.cpp",
         "clang/lib/Driver/ToolChains/MSVC.cpp",
+        "clang/lib/Driver/ToolChains/Managarm.cpp",
         "clang/lib/Driver/ToolChains/MinGW.cpp",
         "clang/lib/Driver/ToolChains/MipsLinux.cpp",
-        "clang/lib/Driver/ToolChains/NaCl.cpp",
         "clang/lib/Driver/ToolChains/NetBSD.cpp",
         "clang/lib/Driver/ToolChains/OHOS.cpp",
         "clang/lib/Driver/ToolChains/OpenBSD.cpp",
         "clang/lib/Driver/ToolChains/PPCFreeBSD.cpp",
         "clang/lib/Driver/ToolChains/PPCLinux.cpp",
         "clang/lib/Driver/ToolChains/PS4CPU.cpp",
-        "clang/lib/Driver/ToolChains/RISCVToolchain.cpp",
         "clang/lib/Driver/ToolChains/SPIRV.cpp",
         "clang/lib/Driver/ToolChains/SPIRVOpenMP.cpp",
         "clang/lib/Driver/ToolChains/SYCL.cpp",
@@ -1989,7 +2048,6 @@ cc_library_static {
         "clang/lib/CodeGen/Targets/MSP430.cpp",
         "clang/lib/CodeGen/Targets/Mips.cpp",
         "clang/lib/CodeGen/Targets/NVPTX.cpp",
-        "clang/lib/CodeGen/Targets/PNaCl.cpp",
         "clang/lib/CodeGen/Targets/PPC.cpp",
         "clang/lib/CodeGen/Targets/RISCV.cpp",
         "clang/lib/CodeGen/Targets/SPIR.cpp",
@@ -2066,6 +2124,7 @@ cc_library_static {
 cc_library_static {
     name: "llvm-project_lib_libLLVMVectorize_a",
     srcs: [
+        "llvm/lib/Transforms/Vectorize/EVLIndVarSimplify.cpp",
         "llvm/lib/Transforms/Vectorize/LoadStoreVectorizer.cpp",
         "llvm/lib/Transforms/Vectorize/LoopIdiomVectorize.cpp",
         "llvm/lib/Transforms/Vectorize/LoopVectorizationLegality.cpp",
@@ -2076,6 +2135,7 @@ cc_library_static {
         "llvm/lib/Transforms/Vectorize/SandboxVectorizer/Interval.cpp",
         "llvm/lib/Transforms/Vectorize/SandboxVectorizer/Legality.cpp",
         "llvm/lib/Transforms/Vectorize/SandboxVectorizer/Passes/BottomUpVec.cpp",
+        "llvm/lib/Transforms/Vectorize/SandboxVectorizer/Passes/PackReuse.cpp",
         "llvm/lib/Transforms/Vectorize/SandboxVectorizer/Passes/RegionsFromBBs.cpp",
         "llvm/lib/Transforms/Vectorize/SandboxVectorizer/Passes/RegionsFromMetadata.cpp",
         "llvm/lib/Transforms/Vectorize/SandboxVectorizer/Passes/SeedCollection.cpp",
@@ -2089,7 +2149,7 @@ cc_library_static {
         "llvm/lib/Transforms/Vectorize/VPlan.cpp",
         "llvm/lib/Transforms/Vectorize/VPlanAnalysis.cpp",
         "llvm/lib/Transforms/Vectorize/VPlanConstruction.cpp",
-        "llvm/lib/Transforms/Vectorize/VPlanHCFGBuilder.cpp",
+        "llvm/lib/Transforms/Vectorize/VPlanPredicator.cpp",
         "llvm/lib/Transforms/Vectorize/VPlanRecipes.cpp",
         "llvm/lib/Transforms/Vectorize/VPlanSLP.cpp",
         "llvm/lib/Transforms/Vectorize/VPlanTransforms.cpp",
@@ -2151,7 +2211,8 @@ cc_library_static {
         "llvm/lib/Transforms/Instrumentation/InstrProfiling.cpp",
         "llvm/lib/Transforms/Instrumentation/KCFI.cpp",
         "llvm/lib/Transforms/Instrumentation/LowerAllowCheckPass.cpp",
-        "llvm/lib/Transforms/Instrumentation/MemProfiler.cpp",
+        "llvm/lib/Transforms/Instrumentation/MemProfInstrumentation.cpp",
+        "llvm/lib/Transforms/Instrumentation/MemProfUse.cpp",
         "llvm/lib/Transforms/Instrumentation/MemorySanitizer.cpp",
         "llvm/lib/Transforms/Instrumentation/NumericalStabilitySanitizer.cpp",
         "llvm/lib/Transforms/Instrumentation/PGOCtxProfFlattening.cpp",
@@ -2185,6 +2246,7 @@ cc_library_static {
 cc_library_static {
     name: "llvm-project_lib_libLLVMTarget_a",
     srcs: [
+        "llvm/lib/Target/RegisterTargetPassConfigCallback.cpp",
         "llvm/lib/Target/Target.cpp",
         "llvm/lib/Target/TargetLoweringObjectFile.cpp",
         "llvm/lib/Target/TargetMachine.cpp",
@@ -2195,17 +2257,36 @@ cc_library_static {
 }
 
 cc_library_static {
-    name: "llvm-project_lib_libLLVMPasses_a",
+    name: "llvm-project_lib_libLLVMSelectionDAG_a",
     srcs: [
-        "llvm/lib/Passes/CodeGenPassBuilder.cpp",
-        "llvm/lib/Passes/OptimizationLevel.cpp",
-        "llvm/lib/Passes/PassBuilder.cpp",
-        "llvm/lib/Passes/PassBuilderBindings.cpp",
-        "llvm/lib/Passes/PassBuilderPipelines.cpp",
-        "llvm/lib/Passes/PassPlugin.cpp",
-        "llvm/lib/Passes/StandardInstrumentations.cpp",
+        "llvm/lib/CodeGen/SelectionDAG/DAGCombiner.cpp",
+        "llvm/lib/CodeGen/SelectionDAG/FastISel.cpp",
+        "llvm/lib/CodeGen/SelectionDAG/FunctionLoweringInfo.cpp",
+        "llvm/lib/CodeGen/SelectionDAG/InstrEmitter.cpp",
+        "llvm/lib/CodeGen/SelectionDAG/LegalizeDAG.cpp",
+        "llvm/lib/CodeGen/SelectionDAG/LegalizeFloatTypes.cpp",
+        "llvm/lib/CodeGen/SelectionDAG/LegalizeIntegerTypes.cpp",
+        "llvm/lib/CodeGen/SelectionDAG/LegalizeTypes.cpp",
+        "llvm/lib/CodeGen/SelectionDAG/LegalizeTypesGeneric.cpp",
+        "llvm/lib/CodeGen/SelectionDAG/LegalizeVectorOps.cpp",
+        "llvm/lib/CodeGen/SelectionDAG/LegalizeVectorTypes.cpp",
+        "llvm/lib/CodeGen/SelectionDAG/ResourcePriorityQueue.cpp",
+        "llvm/lib/CodeGen/SelectionDAG/SDNodeInfo.cpp",
+        "llvm/lib/CodeGen/SelectionDAG/ScheduleDAGFast.cpp",
+        "llvm/lib/CodeGen/SelectionDAG/ScheduleDAGRRList.cpp",
+        "llvm/lib/CodeGen/SelectionDAG/ScheduleDAGSDNodes.cpp",
+        "llvm/lib/CodeGen/SelectionDAG/ScheduleDAGVLIW.cpp",
+        "llvm/lib/CodeGen/SelectionDAG/SelectionDAG.cpp",
+        "llvm/lib/CodeGen/SelectionDAG/SelectionDAGAddressAnalysis.cpp",
+        "llvm/lib/CodeGen/SelectionDAG/SelectionDAGBuilder.cpp",
+        "llvm/lib/CodeGen/SelectionDAG/SelectionDAGDumper.cpp",
+        "llvm/lib/CodeGen/SelectionDAG/SelectionDAGISel.cpp",
+        "llvm/lib/CodeGen/SelectionDAG/SelectionDAGPrinter.cpp",
+        "llvm/lib/CodeGen/SelectionDAG/SelectionDAGTargetInfo.cpp",
+        "llvm/lib/CodeGen/SelectionDAG/StatepointLowering.cpp",
+        "llvm/lib/CodeGen/SelectionDAG/TargetLowering.cpp",
     ],
-    local_include_dirs: ["llvm/lib/Passes"],
+    local_include_dirs: ["llvm/lib/CodeGen/SelectionDAG"],
     defaults: ["llvm-project-defaults"],
 }
 
@@ -2214,7 +2295,6 @@ cc_library_static {
     srcs: [
         "llvm/lib/Transforms/ObjCARC/DependencyAnalysis.cpp",
         "llvm/lib/Transforms/ObjCARC/ObjCARC.cpp",
-        "llvm/lib/Transforms/ObjCARC/ObjCARCAPElim.cpp",
         "llvm/lib/Transforms/ObjCARC/ObjCARCContract.cpp",
         "llvm/lib/Transforms/ObjCARC/ObjCARCExpand.cpp",
         "llvm/lib/Transforms/ObjCARC/ObjCARCOpts.cpp",
@@ -2223,39 +2303,6 @@ cc_library_static {
         "llvm/lib/Transforms/ObjCARC/PtrState.cpp",
     ],
     local_include_dirs: ["llvm/lib/Transforms/ObjCARC"],
-    defaults: ["llvm-project-defaults"],
-}
-
-cc_library_static {
-    name: "llvm-project_lib_libLLVMIRPrinter_a",
-    srcs: ["llvm/lib/IRPrinter/IRPrintingPasses.cpp"],
-    local_include_dirs: ["llvm/lib/IRPrinter"],
-    defaults: ["llvm-project-defaults"],
-}
-
-cc_library_static {
-    name: "llvm-project_lib_libLLVMHipStdPar_a",
-    srcs: ["llvm/lib/Transforms/HipStdPar/HipStdPar.cpp"],
-    local_include_dirs: ["llvm/lib/Transforms/HipStdPar"],
-    defaults: ["llvm-project-defaults"],
-}
-
-cc_library_static {
-    name: "llvm-project_lib_libLLVMCoroutines_a",
-    srcs: [
-        "llvm/lib/Transforms/Coroutines/CoroAnnotationElide.cpp",
-        "llvm/lib/Transforms/Coroutines/CoroCleanup.cpp",
-        "llvm/lib/Transforms/Coroutines/CoroConditionalWrapper.cpp",
-        "llvm/lib/Transforms/Coroutines/CoroEarly.cpp",
-        "llvm/lib/Transforms/Coroutines/CoroElide.cpp",
-        "llvm/lib/Transforms/Coroutines/CoroFrame.cpp",
-        "llvm/lib/Transforms/Coroutines/CoroSplit.cpp",
-        "llvm/lib/Transforms/Coroutines/Coroutines.cpp",
-        "llvm/lib/Transforms/Coroutines/MaterializationUtils.cpp",
-        "llvm/lib/Transforms/Coroutines/SpillUtils.cpp",
-        "llvm/lib/Transforms/Coroutines/SuspendCrossingInfo.cpp",
-    ],
-    local_include_dirs: ["llvm/lib/Transforms/Coroutines"],
     defaults: ["llvm-project-defaults"],
 }
 
@@ -2500,6 +2547,7 @@ cc_library_static {
         "llvm/lib/CodeGen/WasmEHPrepare.cpp",
         "llvm/lib/CodeGen/WinEHPrepare.cpp",
         "llvm/lib/CodeGen/WindowScheduler.cpp",
+        "llvm/lib/CodeGen/WindowsSecureHotPatching.cpp",
         "llvm/lib/CodeGen/XRayInstrumentation.cpp",
     ],
     local_include_dirs: ["llvm/lib/CodeGen"],
@@ -2518,6 +2566,92 @@ cc_library_static {
         "llvm/lib/CGData/StableFunctionMapRecord.cpp",
     ],
     local_include_dirs: ["llvm/lib/CGData"],
+    defaults: ["llvm-project-defaults"],
+}
+
+cc_library_static {
+    name: "llvm-project_lib_libLLVMPasses_a",
+    srcs: [
+        "llvm/lib/Passes/CodeGenPassBuilder.cpp",
+        "llvm/lib/Passes/OptimizationLevel.cpp",
+        "llvm/lib/Passes/PassBuilder.cpp",
+        "llvm/lib/Passes/PassBuilderBindings.cpp",
+        "llvm/lib/Passes/PassBuilderPipelines.cpp",
+        "llvm/lib/Passes/PassPlugin.cpp",
+        "llvm/lib/Passes/StandardInstrumentations.cpp",
+    ],
+    local_include_dirs: ["llvm/lib/Passes"],
+    defaults: ["llvm-project-defaults"],
+}
+
+cc_library_static {
+    name: "llvm-project_lib_libLLVMIRPrinter_a",
+    srcs: ["llvm/lib/IRPrinter/IRPrintingPasses.cpp"],
+    local_include_dirs: ["llvm/lib/IRPrinter"],
+    defaults: ["llvm-project-defaults"],
+}
+
+cc_library_static {
+    name: "llvm-project_lib_libLLVMHipStdPar_a",
+    srcs: ["llvm/lib/Transforms/HipStdPar/HipStdPar.cpp"],
+    local_include_dirs: ["llvm/lib/Transforms/HipStdPar"],
+    defaults: ["llvm-project-defaults"],
+}
+
+cc_library_static {
+    name: "llvm-project_lib_libLLVMGlobalISel_a",
+    srcs: [
+        "llvm/lib/CodeGen/GlobalISel/CSEInfo.cpp",
+        "llvm/lib/CodeGen/GlobalISel/CSEMIRBuilder.cpp",
+        "llvm/lib/CodeGen/GlobalISel/CallLowering.cpp",
+        "llvm/lib/CodeGen/GlobalISel/Combiner.cpp",
+        "llvm/lib/CodeGen/GlobalISel/CombinerHelper.cpp",
+        "llvm/lib/CodeGen/GlobalISel/CombinerHelperArtifacts.cpp",
+        "llvm/lib/CodeGen/GlobalISel/CombinerHelperCasts.cpp",
+        "llvm/lib/CodeGen/GlobalISel/CombinerHelperCompares.cpp",
+        "llvm/lib/CodeGen/GlobalISel/CombinerHelperVectorOps.cpp",
+        "llvm/lib/CodeGen/GlobalISel/GIMatchTableExecutor.cpp",
+        "llvm/lib/CodeGen/GlobalISel/GISelChangeObserver.cpp",
+        "llvm/lib/CodeGen/GlobalISel/GISelValueTracking.cpp",
+        "llvm/lib/CodeGen/GlobalISel/GlobalISel.cpp",
+        "llvm/lib/CodeGen/GlobalISel/IRTranslator.cpp",
+        "llvm/lib/CodeGen/GlobalISel/InlineAsmLowering.cpp",
+        "llvm/lib/CodeGen/GlobalISel/InstructionSelect.cpp",
+        "llvm/lib/CodeGen/GlobalISel/InstructionSelector.cpp",
+        "llvm/lib/CodeGen/GlobalISel/LegacyLegalizerInfo.cpp",
+        "llvm/lib/CodeGen/GlobalISel/LegalityPredicates.cpp",
+        "llvm/lib/CodeGen/GlobalISel/LegalizeMutations.cpp",
+        "llvm/lib/CodeGen/GlobalISel/Legalizer.cpp",
+        "llvm/lib/CodeGen/GlobalISel/LegalizerHelper.cpp",
+        "llvm/lib/CodeGen/GlobalISel/LegalizerInfo.cpp",
+        "llvm/lib/CodeGen/GlobalISel/LoadStoreOpt.cpp",
+        "llvm/lib/CodeGen/GlobalISel/Localizer.cpp",
+        "llvm/lib/CodeGen/GlobalISel/LostDebugLocObserver.cpp",
+        "llvm/lib/CodeGen/GlobalISel/MachineFloatingPointPredicateUtils.cpp",
+        "llvm/lib/CodeGen/GlobalISel/MachineIRBuilder.cpp",
+        "llvm/lib/CodeGen/GlobalISel/RegBankSelect.cpp",
+        "llvm/lib/CodeGen/GlobalISel/Utils.cpp",
+    ],
+    local_include_dirs: ["llvm/lib/CodeGen/GlobalISel"],
+    defaults: ["llvm-project-defaults"],
+}
+
+cc_library_static {
+    name: "llvm-project_lib_libLLVMCoroutines_a",
+    srcs: [
+        "llvm/lib/Transforms/Coroutines/CoroAnnotationElide.cpp",
+        "llvm/lib/Transforms/Coroutines/CoroCleanup.cpp",
+        "llvm/lib/Transforms/Coroutines/CoroConditionalWrapper.cpp",
+        "llvm/lib/Transforms/Coroutines/CoroEarly.cpp",
+        "llvm/lib/Transforms/Coroutines/CoroElide.cpp",
+        "llvm/lib/Transforms/Coroutines/CoroFrame.cpp",
+        "llvm/lib/Transforms/Coroutines/CoroSplit.cpp",
+        "llvm/lib/Transforms/Coroutines/Coroutines.cpp",
+        "llvm/lib/Transforms/Coroutines/MaterializationUtils.cpp",
+        "llvm/lib/Transforms/Coroutines/SpillUtils.cpp",
+        "llvm/lib/Transforms/Coroutines/SuspendCrossingInfo.cpp",
+    ],
+    local_include_dirs: ["llvm/lib/Transforms/Coroutines"],
     defaults: ["llvm-project-defaults"],
 }
 

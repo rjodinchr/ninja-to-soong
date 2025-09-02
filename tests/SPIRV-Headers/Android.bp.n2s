@@ -95,6 +95,11 @@ filegroup {
 }
 
 filegroup {
+    name: "SpirvHeaders_include_spirv_unified1_extinst_tosa_001000_1_grammar_json",
+    srcs: ["include/spirv/unified1/extinst.tosa.001000.1.grammar.json"],
+}
+
+filegroup {
     name: "SpirvHeaders_include_spirv_unified1_spirv_core_grammar_json",
     srcs: ["include/spirv/unified1/spirv.core.grammar.json"],
 }

@@ -145,6 +145,13 @@ pub trait Project {
     ) -> Result<SoongModule, String> {
         Ok(module)
     }
+    fn extend_python_binary_host(
+        &self,
+        _python_binary_path: &Path,
+        _module: SoongModule,
+    ) -> Result<Option<SoongModule>, String> {
+        Ok(None)
+    }
     // MAP FUNCTIONS
     fn map_cmd_output(&self, output: &Path) -> PathBuf {
         PathBuf::from(output)
