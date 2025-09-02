@@ -169,6 +169,9 @@ pub trait Project {
     fn filter_gen_header(&self, _header: &Path) -> bool {
         true
     }
+    fn filter_gen_source(&self, _source: &Path) -> bool {
+        true
+    }
     fn filter_include(&self, _include: &Path) -> bool {
         true
     }
