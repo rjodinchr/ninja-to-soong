@@ -441,6 +441,11 @@ where
                 break;
             }
         }
+        *inputs = inputs
+            .into_iter()
+            .filter(|input| !input.ends_with("python3"))
+            .map(|input| input.clone())
+            .collect();
         if tool.ends_with(".py") {
             cmd = String::from("python3 ") + &cmd;
         }
