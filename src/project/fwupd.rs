@@ -112,7 +112,7 @@ impl Project for Fwupd {
             ]
             .map(|dep| PathBuf::from(dep)),
         );
-        package.filter_local_include_dirs(MESON_GENERATED, &gen_deps)?;
+        package.filter_gen_deps(MESON_GENERATED, &gen_deps)?;
         common::copy_gen_deps(gen_deps, MESON_GENERATED, &self.build_path, ctx, self)?;
         package.print(ctx)
     }

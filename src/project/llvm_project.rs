@@ -123,7 +123,7 @@ impl Project for LlvmProject {
             ]
             .map(|dep| PathBuf::from(dep)),
         );
-        package.filter_local_include_dirs(CMAKE_GENERATED, &gen_deps)?;
+        package.filter_gen_deps(CMAKE_GENERATED, &gen_deps)?;
         common::copy_gen_deps(gen_deps, CMAKE_GENERATED, &build_path, ctx, self)?;
 
         package

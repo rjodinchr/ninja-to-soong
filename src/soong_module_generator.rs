@@ -150,37 +150,57 @@ where
             })
             .collect()
     }
-    fn get_generated_headers(&mut self, target: &T) -> Result<Vec<String>, String> {
-        let mut gen_headers = Vec::new();
+    fn get_generated_assets(
+        &mut self,
+        target: &T,
+        filter_header: bool,
+    ) -> Result<Vec<String>, String> {
+        let mut gen_assets = Vec::new();
         self.targets_map
-            .traverse_from(target.get_outputs().clone(), |target| {
+            .traverse_from(target.get_outputs().clone(), !filter_header, |target| {
+                if target.get_outputs().len() > 1 {
+                    return Ok(false);
+                }
                 match target.get_rule()? {
                     NinjaRule::CustomCommand(_) => {
-                        gen_headers.extend(target.get_outputs().clone());
+                        gen_assets.extend(target.get_outputs().clone());
                         Ok(true)
                     }
                     _ => Ok(true),
                 }
             })?;
-        Ok(gen_headers
+        Ok(gen_assets
             .iter()
-            .filter_map(|header| {
-                debug_project!("filter_gen_header({header:#?})");
-                if !self.project.filter_gen_header(header) {
-                    self.internals.deps.push(PathBuf::from(header));
-                    return None;
-                } else if self.targets_map.get(header).is_none() {
+            .filter_map(|asset| {
+                if file_ext(asset).starts_with(if filter_header { "c" } else { "h" }) {
                     return None;
                 }
-                Some(match self.targets_to_gen.get_name(header) {
+                debug_project!(
+                    "filter_gen_{0}({asset:#?})",
+                    if filter_header { "header" } else { "source" }
+                );
+                if (filter_header && !self.project.filter_gen_header(asset))
+                    || (!filter_header && !self.project.filter_gen_source(asset))
+                {
+                    self.internals.deps.push(PathBuf::from(asset));
+                    return None;
+                }
+                let Some(target) = self.targets_map.get(asset) else {
+                    self.internals.deps.push(PathBuf::from(asset));
+                    return None;
+                };
+                Some(match self.targets_to_gen.get_name(asset) {
                     Some(name) => path_to_string(name),
-                    None => path_to_id(
-                        Path::new(self.project.get_name())
-                            .join(self.targets_map.get(header).unwrap().get_name()),
-                    ),
+                    None => path_to_id(Path::new(self.project.get_name()).join(target.get_name())),
                 })
             })
             .collect())
+    }
+    fn get_generated_headers(&mut self, target: &T) -> Result<Vec<String>, String> {
+        self.get_generated_assets(target, true)
+    }
+    fn get_generated_sources(&mut self, target: &T) -> Result<Vec<String>, String> {
+        self.get_generated_assets(target, false)
     }
     fn defines_conflict(
         defines: &mut std::collections::HashMap<String, String>,
@@ -260,6 +280,7 @@ where
         cflags.extend(self.get_cflags(target.get_cflags()));
 
         let generated_headers = self.get_generated_headers(target)?;
+        let generated_sources = self.get_generated_sources(target)?;
         let (version_script, link_flags) = target.get_link_flags();
         let link_flags = self.get_link_flags(link_flags);
         whole_static_libs.extend(self.get_libs(target.get_libs_static_whole(), &module_name));
@@ -293,6 +314,7 @@ where
             .add_prop("static_libs", SoongProp::VecStr(static_libs))
             .add_prop("whole_static_libs", SoongProp::VecStr(whole_static_libs))
             .add_prop("local_include_dirs", SoongProp::VecStr(includes))
+            .add_prop("generated_sources", SoongProp::VecStr(generated_sources))
             .add_prop("generated_headers", SoongProp::VecStr(generated_headers));
 
         modules.push(self.project.extend_module(&target_name, module)?);
