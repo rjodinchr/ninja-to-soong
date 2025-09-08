@@ -34,6 +34,13 @@ cc_library_headers {
     host_supported: true,
 }
 
+cc_library_headers {
+    name: "SPIRV-Headers-includes-unified1",
+    export_include_dirs: ["include/spirv/unified1"],
+    vendor_available: true,
+    host_supported: true,
+}
+
 filegroup {
     name: "SpirvHeaders_include_spirv_spir-v_xml",
     srcs: ["include/spirv/spir-v.xml"],

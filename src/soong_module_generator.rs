@@ -172,10 +172,13 @@ where
                 } else if self.targets_map.get(header).is_none() {
                     return None;
                 }
-                Some(path_to_id(
-                    Path::new(self.project.get_name())
-                        .join(self.targets_map.get(header).unwrap().get_name()),
-                ))
+                Some(match self.targets_to_gen.get_name(header) {
+                    Some(name) => path_to_string(name),
+                    None => path_to_id(
+                        Path::new(self.project.get_name())
+                            .join(self.targets_map.get(header).unwrap().get_name()),
+                    ),
+                })
             })
             .collect())
     }
@@ -494,7 +497,11 @@ where
             .iter()
             .map(|output| path_to_string(self.project.map_cmd_output(output)))
             .collect();
-        let module_name = path_to_id(Path::new(self.project.get_name()).join(target.get_name()));
+        let target_name = target.get_name();
+        let module_name = match self.targets_to_gen.get_name(&target_name) {
+            Some(name) => path_to_string(name),
+            None => path_to_id(Path::new(self.project.get_name()).join(target_name)),
+        };
 
         modules.push(
             self.project.extend_custom_command(

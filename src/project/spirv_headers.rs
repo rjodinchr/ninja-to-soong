@@ -37,6 +37,16 @@ impl Project for SpirvHeaders {
             )
             .add_prop("host_supported", SoongProp::Bool(true)),
         );
+        let generate_vksp_deps = !ctx.copy_to_aosp;
+        if generate_vksp_deps {
+            package = package.add_module(
+                SoongModule::new_cc_library_headers(
+                    CcLibraryHeaders::SpirvHeadersUnified1,
+                    vec![String::from("include/spirv/unified1")],
+                )
+                .add_prop("host_supported", SoongProp::Bool(true)),
+            );
+        }
 
         for file in Dep::SpirvHeaders.get(projects_map)? {
             package = package.add_module(SoongModule::new_filegroup(
