@@ -16,7 +16,7 @@ impl NinjaTarget for MesonNinjaTarget {
 
     fn get_rule(&self) -> Result<NinjaRule, String> {
         Ok(
-            if self.0.rule == "c_LINKER" || self.0.rule == "cpp_LINKER" {
+            if self.0.rule.starts_with("c_LINKER") || self.0.rule.starts_with("cpp_LINKER") {
                 let (_, link_flags) = self.get_link_flags();
                 if link_flags.contains(&String::from("-fPIC")) {
                     NinjaRule::SharedLibrary

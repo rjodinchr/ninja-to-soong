@@ -54,6 +54,7 @@
 | [clpeak](https://github.com/krrishnarraj/clpeak) | `CMake` | `clpeak` |
 | [clspv](https://github.com/google/clspv) | `CMake` | `clvk` dependencies |
 | [clvk](https://github.com/kpet/clvk) | `CMake` | `libclvk.so` |
+| [fwupd](https://github.com/fwupd/fwupd.git) (WIP) | `Meson` | `fwupdmgr` & `fwupd-binder` |
 | [llvm-project](https://github.com/llvm/llvm-project) | `CMake` | `clvk` & `clspv` dependencies |
 | [mesa](https://www.mesa3d.org/) | `meson` | `libgallium_dri.so`, `libglapi.so`, `libEGL_mesa.so`, `libGLESv2_mesa.so`, `libGLESv1_CM_mesa.so`, `libvulkan_${VENDOR}.so` |
 | [OpenCL-CTS](https://github.com/KhronosGroup/OpenCL-CTS) | `CMake` | Every binary in `test_conformance/opencl_conformance_tests_full.csv` |
