@@ -6,6 +6,7 @@ use crate::utils::*;
 pub enum CcLibraryHeaders {
     SpirvTools,
     SpirvHeaders,
+    SpirvHeadersUnified1,
     Llvm,
     Clang,
 }
@@ -14,6 +15,7 @@ impl CcLibraryHeaders {
         String::from(match self {
             Self::SpirvTools => "SPIRV-Tools-includes",
             Self::SpirvHeaders => "SPIRV-Headers-includes",
+            Self::SpirvHeadersUnified1 => "SPIRV-Headers-includes-unified1",
             Self::Llvm => "llvm-includes",
             Self::Clang => "clang-includes",
         })
