@@ -129,61 +129,55 @@ macro_rules! define_Dep {
 macro_rules! target {
     ($path:expr) => {
         NinjaTargetToGen {
-            path: $path,
-            name: None,
-            stem: None,
-            module_type: None,
+            path: String::from($path),
+            entry: NinjaTargetToGenMapEntry {
+                name: None,
+                stem: None,
+                module_type: None,
+            },
         }
     };
     ($path:expr, $name:expr) => {
         NinjaTargetToGen {
-            path: $path,
-            name: Some($name),
-            stem: None,
-            module_type: None,
+            path: String::from($path),
+            entry: NinjaTargetToGenMapEntry {
+                name: Some(PathBuf::from($name)),
+                stem: None,
+                module_type: None,
+            },
         }
     };
     ($path:expr, $name:expr, $stem:expr) => {
         NinjaTargetToGen {
-            path: $path,
-            name: Some($name),
-            stem: Some($stem),
-            module_type: None,
-        }
-    };
-    ($path:expr, $name:expr, $stem:expr, $module_type:expr) => {
-        NinjaTargetToGen {
-            path: $path,
-            name: Some($name),
-            stem: Some($stem),
-            module_type: Some(module_type),
+            path: String::from($path),
+            entry: NinjaTargetToGenMapEntry {
+                name: Some(PathBuf::from($name)),
+                stem: Some(String::from($stem)),
+                module_type: None,
+            },
         }
     };
 }
 #[macro_export]
 macro_rules! target_typed {
-    ($path:expr) => {
-        NinjaTargetToGen {
-            path: $path,
-            name: None,
-            stem: None,
-            module_type: None,
-        }
-    };
     ($path:expr, $module_type:expr) => {
         NinjaTargetToGen {
-            path: $path,
-            name: None,
-            stem: None,
-            module_type: Some($module_type),
+            path: String::from($path),
+            entry: NinjaTargetToGenMapEntry {
+                name: None,
+                stem: None,
+                module_type: Some(String::from($module_type)),
+            },
         }
     };
     ($path:expr, $module_type:expr, $name:expr) => {
         NinjaTargetToGen {
-            path: $path,
-            name: Some($name),
-            stem: None,
-            module_type: Some($module_type),
+            path: String::from($path),
+            entry: NinjaTargetToGenMapEntry {
+                name: Some(PathBuf::from($name)),
+                stem: None,
+                module_type: Some(String::from($module_type)),
+            },
         }
     };
 }
