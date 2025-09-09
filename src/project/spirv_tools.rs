@@ -107,7 +107,7 @@ cc_library_headers {{
             Dep::SpirvHeaders => self
                 .gen_deps
                 .iter()
-                .map(|header| target!(&header))
+                .map(|header| target!(header.as_str()))
                 .collect(),
             _ => Vec::new(),
         }

@@ -77,19 +77,16 @@ pub trait NinjaTarget: std::fmt::Debug {
     }
 }
 
-pub struct NinjaTargetToGen<'a> {
-    pub path: &'a str,
-    pub name: Option<&'a str>,
-    pub stem: Option<&'a str>,
-    pub module_type: Option<&'a str>,
+pub struct NinjaTargetToGenMapEntry {
+    pub name: Option<PathBuf>,
+    pub stem: Option<String>,
+    pub module_type: Option<String>,
 }
-
-struct NinjaTargetsToGenMapEntry {
-    name: Option<PathBuf>,
-    stem: Option<String>,
-    module_type: Option<String>,
+pub struct NinjaTargetToGen {
+    pub path: String,
+    pub entry: NinjaTargetToGenMapEntry,
 }
-pub struct NinjaTargetsToGenMap(HashMap<PathBuf, NinjaTargetsToGenMapEntry>);
+pub struct NinjaTargetsToGenMap(HashMap<PathBuf, NinjaTargetToGenMapEntry>);
 impl NinjaTargetsToGenMap {
     pub fn get_name(&self, target: &Path) -> Option<PathBuf> {
         let Some(entry) = self.0.get(target) else {
@@ -129,18 +126,18 @@ impl NinjaTargetsToGenMap {
     }
     fn insert(&mut self, target: &NinjaTargetToGen) {
         self.0.insert(
-            PathBuf::from(target.path),
-            NinjaTargetsToGenMapEntry {
-                name: match target.name {
-                    Some(name) => Some(PathBuf::from(name)),
+            PathBuf::from(&target.path),
+            NinjaTargetToGenMapEntry {
+                name: match &target.entry.name {
+                    Some(name) => Some(name.clone()),
                     None => None,
                 },
-                stem: match target.stem {
-                    Some(stem) => Some(String::from(stem)),
+                stem: match &target.entry.stem {
+                    Some(stem) => Some(stem.clone()),
                     None => None,
                 },
-                module_type: match target.module_type {
-                    Some(module_name) => Some(String::from(module_name)),
+                module_type: match &target.entry.module_type {
+                    Some(module_name) => Some(module_name.clone()),
                     None => None,
                 },
             },
