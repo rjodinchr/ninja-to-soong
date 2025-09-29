@@ -44,6 +44,7 @@ jobs:
           if [ "${{ matrix.project }}" == "OpenCL" ]; then
             projects="clvk clspv llvm-project SPIRV-Tools SPIRV-Headers OpenCL-CTS OpenCL-ICD-Loader OpenCL-Headers clpeak"
           elif [ "${{ matrix.project }}" == "fwupd" ]; then
+            key_folders="${key_folders} tests/fwupd/build.ninja"
             projects="fwupd"
             echo "prefix=N2S_NDK=android-ndk-r27c" >> $GITHUB_ENV
           elif [ "${{ matrix.project }}" == "mesa" ]; then
@@ -52,10 +53,8 @@ jobs:
             key_folders="${key_folders} tests/angle/build-*"
             projects="angle"
           elif [ "${{ matrix.project }}" == "external-project" ]; then
-            key_folders="${key_folders} ." # Never use cache as there is nothing to cache
             echo "extra_args=--ext-proj-path ${{ github.workspace }}/tests/external-project/project.rs" >> $GITHUB_ENV
           elif [ "${{ matrix.project }}" == "unittests" ]; then
-            key_folders="${key_folders} ." # Never use cache as there is nothing to cache
             projects="unittests"
           fi
           android="$(realpath ${{ github.workspace }}/../android)"
@@ -95,7 +94,7 @@ jobs:
           N2S_NDK_PATH: ${{ env.android }}
         run: |
           set -x
-          ${{ env.prefix }} cargo run --features debug_project --release -- --skip-gen-ninja --aosp-path "${{ env.android }}" ${{ env.projects }}
+          ${{ env.prefix }} cargo run --features debug_project --release -- --skip-gen-ninja --aosp-path "${{ env.android }}" ${{ env.projects }} ${{ env.extra_args }}
       - name: Check generated files
         shell: bash
         run: |
