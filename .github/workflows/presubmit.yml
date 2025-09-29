@@ -62,15 +62,12 @@ jobs:
           mkdir -p "${android}"
           for project in ${projects}
           do
-            key_folders="${key_folders} scripts/${project}/ tests/${project}/checkout.sh"
+            key_folders="${key_folders} scripts/${project}/* tests/${project}/checkout.sh"
           done
-          echo "key_folders=${key_folders}"
-          key="$(git log -1 --ignore-missing --format='%h' ${key_folders})-${{ matrix.project }}"
-          echo "key=${key}" >> $GITHUB_ENV
+          echo "key=$(git log -1 --ignore-missing --format='%h' ${key_folders})-${{ matrix.project }}" >> $GITHUB_ENV
           echo "projects=${projects}" >> $GITHUB_ENV
           echo "android=${android}" >> $GITHUB_ENV
           echo "tmp_dir=$(realpath ${{ github.workspace }}/../tmp)" >> $GITHUB_ENV
-          echo $GITHUB_ENV
       - name: Get repositories from cache
         id: checkout-repositories
         uses: actions/cache@v4
