@@ -122,7 +122,6 @@ pub trait Project {
     // MANDATORY FUNCTIONS
     fn get_name(&self) -> &'static str;
     fn get_android_path(&self) -> Result<PathBuf, String>;
-    fn get_test_path(&self, ctx: &Context) -> Result<PathBuf, String>;
     fn generate_package(
         &mut self,
         ctx: &Context,

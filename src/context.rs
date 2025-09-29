@@ -11,9 +11,10 @@ use crate::utils::*;
 pub struct Context {
     pub projects_to_generate: VecDeque<ProjectId>,
     pub temp_path: PathBuf,
-    pub test_path: PathBuf,
+    n2s_path: PathBuf,
     android_path: Option<PathBuf>,
     external_project_path: Option<PathBuf>,
+    pub unittest_path: Option<PathBuf>,
     pub exe_path: PathBuf,
     pub skip_gen_ninja: bool,
     pub skip_build: bool,
@@ -29,6 +30,14 @@ const SKIP_BUILD: &str = "--skip-build";
 const SKIP_GEN_NINJA: &str = "--skip-gen-ninja";
 
 impl Context {
+    pub fn get_test_path(&self, project: &dyn Project) -> PathBuf {
+        self.n2s_path.join("tests").join(project.get_name())
+    }
+
+    pub fn get_script_path(&self, project: &dyn Project) -> PathBuf {
+        self.n2s_path.join("scripts").join(project.get_name())
+    }
+
     pub fn get_android_path(&self, project: &dyn Project) -> Result<PathBuf, String> {
         match &self.android_path {
             Some(android_path) => Ok(android_path.clone().join(project.get_android_path()?)),
@@ -153,27 +162,19 @@ OPTIONS:
         match env::current_exe() {
             Ok(exe_path) => {
                 ctx.exe_path = PathBuf::from(exe_path.parent().unwrap());
-                ctx.test_path = ctx
-                    .exe_path // <ninja-to-soong>/target/<build-mode>
-                    .parent() // <ninja-to-soong>/target
-                    .unwrap()
-                    .parent() // <ninja-to-soong>
-                    .unwrap()
-                    .join("tests"); // <ninja-to-soong>/tests
+                ctx.n2s_path = PathBuf::from(
+                    ctx.exe_path // <ninja-to-soong>/target/<build-mode>
+                        .parent() // <ninja-to-soong>/target
+                        .unwrap()
+                        .parent() // <ninja-to-soong>
+                        .unwrap(),
+                )
             }
             Err(err) => return error!("Could not get current executable path: {err}"),
         };
-        if ctx.android_path.is_none()
-            && ctx
-                .test_path
-                .parent()
-                .unwrap()
-                .ends_with("external/rust/ninja-to-soong")
-        {
+        if ctx.android_path.is_none() && ctx.n2s_path.ends_with("external/rust/ninja-to-soong") {
             ctx.android_path = Some(PathBuf::from(
-                ctx.test_path // <aosp>/external/rust/ninja-to-soong/tests
-                    .parent() // <aosp>/external/rust/ninja-to-soong
-                    .unwrap()
+                ctx.n2s_path // <aosp>/external/rust/ninja-to-soong
                     .parent() // <aosp>/external/rust
                     .unwrap()
                     .parent() // <aosp>/external

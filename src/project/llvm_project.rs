@@ -16,9 +16,6 @@ impl Project for LlvmProject {
     fn get_android_path(&self) -> Result<PathBuf, String> {
         Ok(Path::new("external/opencl").join(self.get_name()))
     }
-    fn get_test_path(&self, ctx: &Context) -> Result<PathBuf, String> {
-        Ok(ctx.test_path.join(self.get_name()))
-    }
     fn generate_package(
         &mut self,
         ctx: &Context,
@@ -32,7 +29,7 @@ impl Project for LlvmProject {
             execute_cmd!(
                 "bash",
                 [
-                    &path_to_string(self.get_test_path(ctx)?.join("gen-ninja.sh")),
+                    &path_to_string(ctx.get_script_path(self).join("gen-ninja.sh")),
                     &path_to_string(src_path.join("llvm")),
                     &path_to_string(&build_path),
                     &path_to_string(&ndk_path),

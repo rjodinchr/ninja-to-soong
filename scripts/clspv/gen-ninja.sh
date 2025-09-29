@@ -12,7 +12,7 @@ SPIRV_TOOLS_PATH="$5"
 LLVM_PROJECT_PATH="$6"
 
 SCRIPT_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
-bash "${SCRIPT_DIR}/../../utils/cmake_configure.sh" \
+bash "${SCRIPT_DIR}/../cmake_configure.sh" \
     "${SRC_PATH}" \
     "${BUILD_PATH}" \
     "${NDK_PATH}" \
