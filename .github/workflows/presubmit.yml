@@ -64,7 +64,7 @@ jobs:
           do
             key_folders="${key_folders} scripts/${project}/* tests/${project}/checkout.sh"
           done
-          echo "key=$(git log -1 --ignore-missing --format='%h' ${key_folders})-${{ matrix.project }}" >> $GITHUB_ENV
+          echo "key=$(git log -1 --format='%h' ${key_folders})-${{ matrix.project }}" >> $GITHUB_ENV
           echo "projects=${projects}" >> $GITHUB_ENV
           echo "android=${android}" >> $GITHUB_ENV
           echo "tmp_dir=$(realpath ${{ github.workspace }}/../tmp)" >> $GITHUB_ENV
