@@ -29,9 +29,6 @@ where
     fn get_android_path(&self) -> Result<PathBuf, String> {
         Ok(Path::new("vendor/google/graphics").join(self.get_name()))
     }
-    fn get_test_path(&self, ctx: &Context) -> Result<PathBuf, String> {
-        Ok(ctx.test_path.join(self.get_name()))
-    }
     fn generate_package(
         &mut self,
         ctx: &Context,
@@ -40,28 +37,28 @@ where
         let src_path = ctx.get_android_path(self)?;
         let ndk_path = get_ndk_path(&ctx.temp_path, ctx)?;
         let build_path = ctx.temp_path.join(self.get_name());
-        let test_path = self.get_test_path(ctx)?;
+        let script_path = ctx.get_script_path(self);
 
         let mesa_clc_path = if !ctx.skip_build {
             let mesa_clc_build_path = ctx.temp_path.join("mesa_clc");
             execute_cmd!(
                 "bash",
                 [
-                    &path_to_string(test_path.join("build_mesa_clc.sh")),
+                    &path_to_string(script_path.join("build_mesa_clc.sh")),
                     &path_to_string(&src_path),
                     &path_to_string(&mesa_clc_build_path)
                 ]
             )?;
             mesa_clc_build_path.join("bin")
         } else {
-            test_path.clone()
+            script_path.clone()
         };
 
         if !ctx.skip_gen_ninja {
             execute_cmd!(
                 "bash",
                 [
-                    &path_to_string(test_path.join("gen-ninja.sh")),
+                    &path_to_string(script_path.join("gen-ninja.sh")),
                     &path_to_string(&src_path),
                     &path_to_string(&build_path),
                     &path_to_string(mesa_clc_path),

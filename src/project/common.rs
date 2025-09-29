@@ -12,7 +12,7 @@ pub fn copy_gen_deps(
 ) -> Result<(), String> {
     if !ctx.copy_to_aosp {
         write_file(
-            &project.get_test_path(ctx)?.join("generated_deps.txt"),
+            &ctx.get_test_path(project).join("generated_deps.txt"),
             &format!("{0:#?}", &gen_deps),
         )?;
     } else {

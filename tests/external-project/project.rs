@@ -24,17 +24,12 @@ impl Project for ExternalProject {
     fn get_android_path(&self) -> Result<PathBuf, String> {
         error!("Not implemented")
     }
-    fn get_test_path(&self, ctx: &Context) -> Result<PathBuf, String> {
-        Ok(PathBuf::from(
-            ctx.get_external_project_path()?.parent().unwrap(),
-        ))
-    }
     fn generate_package(
         &mut self,
         ctx: &Context,
         _projects_map: &ProjectsMap,
     ) -> Result<String, String> {
-        let test_path = self.get_test_path(ctx)?;
+        let test_path = PathBuf::from(ctx.get_external_project_path()?.parent().unwrap());
         SoongPackage::new(
             &["//visibility:public"],
             "external-project_license",

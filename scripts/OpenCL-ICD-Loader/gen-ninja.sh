@@ -9,7 +9,7 @@ BUILD_PATH="$2"
 NDK_PATH="$3"
 
 SCRIPT_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
-bash "${SCRIPT_DIR}/../../utils/cmake_configure.sh" \
+bash "${SCRIPT_DIR}/../cmake_configure.sh" \
     "${SRC_PATH}" \
     "${BUILD_PATH}" \
     "${NDK_PATH}" \

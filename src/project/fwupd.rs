@@ -18,9 +18,6 @@ impl Project for Fwupd {
     fn get_android_path(&self) -> Result<PathBuf, String> {
         Ok(Path::new("external").join(self.get_name()))
     }
-    fn get_test_path(&self, ctx: &Context) -> Result<PathBuf, String> {
-        Ok(ctx.test_path.join(self.get_name()))
-    }
     fn generate_package(
         &mut self,
         ctx: &Context,
@@ -38,10 +35,11 @@ impl Project for Fwupd {
             execute_cmd!(
                 "bash",
                 [
-                    &path_to_string(self.get_test_path(ctx)?.join("gen-ninja.sh")),
+                    &path_to_string(ctx.get_script_path(self).join("gen-ninja.sh")),
                     &path_to_string(&self.src_path),
                     &path_to_string(&self.build_path),
                     &path_to_string(&ndk_path),
+                    &path_to_string(ctx.get_test_path(self)),
                     if ctx.copy_to_aosp { "copy_to_aosp" } else { "" },
                 ]
             )?;
