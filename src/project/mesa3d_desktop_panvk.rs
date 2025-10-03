@@ -51,6 +51,10 @@ impl mesa3d_desktop::Mesa3dProject for Mesa3DDesktopPanVK {
                     "mesa3d_desktop-panvk_pps-producer",
                     "pps-producer"
                 ),
+                target!(
+                    "src/tool/pps/libgpudataproducer.so",
+                    "mesa3d_desktop-panvk_libgpudataproducer"
+                ),
             ]),
             parse_build_ninja::<MesonNinjaTarget>(&build_path)?,
             &self.src_path,
