@@ -1703,6 +1703,7 @@ cc_library_static {
 
 cc_library_shared {
     name: "mesa3d_desktop-panvk_libgpudataproducer",
+    stem: "libgpudataproducer_panfrost",
     srcs: [
         "src/tool/pps/pps_datasource.cc",
         "src/tool/pps/pps_producer.cc",
