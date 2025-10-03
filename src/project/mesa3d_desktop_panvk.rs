@@ -9,7 +9,7 @@ pub struct Mesa3DDesktopPanVK {
 }
 
 const DEFAULTS: &str = "mesa3d-desktop-panvk-defaults";
-const RAW_DEFAULTS: &str = "mesa3d-desktop-intel-raw-defaults";
+const RAW_DEFAULTS: &str = "mesa3d-desktop-panvk-raw-defaults";
 
 impl mesa3d_desktop::Mesa3dProject for Mesa3DDesktopPanVK {
     fn get_name(&self) -> &'static str {
@@ -50,6 +50,10 @@ impl mesa3d_desktop::Mesa3dProject for Mesa3DDesktopPanVK {
                     "src/tool/pps/pps-producer",
                     "mesa3d_desktop-panvk_pps-producer",
                     "pps-producer"
+                ),
+                target!(
+                    "src/tool/pps/libgpudataproducer.so",
+                    "mesa3d_desktop-panvk_libgpudataproducer"
                 ),
             ]),
             parse_build_ninja::<MesonNinjaTarget>(&build_path)?,

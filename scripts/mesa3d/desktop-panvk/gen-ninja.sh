@@ -35,6 +35,10 @@ meson setup \
     -Dtools= \
     -Dvulkan-drivers=panfrost \
     -Dgallium-drivers= \
+    -Dvideo-codecs= \
+    -Dgles1=disabled \
+    -Dgles2=disabled \
+    -Dopengl=false \
     -Dbuildtype=release \
     -Dmesa-clc=system \
     -Dprecomp-compiler=system \
