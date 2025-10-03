@@ -6,9 +6,9 @@ set -xe
 DEST="$1"
 SCRIPT_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
 
-bash "${SCRIPT_DIR}/../../checkout.sh" https://gitlab.freedesktop.org/zzyiwei/mesa 28b4239987f18c8ad8fa5572602dab1417cfa878 "${DEST}/vendor/google/graphics/mesa3d/desktop-panvk"
+bash "${SCRIPT_DIR}/../../checkout.sh" https://gitlab.freedesktop.org/mesa/mesa 29ccbb21f30553d6a39967ae013748063b73005a "${DEST}/vendor/google/graphics/mesa3d/desktop-panvk"
 
-MAJOR_VERSION=18
+MAJOR_VERSION=19
 sudo apt install \
      meson-1.5 \
      libclang-${MAJOR_VERSION}-dev \
