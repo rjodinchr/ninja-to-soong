@@ -14,6 +14,7 @@ pub struct SoongModuleGeneratorInternals {
     pub deps: Vec<PathBuf>,
     pub libs: Vec<PathBuf>,
     python_binaries: std::collections::HashSet<String>,
+    python_libraries: std::collections::HashSet<String>,
 }
 
 pub struct SoongModuleGenerator<'a, T>
@@ -430,6 +431,7 @@ where
     fn get_tool_module(
         &mut self,
         tool: &str,
+        python_inputs: Vec<PathBuf>,
     ) -> Result<Option<(String, Option<Vec<SoongModule>>)>, String> {
         if !tool.ends_with(".py") {
             return Ok(None);
@@ -452,12 +454,34 @@ where
                 (String::from(tool), String::from(tool))
             };
 
+            let mut srcs = Vec::new();
+            for python_input in python_inputs {
+                let name = path_to_id(
+                    Path::new(self.project.get_name())
+                        .join(&python_input)
+                        .join("cp"),
+                );
+                let lib_full_name = path_to_string(&python_input);
+                if !self.internals.python_libraries.contains(&lib_full_name) {
+                    modules.push(
+                        SoongModule::new("genrule")
+                            .add_prop("name", SoongProp::Str(name.clone()))
+                            .add_prop("cmd", SoongProp::Str(String::from("cp $(in) $(out)")))
+                            .add_prop("srcs", SoongProp::VecStr(vec![lib_full_name.clone()]))
+                            .add_prop("out", SoongProp::VecStr(vec![file_name(&python_input)])),
+                    );
+                    self.internals.python_libraries.insert(lib_full_name);
+                }
+                srcs.push(String::from(":") + &name);
+            }
+
+            srcs.push(src);
             let Some(module) = self.project.extend_python_binary_host(
                 &self.src_path.join(&tool),
                 SoongModule::new("python_binary_host")
                     .add_prop("name", SoongProp::Str(tool_module.clone()))
                     .add_prop("main", SoongProp::Str(main))
-                    .add_prop("srcs", SoongProp::VecStr(vec![src])),
+                    .add_prop("srcs", SoongProp::VecStr(srcs)),
             )?
             else {
                 return Ok(None);
@@ -514,8 +538,21 @@ where
             canonicalize_path(&tool, self.build_path),
             self.src_path,
         ));
+        let python_inputs = inputs
+            .iter()
+            .filter_map(|input| {
+                if path_to_string(input).ends_with(".py") {
+                    Some(strip_prefix(
+                        canonicalize_path(input, self.build_path),
+                        self.src_path,
+                    ))
+                } else {
+                    None
+                }
+            })
+            .collect::<Vec<_>>();
 
-        if let Some((tool_module, some_modules)) = self.get_tool_module(&tool)? {
+        if let Some((tool_module, some_modules)) = self.get_tool_module(&tool, python_inputs)? {
             if let Some(modules) = some_modules {
                 Ok((Vec::new(), vec![tool_module], modules, cmd))
             } else {
