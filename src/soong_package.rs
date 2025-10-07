@@ -80,35 +80,34 @@ impl SoongPackage {
         self
     }
 
-    pub fn filter_local_include_dirs(
-        &mut self,
-        prefix: &str,
-        files: &Vec<PathBuf>,
-    ) -> Result<(), String> {
+    pub fn filter_gen_deps(&mut self, prefix: &str, files: &Vec<PathBuf>) -> Result<(), String> {
         let mut set = std::collections::HashSet::new();
         for file in files {
             let mut path = file.clone();
+            set.insert(path.clone());
             while let Some(parent) = path.parent() {
                 path = PathBuf::from(parent);
                 set.insert(path.clone());
             }
         }
-        for module in &mut self.modules {
-            module.update_prop("local_include_dirs", |prop| match prop {
-                SoongProp::VecStr(dirs) => Ok(SoongProp::VecStr(
-                    dirs.into_iter()
-                        .filter(|dir| {
-                            if let Ok(strip) = Path::new(&dir).strip_prefix(prefix) {
-                                if !set.contains(strip) {
-                                    return false;
-                                }
+        let filter = |prop| match prop {
+            SoongProp::VecStr(dirs) => Ok(SoongProp::VecStr(
+                dirs.into_iter()
+                    .filter(|dir| {
+                        if let Ok(strip) = Path::new(&dir).strip_prefix(prefix) {
+                            if !set.contains(strip) {
+                                return false;
                             }
-                            return true;
-                        })
-                        .collect(),
-                )),
-                _ => Ok(prop),
-            })?;
+                        }
+                        return true;
+                    })
+                    .collect(),
+            )),
+            _ => Ok(prop),
+        };
+        for module in &mut self.modules {
+            module.update_prop("local_include_dirs", filter)?;
+            module.update_prop("srcs", filter)?;
         }
         Ok(())
     }
@@ -273,7 +272,7 @@ impl SoongPackage {
             &targets_to_gen,
             project,
         );
-        targets_map.traverse_from(targets_to_gen.get_targets(), |target| {
+        targets_map.traverse_from(targets_to_gen.get_targets(), false, |target| {
             if !gen.filter_target(target) {
                 return Ok(false);
             }

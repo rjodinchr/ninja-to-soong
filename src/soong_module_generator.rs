@@ -14,6 +14,7 @@ pub struct SoongModuleGeneratorInternals {
     pub deps: Vec<PathBuf>,
     pub libs: Vec<PathBuf>,
     python_binaries: std::collections::HashSet<String>,
+    python_libraries: std::collections::HashSet<String>,
 }
 
 pub struct SoongModuleGenerator<'a, T>
@@ -150,37 +151,57 @@ where
             })
             .collect()
     }
-    fn get_generated_headers(&mut self, target: &T) -> Result<Vec<String>, String> {
-        let mut gen_headers = Vec::new();
+    fn get_generated_assets(
+        &mut self,
+        target: &T,
+        filter_header: bool,
+    ) -> Result<Vec<String>, String> {
+        let mut gen_assets = Vec::new();
         self.targets_map
-            .traverse_from(target.get_outputs().clone(), |target| {
+            .traverse_from(target.get_outputs().clone(), !filter_header, |target| {
+                if target.get_outputs().len() > 1 {
+                    return Ok(false);
+                }
                 match target.get_rule()? {
                     NinjaRule::CustomCommand(_) => {
-                        gen_headers.extend(target.get_outputs().clone());
+                        gen_assets.extend(target.get_outputs().clone());
                         Ok(true)
                     }
                     _ => Ok(true),
                 }
             })?;
-        Ok(gen_headers
+        Ok(gen_assets
             .iter()
-            .filter_map(|header| {
-                debug_project!("filter_gen_header({header:#?})");
-                if !self.project.filter_gen_header(header) {
-                    self.internals.deps.push(PathBuf::from(header));
-                    return None;
-                } else if self.targets_map.get(header).is_none() {
+            .filter_map(|asset| {
+                if file_ext(asset).starts_with(if filter_header { "c" } else { "h" }) {
                     return None;
                 }
-                Some(match self.targets_to_gen.get_name(header) {
+                debug_project!(
+                    "filter_gen_{0}({asset:#?})",
+                    if filter_header { "header" } else { "source" }
+                );
+                if (filter_header && !self.project.filter_gen_header(asset))
+                    || (!filter_header && !self.project.filter_gen_source(asset))
+                {
+                    self.internals.deps.push(PathBuf::from(asset));
+                    return None;
+                }
+                let Some(target) = self.targets_map.get(asset) else {
+                    self.internals.deps.push(PathBuf::from(asset));
+                    return None;
+                };
+                Some(match self.targets_to_gen.get_name(asset) {
                     Some(name) => path_to_string(name),
-                    None => path_to_id(
-                        Path::new(self.project.get_name())
-                            .join(self.targets_map.get(header).unwrap().get_name()),
-                    ),
+                    None => path_to_id(Path::new(self.project.get_name()).join(target.get_name())),
                 })
             })
             .collect())
+    }
+    fn get_generated_headers(&mut self, target: &T) -> Result<Vec<String>, String> {
+        self.get_generated_assets(target, true)
+    }
+    fn get_generated_sources(&mut self, target: &T) -> Result<Vec<String>, String> {
+        self.get_generated_assets(target, false)
     }
     fn defines_conflict(
         defines: &mut std::collections::HashMap<String, String>,
@@ -260,6 +281,7 @@ where
         cflags.extend(self.get_cflags(target.get_cflags()));
 
         let generated_headers = self.get_generated_headers(target)?;
+        let generated_sources = self.get_generated_sources(target)?;
         let (version_script, link_flags) = target.get_link_flags();
         let link_flags = self.get_link_flags(link_flags);
         whole_static_libs.extend(self.get_libs(target.get_libs_static_whole(), &module_name));
@@ -293,12 +315,20 @@ where
             .add_prop("static_libs", SoongProp::VecStr(static_libs))
             .add_prop("whole_static_libs", SoongProp::VecStr(whole_static_libs))
             .add_prop("local_include_dirs", SoongProp::VecStr(includes))
+            .add_prop("generated_sources", SoongProp::VecStr(generated_sources))
             .add_prop("generated_headers", SoongProp::VecStr(generated_headers));
 
         modules.push(self.project.extend_module(&target_name, module)?);
         Ok(modules)
     }
 
+    fn map_cmd_output(&self, output: &Path) -> String {
+        if output.starts_with("n2s") {
+            path_to_string(output)
+        } else {
+            path_to_string(self.project.map_cmd_output(output))
+        }
+    }
     fn get_cmd(
         &self,
         mut cmd: String,
@@ -309,7 +339,7 @@ where
     ) -> String {
         for output in outputs {
             let marker = "<output>";
-            let replace_output = path_to_string(self.project.map_cmd_output(output));
+            let replace_output = path_to_string(self.map_cmd_output(output));
             cmd = cmd
                 .replace(&path_to_string(output), marker)
                 .replace(&format!(" {0}", file_name(output)), &format!(" {marker}"))
@@ -362,6 +392,19 @@ where
         }
         cmd
     }
+    fn get_dep_id(&self, input: &PathBuf) -> String {
+        let Some(target) = self.targets_map.get(&input) else {
+            return path_to_id(Path::new(self.project.get_name()).join(&input));
+        };
+        return if target.get_outputs().len() > 1 {
+            path_to_id(Path::new(self.project.get_name()).join(target.get_name()))
+                + "{"
+                + &path_to_string(&input)
+                + "}"
+        } else {
+            path_to_id(Path::new(self.project.get_name()).join(target.get_name()))
+        };
+    }
     fn get_cmd_inputs(
         &self,
         inputs: Vec<PathBuf>,
@@ -378,8 +421,7 @@ where
                     }
                 }
                 if canonicalize_path(&input, self.build_path).starts_with(self.build_path) {
-                    let dep_id = path_to_id(Path::new(self.project.get_name()).join(&input));
-                    deps.push((input, dep_id));
+                    deps.push((input.clone(), self.get_dep_id(&input)));
                     return None;
                 }
                 Some(input)
@@ -389,24 +431,64 @@ where
     fn get_tool_module(
         &mut self,
         tool: &str,
+        python_inputs: Vec<PathBuf>,
     ) -> Result<Option<(String, Option<Vec<SoongModule>>)>, String> {
         if !tool.ends_with(".py") {
             return Ok(None);
         }
         let tool_module = path_to_id(Path::new(self.project.get_name()).join(&tool));
         if !self.internals.python_binaries.contains(&tool_module) {
+            let mut modules = Vec::new();
+            let (src, main) = if file_stem(Path::new(tool)).contains(".") {
+                let new_tool = path_to_id(PathBuf::from(tool)) + ".py";
+                let name = path_to_id(Path::new(self.project.get_name()).join(&new_tool));
+                modules.push(
+                    SoongModule::new("genrule")
+                        .add_prop("name", SoongProp::Str(name.clone()))
+                        .add_prop("cmd", SoongProp::Str(String::from("cp $(in) $(out)")))
+                        .add_prop("srcs", SoongProp::VecStr(vec![String::from(tool)]))
+                        .add_prop("out", SoongProp::VecStr(vec![new_tool.clone()])),
+                );
+                (String::from(":") + &name, new_tool)
+            } else {
+                (String::from(tool), String::from(tool))
+            };
+
+            let mut srcs = Vec::new();
+            for python_input in python_inputs {
+                let name = path_to_id(
+                    Path::new(self.project.get_name())
+                        .join(&python_input)
+                        .join("cp"),
+                );
+                let lib_full_name = path_to_string(&python_input);
+                if !self.internals.python_libraries.contains(&lib_full_name) {
+                    modules.push(
+                        SoongModule::new("genrule")
+                            .add_prop("name", SoongProp::Str(name.clone()))
+                            .add_prop("cmd", SoongProp::Str(String::from("cp $(in) $(out)")))
+                            .add_prop("srcs", SoongProp::VecStr(vec![lib_full_name.clone()]))
+                            .add_prop("out", SoongProp::VecStr(vec![file_name(&python_input)])),
+                    );
+                    self.internals.python_libraries.insert(lib_full_name);
+                }
+                srcs.push(String::from(":") + &name);
+            }
+
+            srcs.push(src);
             let Some(module) = self.project.extend_python_binary_host(
                 &self.src_path.join(&tool),
                 SoongModule::new("python_binary_host")
                     .add_prop("name", SoongProp::Str(tool_module.clone()))
-                    .add_prop("main", SoongProp::Str(String::from(tool)))
-                    .add_prop("srcs", SoongProp::VecStr(vec![String::from(tool)])),
+                    .add_prop("main", SoongProp::Str(main))
+                    .add_prop("srcs", SoongProp::VecStr(srcs)),
             )?
             else {
                 return Ok(None);
             };
             self.internals.python_binaries.insert(tool_module.clone());
-            return Ok(Some((tool_module, Some(vec![module]))));
+            modules.push(module);
+            return Ok(Some((tool_module, Some(modules))));
         }
         Ok(Some((tool_module, None)))
     }
@@ -456,8 +538,21 @@ where
             canonicalize_path(&tool, self.build_path),
             self.src_path,
         ));
+        let python_inputs = inputs
+            .iter()
+            .filter_map(|input| {
+                if path_to_string(input).ends_with(".py") {
+                    Some(strip_prefix(
+                        canonicalize_path(input, self.build_path),
+                        self.src_path,
+                    ))
+                } else {
+                    None
+                }
+            })
+            .collect::<Vec<_>>();
 
-        if let Some((tool_module, some_modules)) = self.get_tool_module(&tool)? {
+        if let Some((tool_module, some_modules)) = self.get_tool_module(&tool, python_inputs)? {
             if let Some(modules) = some_modules {
                 Ok((Vec::new(), vec![tool_module], modules, cmd))
             } else {
@@ -489,13 +584,15 @@ where
             .collect::<Vec<String>>();
         for (dep, dep_target_name) in &deps {
             sources.push(format!(":{dep_target_name}"));
-            self.internals.deps.push(dep.clone());
+            if !dep_target_name.contains("{n2s/") {
+                self.internals.deps.push(dep.clone());
+            }
         }
         let target_outputs = target.get_outputs();
         let cmd = self.get_cmd(cmd, rule_cmd, inputs, target_outputs, deps);
         let outputs = target_outputs
             .iter()
-            .map(|output| path_to_string(self.project.map_cmd_output(output)))
+            .map(|output| path_to_string(self.map_cmd_output(output)))
             .collect();
         let target_name = target.get_name();
         let module_name = match self.targets_to_gen.get_name(&target_name) {

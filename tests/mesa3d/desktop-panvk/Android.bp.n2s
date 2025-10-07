@@ -100,6 +100,26 @@ cc_binary {
         "src/tool",
         "src/tool/pps",
     ],
+    generated_headers: [
+        "mesa3d_desktop-panvk_src_compiler_builtin_types_h",
+        "mesa3d_desktop-panvk_src_compiler_ir_expression_operation_h",
+        "mesa3d_desktop-panvk_src_compiler_nir_nir_builder_opcodes_h",
+        "mesa3d_desktop-panvk_src_compiler_nir_nir_opcodes_h",
+        "mesa3d_desktop-panvk_src_panfrost_compiler_bi_builder_h",
+        "mesa3d_desktop-panvk_src_panfrost_compiler_bi_opcodes_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_common_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v10_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v12_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v13_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v4_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v5_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v6_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v7_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v9_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_perf_pan_perf_metrics_h",
+        "mesa3d_desktop-panvk_src_util_format_u_format_gen_h",
+        "mesa3d_desktop-panvk_src_util_shader_stats_h",
+    ],
     defaults: ["mesa3d-desktop-panvk-defaults"],
 }
 
@@ -114,14 +134,13 @@ cc_library_static {
         "src",
         "src/util",
     ],
+    generated_headers: ["mesa3d_desktop-panvk_src_util_shader_stats_h"],
     defaults: ["mesa3d-desktop-panvk-defaults"],
 }
 
 cc_library_static {
     name: "mesa3d_desktop-panvk_src_util_libmesa_util_a",
     srcs: [
-        "meson_generated/src/util/format/u_format_table.c",
-        "meson_generated/src/util/format_srgb.c",
         "src/util/anon_file.c",
         "src/util/bitscan.c",
         "src/util/blob.c",
@@ -223,7 +242,100 @@ cc_library_static {
         "src/util",
         "src/util/format",
     ],
+    generated_sources: [
+        "mesa3d_desktop-panvk_src_util_format_srgb_c",
+        "mesa3d_desktop-panvk_src_util_format_u_format_table_c",
+    ],
+    generated_headers: [
+        "mesa3d_desktop-panvk_src_util_format_u_format_gen_h",
+        "mesa3d_desktop-panvk_src_util_shader_stats_h",
+    ],
     defaults: ["mesa3d-desktop-panvk-defaults"],
+}
+
+python_binary_host {
+    name: "mesa3d_desktop-panvk_src_util_process_shader_stats_py",
+    main: "src/util/process_shader_stats.py",
+    srcs: ["src/util/process_shader_stats.py"],
+    defaults: ["mesa_python_default"],
+}
+
+cc_genrule {
+    name: "mesa3d_desktop-panvk_src_util_shader_stats_h",
+    cmd: "python3 $(location) $(location src/util/shader_stats.rnc) $(location src/util/shader_stats.xml) > $(location util/shader_stats.h)",
+    srcs: [
+        "src/util/shader_stats.rnc",
+        "src/util/shader_stats.xml",
+    ],
+    out: ["util/shader_stats.h"],
+    tools: ["mesa3d_desktop-panvk_src_util_process_shader_stats_py"],
+    vendor_available: true,
+}
+
+genrule {
+    name: "mesa3d_desktop-panvk_src_util_format_u_format_pack_py_cp",
+    cmd: "cp $(in) $(out)",
+    srcs: ["src/util/format/u_format_pack.py"],
+    out: ["u_format_pack.py"],
+}
+
+genrule {
+    name: "mesa3d_desktop-panvk_src_util_format_u_format_parse_py_cp",
+    cmd: "cp $(in) $(out)",
+    srcs: ["src/util/format/u_format_parse.py"],
+    out: ["u_format_parse.py"],
+}
+
+python_binary_host {
+    name: "mesa3d_desktop-panvk_src_util_format_u_format_table_py",
+    main: "src/util/format/u_format_table.py",
+    srcs: [
+        ":mesa3d_desktop-panvk_src_util_format_u_format_pack_py_cp",
+        ":mesa3d_desktop-panvk_src_util_format_u_format_parse_py_cp",
+        "src/util/format/u_format_table.py",
+    ],
+    defaults: ["mesa_python_default"],
+}
+
+cc_genrule {
+    name: "mesa3d_desktop-panvk_src_util_format_u_format_gen_h",
+    cmd: "python3 $(location) $(location src/util/format/u_format.yaml) --enums > $(location u_format_gen.h)",
+    srcs: [
+        "src/util/format/u_format.yaml",
+        "src/util/format/u_format_pack.py",
+        "src/util/format/u_format_parse.py",
+    ],
+    out: ["u_format_gen.h"],
+    tools: ["mesa3d_desktop-panvk_src_util_format_u_format_table_py"],
+    vendor_available: true,
+}
+
+python_binary_host {
+    name: "mesa3d_desktop-panvk_src_util_format_srgb_py",
+    main: "src/util/format_srgb.py",
+    srcs: ["src/util/format_srgb.py"],
+    defaults: ["mesa_python_default"],
+}
+
+cc_genrule {
+    name: "mesa3d_desktop-panvk_src_util_format_srgb_c",
+    cmd: "python3 $(location) > $(location format_srgb.c)",
+    out: ["format_srgb.c"],
+    tools: ["mesa3d_desktop-panvk_src_util_format_srgb_py"],
+    vendor_available: true,
+}
+
+cc_genrule {
+    name: "mesa3d_desktop-panvk_src_util_format_u_format_table_c",
+    cmd: "python3 $(location) $(location src/util/format/u_format.yaml) > $(location u_format_table.c)",
+    srcs: [
+        "src/util/format/u_format.yaml",
+        "src/util/format/u_format_pack.py",
+        "src/util/format/u_format_parse.py",
+    ],
+    out: ["u_format_table.c"],
+    tools: ["mesa3d_desktop-panvk_src_util_format_u_format_table_py"],
+    vendor_available: true,
 }
 
 cc_library_static {
@@ -235,6 +347,7 @@ cc_library_static {
         "src/util/blake3/blake3_portable.c",
     ],
     local_include_dirs: ["src/util/blake3"],
+    generated_headers: ["mesa3d_desktop-panvk_src_util_shader_stats_h"],
     defaults: ["mesa3d-desktop-panvk-defaults"],
 }
 
@@ -255,6 +368,7 @@ cc_library_static {
         "src/tool",
         "src/tool/pps",
     ],
+    generated_headers: ["mesa3d_desktop-panvk_src_util_shader_stats_h"],
     defaults: ["mesa3d-desktop-panvk-defaults"],
 }
 
@@ -288,15 +402,124 @@ cc_library_static {
         "src/compiler/nir",
         "src/panfrost/util",
     ],
+    generated_headers: [
+        "mesa3d_desktop-panvk_src_compiler_builtin_types_h",
+        "mesa3d_desktop-panvk_src_compiler_ir_expression_operation_h",
+        "mesa3d_desktop-panvk_src_compiler_nir_nir_builder_opcodes_h",
+        "mesa3d_desktop-panvk_src_compiler_nir_nir_opcodes_h",
+        "mesa3d_desktop-panvk_src_util_format_u_format_gen_h",
+        "mesa3d_desktop-panvk_src_util_shader_stats_h",
+    ],
     defaults: ["mesa3d-desktop-panvk-defaults"],
+}
+
+genrule {
+    name: "mesa3d_desktop-panvk_src_compiler_nir_nir_intrinsics_py_cp",
+    cmd: "cp $(in) $(out)",
+    srcs: ["src/compiler/nir/nir_intrinsics.py"],
+    out: ["nir_intrinsics.py"],
+}
+
+genrule {
+    name: "mesa3d_desktop-panvk_src_compiler_nir_nir_opcodes_py_cp",
+    cmd: "cp $(in) $(out)",
+    srcs: ["src/compiler/nir/nir_opcodes.py"],
+    out: ["nir_opcodes.py"],
+}
+
+python_binary_host {
+    name: "mesa3d_desktop-panvk_src_compiler_nir_nir_opcodes_h_py",
+    main: "src/compiler/nir/nir_opcodes_h.py",
+    srcs: [
+        ":mesa3d_desktop-panvk_src_compiler_nir_nir_intrinsics_py_cp",
+        ":mesa3d_desktop-panvk_src_compiler_nir_nir_opcodes_py_cp",
+        "src/compiler/nir/nir_opcodes_h.py",
+    ],
+    defaults: ["mesa_python_default"],
+}
+
+cc_genrule {
+    name: "mesa3d_desktop-panvk_src_compiler_nir_nir_opcodes_h",
+    cmd: "python3 $(location) > $(location nir_opcodes.h)",
+    srcs: [
+        "src/compiler/nir/nir_intrinsics.py",
+        "src/compiler/nir/nir_opcodes.py",
+    ],
+    out: ["nir_opcodes.h"],
+    tools: ["mesa3d_desktop-panvk_src_compiler_nir_nir_opcodes_h_py"],
+    vendor_available: true,
+}
+
+python_binary_host {
+    name: "mesa3d_desktop-panvk_src_compiler_nir_nir_builder_opcodes_h_py",
+    main: "src/compiler/nir/nir_builder_opcodes_h.py",
+    srcs: [
+        ":mesa3d_desktop-panvk_src_compiler_nir_nir_intrinsics_py_cp",
+        ":mesa3d_desktop-panvk_src_compiler_nir_nir_opcodes_py_cp",
+        "src/compiler/nir/nir_builder_opcodes_h.py",
+    ],
+    defaults: ["mesa_python_default"],
+}
+
+cc_genrule {
+    name: "mesa3d_desktop-panvk_src_compiler_nir_nir_builder_opcodes_h",
+    cmd: "python3 $(location) > $(location nir_builder_opcodes.h)",
+    srcs: [
+        "src/compiler/nir/nir_intrinsics.py",
+        "src/compiler/nir/nir_opcodes.py",
+    ],
+    out: ["nir_builder_opcodes.h"],
+    tools: ["mesa3d_desktop-panvk_src_compiler_nir_nir_builder_opcodes_h_py"],
+    vendor_available: true,
+}
+
+python_binary_host {
+    name: "mesa3d_desktop-panvk_src_compiler_glsl_ir_expression_operation_py",
+    main: "src/compiler/glsl/ir_expression_operation.py",
+    srcs: ["src/compiler/glsl/ir_expression_operation.py"],
+    defaults: ["mesa_python_default"],
+}
+
+cc_genrule {
+    name: "mesa3d_desktop-panvk_src_compiler_ir_expression_operation_h",
+    cmd: "python3 $(location) enum > $(location ir_expression_operation.h)",
+    out: ["ir_expression_operation.h"],
+    tools: ["mesa3d_desktop-panvk_src_compiler_glsl_ir_expression_operation_py"],
+    vendor_available: true,
+}
+
+genrule {
+    name: "mesa3d_desktop-panvk_src_compiler_builtin_types_py_cp",
+    cmd: "cp $(in) $(out)",
+    srcs: ["src/compiler/builtin_types.py"],
+    out: ["builtin_types.py"],
+}
+
+python_binary_host {
+    name: "mesa3d_desktop-panvk_src_compiler_builtin_types_h_py",
+    main: "src/compiler/builtin_types_h.py",
+    srcs: [
+        ":mesa3d_desktop-panvk_src_compiler_builtin_types_py_cp",
+        "src/compiler/builtin_types_h.py",
+    ],
+    defaults: ["mesa_python_default"],
+}
+
+cc_genrule {
+    name: "mesa3d_desktop-panvk_src_compiler_builtin_types_h",
+    cmd: "python3 $(location) $(location builtin_types.h)",
+    srcs: [
+        ":mesa3d_desktop-panvk_src_util_format_u_format_gen_h",
+        "src/compiler/builtin_types.py",
+    ],
+    out: ["builtin_types.h"],
+    tools: ["mesa3d_desktop-panvk_src_compiler_builtin_types_h_py"],
+    vendor_available: true,
 }
 
 cc_library_static {
     name: "mesa3d_desktop-panvk_src_panfrost_perf_libpanfrost_perf_a",
-    srcs: [
-        "meson_generated/src/panfrost/perf/pan_perf_metrics.c",
-        "src/panfrost/perf/pan_perf.c",
-    ],
+    srcs: ["src/panfrost/perf/pan_perf.c"],
     local_include_dirs: [
         "include",
         "include/android_stub",
@@ -305,10 +528,8 @@ cc_library_static {
         "meson_generated/src/compiler/nir",
         "meson_generated/src/panfrost",
         "meson_generated/src/panfrost/compiler",
-        "meson_generated/src/panfrost/genxml",
         "meson_generated/src/panfrost/libpan",
         "meson_generated/src/panfrost/midgard",
-        "meson_generated/src/panfrost/perf",
         "meson_generated/src/util",
         "meson_generated/src/util/format",
         "src",
@@ -324,7 +545,166 @@ cc_library_static {
         "src/panfrost/perf",
         "src/panfrost/shared",
     ],
+    generated_sources: ["mesa3d_desktop-panvk_src_panfrost_perf_pan_perf_metrics_c"],
+    generated_headers: [
+        "mesa3d_desktop-panvk_src_compiler_builtin_types_h",
+        "mesa3d_desktop-panvk_src_compiler_ir_expression_operation_h",
+        "mesa3d_desktop-panvk_src_compiler_nir_nir_builder_opcodes_h",
+        "mesa3d_desktop-panvk_src_compiler_nir_nir_opcodes_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_common_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v10_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v12_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v13_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v4_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v5_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v6_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v7_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v9_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_perf_pan_perf_metrics_h",
+        "mesa3d_desktop-panvk_src_util_format_u_format_gen_h",
+        "mesa3d_desktop-panvk_src_util_shader_stats_h",
+    ],
     defaults: ["mesa3d-desktop-panvk-defaults"],
+}
+
+cc_genrule {
+    name: "mesa3d_desktop-panvk_src_panfrost_perf_pan_perf_metrics_h",
+    cmd: "cp $(in) $(out)",
+    srcs: [":mesa3d_desktop-panvk_n2s_src_panfrost_perf_pan_perf_metrics_c{n2s/src/panfrost/perf/pan_perf_metrics.h}"],
+    out: ["pan_perf_metrics.h"],
+    vendor_available: true,
+}
+
+python_binary_host {
+    name: "mesa3d_desktop-panvk_src_panfrost_perf_pan_gen_perf_py",
+    main: "src/panfrost/perf/pan_gen_perf.py",
+    srcs: ["src/panfrost/perf/pan_gen_perf.py"],
+    defaults: ["mesa_python_default"],
+}
+
+cc_genrule {
+    name: "mesa3d_desktop-panvk_n2s_src_panfrost_perf_pan_perf_metrics_c",
+    cmd: "python3 $(location) --code $(location n2s/src/panfrost/perf/pan_perf_metrics.c) --header $(location n2s/src/panfrost/perf/pan_perf_metrics.h) $(location src/panfrost/perf/G31.xml) $(location src/panfrost/perf/G51.xml) $(location src/panfrost/perf/G52.xml) $(location src/panfrost/perf/G57.xml) $(location src/panfrost/perf/G68.xml) $(location src/panfrost/perf/G71.xml) $(location src/panfrost/perf/G72.xml) $(location src/panfrost/perf/G76.xml) $(location src/panfrost/perf/G77.xml) $(location src/panfrost/perf/G78.xml) $(location src/panfrost/perf/T72x.xml) $(location src/panfrost/perf/T76x.xml) $(location src/panfrost/perf/T82x.xml) $(location src/panfrost/perf/T83x.xml) $(location src/panfrost/perf/T86x.xml) $(location src/panfrost/perf/T88x.xml)",
+    srcs: [
+        "src/panfrost/perf/G31.xml",
+        "src/panfrost/perf/G51.xml",
+        "src/panfrost/perf/G52.xml",
+        "src/panfrost/perf/G57.xml",
+        "src/panfrost/perf/G68.xml",
+        "src/panfrost/perf/G71.xml",
+        "src/panfrost/perf/G72.xml",
+        "src/panfrost/perf/G76.xml",
+        "src/panfrost/perf/G77.xml",
+        "src/panfrost/perf/G78.xml",
+        "src/panfrost/perf/T72x.xml",
+        "src/panfrost/perf/T76x.xml",
+        "src/panfrost/perf/T82x.xml",
+        "src/panfrost/perf/T83x.xml",
+        "src/panfrost/perf/T86x.xml",
+        "src/panfrost/perf/T88x.xml",
+    ],
+    out: [
+        "n2s/src/panfrost/perf/pan_perf_metrics.c",
+        "n2s/src/panfrost/perf/pan_perf_metrics.h",
+    ],
+    tools: ["mesa3d_desktop-panvk_src_panfrost_perf_pan_gen_perf_py"],
+    vendor_available: true,
+}
+
+python_binary_host {
+    name: "mesa3d_desktop-panvk_src_panfrost_genxml_gen_pack_py",
+    main: "src/panfrost/genxml/gen_pack.py",
+    srcs: ["src/panfrost/genxml/gen_pack.py"],
+    defaults: ["mesa_python_default"],
+}
+
+cc_genrule {
+    name: "mesa3d_desktop-panvk_src_panfrost_genxml_v9_pack_h",
+    cmd: "python3 $(location) $(location src/panfrost/genxml/v9.xml) > $(location genxml/v9_pack.h)",
+    srcs: ["src/panfrost/genxml/v9.xml"],
+    out: ["genxml/v9_pack.h"],
+    tools: ["mesa3d_desktop-panvk_src_panfrost_genxml_gen_pack_py"],
+    vendor_available: true,
+}
+
+cc_genrule {
+    name: "mesa3d_desktop-panvk_src_panfrost_genxml_v7_pack_h",
+    cmd: "python3 $(location) $(location src/panfrost/genxml/v7.xml) > $(location genxml/v7_pack.h)",
+    srcs: ["src/panfrost/genxml/v7.xml"],
+    out: ["genxml/v7_pack.h"],
+    tools: ["mesa3d_desktop-panvk_src_panfrost_genxml_gen_pack_py"],
+    vendor_available: true,
+}
+
+cc_genrule {
+    name: "mesa3d_desktop-panvk_src_panfrost_genxml_v6_pack_h",
+    cmd: "python3 $(location) $(location src/panfrost/genxml/v6.xml) > $(location genxml/v6_pack.h)",
+    srcs: ["src/panfrost/genxml/v6.xml"],
+    out: ["genxml/v6_pack.h"],
+    tools: ["mesa3d_desktop-panvk_src_panfrost_genxml_gen_pack_py"],
+    vendor_available: true,
+}
+
+cc_genrule {
+    name: "mesa3d_desktop-panvk_src_panfrost_genxml_v5_pack_h",
+    cmd: "python3 $(location) $(location src/panfrost/genxml/v5.xml) > $(location genxml/v5_pack.h)",
+    srcs: ["src/panfrost/genxml/v5.xml"],
+    out: ["genxml/v5_pack.h"],
+    tools: ["mesa3d_desktop-panvk_src_panfrost_genxml_gen_pack_py"],
+    vendor_available: true,
+}
+
+cc_genrule {
+    name: "mesa3d_desktop-panvk_src_panfrost_genxml_v4_pack_h",
+    cmd: "python3 $(location) $(location src/panfrost/genxml/v4.xml) > $(location genxml/v4_pack.h)",
+    srcs: ["src/panfrost/genxml/v4.xml"],
+    out: ["genxml/v4_pack.h"],
+    tools: ["mesa3d_desktop-panvk_src_panfrost_genxml_gen_pack_py"],
+    vendor_available: true,
+}
+
+cc_genrule {
+    name: "mesa3d_desktop-panvk_src_panfrost_genxml_v13_pack_h",
+    cmd: "python3 $(location) $(location src/panfrost/genxml/v13.xml) > $(location genxml/v13_pack.h)",
+    srcs: ["src/panfrost/genxml/v13.xml"],
+    out: ["genxml/v13_pack.h"],
+    tools: ["mesa3d_desktop-panvk_src_panfrost_genxml_gen_pack_py"],
+    vendor_available: true,
+}
+
+cc_genrule {
+    name: "mesa3d_desktop-panvk_src_panfrost_genxml_v12_pack_h",
+    cmd: "python3 $(location) $(location src/panfrost/genxml/v12.xml) > $(location genxml/v12_pack.h)",
+    srcs: ["src/panfrost/genxml/v12.xml"],
+    out: ["genxml/v12_pack.h"],
+    tools: ["mesa3d_desktop-panvk_src_panfrost_genxml_gen_pack_py"],
+    vendor_available: true,
+}
+
+cc_genrule {
+    name: "mesa3d_desktop-panvk_src_panfrost_genxml_v10_pack_h",
+    cmd: "python3 $(location) $(location src/panfrost/genxml/v10.xml) > $(location genxml/v10_pack.h)",
+    srcs: ["src/panfrost/genxml/v10.xml"],
+    out: ["genxml/v10_pack.h"],
+    tools: ["mesa3d_desktop-panvk_src_panfrost_genxml_gen_pack_py"],
+    vendor_available: true,
+}
+
+cc_genrule {
+    name: "mesa3d_desktop-panvk_src_panfrost_genxml_common_pack_h",
+    cmd: "python3 $(location) $(location src/panfrost/genxml/common.xml) > $(location genxml/common_pack.h)",
+    srcs: ["src/panfrost/genxml/common.xml"],
+    out: ["genxml/common_pack.h"],
+    tools: ["mesa3d_desktop-panvk_src_panfrost_genxml_gen_pack_py"],
+    vendor_available: true,
+}
+
+cc_genrule {
+    name: "mesa3d_desktop-panvk_src_panfrost_perf_pan_perf_metrics_c",
+    cmd: "cp $(in) $(out)",
+    srcs: [":mesa3d_desktop-panvk_n2s_src_panfrost_perf_pan_perf_metrics_c{n2s/src/panfrost/perf/pan_perf_metrics.c}"],
+    out: ["pan_perf_metrics.c"],
+    vendor_available: true,
 }
 
 cc_library_static {
@@ -335,6 +715,7 @@ cc_library_static {
         "src",
         "src/panfrost/model",
     ],
+    generated_headers: ["mesa3d_desktop-panvk_src_util_shader_stats_h"],
     defaults: ["mesa3d-desktop-panvk-defaults"],
 }
 
@@ -353,6 +734,7 @@ cc_library_static {
         "src",
         "src/panfrost/midgard",
     ],
+    generated_headers: ["mesa3d_desktop-panvk_src_util_shader_stats_h"],
     defaults: ["mesa3d-desktop-panvk-defaults"],
 }
 
@@ -397,6 +779,14 @@ cc_library_static {
         "src/compiler/nir",
         "src/panfrost/midgard",
     ],
+    generated_headers: [
+        "mesa3d_desktop-panvk_src_compiler_builtin_types_h",
+        "mesa3d_desktop-panvk_src_compiler_ir_expression_operation_h",
+        "mesa3d_desktop-panvk_src_compiler_nir_nir_builder_opcodes_h",
+        "mesa3d_desktop-panvk_src_compiler_nir_nir_opcodes_h",
+        "mesa3d_desktop-panvk_src_util_format_u_format_gen_h",
+        "mesa3d_desktop-panvk_src_util_shader_stats_h",
+    ],
     defaults: ["mesa3d-desktop-panvk-defaults"],
 }
 
@@ -423,7 +813,6 @@ cc_library_static {
         "meson_generated/src/compiler/nir",
         "meson_generated/src/panfrost",
         "meson_generated/src/panfrost/compiler",
-        "meson_generated/src/panfrost/genxml",
         "meson_generated/src/panfrost/libpan",
         "meson_generated/src/panfrost/midgard",
         "meson_generated/src/util",
@@ -439,6 +828,23 @@ cc_library_static {
         "src/panfrost/model",
         "src/panfrost/shared",
     ],
+    generated_headers: [
+        "mesa3d_desktop-panvk_src_compiler_builtin_types_h",
+        "mesa3d_desktop-panvk_src_compiler_ir_expression_operation_h",
+        "mesa3d_desktop-panvk_src_compiler_nir_nir_builder_opcodes_h",
+        "mesa3d_desktop-panvk_src_compiler_nir_nir_opcodes_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_common_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v10_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v12_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v13_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v4_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v5_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v6_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v7_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v9_pack_h",
+        "mesa3d_desktop-panvk_src_util_format_u_format_gen_h",
+        "mesa3d_desktop-panvk_src_util_shader_stats_h",
+    ],
     defaults: ["mesa3d-desktop-panvk-defaults"],
 }
 
@@ -452,7 +858,6 @@ cc_library_static {
         "meson_generated/src",
         "meson_generated/src/panfrost",
         "meson_generated/src/panfrost/compiler",
-        "meson_generated/src/panfrost/genxml",
         "meson_generated/src/panfrost/libpan",
         "meson_generated/src/panfrost/midgard",
         "meson_generated/src/util",
@@ -466,6 +871,19 @@ cc_library_static {
         "src/panfrost/midgard",
         "src/panfrost/model",
         "src/panfrost/shared",
+    ],
+    generated_headers: [
+        "mesa3d_desktop-panvk_src_panfrost_genxml_common_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v10_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v12_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v13_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v4_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v5_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v6_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v7_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v9_pack_h",
+        "mesa3d_desktop-panvk_src_util_format_u_format_gen_h",
+        "mesa3d_desktop-panvk_src_util_shader_stats_h",
     ],
     defaults: ["mesa3d-desktop-panvk-defaults"],
 }
@@ -480,7 +898,6 @@ cc_library_static {
         "meson_generated/src",
         "meson_generated/src/panfrost",
         "meson_generated/src/panfrost/compiler",
-        "meson_generated/src/panfrost/genxml",
         "meson_generated/src/panfrost/libpan",
         "meson_generated/src/panfrost/midgard",
         "meson_generated/src/util",
@@ -494,6 +911,19 @@ cc_library_static {
         "src/panfrost/midgard",
         "src/panfrost/model",
         "src/panfrost/shared",
+    ],
+    generated_headers: [
+        "mesa3d_desktop-panvk_src_panfrost_genxml_common_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v10_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v12_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v13_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v4_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v5_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v6_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v7_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v9_pack_h",
+        "mesa3d_desktop-panvk_src_util_format_u_format_gen_h",
+        "mesa3d_desktop-panvk_src_util_shader_stats_h",
     ],
     defaults: ["mesa3d-desktop-panvk-defaults"],
 }
@@ -508,7 +938,6 @@ cc_library_static {
         "meson_generated/src",
         "meson_generated/src/panfrost",
         "meson_generated/src/panfrost/compiler",
-        "meson_generated/src/panfrost/genxml",
         "meson_generated/src/panfrost/libpan",
         "meson_generated/src/panfrost/midgard",
         "meson_generated/src/util",
@@ -522,6 +951,19 @@ cc_library_static {
         "src/panfrost/midgard",
         "src/panfrost/model",
         "src/panfrost/shared",
+    ],
+    generated_headers: [
+        "mesa3d_desktop-panvk_src_panfrost_genxml_common_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v10_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v12_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v13_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v4_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v5_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v6_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v7_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v9_pack_h",
+        "mesa3d_desktop-panvk_src_util_format_u_format_gen_h",
+        "mesa3d_desktop-panvk_src_util_shader_stats_h",
     ],
     defaults: ["mesa3d-desktop-panvk-defaults"],
 }
@@ -536,7 +978,6 @@ cc_library_static {
         "meson_generated/src",
         "meson_generated/src/panfrost",
         "meson_generated/src/panfrost/compiler",
-        "meson_generated/src/panfrost/genxml",
         "meson_generated/src/panfrost/libpan",
         "meson_generated/src/panfrost/midgard",
         "meson_generated/src/util",
@@ -550,6 +991,19 @@ cc_library_static {
         "src/panfrost/midgard",
         "src/panfrost/model",
         "src/panfrost/shared",
+    ],
+    generated_headers: [
+        "mesa3d_desktop-panvk_src_panfrost_genxml_common_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v10_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v12_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v13_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v4_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v5_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v6_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v7_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v9_pack_h",
+        "mesa3d_desktop-panvk_src_util_format_u_format_gen_h",
+        "mesa3d_desktop-panvk_src_util_shader_stats_h",
     ],
     defaults: ["mesa3d-desktop-panvk-defaults"],
 }
@@ -564,7 +1018,6 @@ cc_library_static {
         "meson_generated/src",
         "meson_generated/src/panfrost",
         "meson_generated/src/panfrost/compiler",
-        "meson_generated/src/panfrost/genxml",
         "meson_generated/src/panfrost/libpan",
         "meson_generated/src/panfrost/midgard",
         "meson_generated/src/util",
@@ -578,6 +1031,19 @@ cc_library_static {
         "src/panfrost/midgard",
         "src/panfrost/model",
         "src/panfrost/shared",
+    ],
+    generated_headers: [
+        "mesa3d_desktop-panvk_src_panfrost_genxml_common_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v10_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v12_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v13_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v4_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v5_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v6_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v7_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v9_pack_h",
+        "mesa3d_desktop-panvk_src_util_format_u_format_gen_h",
+        "mesa3d_desktop-panvk_src_util_shader_stats_h",
     ],
     defaults: ["mesa3d-desktop-panvk-defaults"],
 }
@@ -592,7 +1058,6 @@ cc_library_static {
         "meson_generated/src",
         "meson_generated/src/panfrost",
         "meson_generated/src/panfrost/compiler",
-        "meson_generated/src/panfrost/genxml",
         "meson_generated/src/panfrost/libpan",
         "meson_generated/src/panfrost/midgard",
         "meson_generated/src/util",
@@ -607,6 +1072,19 @@ cc_library_static {
         "src/panfrost/model",
         "src/panfrost/shared",
     ],
+    generated_headers: [
+        "mesa3d_desktop-panvk_src_panfrost_genxml_common_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v10_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v12_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v13_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v4_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v5_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v6_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v7_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v9_pack_h",
+        "mesa3d_desktop-panvk_src_util_format_u_format_gen_h",
+        "mesa3d_desktop-panvk_src_util_shader_stats_h",
+    ],
     defaults: ["mesa3d-desktop-panvk-defaults"],
 }
 
@@ -620,7 +1098,6 @@ cc_library_static {
         "meson_generated/src",
         "meson_generated/src/panfrost",
         "meson_generated/src/panfrost/compiler",
-        "meson_generated/src/panfrost/genxml",
         "meson_generated/src/panfrost/libpan",
         "meson_generated/src/panfrost/midgard",
         "meson_generated/src/util",
@@ -634,6 +1111,19 @@ cc_library_static {
         "src/panfrost/midgard",
         "src/panfrost/model",
         "src/panfrost/shared",
+    ],
+    generated_headers: [
+        "mesa3d_desktop-panvk_src_panfrost_genxml_common_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v10_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v12_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v13_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v4_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v5_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v6_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v7_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v9_pack_h",
+        "mesa3d_desktop-panvk_src_util_format_u_format_gen_h",
+        "mesa3d_desktop-panvk_src_util_shader_stats_h",
     ],
     defaults: ["mesa3d-desktop-panvk-defaults"],
 }
@@ -655,7 +1145,6 @@ cc_library_static {
         "meson_generated/src/compiler/nir",
         "meson_generated/src/panfrost",
         "meson_generated/src/panfrost/compiler",
-        "meson_generated/src/panfrost/genxml",
         "meson_generated/src/panfrost/libpan",
         "meson_generated/src/panfrost/midgard",
         "meson_generated/src/util",
@@ -671,6 +1160,23 @@ cc_library_static {
         "src/panfrost/midgard",
         "src/panfrost/model",
         "src/panfrost/shared",
+    ],
+    generated_headers: [
+        "mesa3d_desktop-panvk_src_compiler_builtin_types_h",
+        "mesa3d_desktop-panvk_src_compiler_ir_expression_operation_h",
+        "mesa3d_desktop-panvk_src_compiler_nir_nir_builder_opcodes_h",
+        "mesa3d_desktop-panvk_src_compiler_nir_nir_opcodes_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_common_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v10_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v12_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v13_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v4_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v5_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v6_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v7_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v9_pack_h",
+        "mesa3d_desktop-panvk_src_util_format_u_format_gen_h",
+        "mesa3d_desktop-panvk_src_util_shader_stats_h",
     ],
     defaults: ["mesa3d-desktop-panvk-defaults"],
 }
@@ -692,7 +1198,6 @@ cc_library_static {
         "meson_generated/src/compiler/nir",
         "meson_generated/src/panfrost",
         "meson_generated/src/panfrost/compiler",
-        "meson_generated/src/panfrost/genxml",
         "meson_generated/src/panfrost/libpan",
         "meson_generated/src/panfrost/midgard",
         "meson_generated/src/util",
@@ -708,6 +1213,23 @@ cc_library_static {
         "src/panfrost/midgard",
         "src/panfrost/model",
         "src/panfrost/shared",
+    ],
+    generated_headers: [
+        "mesa3d_desktop-panvk_src_compiler_builtin_types_h",
+        "mesa3d_desktop-panvk_src_compiler_ir_expression_operation_h",
+        "mesa3d_desktop-panvk_src_compiler_nir_nir_builder_opcodes_h",
+        "mesa3d_desktop-panvk_src_compiler_nir_nir_opcodes_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_common_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v10_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v12_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v13_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v4_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v5_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v6_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v7_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v9_pack_h",
+        "mesa3d_desktop-panvk_src_util_format_u_format_gen_h",
+        "mesa3d_desktop-panvk_src_util_shader_stats_h",
     ],
     defaults: ["mesa3d-desktop-panvk-defaults"],
 }
@@ -729,7 +1251,6 @@ cc_library_static {
         "meson_generated/src/compiler/nir",
         "meson_generated/src/panfrost",
         "meson_generated/src/panfrost/compiler",
-        "meson_generated/src/panfrost/genxml",
         "meson_generated/src/panfrost/libpan",
         "meson_generated/src/panfrost/midgard",
         "meson_generated/src/util",
@@ -745,6 +1266,23 @@ cc_library_static {
         "src/panfrost/midgard",
         "src/panfrost/model",
         "src/panfrost/shared",
+    ],
+    generated_headers: [
+        "mesa3d_desktop-panvk_src_compiler_builtin_types_h",
+        "mesa3d_desktop-panvk_src_compiler_ir_expression_operation_h",
+        "mesa3d_desktop-panvk_src_compiler_nir_nir_builder_opcodes_h",
+        "mesa3d_desktop-panvk_src_compiler_nir_nir_opcodes_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_common_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v10_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v12_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v13_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v4_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v5_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v6_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v7_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v9_pack_h",
+        "mesa3d_desktop-panvk_src_util_format_u_format_gen_h",
+        "mesa3d_desktop-panvk_src_util_shader_stats_h",
     ],
     defaults: ["mesa3d-desktop-panvk-defaults"],
 }
@@ -766,7 +1304,6 @@ cc_library_static {
         "meson_generated/src/compiler/nir",
         "meson_generated/src/panfrost",
         "meson_generated/src/panfrost/compiler",
-        "meson_generated/src/panfrost/genxml",
         "meson_generated/src/panfrost/libpan",
         "meson_generated/src/panfrost/midgard",
         "meson_generated/src/util",
@@ -782,6 +1319,23 @@ cc_library_static {
         "src/panfrost/midgard",
         "src/panfrost/model",
         "src/panfrost/shared",
+    ],
+    generated_headers: [
+        "mesa3d_desktop-panvk_src_compiler_builtin_types_h",
+        "mesa3d_desktop-panvk_src_compiler_ir_expression_operation_h",
+        "mesa3d_desktop-panvk_src_compiler_nir_nir_builder_opcodes_h",
+        "mesa3d_desktop-panvk_src_compiler_nir_nir_opcodes_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_common_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v10_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v12_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v13_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v4_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v5_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v6_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v7_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v9_pack_h",
+        "mesa3d_desktop-panvk_src_util_format_u_format_gen_h",
+        "mesa3d_desktop-panvk_src_util_shader_stats_h",
     ],
     defaults: ["mesa3d-desktop-panvk-defaults"],
 }
@@ -803,7 +1357,6 @@ cc_library_static {
         "meson_generated/src/compiler/nir",
         "meson_generated/src/panfrost",
         "meson_generated/src/panfrost/compiler",
-        "meson_generated/src/panfrost/genxml",
         "meson_generated/src/panfrost/libpan",
         "meson_generated/src/panfrost/midgard",
         "meson_generated/src/util",
@@ -819,6 +1372,23 @@ cc_library_static {
         "src/panfrost/midgard",
         "src/panfrost/model",
         "src/panfrost/shared",
+    ],
+    generated_headers: [
+        "mesa3d_desktop-panvk_src_compiler_builtin_types_h",
+        "mesa3d_desktop-panvk_src_compiler_ir_expression_operation_h",
+        "mesa3d_desktop-panvk_src_compiler_nir_nir_builder_opcodes_h",
+        "mesa3d_desktop-panvk_src_compiler_nir_nir_opcodes_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_common_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v10_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v12_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v13_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v4_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v5_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v6_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v7_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v9_pack_h",
+        "mesa3d_desktop-panvk_src_util_format_u_format_gen_h",
+        "mesa3d_desktop-panvk_src_util_shader_stats_h",
     ],
     defaults: ["mesa3d-desktop-panvk-defaults"],
 }
@@ -840,7 +1410,6 @@ cc_library_static {
         "meson_generated/src/compiler/nir",
         "meson_generated/src/panfrost",
         "meson_generated/src/panfrost/compiler",
-        "meson_generated/src/panfrost/genxml",
         "meson_generated/src/panfrost/libpan",
         "meson_generated/src/panfrost/midgard",
         "meson_generated/src/util",
@@ -856,6 +1425,23 @@ cc_library_static {
         "src/panfrost/midgard",
         "src/panfrost/model",
         "src/panfrost/shared",
+    ],
+    generated_headers: [
+        "mesa3d_desktop-panvk_src_compiler_builtin_types_h",
+        "mesa3d_desktop-panvk_src_compiler_ir_expression_operation_h",
+        "mesa3d_desktop-panvk_src_compiler_nir_nir_builder_opcodes_h",
+        "mesa3d_desktop-panvk_src_compiler_nir_nir_opcodes_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_common_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v10_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v12_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v13_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v4_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v5_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v6_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v7_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v9_pack_h",
+        "mesa3d_desktop-panvk_src_util_format_u_format_gen_h",
+        "mesa3d_desktop-panvk_src_util_shader_stats_h",
     ],
     defaults: ["mesa3d-desktop-panvk-defaults"],
 }
@@ -877,7 +1463,6 @@ cc_library_static {
         "meson_generated/src/compiler/nir",
         "meson_generated/src/panfrost",
         "meson_generated/src/panfrost/compiler",
-        "meson_generated/src/panfrost/genxml",
         "meson_generated/src/panfrost/libpan",
         "meson_generated/src/panfrost/midgard",
         "meson_generated/src/util",
@@ -893,6 +1478,23 @@ cc_library_static {
         "src/panfrost/midgard",
         "src/panfrost/model",
         "src/panfrost/shared",
+    ],
+    generated_headers: [
+        "mesa3d_desktop-panvk_src_compiler_builtin_types_h",
+        "mesa3d_desktop-panvk_src_compiler_ir_expression_operation_h",
+        "mesa3d_desktop-panvk_src_compiler_nir_nir_builder_opcodes_h",
+        "mesa3d_desktop-panvk_src_compiler_nir_nir_opcodes_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_common_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v10_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v12_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v13_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v4_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v5_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v6_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v7_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v9_pack_h",
+        "mesa3d_desktop-panvk_src_util_format_u_format_gen_h",
+        "mesa3d_desktop-panvk_src_util_shader_stats_h",
     ],
     defaults: ["mesa3d-desktop-panvk-defaults"],
 }
@@ -914,7 +1516,6 @@ cc_library_static {
         "meson_generated/src/compiler/nir",
         "meson_generated/src/panfrost",
         "meson_generated/src/panfrost/compiler",
-        "meson_generated/src/panfrost/genxml",
         "meson_generated/src/panfrost/libpan",
         "meson_generated/src/panfrost/midgard",
         "meson_generated/src/util",
@@ -930,6 +1531,23 @@ cc_library_static {
         "src/panfrost/midgard",
         "src/panfrost/model",
         "src/panfrost/shared",
+    ],
+    generated_headers: [
+        "mesa3d_desktop-panvk_src_compiler_builtin_types_h",
+        "mesa3d_desktop-panvk_src_compiler_ir_expression_operation_h",
+        "mesa3d_desktop-panvk_src_compiler_nir_nir_builder_opcodes_h",
+        "mesa3d_desktop-panvk_src_compiler_nir_nir_opcodes_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_common_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v10_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v12_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v13_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v4_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v5_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v6_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v7_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v9_pack_h",
+        "mesa3d_desktop-panvk_src_util_format_u_format_gen_h",
+        "mesa3d_desktop-panvk_src_util_shader_stats_h",
     ],
     defaults: ["mesa3d-desktop-panvk-defaults"],
 }
@@ -947,7 +1565,6 @@ cc_library_static {
         "meson_generated/src",
         "meson_generated/src/panfrost",
         "meson_generated/src/panfrost/compiler",
-        "meson_generated/src/panfrost/genxml",
         "meson_generated/src/panfrost/libpan",
         "meson_generated/src/panfrost/midgard",
         "meson_generated/src/util",
@@ -963,6 +1580,19 @@ cc_library_static {
         "src/panfrost/model",
         "src/panfrost/shared",
     ],
+    generated_headers: [
+        "mesa3d_desktop-panvk_src_panfrost_genxml_common_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v10_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v12_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v13_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v4_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v5_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v6_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v7_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v9_pack_h",
+        "mesa3d_desktop-panvk_src_util_format_u_format_gen_h",
+        "mesa3d_desktop-panvk_src_util_shader_stats_h",
+    ],
     defaults: ["mesa3d-desktop-panvk-defaults"],
 }
 
@@ -975,7 +1605,6 @@ cc_library_static {
         "meson_generated/src",
         "meson_generated/src/panfrost",
         "meson_generated/src/panfrost/compiler",
-        "meson_generated/src/panfrost/genxml",
         "meson_generated/src/panfrost/libpan",
         "meson_generated/src/panfrost/midgard",
         "meson_generated/src/util",
@@ -989,6 +1618,19 @@ cc_library_static {
         "src/panfrost/midgard",
         "src/panfrost/model",
         "src/panfrost/shared",
+    ],
+    generated_headers: [
+        "mesa3d_desktop-panvk_src_panfrost_genxml_common_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v10_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v12_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v13_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v4_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v5_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v6_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v7_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v9_pack_h",
+        "mesa3d_desktop-panvk_src_util_format_u_format_gen_h",
+        "mesa3d_desktop-panvk_src_util_shader_stats_h",
     ],
     defaults: ["mesa3d-desktop-panvk-defaults"],
 }
@@ -1009,7 +1651,6 @@ cc_library_static {
         "meson_generated/src/compiler/nir",
         "meson_generated/src/panfrost",
         "meson_generated/src/panfrost/compiler",
-        "meson_generated/src/panfrost/genxml",
         "meson_generated/src/panfrost/libpan",
         "meson_generated/src/panfrost/midgard",
         "meson_generated/src/util",
@@ -1025,6 +1666,23 @@ cc_library_static {
         "src/panfrost/midgard",
         "src/panfrost/model",
         "src/panfrost/shared",
+    ],
+    generated_headers: [
+        "mesa3d_desktop-panvk_src_compiler_builtin_types_h",
+        "mesa3d_desktop-panvk_src_compiler_ir_expression_operation_h",
+        "mesa3d_desktop-panvk_src_compiler_nir_nir_builder_opcodes_h",
+        "mesa3d_desktop-panvk_src_compiler_nir_nir_opcodes_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_common_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v10_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v12_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v13_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v4_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v5_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v6_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v7_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v9_pack_h",
+        "mesa3d_desktop-panvk_src_util_format_u_format_gen_h",
+        "mesa3d_desktop-panvk_src_util_shader_stats_h",
     ],
     defaults: ["mesa3d-desktop-panvk-defaults"],
 }
@@ -1045,7 +1703,6 @@ cc_library_static {
         "meson_generated/src/compiler/nir",
         "meson_generated/src/panfrost",
         "meson_generated/src/panfrost/compiler",
-        "meson_generated/src/panfrost/genxml",
         "meson_generated/src/panfrost/libpan",
         "meson_generated/src/panfrost/midgard",
         "meson_generated/src/util",
@@ -1061,6 +1718,23 @@ cc_library_static {
         "src/panfrost/midgard",
         "src/panfrost/model",
         "src/panfrost/shared",
+    ],
+    generated_headers: [
+        "mesa3d_desktop-panvk_src_compiler_builtin_types_h",
+        "mesa3d_desktop-panvk_src_compiler_ir_expression_operation_h",
+        "mesa3d_desktop-panvk_src_compiler_nir_nir_builder_opcodes_h",
+        "mesa3d_desktop-panvk_src_compiler_nir_nir_opcodes_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_common_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v10_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v12_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v13_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v4_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v5_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v6_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v7_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v9_pack_h",
+        "mesa3d_desktop-panvk_src_util_format_u_format_gen_h",
+        "mesa3d_desktop-panvk_src_util_shader_stats_h",
     ],
     defaults: ["mesa3d-desktop-panvk-defaults"],
 }
@@ -1081,7 +1755,6 @@ cc_library_static {
         "meson_generated/src/compiler/nir",
         "meson_generated/src/panfrost",
         "meson_generated/src/panfrost/compiler",
-        "meson_generated/src/panfrost/genxml",
         "meson_generated/src/panfrost/libpan",
         "meson_generated/src/panfrost/midgard",
         "meson_generated/src/util",
@@ -1097,6 +1770,23 @@ cc_library_static {
         "src/panfrost/midgard",
         "src/panfrost/model",
         "src/panfrost/shared",
+    ],
+    generated_headers: [
+        "mesa3d_desktop-panvk_src_compiler_builtin_types_h",
+        "mesa3d_desktop-panvk_src_compiler_ir_expression_operation_h",
+        "mesa3d_desktop-panvk_src_compiler_nir_nir_builder_opcodes_h",
+        "mesa3d_desktop-panvk_src_compiler_nir_nir_opcodes_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_common_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v10_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v12_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v13_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v4_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v5_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v6_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v7_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v9_pack_h",
+        "mesa3d_desktop-panvk_src_util_format_u_format_gen_h",
+        "mesa3d_desktop-panvk_src_util_shader_stats_h",
     ],
     defaults: ["mesa3d-desktop-panvk-defaults"],
 }
@@ -1117,7 +1807,6 @@ cc_library_static {
         "meson_generated/src/compiler/nir",
         "meson_generated/src/panfrost",
         "meson_generated/src/panfrost/compiler",
-        "meson_generated/src/panfrost/genxml",
         "meson_generated/src/panfrost/libpan",
         "meson_generated/src/panfrost/midgard",
         "meson_generated/src/util",
@@ -1133,6 +1822,23 @@ cc_library_static {
         "src/panfrost/midgard",
         "src/panfrost/model",
         "src/panfrost/shared",
+    ],
+    generated_headers: [
+        "mesa3d_desktop-panvk_src_compiler_builtin_types_h",
+        "mesa3d_desktop-panvk_src_compiler_ir_expression_operation_h",
+        "mesa3d_desktop-panvk_src_compiler_nir_nir_builder_opcodes_h",
+        "mesa3d_desktop-panvk_src_compiler_nir_nir_opcodes_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_common_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v10_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v12_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v13_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v4_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v5_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v6_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v7_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v9_pack_h",
+        "mesa3d_desktop-panvk_src_util_format_u_format_gen_h",
+        "mesa3d_desktop-panvk_src_util_shader_stats_h",
     ],
     defaults: ["mesa3d-desktop-panvk-defaults"],
 }
@@ -1153,7 +1859,6 @@ cc_library_static {
         "meson_generated/src/compiler/nir",
         "meson_generated/src/panfrost",
         "meson_generated/src/panfrost/compiler",
-        "meson_generated/src/panfrost/genxml",
         "meson_generated/src/panfrost/libpan",
         "meson_generated/src/panfrost/midgard",
         "meson_generated/src/util",
@@ -1169,6 +1874,23 @@ cc_library_static {
         "src/panfrost/midgard",
         "src/panfrost/model",
         "src/panfrost/shared",
+    ],
+    generated_headers: [
+        "mesa3d_desktop-panvk_src_compiler_builtin_types_h",
+        "mesa3d_desktop-panvk_src_compiler_ir_expression_operation_h",
+        "mesa3d_desktop-panvk_src_compiler_nir_nir_builder_opcodes_h",
+        "mesa3d_desktop-panvk_src_compiler_nir_nir_opcodes_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_common_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v10_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v12_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v13_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v4_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v5_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v6_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v7_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v9_pack_h",
+        "mesa3d_desktop-panvk_src_util_format_u_format_gen_h",
+        "mesa3d_desktop-panvk_src_util_shader_stats_h",
     ],
     defaults: ["mesa3d-desktop-panvk-defaults"],
 }
@@ -1189,7 +1911,6 @@ cc_library_static {
         "meson_generated/src/compiler/nir",
         "meson_generated/src/panfrost",
         "meson_generated/src/panfrost/compiler",
-        "meson_generated/src/panfrost/genxml",
         "meson_generated/src/panfrost/libpan",
         "meson_generated/src/panfrost/midgard",
         "meson_generated/src/util",
@@ -1205,6 +1926,23 @@ cc_library_static {
         "src/panfrost/midgard",
         "src/panfrost/model",
         "src/panfrost/shared",
+    ],
+    generated_headers: [
+        "mesa3d_desktop-panvk_src_compiler_builtin_types_h",
+        "mesa3d_desktop-panvk_src_compiler_ir_expression_operation_h",
+        "mesa3d_desktop-panvk_src_compiler_nir_nir_builder_opcodes_h",
+        "mesa3d_desktop-panvk_src_compiler_nir_nir_opcodes_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_common_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v10_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v12_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v13_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v4_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v5_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v6_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v7_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v9_pack_h",
+        "mesa3d_desktop-panvk_src_util_format_u_format_gen_h",
+        "mesa3d_desktop-panvk_src_util_shader_stats_h",
     ],
     defaults: ["mesa3d-desktop-panvk-defaults"],
 }
@@ -1225,7 +1963,6 @@ cc_library_static {
         "meson_generated/src/compiler/nir",
         "meson_generated/src/panfrost",
         "meson_generated/src/panfrost/compiler",
-        "meson_generated/src/panfrost/genxml",
         "meson_generated/src/panfrost/libpan",
         "meson_generated/src/panfrost/midgard",
         "meson_generated/src/util",
@@ -1241,6 +1978,23 @@ cc_library_static {
         "src/panfrost/midgard",
         "src/panfrost/model",
         "src/panfrost/shared",
+    ],
+    generated_headers: [
+        "mesa3d_desktop-panvk_src_compiler_builtin_types_h",
+        "mesa3d_desktop-panvk_src_compiler_ir_expression_operation_h",
+        "mesa3d_desktop-panvk_src_compiler_nir_nir_builder_opcodes_h",
+        "mesa3d_desktop-panvk_src_compiler_nir_nir_opcodes_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_common_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v10_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v12_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v13_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v4_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v5_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v6_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v7_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v9_pack_h",
+        "mesa3d_desktop-panvk_src_util_format_u_format_gen_h",
+        "mesa3d_desktop-panvk_src_util_shader_stats_h",
     ],
     defaults: ["mesa3d-desktop-panvk-defaults"],
 }
@@ -1261,7 +2015,6 @@ cc_library_static {
         "meson_generated/src/compiler/nir",
         "meson_generated/src/panfrost",
         "meson_generated/src/panfrost/compiler",
-        "meson_generated/src/panfrost/genxml",
         "meson_generated/src/panfrost/libpan",
         "meson_generated/src/panfrost/midgard",
         "meson_generated/src/util",
@@ -1277,6 +2030,23 @@ cc_library_static {
         "src/panfrost/midgard",
         "src/panfrost/model",
         "src/panfrost/shared",
+    ],
+    generated_headers: [
+        "mesa3d_desktop-panvk_src_compiler_builtin_types_h",
+        "mesa3d_desktop-panvk_src_compiler_ir_expression_operation_h",
+        "mesa3d_desktop-panvk_src_compiler_nir_nir_builder_opcodes_h",
+        "mesa3d_desktop-panvk_src_compiler_nir_nir_opcodes_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_common_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v10_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v12_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v13_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v4_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v5_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v6_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v7_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v9_pack_h",
+        "mesa3d_desktop-panvk_src_util_format_u_format_gen_h",
+        "mesa3d_desktop-panvk_src_util_shader_stats_h",
     ],
     defaults: ["mesa3d-desktop-panvk-defaults"],
 }
@@ -1295,7 +2065,6 @@ cc_library_static {
         "meson_generated/src/compiler/nir",
         "meson_generated/src/panfrost",
         "meson_generated/src/panfrost/compiler",
-        "meson_generated/src/panfrost/genxml",
         "meson_generated/src/panfrost/libpan",
         "meson_generated/src/panfrost/midgard",
         "meson_generated/src/util",
@@ -1314,6 +2083,23 @@ cc_library_static {
         "src/panfrost/shared",
         "src/tool",
     ],
+    generated_headers: [
+        "mesa3d_desktop-panvk_src_compiler_builtin_types_h",
+        "mesa3d_desktop-panvk_src_compiler_ir_expression_operation_h",
+        "mesa3d_desktop-panvk_src_compiler_nir_nir_builder_opcodes_h",
+        "mesa3d_desktop-panvk_src_compiler_nir_nir_opcodes_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_common_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v10_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v12_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v13_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v4_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v5_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v6_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v7_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v9_pack_h",
+        "mesa3d_desktop-panvk_src_util_format_u_format_gen_h",
+        "mesa3d_desktop-panvk_src_util_shader_stats_h",
+    ],
     defaults: ["mesa3d-desktop-panvk-defaults"],
 }
 
@@ -1328,6 +2114,7 @@ cc_library_static {
         "src",
         "src/panfrost/compiler/valhall",
     ],
+    generated_headers: ["mesa3d_desktop-panvk_src_util_shader_stats_h"],
     defaults: ["mesa3d-desktop-panvk-defaults"],
 }
 
@@ -1352,16 +2139,20 @@ cc_library_static {
         "src/compiler/nir",
         "src/panfrost/compiler",
     ],
+    generated_headers: [
+        "mesa3d_desktop-panvk_src_compiler_builtin_types_h",
+        "mesa3d_desktop-panvk_src_compiler_ir_expression_operation_h",
+        "mesa3d_desktop-panvk_src_compiler_nir_nir_builder_opcodes_h",
+        "mesa3d_desktop-panvk_src_compiler_nir_nir_opcodes_h",
+        "mesa3d_desktop-panvk_src_util_format_u_format_gen_h",
+        "mesa3d_desktop-panvk_src_util_shader_stats_h",
+    ],
     defaults: ["mesa3d-desktop-panvk-defaults"],
 }
 
 cc_library_static {
     name: "mesa3d_desktop-panvk_src_panfrost_compiler_libpanfrost_bifrost_a",
     srcs: [
-        "meson_generated/src/panfrost/compiler/bi_opcodes.c",
-        "meson_generated/src/panfrost/compiler/bi_packer.c",
-        "meson_generated/src/panfrost/compiler/bi_printer.c",
-        "meson_generated/src/panfrost/compiler/bi_swizzles.c",
         "meson_generated/src/panfrost/compiler/bifrost_nir_algebraic.c",
         "meson_generated/src/panfrost/compiler/valhall/valhall.c",
         "src/panfrost/compiler/bi_helper_invocations.c",
@@ -1426,16 +2217,221 @@ cc_library_static {
         "src/panfrost/model",
         "src/panfrost/shared",
     ],
+    generated_sources: [
+        "mesa3d_desktop-panvk_src_panfrost_compiler_bi_opcodes_c",
+        "mesa3d_desktop-panvk_src_panfrost_compiler_bi_packer_c",
+        "mesa3d_desktop-panvk_src_panfrost_compiler_bi_printer_c",
+        "mesa3d_desktop-panvk_src_panfrost_compiler_bi_swizzles_c",
+    ],
+    generated_headers: [
+        "mesa3d_desktop-panvk_src_compiler_builtin_types_h",
+        "mesa3d_desktop-panvk_src_compiler_ir_expression_operation_h",
+        "mesa3d_desktop-panvk_src_compiler_nir_nir_builder_opcodes_h",
+        "mesa3d_desktop-panvk_src_compiler_nir_nir_opcodes_h",
+        "mesa3d_desktop-panvk_src_panfrost_compiler_bi_builder_h",
+        "mesa3d_desktop-panvk_src_panfrost_compiler_bi_opcodes_h",
+        "mesa3d_desktop-panvk_src_util_format_u_format_gen_h",
+        "mesa3d_desktop-panvk_src_util_shader_stats_h",
+    ],
     defaults: ["mesa3d-desktop-panvk-defaults"],
+}
+
+genrule {
+    name: "mesa3d_desktop-panvk_src_panfrost_compiler_bi_opcodes_h_py_py",
+    cmd: "cp $(in) $(out)",
+    srcs: ["src/panfrost/compiler/bi_opcodes.h.py"],
+    out: ["src_panfrost_compiler_bi_opcodes_h_py.py"],
+}
+
+genrule {
+    name: "mesa3d_desktop-panvk_src_panfrost_compiler_bifrost_isa_py_cp",
+    cmd: "cp $(in) $(out)",
+    srcs: ["src/panfrost/compiler/bifrost_isa.py"],
+    out: ["bifrost_isa.py"],
+}
+
+python_binary_host {
+    name: "mesa3d_desktop-panvk_src_panfrost_compiler_bi_opcodes_h_py",
+    main: "src_panfrost_compiler_bi_opcodes_h_py.py",
+    srcs: [
+        ":mesa3d_desktop-panvk_src_panfrost_compiler_bi_opcodes_h_py_py",
+        ":mesa3d_desktop-panvk_src_panfrost_compiler_bifrost_isa_py_cp",
+    ],
+    defaults: ["mesa_python_default"],
+}
+
+cc_genrule {
+    name: "mesa3d_desktop-panvk_src_panfrost_compiler_bi_opcodes_h",
+    cmd: "python3 $(location) $(location src/panfrost/compiler/IR_pseudo.xml) $(location src/panfrost/compiler/bifrost/ISA.xml) $(location src/panfrost/compiler/valhall/ISA.xml) > $(location bi_opcodes.h)",
+    srcs: [
+        "src/panfrost/compiler/IR_pseudo.xml",
+        "src/panfrost/compiler/bifrost/ISA.xml",
+        "src/panfrost/compiler/bifrost_isa.py",
+        "src/panfrost/compiler/valhall/ISA.xml",
+    ],
+    out: ["bi_opcodes.h"],
+    tools: ["mesa3d_desktop-panvk_src_panfrost_compiler_bi_opcodes_h_py"],
+    vendor_available: true,
+}
+
+genrule {
+    name: "mesa3d_desktop-panvk_src_panfrost_compiler_bi_builder_h_py_py",
+    cmd: "cp $(in) $(out)",
+    srcs: ["src/panfrost/compiler/bi_builder.h.py"],
+    out: ["src_panfrost_compiler_bi_builder_h_py.py"],
+}
+
+python_binary_host {
+    name: "mesa3d_desktop-panvk_src_panfrost_compiler_bi_builder_h_py",
+    main: "src_panfrost_compiler_bi_builder_h_py.py",
+    srcs: [
+        ":mesa3d_desktop-panvk_src_panfrost_compiler_bi_builder_h_py_py",
+        ":mesa3d_desktop-panvk_src_panfrost_compiler_bifrost_isa_py_cp",
+    ],
+    defaults: ["mesa_python_default"],
+}
+
+cc_genrule {
+    name: "mesa3d_desktop-panvk_src_panfrost_compiler_bi_builder_h",
+    cmd: "python3 $(location) $(location src/panfrost/compiler/IR_pseudo.xml) $(location src/panfrost/compiler/bifrost/ISA.xml) $(location src/panfrost/compiler/valhall/ISA.xml) > $(location bi_builder.h)",
+    srcs: [
+        "src/panfrost/compiler/IR_pseudo.xml",
+        "src/panfrost/compiler/bifrost/ISA.xml",
+        "src/panfrost/compiler/bifrost_isa.py",
+        "src/panfrost/compiler/valhall/ISA.xml",
+    ],
+    out: ["bi_builder.h"],
+    tools: ["mesa3d_desktop-panvk_src_panfrost_compiler_bi_builder_h_py"],
+    vendor_available: true,
+}
+
+genrule {
+    name: "mesa3d_desktop-panvk_src_panfrost_compiler_bi_packer_c_py_py",
+    cmd: "cp $(in) $(out)",
+    srcs: ["src/panfrost/compiler/bi_packer.c.py"],
+    out: ["src_panfrost_compiler_bi_packer_c_py.py"],
+}
+
+python_binary_host {
+    name: "mesa3d_desktop-panvk_src_panfrost_compiler_bi_packer_c_py",
+    main: "src_panfrost_compiler_bi_packer_c_py.py",
+    srcs: [
+        ":mesa3d_desktop-panvk_src_panfrost_compiler_bi_packer_c_py_py",
+        ":mesa3d_desktop-panvk_src_panfrost_compiler_bifrost_isa_py_cp",
+    ],
+    defaults: ["mesa_python_default"],
+}
+
+cc_genrule {
+    name: "mesa3d_desktop-panvk_src_panfrost_compiler_bi_packer_c",
+    cmd: "python3 $(location) $(location src/panfrost/compiler/IR_pseudo.xml) $(location src/panfrost/compiler/bifrost/ISA.xml) $(location src/panfrost/compiler/valhall/ISA.xml) > $(location bi_packer.c)",
+    srcs: [
+        "src/panfrost/compiler/IR_pseudo.xml",
+        "src/panfrost/compiler/bifrost/ISA.xml",
+        "src/panfrost/compiler/bifrost_isa.py",
+        "src/panfrost/compiler/valhall/ISA.xml",
+    ],
+    out: ["bi_packer.c"],
+    tools: ["mesa3d_desktop-panvk_src_panfrost_compiler_bi_packer_c_py"],
+    vendor_available: true,
+}
+
+genrule {
+    name: "mesa3d_desktop-panvk_src_panfrost_compiler_bi_printer_c_py_py",
+    cmd: "cp $(in) $(out)",
+    srcs: ["src/panfrost/compiler/bi_printer.c.py"],
+    out: ["src_panfrost_compiler_bi_printer_c_py.py"],
+}
+
+python_binary_host {
+    name: "mesa3d_desktop-panvk_src_panfrost_compiler_bi_printer_c_py",
+    main: "src_panfrost_compiler_bi_printer_c_py.py",
+    srcs: [
+        ":mesa3d_desktop-panvk_src_panfrost_compiler_bi_printer_c_py_py",
+        ":mesa3d_desktop-panvk_src_panfrost_compiler_bifrost_isa_py_cp",
+    ],
+    defaults: ["mesa_python_default"],
+}
+
+cc_genrule {
+    name: "mesa3d_desktop-panvk_src_panfrost_compiler_bi_printer_c",
+    cmd: "python3 $(location) $(location src/panfrost/compiler/IR_pseudo.xml) $(location src/panfrost/compiler/bifrost/ISA.xml) $(location src/panfrost/compiler/valhall/ISA.xml) > $(location bi_printer.c)",
+    srcs: [
+        "src/panfrost/compiler/IR_pseudo.xml",
+        "src/panfrost/compiler/bifrost/ISA.xml",
+        "src/panfrost/compiler/bifrost_isa.py",
+        "src/panfrost/compiler/valhall/ISA.xml",
+    ],
+    out: ["bi_printer.c"],
+    tools: ["mesa3d_desktop-panvk_src_panfrost_compiler_bi_printer_c_py"],
+    vendor_available: true,
+}
+
+genrule {
+    name: "mesa3d_desktop-panvk_src_panfrost_compiler_bi_swizzles_c_py_py",
+    cmd: "cp $(in) $(out)",
+    srcs: ["src/panfrost/compiler/bi_swizzles.c.py"],
+    out: ["src_panfrost_compiler_bi_swizzles_c_py.py"],
+}
+
+python_binary_host {
+    name: "mesa3d_desktop-panvk_src_panfrost_compiler_bi_swizzles_c_py",
+    main: "src_panfrost_compiler_bi_swizzles_c_py.py",
+    srcs: [
+        ":mesa3d_desktop-panvk_src_panfrost_compiler_bi_swizzles_c_py_py",
+        ":mesa3d_desktop-panvk_src_panfrost_compiler_bifrost_isa_py_cp",
+    ],
+    defaults: ["mesa_python_default"],
+}
+
+cc_genrule {
+    name: "mesa3d_desktop-panvk_src_panfrost_compiler_bi_swizzles_c",
+    cmd: "python3 $(location) $(location src/panfrost/compiler/IR_pseudo.xml) $(location src/panfrost/compiler/bifrost/ISA.xml) > $(location bi_swizzles.c)",
+    srcs: [
+        "src/panfrost/compiler/IR_pseudo.xml",
+        "src/panfrost/compiler/bifrost/ISA.xml",
+        "src/panfrost/compiler/bifrost_isa.py",
+    ],
+    out: ["bi_swizzles.c"],
+    tools: ["mesa3d_desktop-panvk_src_panfrost_compiler_bi_swizzles_c_py"],
+    vendor_available: true,
+}
+
+genrule {
+    name: "mesa3d_desktop-panvk_src_panfrost_compiler_bi_opcodes_c_py_py",
+    cmd: "cp $(in) $(out)",
+    srcs: ["src/panfrost/compiler/bi_opcodes.c.py"],
+    out: ["src_panfrost_compiler_bi_opcodes_c_py.py"],
+}
+
+python_binary_host {
+    name: "mesa3d_desktop-panvk_src_panfrost_compiler_bi_opcodes_c_py",
+    main: "src_panfrost_compiler_bi_opcodes_c_py.py",
+    srcs: [
+        ":mesa3d_desktop-panvk_src_panfrost_compiler_bi_opcodes_c_py_py",
+        ":mesa3d_desktop-panvk_src_panfrost_compiler_bifrost_isa_py_cp",
+    ],
+    defaults: ["mesa_python_default"],
+}
+
+cc_genrule {
+    name: "mesa3d_desktop-panvk_src_panfrost_compiler_bi_opcodes_c",
+    cmd: "python3 $(location) $(location src/panfrost/compiler/IR_pseudo.xml) $(location src/panfrost/compiler/bifrost/ISA.xml) $(location src/panfrost/compiler/valhall/ISA.xml) > $(location bi_opcodes.c)",
+    srcs: [
+        "src/panfrost/compiler/IR_pseudo.xml",
+        "src/panfrost/compiler/bifrost/ISA.xml",
+        "src/panfrost/compiler/bifrost_isa.py",
+        "src/panfrost/compiler/valhall/ISA.xml",
+    ],
+    out: ["bi_opcodes.c"],
+    tools: ["mesa3d_desktop-panvk_src_panfrost_compiler_bi_opcodes_c_py"],
+    vendor_available: true,
 }
 
 cc_library_static {
     name: "mesa3d_desktop-panvk_src_compiler_nir_libnir_a",
     srcs: [
-        "meson_generated/src/compiler/nir/nir_constant_expressions.c",
         "meson_generated/src/compiler/nir/nir_intrinsics.c",
-        "meson_generated/src/compiler/nir/nir_opcodes.c",
-        "meson_generated/src/compiler/nir/nir_opt_algebraic.c",
         "src/compiler/nir/nir.c",
         "src/compiler/nir/nir_builder.c",
         "src/compiler/nir/nir_builtin_builder.c",
@@ -1669,13 +2665,101 @@ cc_library_static {
         "src/compiler",
         "src/compiler/nir",
     ],
+    generated_sources: [
+        "mesa3d_desktop-panvk_src_compiler_nir_nir_constant_expressions_c",
+        "mesa3d_desktop-panvk_src_compiler_nir_nir_opcodes_c",
+        "mesa3d_desktop-panvk_src_compiler_nir_nir_opt_algebraic_c",
+    ],
+    generated_headers: [
+        "mesa3d_desktop-panvk_src_compiler_builtin_types_h",
+        "mesa3d_desktop-panvk_src_compiler_ir_expression_operation_h",
+        "mesa3d_desktop-panvk_src_compiler_nir_nir_builder_opcodes_h",
+        "mesa3d_desktop-panvk_src_compiler_nir_nir_opcodes_h",
+        "mesa3d_desktop-panvk_src_util_format_u_format_gen_h",
+        "mesa3d_desktop-panvk_src_util_shader_stats_h",
+    ],
     defaults: ["mesa3d-desktop-panvk-defaults"],
+}
+
+python_binary_host {
+    name: "mesa3d_desktop-panvk_src_compiler_nir_nir_constant_expressions_py",
+    main: "src/compiler/nir/nir_constant_expressions.py",
+    srcs: [
+        ":mesa3d_desktop-panvk_src_compiler_nir_nir_intrinsics_py_cp",
+        ":mesa3d_desktop-panvk_src_compiler_nir_nir_opcodes_py_cp",
+        "src/compiler/nir/nir_constant_expressions.py",
+    ],
+    defaults: ["mesa_python_default"],
+}
+
+cc_genrule {
+    name: "mesa3d_desktop-panvk_src_compiler_nir_nir_constant_expressions_c",
+    cmd: "python3 $(location) > $(location nir_constant_expressions.c)",
+    srcs: [
+        "src/compiler/nir/nir_intrinsics.py",
+        "src/compiler/nir/nir_opcodes.py",
+    ],
+    out: ["nir_constant_expressions.c"],
+    tools: ["mesa3d_desktop-panvk_src_compiler_nir_nir_constant_expressions_py"],
+    vendor_available: true,
+}
+
+python_binary_host {
+    name: "mesa3d_desktop-panvk_src_compiler_nir_nir_opcodes_c_py",
+    main: "src/compiler/nir/nir_opcodes_c.py",
+    srcs: [
+        ":mesa3d_desktop-panvk_src_compiler_nir_nir_intrinsics_py_cp",
+        ":mesa3d_desktop-panvk_src_compiler_nir_nir_opcodes_py_cp",
+        "src/compiler/nir/nir_opcodes_c.py",
+    ],
+    defaults: ["mesa_python_default"],
+}
+
+cc_genrule {
+    name: "mesa3d_desktop-panvk_src_compiler_nir_nir_opcodes_c",
+    cmd: "python3 $(location) > $(location nir_opcodes.c)",
+    srcs: [
+        "src/compiler/nir/nir_intrinsics.py",
+        "src/compiler/nir/nir_opcodes.py",
+    ],
+    out: ["nir_opcodes.c"],
+    tools: ["mesa3d_desktop-panvk_src_compiler_nir_nir_opcodes_c_py"],
+    vendor_available: true,
+}
+
+genrule {
+    name: "mesa3d_desktop-panvk_src_compiler_nir_nir_algebraic_py_cp",
+    cmd: "cp $(in) $(out)",
+    srcs: ["src/compiler/nir/nir_algebraic.py"],
+    out: ["nir_algebraic.py"],
+}
+
+python_binary_host {
+    name: "mesa3d_desktop-panvk_src_compiler_nir_nir_opt_algebraic_py",
+    main: "src/compiler/nir/nir_opt_algebraic.py",
+    srcs: [
+        ":mesa3d_desktop-panvk_src_compiler_nir_nir_algebraic_py_cp",
+        ":mesa3d_desktop-panvk_src_compiler_nir_nir_opcodes_py_cp",
+        "src/compiler/nir/nir_opt_algebraic.py",
+    ],
+    defaults: ["mesa_python_default"],
+}
+
+cc_genrule {
+    name: "mesa3d_desktop-panvk_src_compiler_nir_nir_opt_algebraic_c",
+    cmd: "python3 $(location) --out $(location nir_opt_algebraic.c)",
+    srcs: [
+        "src/compiler/nir/nir_algebraic.py",
+        "src/compiler/nir/nir_opcodes.py",
+    ],
+    out: ["nir_opt_algebraic.c"],
+    tools: ["mesa3d_desktop-panvk_src_compiler_nir_nir_opt_algebraic_py"],
+    vendor_available: true,
 }
 
 cc_library_static {
     name: "mesa3d_desktop-panvk_src_compiler_libcompiler_a",
     srcs: [
-        "meson_generated/src/compiler/builtin_types.c",
         "src/compiler/glsl_types.c",
         "src/compiler/shader_enums.c",
     ],
@@ -1687,7 +2771,33 @@ cc_library_static {
         "src",
         "src/compiler",
     ],
+    generated_sources: ["mesa3d_desktop-panvk_src_compiler_builtin_types_c"],
+    generated_headers: [
+        "mesa3d_desktop-panvk_src_compiler_builtin_types_h",
+        "mesa3d_desktop-panvk_src_compiler_ir_expression_operation_h",
+        "mesa3d_desktop-panvk_src_util_format_u_format_gen_h",
+        "mesa3d_desktop-panvk_src_util_shader_stats_h",
+    ],
     defaults: ["mesa3d-desktop-panvk-defaults"],
+}
+
+python_binary_host {
+    name: "mesa3d_desktop-panvk_src_compiler_builtin_types_c_py",
+    main: "src/compiler/builtin_types_c.py",
+    srcs: [
+        ":mesa3d_desktop-panvk_src_compiler_builtin_types_py_cp",
+        "src/compiler/builtin_types_c.py",
+    ],
+    defaults: ["mesa_python_default"],
+}
+
+cc_genrule {
+    name: "mesa3d_desktop-panvk_src_compiler_builtin_types_c",
+    cmd: "python3 $(location) $(location builtin_types.c)",
+    srcs: ["src/compiler/builtin_types.py"],
+    out: ["builtin_types.c"],
+    tools: ["mesa3d_desktop-panvk_src_compiler_builtin_types_c_py"],
+    vendor_available: true,
 }
 
 cc_library_static {
@@ -1698,6 +2808,7 @@ cc_library_static {
         "src",
         "src/c11/impl",
     ],
+    generated_headers: ["mesa3d_desktop-panvk_src_util_shader_stats_h"],
     defaults: ["mesa3d-desktop-panvk-defaults"],
 }
 
@@ -1768,6 +2879,26 @@ cc_library_shared {
         "src/tool",
         "src/tool/pps",
     ],
+    generated_headers: [
+        "mesa3d_desktop-panvk_src_compiler_builtin_types_h",
+        "mesa3d_desktop-panvk_src_compiler_ir_expression_operation_h",
+        "mesa3d_desktop-panvk_src_compiler_nir_nir_builder_opcodes_h",
+        "mesa3d_desktop-panvk_src_compiler_nir_nir_opcodes_h",
+        "mesa3d_desktop-panvk_src_panfrost_compiler_bi_builder_h",
+        "mesa3d_desktop-panvk_src_panfrost_compiler_bi_opcodes_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_common_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v10_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v12_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v13_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v4_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v5_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v6_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v7_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v9_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_perf_pan_perf_metrics_h",
+        "mesa3d_desktop-panvk_src_util_format_u_format_gen_h",
+        "mesa3d_desktop-panvk_src_util_shader_stats_h",
+    ],
     defaults: ["mesa3d-desktop-panvk-defaults"],
 }
 
@@ -1775,7 +2906,6 @@ cc_library_shared {
     name: "mesa3d_desktop-panvk_libvulkan_panfrost",
     stem: "vulkan.panfrost",
     srcs: [
-        "meson_generated/src/panfrost/vulkan/panvk_entrypoints.c",
         "meson_generated/src/panfrost/vulkan/panvk_tracepoints.c",
         "src/panfrost/vulkan/panvk_android.c",
         "src/panfrost/vulkan/panvk_buffer.c",
@@ -1870,7 +3000,6 @@ cc_library_shared {
         "meson_generated/src/compiler/spirv",
         "meson_generated/src/panfrost",
         "meson_generated/src/panfrost/compiler",
-        "meson_generated/src/panfrost/genxml",
         "meson_generated/src/panfrost/libpan",
         "meson_generated/src/panfrost/midgard",
         "meson_generated/src/panfrost/vulkan",
@@ -1878,7 +3007,6 @@ cc_library_shared {
         "meson_generated/src/util/format",
         "meson_generated/src/vulkan/runtime",
         "meson_generated/src/vulkan/util",
-        "meson_generated/src/vulkan/wsi",
         "src",
         "src/compiler",
         "src/compiler/nir",
@@ -1896,6 +3024,39 @@ cc_library_shared {
         "src/vulkan/util",
         "src/vulkan/wsi",
     ],
+    generated_sources: ["mesa3d_desktop-panvk_src_panfrost_vulkan_panvk_entrypoints_c"],
+    generated_headers: [
+        "mesa3d_desktop-panvk_src_compiler_builtin_types_h",
+        "mesa3d_desktop-panvk_src_compiler_ir_expression_operation_h",
+        "mesa3d_desktop-panvk_src_compiler_nir_nir_builder_opcodes_h",
+        "mesa3d_desktop-panvk_src_compiler_nir_nir_opcodes_h",
+        "mesa3d_desktop-panvk_src_compiler_spirv_vtn_generator_ids_h",
+        "mesa3d_desktop-panvk_src_panfrost_compiler_bi_builder_h",
+        "mesa3d_desktop-panvk_src_panfrost_compiler_bi_opcodes_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_common_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v10_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v12_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v13_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v4_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v5_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v6_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v7_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v9_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_vulkan_panvk_entrypoints_h",
+        "mesa3d_desktop-panvk_src_util_driconf_static_h",
+        "mesa3d_desktop-panvk_src_util_format_u_format_gen_h",
+        "mesa3d_desktop-panvk_src_util_shader_stats_h",
+        "mesa3d_desktop-panvk_src_vulkan_runtime_vk_cmd_enqueue_entrypoints_h",
+        "mesa3d_desktop-panvk_src_vulkan_runtime_vk_cmd_queue_h",
+        "mesa3d_desktop-panvk_src_vulkan_runtime_vk_common_entrypoints_h",
+        "mesa3d_desktop-panvk_src_vulkan_runtime_vk_dispatch_trampolines_h",
+        "mesa3d_desktop-panvk_src_vulkan_runtime_vk_format_info_h",
+        "mesa3d_desktop-panvk_src_vulkan_runtime_vk_physical_device_features_h",
+        "mesa3d_desktop-panvk_src_vulkan_runtime_vk_physical_device_properties_h",
+        "mesa3d_desktop-panvk_src_vulkan_util_vk_dispatch_table_h",
+        "mesa3d_desktop-panvk_src_vulkan_util_vk_extensions_h",
+        "mesa3d_desktop-panvk_src_vulkan_wsi_wsi_common_entrypoints_h",
+    ],
     relative_install_path: "hw",
     afdo: true,
     defaults: ["mesa3d-desktop-panvk-defaults"],
@@ -1904,7 +3065,6 @@ cc_library_shared {
 cc_library_static {
     name: "mesa3d_desktop-panvk_src_vulkan_wsi_libvulkan_wsi_a",
     srcs: [
-        "meson_generated/src/vulkan/wsi/wsi_common_entrypoints.c",
         "src/vulkan/wsi/wsi_common.c",
         "src/vulkan/wsi/wsi_common_drm.c",
         "src/vulkan/wsi/wsi_common_headless.c",
@@ -1919,22 +3079,306 @@ cc_library_static {
         "meson_generated/src/util/format",
         "meson_generated/src/vulkan/runtime",
         "meson_generated/src/vulkan/util",
-        "meson_generated/src/vulkan/wsi",
         "src",
         "src/vulkan/runtime",
         "src/vulkan/runtime/bvh",
         "src/vulkan/util",
         "src/vulkan/wsi",
     ],
+    generated_sources: ["mesa3d_desktop-panvk_src_vulkan_wsi_wsi_common_entrypoints_c"],
+    generated_headers: [
+        "mesa3d_desktop-panvk_src_util_format_u_format_gen_h",
+        "mesa3d_desktop-panvk_src_util_shader_stats_h",
+        "mesa3d_desktop-panvk_src_vulkan_runtime_vk_cmd_enqueue_entrypoints_h",
+        "mesa3d_desktop-panvk_src_vulkan_runtime_vk_cmd_queue_h",
+        "mesa3d_desktop-panvk_src_vulkan_runtime_vk_common_entrypoints_h",
+        "mesa3d_desktop-panvk_src_vulkan_runtime_vk_physical_device_features_h",
+        "mesa3d_desktop-panvk_src_vulkan_runtime_vk_physical_device_properties_h",
+        "mesa3d_desktop-panvk_src_vulkan_util_vk_dispatch_table_h",
+        "mesa3d_desktop-panvk_src_vulkan_util_vk_extensions_h",
+        "mesa3d_desktop-panvk_src_vulkan_wsi_wsi_common_entrypoints_h",
+    ],
     defaults: ["mesa3d-desktop-panvk-defaults"],
+}
+
+cc_genrule {
+    name: "mesa3d_desktop-panvk_src_vulkan_wsi_wsi_common_entrypoints_h",
+    cmd: "cp $(in) $(out)",
+    srcs: [":mesa3d_desktop-panvk_n2s_src_vulkan_wsi_wsi_common_entrypoints_h{n2s/src/vulkan/wsi/wsi_common_entrypoints.h}"],
+    out: ["wsi_common_entrypoints.h"],
+    vendor_available: true,
+}
+
+genrule {
+    name: "mesa3d_desktop-panvk_src_vulkan_util_vk_entrypoints_py_cp",
+    cmd: "cp $(in) $(out)",
+    srcs: ["src/vulkan/util/vk_entrypoints.py"],
+    out: ["vk_entrypoints.py"],
+}
+
+genrule {
+    name: "mesa3d_desktop-panvk_src_vulkan_util_vk_extensions_py_cp",
+    cmd: "cp $(in) $(out)",
+    srcs: ["src/vulkan/util/vk_extensions.py"],
+    out: ["vk_extensions.py"],
+}
+
+python_binary_host {
+    name: "mesa3d_desktop-panvk_src_vulkan_util_vk_entrypoints_gen_py",
+    main: "src/vulkan/util/vk_entrypoints_gen.py",
+    srcs: [
+        ":mesa3d_desktop-panvk_src_vulkan_util_vk_entrypoints_py_cp",
+        ":mesa3d_desktop-panvk_src_vulkan_util_vk_extensions_py_cp",
+        "src/vulkan/util/vk_entrypoints_gen.py",
+    ],
+    defaults: ["mesa_python_default"],
+}
+
+cc_genrule {
+    name: "mesa3d_desktop-panvk_n2s_src_vulkan_wsi_wsi_common_entrypoints_h",
+    cmd: "python3 $(location) --xml $(location src/vulkan/registry/vk.xml) --proto --weak --out-h $(location n2s/src/vulkan/wsi/wsi_common_entrypoints.h) --out-c $(location n2s/src/vulkan/wsi/wsi_common_entrypoints.c) --prefix wsi --beta false",
+    srcs: [
+        "src/vulkan/registry/vk.xml",
+        "src/vulkan/util/vk_entrypoints.py",
+        "src/vulkan/util/vk_extensions.py",
+    ],
+    out: [
+        "n2s/src/vulkan/wsi/wsi_common_entrypoints.c",
+        "n2s/src/vulkan/wsi/wsi_common_entrypoints.h",
+    ],
+    tools: ["mesa3d_desktop-panvk_src_vulkan_util_vk_entrypoints_gen_py"],
+    vendor_available: true,
+}
+
+cc_genrule {
+    name: "mesa3d_desktop-panvk_src_vulkan_util_vk_extensions_h",
+    cmd: "cp $(in) $(out)",
+    srcs: [":mesa3d_desktop-panvk_n2s_src_vulkan_util_vk_extensions_c{n2s/src/vulkan/util/vk_extensions.h}"],
+    out: ["vk_extensions.h"],
+    vendor_available: true,
+}
+
+python_binary_host {
+    name: "mesa3d_desktop-panvk_src_vulkan_util_vk_extensions_gen_py",
+    main: "src/vulkan/util/vk_extensions_gen.py",
+    srcs: [
+        ":mesa3d_desktop-panvk_src_vulkan_util_vk_extensions_py_cp",
+        "src/vulkan/util/vk_extensions_gen.py",
+    ],
+    defaults: ["mesa_python_default"],
+}
+
+cc_genrule {
+    name: "mesa3d_desktop-panvk_n2s_src_vulkan_util_vk_extensions_c",
+    cmd: "python3 $(location) --xml $(location src/vulkan/registry/vk.xml) --out-c $(location n2s/src/vulkan/util/vk_extensions.c) --out-h $(location n2s/src/vulkan/util/vk_extensions.h)",
+    srcs: [
+        "src/vulkan/registry/vk.xml",
+        "src/vulkan/util/vk_extensions.py",
+    ],
+    out: [
+        "n2s/src/vulkan/util/vk_extensions.c",
+        "n2s/src/vulkan/util/vk_extensions.h",
+    ],
+    tools: ["mesa3d_desktop-panvk_src_vulkan_util_vk_extensions_gen_py"],
+    vendor_available: true,
+}
+
+cc_genrule {
+    name: "mesa3d_desktop-panvk_src_vulkan_util_vk_dispatch_table_h",
+    cmd: "cp $(in) $(out)",
+    srcs: [":mesa3d_desktop-panvk_n2s_src_vulkan_util_vk_dispatch_table_c{n2s/src/vulkan/util/vk_dispatch_table.h}"],
+    out: ["vk_dispatch_table.h"],
+    vendor_available: true,
+}
+
+python_binary_host {
+    name: "mesa3d_desktop-panvk_src_vulkan_util_vk_dispatch_table_gen_py",
+    main: "src/vulkan/util/vk_dispatch_table_gen.py",
+    srcs: [
+        ":mesa3d_desktop-panvk_src_vulkan_util_vk_entrypoints_py_cp",
+        ":mesa3d_desktop-panvk_src_vulkan_util_vk_extensions_py_cp",
+        "src/vulkan/util/vk_dispatch_table_gen.py",
+    ],
+    defaults: ["mesa_python_default"],
+}
+
+cc_genrule {
+    name: "mesa3d_desktop-panvk_n2s_src_vulkan_util_vk_dispatch_table_c",
+    cmd: "python3 $(location) --xml $(location src/vulkan/registry/vk.xml) --out-c $(location n2s/src/vulkan/util/vk_dispatch_table.c) --out-h $(location n2s/src/vulkan/util/vk_dispatch_table.h) --beta false",
+    srcs: [
+        "src/vulkan/registry/vk.xml",
+        "src/vulkan/util/vk_entrypoints.py",
+        "src/vulkan/util/vk_extensions.py",
+    ],
+    out: [
+        "n2s/src/vulkan/util/vk_dispatch_table.c",
+        "n2s/src/vulkan/util/vk_dispatch_table.h",
+    ],
+    tools: ["mesa3d_desktop-panvk_src_vulkan_util_vk_dispatch_table_gen_py"],
+    vendor_available: true,
+}
+
+cc_genrule {
+    name: "mesa3d_desktop-panvk_src_vulkan_runtime_vk_physical_device_properties_h",
+    cmd: "cp $(in) $(out)",
+    srcs: [":mesa3d_desktop-panvk_n2s_src_vulkan_runtime_vk_physical_device_properties_c{n2s/src/vulkan/runtime/vk_physical_device_properties.h}"],
+    out: ["vk_physical_device_properties.h"],
+    vendor_available: true,
+}
+
+python_binary_host {
+    name: "mesa3d_desktop-panvk_src_vulkan_util_vk_physical_device_properties_gen_py",
+    main: "src/vulkan/util/vk_physical_device_properties_gen.py",
+    srcs: [
+        ":mesa3d_desktop-panvk_src_vulkan_util_vk_extensions_py_cp",
+        "src/vulkan/util/vk_physical_device_properties_gen.py",
+    ],
+    defaults: ["mesa_python_default"],
+}
+
+cc_genrule {
+    name: "mesa3d_desktop-panvk_n2s_src_vulkan_runtime_vk_physical_device_properties_c",
+    cmd: "python3 $(location) --xml $(location src/vulkan/registry/vk.xml) --out-c $(location n2s/src/vulkan/runtime/vk_physical_device_properties.c) --out-h $(location n2s/src/vulkan/runtime/vk_physical_device_properties.h) --beta false",
+    srcs: [
+        "src/vulkan/registry/vk.xml",
+        "src/vulkan/util/vk_extensions.py",
+    ],
+    out: [
+        "n2s/src/vulkan/runtime/vk_physical_device_properties.c",
+        "n2s/src/vulkan/runtime/vk_physical_device_properties.h",
+    ],
+    tools: ["mesa3d_desktop-panvk_src_vulkan_util_vk_physical_device_properties_gen_py"],
+    vendor_available: true,
+}
+
+cc_genrule {
+    name: "mesa3d_desktop-panvk_src_vulkan_runtime_vk_physical_device_features_h",
+    cmd: "cp $(in) $(out)",
+    srcs: [":mesa3d_desktop-panvk_n2s_src_vulkan_runtime_vk_physical_device_features_c{n2s/src/vulkan/runtime/vk_physical_device_features.h}"],
+    out: ["vk_physical_device_features.h"],
+    vendor_available: true,
+}
+
+python_binary_host {
+    name: "mesa3d_desktop-panvk_src_vulkan_util_vk_physical_device_features_gen_py",
+    main: "src/vulkan/util/vk_physical_device_features_gen.py",
+    srcs: [
+        ":mesa3d_desktop-panvk_src_vulkan_util_vk_extensions_py_cp",
+        "src/vulkan/util/vk_physical_device_features_gen.py",
+    ],
+    defaults: ["mesa_python_default"],
+}
+
+cc_genrule {
+    name: "mesa3d_desktop-panvk_n2s_src_vulkan_runtime_vk_physical_device_features_c",
+    cmd: "python3 $(location) --xml $(location src/vulkan/registry/vk.xml) --out-c $(location n2s/src/vulkan/runtime/vk_physical_device_features.c) --out-h $(location n2s/src/vulkan/runtime/vk_physical_device_features.h) --beta false",
+    srcs: [
+        "src/vulkan/registry/vk.xml",
+        "src/vulkan/util/vk_extensions.py",
+    ],
+    out: [
+        "n2s/src/vulkan/runtime/vk_physical_device_features.c",
+        "n2s/src/vulkan/runtime/vk_physical_device_features.h",
+    ],
+    tools: ["mesa3d_desktop-panvk_src_vulkan_util_vk_physical_device_features_gen_py"],
+    vendor_available: true,
+}
+
+cc_genrule {
+    name: "mesa3d_desktop-panvk_src_vulkan_runtime_vk_common_entrypoints_h",
+    cmd: "cp $(in) $(out)",
+    srcs: [":mesa3d_desktop-panvk_n2s_src_vulkan_runtime_vk_common_entrypoints_h{n2s/src/vulkan/runtime/vk_common_entrypoints.h}"],
+    out: ["vk_common_entrypoints.h"],
+    vendor_available: true,
+}
+
+cc_genrule {
+    name: "mesa3d_desktop-panvk_n2s_src_vulkan_runtime_vk_common_entrypoints_h",
+    cmd: "python3 $(location) --xml $(location src/vulkan/registry/vk.xml) --proto --weak --out-h $(location n2s/src/vulkan/runtime/vk_common_entrypoints.h) --out-c $(location n2s/src/vulkan/runtime/vk_common_entrypoints.c) --prefix vk_common --beta false",
+    srcs: [
+        "src/vulkan/registry/vk.xml",
+        "src/vulkan/util/vk_entrypoints.py",
+        "src/vulkan/util/vk_extensions.py",
+    ],
+    out: [
+        "n2s/src/vulkan/runtime/vk_common_entrypoints.c",
+        "n2s/src/vulkan/runtime/vk_common_entrypoints.h",
+    ],
+    tools: ["mesa3d_desktop-panvk_src_vulkan_util_vk_entrypoints_gen_py"],
+    vendor_available: true,
+}
+
+cc_genrule {
+    name: "mesa3d_desktop-panvk_src_vulkan_runtime_vk_cmd_queue_h",
+    cmd: "cp $(in) $(out)",
+    srcs: [":mesa3d_desktop-panvk_n2s_src_vulkan_runtime_vk_cmd_queue_c{n2s/src/vulkan/runtime/vk_cmd_queue.h}"],
+    out: ["vk_cmd_queue.h"],
+    vendor_available: true,
+}
+
+python_binary_host {
+    name: "mesa3d_desktop-panvk_src_vulkan_util_vk_cmd_queue_gen_py",
+    main: "src/vulkan/util/vk_cmd_queue_gen.py",
+    srcs: [
+        ":mesa3d_desktop-panvk_src_vulkan_util_vk_entrypoints_py_cp",
+        ":mesa3d_desktop-panvk_src_vulkan_util_vk_extensions_py_cp",
+        "src/vulkan/util/vk_cmd_queue_gen.py",
+    ],
+    defaults: ["mesa_python_default"],
+}
+
+cc_genrule {
+    name: "mesa3d_desktop-panvk_n2s_src_vulkan_runtime_vk_cmd_queue_c",
+    cmd: "python3 $(location) --xml $(location src/vulkan/registry/vk.xml) --out-c $(location n2s/src/vulkan/runtime/vk_cmd_queue.c) --out-h $(location n2s/src/vulkan/runtime/vk_cmd_queue.h) --beta false",
+    srcs: [
+        "src/vulkan/registry/vk.xml",
+        "src/vulkan/util/vk_entrypoints.py",
+        "src/vulkan/util/vk_extensions.py",
+    ],
+    out: [
+        "n2s/src/vulkan/runtime/vk_cmd_queue.c",
+        "n2s/src/vulkan/runtime/vk_cmd_queue.h",
+    ],
+    tools: ["mesa3d_desktop-panvk_src_vulkan_util_vk_cmd_queue_gen_py"],
+    vendor_available: true,
+}
+
+cc_genrule {
+    name: "mesa3d_desktop-panvk_src_vulkan_runtime_vk_cmd_enqueue_entrypoints_h",
+    cmd: "cp $(in) $(out)",
+    srcs: [":mesa3d_desktop-panvk_n2s_src_vulkan_runtime_vk_cmd_enqueue_entrypoints_h{n2s/src/vulkan/runtime/vk_cmd_enqueue_entrypoints.h}"],
+    out: ["vk_cmd_enqueue_entrypoints.h"],
+    vendor_available: true,
+}
+
+cc_genrule {
+    name: "mesa3d_desktop-panvk_n2s_src_vulkan_runtime_vk_cmd_enqueue_entrypoints_h",
+    cmd: "python3 $(location) --xml $(location src/vulkan/registry/vk.xml) --proto --weak --out-h $(location n2s/src/vulkan/runtime/vk_cmd_enqueue_entrypoints.h) --out-c $(location n2s/src/vulkan/runtime/vk_cmd_enqueue_entrypoints.c) --prefix vk_cmd_enqueue --prefix vk_cmd_enqueue_unless_primary --beta false",
+    srcs: [
+        "src/vulkan/registry/vk.xml",
+        "src/vulkan/util/vk_entrypoints.py",
+        "src/vulkan/util/vk_extensions.py",
+    ],
+    out: [
+        "n2s/src/vulkan/runtime/vk_cmd_enqueue_entrypoints.c",
+        "n2s/src/vulkan/runtime/vk_cmd_enqueue_entrypoints.h",
+    ],
+    tools: ["mesa3d_desktop-panvk_src_vulkan_util_vk_entrypoints_gen_py"],
+    vendor_available: true,
+}
+
+cc_genrule {
+    name: "mesa3d_desktop-panvk_src_vulkan_wsi_wsi_common_entrypoints_c",
+    cmd: "cp $(in) $(out)",
+    srcs: [":mesa3d_desktop-panvk_n2s_src_vulkan_wsi_wsi_common_entrypoints_h{n2s/src/vulkan/wsi/wsi_common_entrypoints.c}"],
+    out: ["wsi_common_entrypoints.c"],
+    vendor_available: true,
 }
 
 cc_library_static {
     name: "mesa3d_desktop-panvk_src_vulkan_util_libvulkan_util_a",
     srcs: [
-        "meson_generated/src/vulkan/util/vk_dispatch_table.c",
         "meson_generated/src/vulkan/util/vk_enum_to_str.c",
-        "meson_generated/src/vulkan/util/vk_extensions.c",
         "src/vulkan/util/vk_alloc.c",
         "src/vulkan/util/vk_format.c",
         "src/vulkan/util/vk_util.c",
@@ -1954,7 +3398,37 @@ cc_library_static {
         "src/compiler/nir",
         "src/vulkan/util",
     ],
+    generated_sources: [
+        "mesa3d_desktop-panvk_src_vulkan_util_vk_dispatch_table_c",
+        "mesa3d_desktop-panvk_src_vulkan_util_vk_extensions_c",
+    ],
+    generated_headers: [
+        "mesa3d_desktop-panvk_src_compiler_builtin_types_h",
+        "mesa3d_desktop-panvk_src_compiler_ir_expression_operation_h",
+        "mesa3d_desktop-panvk_src_compiler_nir_nir_builder_opcodes_h",
+        "mesa3d_desktop-panvk_src_compiler_nir_nir_opcodes_h",
+        "mesa3d_desktop-panvk_src_util_format_u_format_gen_h",
+        "mesa3d_desktop-panvk_src_util_shader_stats_h",
+        "mesa3d_desktop-panvk_src_vulkan_util_vk_dispatch_table_h",
+        "mesa3d_desktop-panvk_src_vulkan_util_vk_extensions_h",
+    ],
     defaults: ["mesa3d-desktop-panvk-defaults"],
+}
+
+cc_genrule {
+    name: "mesa3d_desktop-panvk_src_vulkan_util_vk_extensions_c",
+    cmd: "cp $(in) $(out)",
+    srcs: [":mesa3d_desktop-panvk_n2s_src_vulkan_util_vk_extensions_c{n2s/src/vulkan/util/vk_extensions.c}"],
+    out: ["vk_extensions.c"],
+    vendor_available: true,
+}
+
+cc_genrule {
+    name: "mesa3d_desktop-panvk_src_vulkan_util_vk_dispatch_table_c",
+    cmd: "cp $(in) $(out)",
+    srcs: [":mesa3d_desktop-panvk_n2s_src_vulkan_util_vk_dispatch_table_c{n2s/src/vulkan/util/vk_dispatch_table.c}"],
+    out: ["vk_dispatch_table.c"],
+    vendor_available: true,
 }
 
 cc_library_static {
@@ -1992,21 +3466,91 @@ cc_library_static {
         "src/vulkan/runtime",
         "src/vulkan/util",
     ],
+    generated_headers: [
+        "mesa3d_desktop-panvk_src_compiler_builtin_types_h",
+        "mesa3d_desktop-panvk_src_compiler_ir_expression_operation_h",
+        "mesa3d_desktop-panvk_src_compiler_nir_nir_builder_opcodes_h",
+        "mesa3d_desktop-panvk_src_compiler_nir_nir_opcodes_h",
+        "mesa3d_desktop-panvk_src_util_format_u_format_gen_h",
+        "mesa3d_desktop-panvk_src_util_shader_stats_h",
+        "mesa3d_desktop-panvk_src_vulkan_runtime_vk_cmd_enqueue_entrypoints_h",
+        "mesa3d_desktop-panvk_src_vulkan_runtime_vk_cmd_queue_h",
+        "mesa3d_desktop-panvk_src_vulkan_runtime_vk_common_entrypoints_h",
+        "mesa3d_desktop-panvk_src_vulkan_runtime_vk_dispatch_trampolines_h",
+        "mesa3d_desktop-panvk_src_vulkan_runtime_vk_format_info_h",
+        "mesa3d_desktop-panvk_src_vulkan_runtime_vk_physical_device_features_h",
+        "mesa3d_desktop-panvk_src_vulkan_runtime_vk_physical_device_properties_h",
+        "mesa3d_desktop-panvk_src_vulkan_util_vk_dispatch_table_h",
+        "mesa3d_desktop-panvk_src_vulkan_util_vk_extensions_h",
+    ],
     defaults: ["mesa3d-desktop-panvk-defaults"],
+}
+
+cc_genrule {
+    name: "mesa3d_desktop-panvk_src_vulkan_runtime_vk_format_info_h",
+    cmd: "cp $(in) $(out)",
+    srcs: [":mesa3d_desktop-panvk_n2s_src_vulkan_runtime_vk_format_info_c{n2s/src/vulkan/runtime/vk_format_info.h}"],
+    out: ["vk_format_info.h"],
+    vendor_available: true,
+}
+
+python_binary_host {
+    name: "mesa3d_desktop-panvk_src_vulkan_runtime_vk_format_info_gen_py",
+    main: "src/vulkan/runtime/vk_format_info_gen.py",
+    srcs: ["src/vulkan/runtime/vk_format_info_gen.py"],
+    defaults: ["mesa_python_default"],
+}
+
+cc_genrule {
+    name: "mesa3d_desktop-panvk_n2s_src_vulkan_runtime_vk_format_info_c",
+    cmd: "python3 $(location) --xml $(location src/vulkan/registry/vk.xml) --out-c $(location n2s/src/vulkan/runtime/vk_format_info.c) --out-h $(location n2s/src/vulkan/runtime/vk_format_info.h)",
+    srcs: ["src/vulkan/registry/vk.xml"],
+    out: [
+        "n2s/src/vulkan/runtime/vk_format_info.c",
+        "n2s/src/vulkan/runtime/vk_format_info.h",
+    ],
+    tools: ["mesa3d_desktop-panvk_src_vulkan_runtime_vk_format_info_gen_py"],
+    vendor_available: true,
+}
+
+cc_genrule {
+    name: "mesa3d_desktop-panvk_src_vulkan_runtime_vk_dispatch_trampolines_h",
+    cmd: "cp $(in) $(out)",
+    srcs: [":mesa3d_desktop-panvk_n2s_src_vulkan_runtime_vk_dispatch_trampolines_c{n2s/src/vulkan/runtime/vk_dispatch_trampolines.h}"],
+    out: ["vk_dispatch_trampolines.h"],
+    vendor_available: true,
+}
+
+python_binary_host {
+    name: "mesa3d_desktop-panvk_src_vulkan_util_vk_dispatch_trampolines_gen_py",
+    main: "src/vulkan/util/vk_dispatch_trampolines_gen.py",
+    srcs: [
+        ":mesa3d_desktop-panvk_src_vulkan_util_vk_entrypoints_py_cp",
+        ":mesa3d_desktop-panvk_src_vulkan_util_vk_extensions_py_cp",
+        "src/vulkan/util/vk_dispatch_trampolines_gen.py",
+    ],
+    defaults: ["mesa_python_default"],
+}
+
+cc_genrule {
+    name: "mesa3d_desktop-panvk_n2s_src_vulkan_runtime_vk_dispatch_trampolines_c",
+    cmd: "python3 $(location) --xml $(location src/vulkan/registry/vk.xml) --out-c $(location n2s/src/vulkan/runtime/vk_dispatch_trampolines.c) --out-h $(location n2s/src/vulkan/runtime/vk_dispatch_trampolines.h) --beta false",
+    srcs: [
+        "src/vulkan/registry/vk.xml",
+        "src/vulkan/util/vk_entrypoints.py",
+        "src/vulkan/util/vk_extensions.py",
+    ],
+    out: [
+        "n2s/src/vulkan/runtime/vk_dispatch_trampolines.c",
+        "n2s/src/vulkan/runtime/vk_dispatch_trampolines.h",
+    ],
+    tools: ["mesa3d_desktop-panvk_src_vulkan_util_vk_dispatch_trampolines_gen_py"],
+    vendor_available: true,
 }
 
 cc_library_static {
     name: "mesa3d_desktop-panvk_src_vulkan_runtime_libvulkan_lite_runtime_a",
     srcs: [
-        "meson_generated/src/vulkan/runtime/vk_cmd_enqueue_entrypoints.c",
-        "meson_generated/src/vulkan/runtime/vk_cmd_queue.c",
-        "meson_generated/src/vulkan/runtime/vk_common_entrypoints.c",
-        "meson_generated/src/vulkan/runtime/vk_dispatch_trampolines.c",
-        "meson_generated/src/vulkan/runtime/vk_format_info.c",
-        "meson_generated/src/vulkan/runtime/vk_physical_device_features.c",
-        "meson_generated/src/vulkan/runtime/vk_physical_device_properties.c",
-        "meson_generated/src/vulkan/runtime/vk_physical_device_spirv_caps.c",
-        "meson_generated/src/vulkan/runtime/vk_synchronization_helpers.c",
         "src/vulkan/runtime/rmv/vk_rmv_common.c",
         "src/vulkan/runtime/rmv/vk_rmv_exporter.c",
         "src/vulkan/runtime/vk_android.c",
@@ -2071,7 +3615,144 @@ cc_library_static {
         "src/vulkan/runtime",
         "src/vulkan/util",
     ],
+    generated_sources: [
+        "mesa3d_desktop-panvk_src_vulkan_runtime_vk_cmd_enqueue_entrypoints_c",
+        "mesa3d_desktop-panvk_src_vulkan_runtime_vk_cmd_queue_c",
+        "mesa3d_desktop-panvk_src_vulkan_runtime_vk_common_entrypoints_c",
+        "mesa3d_desktop-panvk_src_vulkan_runtime_vk_dispatch_trampolines_c",
+        "mesa3d_desktop-panvk_src_vulkan_runtime_vk_format_info_c",
+        "mesa3d_desktop-panvk_src_vulkan_runtime_vk_physical_device_features_c",
+        "mesa3d_desktop-panvk_src_vulkan_runtime_vk_physical_device_properties_c",
+        "mesa3d_desktop-panvk_src_vulkan_runtime_vk_physical_device_spirv_caps_c",
+        "mesa3d_desktop-panvk_src_vulkan_runtime_vk_synchronization_helpers_c",
+    ],
+    generated_headers: [
+        "mesa3d_desktop-panvk_src_compiler_builtin_types_h",
+        "mesa3d_desktop-panvk_src_compiler_ir_expression_operation_h",
+        "mesa3d_desktop-panvk_src_compiler_nir_nir_builder_opcodes_h",
+        "mesa3d_desktop-panvk_src_compiler_nir_nir_opcodes_h",
+        "mesa3d_desktop-panvk_src_util_format_u_format_gen_h",
+        "mesa3d_desktop-panvk_src_util_shader_stats_h",
+        "mesa3d_desktop-panvk_src_vulkan_runtime_vk_cmd_enqueue_entrypoints_h",
+        "mesa3d_desktop-panvk_src_vulkan_runtime_vk_cmd_queue_h",
+        "mesa3d_desktop-panvk_src_vulkan_runtime_vk_common_entrypoints_h",
+        "mesa3d_desktop-panvk_src_vulkan_runtime_vk_dispatch_trampolines_h",
+        "mesa3d_desktop-panvk_src_vulkan_runtime_vk_format_info_h",
+        "mesa3d_desktop-panvk_src_vulkan_runtime_vk_physical_device_features_h",
+        "mesa3d_desktop-panvk_src_vulkan_runtime_vk_physical_device_properties_h",
+        "mesa3d_desktop-panvk_src_vulkan_util_vk_dispatch_table_h",
+        "mesa3d_desktop-panvk_src_vulkan_util_vk_extensions_h",
+    ],
     defaults: ["mesa3d-desktop-panvk-defaults"],
+}
+
+python_binary_host {
+    name: "mesa3d_desktop-panvk_src_vulkan_util_vk_synchronization_helpers_gen_py",
+    main: "src/vulkan/util/vk_synchronization_helpers_gen.py",
+    srcs: [
+        ":mesa3d_desktop-panvk_src_vulkan_util_vk_extensions_py_cp",
+        "src/vulkan/util/vk_synchronization_helpers_gen.py",
+    ],
+    defaults: ["mesa_python_default"],
+}
+
+cc_genrule {
+    name: "mesa3d_desktop-panvk_src_vulkan_runtime_vk_synchronization_helpers_c",
+    cmd: "python3 $(location) --xml $(location src/vulkan/registry/vk.xml) --out-c $(location vk_synchronization_helpers.c) --beta false",
+    srcs: [
+        "src/vulkan/registry/vk.xml",
+        "src/vulkan/util/vk_extensions.py",
+    ],
+    out: ["vk_synchronization_helpers.c"],
+    tools: ["mesa3d_desktop-panvk_src_vulkan_util_vk_synchronization_helpers_gen_py"],
+    vendor_available: true,
+}
+
+genrule {
+    name: "mesa3d_desktop-panvk_src_vulkan_util_vk_physical_device_features_gen_py_cp",
+    cmd: "cp $(in) $(out)",
+    srcs: ["src/vulkan/util/vk_physical_device_features_gen.py"],
+    out: ["vk_physical_device_features_gen.py"],
+}
+
+python_binary_host {
+    name: "mesa3d_desktop-panvk_src_vulkan_util_vk_physical_device_spirv_caps_gen_py",
+    main: "src/vulkan/util/vk_physical_device_spirv_caps_gen.py",
+    srcs: [
+        ":mesa3d_desktop-panvk_src_vulkan_util_vk_extensions_py_cp",
+        ":mesa3d_desktop-panvk_src_vulkan_util_vk_physical_device_features_gen_py_cp",
+        "src/vulkan/util/vk_physical_device_spirv_caps_gen.py",
+    ],
+    defaults: ["mesa_python_default"],
+}
+
+cc_genrule {
+    name: "mesa3d_desktop-panvk_src_vulkan_runtime_vk_physical_device_spirv_caps_c",
+    cmd: "python3 $(location) --xml $(location src/vulkan/registry/vk.xml) --out-c $(location vk_physical_device_spirv_caps.c) --beta false",
+    srcs: [
+        "src/vulkan/registry/vk.xml",
+        "src/vulkan/util/vk_extensions.py",
+        "src/vulkan/util/vk_physical_device_features_gen.py",
+    ],
+    out: ["vk_physical_device_spirv_caps.c"],
+    tools: ["mesa3d_desktop-panvk_src_vulkan_util_vk_physical_device_spirv_caps_gen_py"],
+    vendor_available: true,
+}
+
+cc_genrule {
+    name: "mesa3d_desktop-panvk_src_vulkan_runtime_vk_physical_device_properties_c",
+    cmd: "cp $(in) $(out)",
+    srcs: [":mesa3d_desktop-panvk_n2s_src_vulkan_runtime_vk_physical_device_properties_c{n2s/src/vulkan/runtime/vk_physical_device_properties.c}"],
+    out: ["vk_physical_device_properties.c"],
+    vendor_available: true,
+}
+
+cc_genrule {
+    name: "mesa3d_desktop-panvk_src_vulkan_runtime_vk_physical_device_features_c",
+    cmd: "cp $(in) $(out)",
+    srcs: [":mesa3d_desktop-panvk_n2s_src_vulkan_runtime_vk_physical_device_features_c{n2s/src/vulkan/runtime/vk_physical_device_features.c}"],
+    out: ["vk_physical_device_features.c"],
+    vendor_available: true,
+}
+
+cc_genrule {
+    name: "mesa3d_desktop-panvk_src_vulkan_runtime_vk_format_info_c",
+    cmd: "cp $(in) $(out)",
+    srcs: [":mesa3d_desktop-panvk_n2s_src_vulkan_runtime_vk_format_info_c{n2s/src/vulkan/runtime/vk_format_info.c}"],
+    out: ["vk_format_info.c"],
+    vendor_available: true,
+}
+
+cc_genrule {
+    name: "mesa3d_desktop-panvk_src_vulkan_runtime_vk_dispatch_trampolines_c",
+    cmd: "cp $(in) $(out)",
+    srcs: [":mesa3d_desktop-panvk_n2s_src_vulkan_runtime_vk_dispatch_trampolines_c{n2s/src/vulkan/runtime/vk_dispatch_trampolines.c}"],
+    out: ["vk_dispatch_trampolines.c"],
+    vendor_available: true,
+}
+
+cc_genrule {
+    name: "mesa3d_desktop-panvk_src_vulkan_runtime_vk_common_entrypoints_c",
+    cmd: "cp $(in) $(out)",
+    srcs: [":mesa3d_desktop-panvk_n2s_src_vulkan_runtime_vk_common_entrypoints_h{n2s/src/vulkan/runtime/vk_common_entrypoints.c}"],
+    out: ["vk_common_entrypoints.c"],
+    vendor_available: true,
+}
+
+cc_genrule {
+    name: "mesa3d_desktop-panvk_src_vulkan_runtime_vk_cmd_queue_c",
+    cmd: "cp $(in) $(out)",
+    srcs: [":mesa3d_desktop-panvk_n2s_src_vulkan_runtime_vk_cmd_queue_c{n2s/src/vulkan/runtime/vk_cmd_queue.c}"],
+    out: ["vk_cmd_queue.c"],
+    vendor_available: true,
+}
+
+cc_genrule {
+    name: "mesa3d_desktop-panvk_src_vulkan_runtime_vk_cmd_enqueue_entrypoints_c",
+    cmd: "cp $(in) $(out)",
+    srcs: [":mesa3d_desktop-panvk_n2s_src_vulkan_runtime_vk_cmd_enqueue_entrypoints_h{n2s/src/vulkan/runtime/vk_cmd_enqueue_entrypoints.c}"],
+    out: ["vk_cmd_enqueue_entrypoints.c"],
+    vendor_available: true,
 }
 
 cc_library_static {
@@ -2098,6 +3779,23 @@ cc_library_static {
         "src/vulkan/runtime",
         "src/vulkan/util",
     ],
+    generated_headers: [
+        "mesa3d_desktop-panvk_src_compiler_builtin_types_h",
+        "mesa3d_desktop-panvk_src_compiler_ir_expression_operation_h",
+        "mesa3d_desktop-panvk_src_compiler_nir_nir_builder_opcodes_h",
+        "mesa3d_desktop-panvk_src_compiler_nir_nir_opcodes_h",
+        "mesa3d_desktop-panvk_src_util_format_u_format_gen_h",
+        "mesa3d_desktop-panvk_src_util_shader_stats_h",
+        "mesa3d_desktop-panvk_src_vulkan_runtime_vk_cmd_enqueue_entrypoints_h",
+        "mesa3d_desktop-panvk_src_vulkan_runtime_vk_cmd_queue_h",
+        "mesa3d_desktop-panvk_src_vulkan_runtime_vk_common_entrypoints_h",
+        "mesa3d_desktop-panvk_src_vulkan_runtime_vk_dispatch_trampolines_h",
+        "mesa3d_desktop-panvk_src_vulkan_runtime_vk_format_info_h",
+        "mesa3d_desktop-panvk_src_vulkan_runtime_vk_physical_device_features_h",
+        "mesa3d_desktop-panvk_src_vulkan_runtime_vk_physical_device_properties_h",
+        "mesa3d_desktop-panvk_src_vulkan_util_vk_dispatch_table_h",
+        "mesa3d_desktop-panvk_src_vulkan_util_vk_extensions_h",
+    ],
     defaults: ["mesa3d-desktop-panvk-defaults"],
 }
 
@@ -2118,6 +3816,7 @@ cc_library_static {
         "src",
         "src/util/u_gralloc",
     ],
+    generated_headers: ["mesa3d_desktop-panvk_src_util_shader_stats_h"],
     defaults: ["mesa3d-desktop-panvk-defaults"],
 }
 
@@ -2138,7 +3837,28 @@ cc_library_static {
         "src",
         "src/util",
     ],
+    generated_headers: [
+        "mesa3d_desktop-panvk_src_util_driconf_static_h",
+        "mesa3d_desktop-panvk_src_util_format_u_format_gen_h",
+        "mesa3d_desktop-panvk_src_util_shader_stats_h",
+    ],
     defaults: ["mesa3d-desktop-panvk-defaults"],
+}
+
+python_binary_host {
+    name: "mesa3d_desktop-panvk_src_util_driconf_static_py",
+    main: "src/util/driconf_static.py",
+    srcs: ["src/util/driconf_static.py"],
+    defaults: ["mesa_python_default"],
+}
+
+cc_genrule {
+    name: "mesa3d_desktop-panvk_src_util_driconf_static_h",
+    cmd: "python3 $(location) $(location src/util/00-mesa-defaults.conf) $(location driconf_static.h)",
+    srcs: ["src/util/00-mesa-defaults.conf"],
+    out: ["driconf_static.h"],
+    tools: ["mesa3d_desktop-panvk_src_util_driconf_static_py"],
+    vendor_available: true,
 }
 
 cc_library_static {
@@ -2188,7 +3908,6 @@ cc_library_static {
         "meson_generated/src/compiler/spirv",
         "meson_generated/src/panfrost",
         "meson_generated/src/panfrost/compiler",
-        "meson_generated/src/panfrost/genxml",
         "meson_generated/src/panfrost/libpan",
         "meson_generated/src/panfrost/midgard",
         "meson_generated/src/panfrost/vulkan",
@@ -2196,7 +3915,6 @@ cc_library_static {
         "meson_generated/src/util/format",
         "meson_generated/src/vulkan/runtime",
         "meson_generated/src/vulkan/util",
-        "meson_generated/src/vulkan/wsi",
         "src",
         "src/compiler",
         "src/compiler/nir",
@@ -2216,7 +3934,57 @@ cc_library_static {
         "src/vulkan/util",
         "src/vulkan/wsi",
     ],
+    generated_headers: [
+        "mesa3d_desktop-panvk_src_compiler_builtin_types_h",
+        "mesa3d_desktop-panvk_src_compiler_ir_expression_operation_h",
+        "mesa3d_desktop-panvk_src_compiler_nir_nir_builder_opcodes_h",
+        "mesa3d_desktop-panvk_src_compiler_nir_nir_opcodes_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_common_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v10_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v12_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v13_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v4_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v5_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v6_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v7_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v9_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_vulkan_panvk_entrypoints_h",
+        "mesa3d_desktop-panvk_src_util_format_u_format_gen_h",
+        "mesa3d_desktop-panvk_src_util_shader_stats_h",
+        "mesa3d_desktop-panvk_src_vulkan_runtime_vk_cmd_enqueue_entrypoints_h",
+        "mesa3d_desktop-panvk_src_vulkan_runtime_vk_cmd_queue_h",
+        "mesa3d_desktop-panvk_src_vulkan_runtime_vk_common_entrypoints_h",
+        "mesa3d_desktop-panvk_src_vulkan_runtime_vk_physical_device_features_h",
+        "mesa3d_desktop-panvk_src_vulkan_runtime_vk_physical_device_properties_h",
+        "mesa3d_desktop-panvk_src_vulkan_util_vk_dispatch_table_h",
+        "mesa3d_desktop-panvk_src_vulkan_util_vk_extensions_h",
+        "mesa3d_desktop-panvk_src_vulkan_wsi_wsi_common_entrypoints_h",
+    ],
     defaults: ["mesa3d-desktop-panvk-defaults"],
+}
+
+cc_genrule {
+    name: "mesa3d_desktop-panvk_src_panfrost_vulkan_panvk_entrypoints_h",
+    cmd: "cp $(in) $(out)",
+    srcs: [":mesa3d_desktop-panvk_n2s_src_panfrost_vulkan_panvk_entrypoints_h{n2s/src/panfrost/vulkan/panvk_entrypoints.h}"],
+    out: ["panvk_entrypoints.h"],
+    vendor_available: true,
+}
+
+cc_genrule {
+    name: "mesa3d_desktop-panvk_n2s_src_panfrost_vulkan_panvk_entrypoints_h",
+    cmd: "python3 $(location) --xml $(location src/vulkan/registry/vk.xml) --proto --weak --out-h $(location n2s/src/panfrost/vulkan/panvk_entrypoints.h) --out-c $(location n2s/src/panfrost/vulkan/panvk_entrypoints.c) --prefix panvk --device-prefix panvk_v6 --device-prefix panvk_v7 --device-prefix panvk_v9 --device-prefix panvk_v10 --device-prefix panvk_v12 --device-prefix panvk_v13 --beta false",
+    srcs: [
+        "src/vulkan/registry/vk.xml",
+        "src/vulkan/util/vk_entrypoints.py",
+        "src/vulkan/util/vk_extensions.py",
+    ],
+    out: [
+        "n2s/src/panfrost/vulkan/panvk_entrypoints.c",
+        "n2s/src/panfrost/vulkan/panvk_entrypoints.h",
+    ],
+    tools: ["mesa3d_desktop-panvk_src_vulkan_util_vk_entrypoints_gen_py"],
+    vendor_available: true,
 }
 
 cc_library_static {
@@ -2266,7 +4034,6 @@ cc_library_static {
         "meson_generated/src/compiler/spirv",
         "meson_generated/src/panfrost",
         "meson_generated/src/panfrost/compiler",
-        "meson_generated/src/panfrost/genxml",
         "meson_generated/src/panfrost/libpan",
         "meson_generated/src/panfrost/midgard",
         "meson_generated/src/panfrost/vulkan",
@@ -2274,7 +4041,6 @@ cc_library_static {
         "meson_generated/src/util/format",
         "meson_generated/src/vulkan/runtime",
         "meson_generated/src/vulkan/util",
-        "meson_generated/src/vulkan/wsi",
         "src",
         "src/compiler",
         "src/compiler/nir",
@@ -2293,6 +4059,32 @@ cc_library_static {
         "src/vulkan/runtime/bvh",
         "src/vulkan/util",
         "src/vulkan/wsi",
+    ],
+    generated_headers: [
+        "mesa3d_desktop-panvk_src_compiler_builtin_types_h",
+        "mesa3d_desktop-panvk_src_compiler_ir_expression_operation_h",
+        "mesa3d_desktop-panvk_src_compiler_nir_nir_builder_opcodes_h",
+        "mesa3d_desktop-panvk_src_compiler_nir_nir_opcodes_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_common_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v10_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v12_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v13_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v4_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v5_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v6_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v7_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v9_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_vulkan_panvk_entrypoints_h",
+        "mesa3d_desktop-panvk_src_util_format_u_format_gen_h",
+        "mesa3d_desktop-panvk_src_util_shader_stats_h",
+        "mesa3d_desktop-panvk_src_vulkan_runtime_vk_cmd_enqueue_entrypoints_h",
+        "mesa3d_desktop-panvk_src_vulkan_runtime_vk_cmd_queue_h",
+        "mesa3d_desktop-panvk_src_vulkan_runtime_vk_common_entrypoints_h",
+        "mesa3d_desktop-panvk_src_vulkan_runtime_vk_physical_device_features_h",
+        "mesa3d_desktop-panvk_src_vulkan_runtime_vk_physical_device_properties_h",
+        "mesa3d_desktop-panvk_src_vulkan_util_vk_dispatch_table_h",
+        "mesa3d_desktop-panvk_src_vulkan_util_vk_extensions_h",
+        "mesa3d_desktop-panvk_src_vulkan_wsi_wsi_common_entrypoints_h",
     ],
     defaults: ["mesa3d-desktop-panvk-defaults"],
 }
@@ -2346,7 +4138,6 @@ cc_library_static {
         "meson_generated/src/compiler/spirv",
         "meson_generated/src/panfrost",
         "meson_generated/src/panfrost/compiler",
-        "meson_generated/src/panfrost/genxml",
         "meson_generated/src/panfrost/libpan",
         "meson_generated/src/panfrost/midgard",
         "meson_generated/src/panfrost/vulkan",
@@ -2354,7 +4145,6 @@ cc_library_static {
         "meson_generated/src/util/format",
         "meson_generated/src/vulkan/runtime",
         "meson_generated/src/vulkan/util",
-        "meson_generated/src/vulkan/wsi",
         "src",
         "src/compiler",
         "src/compiler/nir",
@@ -2373,6 +4163,32 @@ cc_library_static {
         "src/vulkan/runtime/bvh",
         "src/vulkan/util",
         "src/vulkan/wsi",
+    ],
+    generated_headers: [
+        "mesa3d_desktop-panvk_src_compiler_builtin_types_h",
+        "mesa3d_desktop-panvk_src_compiler_ir_expression_operation_h",
+        "mesa3d_desktop-panvk_src_compiler_nir_nir_builder_opcodes_h",
+        "mesa3d_desktop-panvk_src_compiler_nir_nir_opcodes_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_common_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v10_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v12_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v13_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v4_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v5_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v6_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v7_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v9_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_vulkan_panvk_entrypoints_h",
+        "mesa3d_desktop-panvk_src_util_format_u_format_gen_h",
+        "mesa3d_desktop-panvk_src_util_shader_stats_h",
+        "mesa3d_desktop-panvk_src_vulkan_runtime_vk_cmd_enqueue_entrypoints_h",
+        "mesa3d_desktop-panvk_src_vulkan_runtime_vk_cmd_queue_h",
+        "mesa3d_desktop-panvk_src_vulkan_runtime_vk_common_entrypoints_h",
+        "mesa3d_desktop-panvk_src_vulkan_runtime_vk_physical_device_features_h",
+        "mesa3d_desktop-panvk_src_vulkan_runtime_vk_physical_device_properties_h",
+        "mesa3d_desktop-panvk_src_vulkan_util_vk_dispatch_table_h",
+        "mesa3d_desktop-panvk_src_vulkan_util_vk_extensions_h",
+        "mesa3d_desktop-panvk_src_vulkan_wsi_wsi_common_entrypoints_h",
     ],
     defaults: ["mesa3d-desktop-panvk-defaults"],
 }
@@ -2426,7 +4242,6 @@ cc_library_static {
         "meson_generated/src/compiler/spirv",
         "meson_generated/src/panfrost",
         "meson_generated/src/panfrost/compiler",
-        "meson_generated/src/panfrost/genxml",
         "meson_generated/src/panfrost/libpan",
         "meson_generated/src/panfrost/midgard",
         "meson_generated/src/panfrost/vulkan",
@@ -2434,7 +4249,6 @@ cc_library_static {
         "meson_generated/src/util/format",
         "meson_generated/src/vulkan/runtime",
         "meson_generated/src/vulkan/util",
-        "meson_generated/src/vulkan/wsi",
         "src",
         "src/compiler",
         "src/compiler/nir",
@@ -2453,6 +4267,32 @@ cc_library_static {
         "src/vulkan/runtime/bvh",
         "src/vulkan/util",
         "src/vulkan/wsi",
+    ],
+    generated_headers: [
+        "mesa3d_desktop-panvk_src_compiler_builtin_types_h",
+        "mesa3d_desktop-panvk_src_compiler_ir_expression_operation_h",
+        "mesa3d_desktop-panvk_src_compiler_nir_nir_builder_opcodes_h",
+        "mesa3d_desktop-panvk_src_compiler_nir_nir_opcodes_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_common_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v10_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v12_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v13_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v4_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v5_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v6_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v7_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v9_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_vulkan_panvk_entrypoints_h",
+        "mesa3d_desktop-panvk_src_util_format_u_format_gen_h",
+        "mesa3d_desktop-panvk_src_util_shader_stats_h",
+        "mesa3d_desktop-panvk_src_vulkan_runtime_vk_cmd_enqueue_entrypoints_h",
+        "mesa3d_desktop-panvk_src_vulkan_runtime_vk_cmd_queue_h",
+        "mesa3d_desktop-panvk_src_vulkan_runtime_vk_common_entrypoints_h",
+        "mesa3d_desktop-panvk_src_vulkan_runtime_vk_physical_device_features_h",
+        "mesa3d_desktop-panvk_src_vulkan_runtime_vk_physical_device_properties_h",
+        "mesa3d_desktop-panvk_src_vulkan_util_vk_dispatch_table_h",
+        "mesa3d_desktop-panvk_src_vulkan_util_vk_extensions_h",
+        "mesa3d_desktop-panvk_src_vulkan_wsi_wsi_common_entrypoints_h",
     ],
     defaults: ["mesa3d-desktop-panvk-defaults"],
 }
@@ -2506,7 +4346,6 @@ cc_library_static {
         "meson_generated/src/compiler/spirv",
         "meson_generated/src/panfrost",
         "meson_generated/src/panfrost/compiler",
-        "meson_generated/src/panfrost/genxml",
         "meson_generated/src/panfrost/libpan",
         "meson_generated/src/panfrost/midgard",
         "meson_generated/src/panfrost/vulkan",
@@ -2514,7 +4353,6 @@ cc_library_static {
         "meson_generated/src/util/format",
         "meson_generated/src/vulkan/runtime",
         "meson_generated/src/vulkan/util",
-        "meson_generated/src/vulkan/wsi",
         "src",
         "src/compiler",
         "src/compiler/nir",
@@ -2534,6 +4372,32 @@ cc_library_static {
         "src/vulkan/util",
         "src/vulkan/wsi",
     ],
+    generated_headers: [
+        "mesa3d_desktop-panvk_src_compiler_builtin_types_h",
+        "mesa3d_desktop-panvk_src_compiler_ir_expression_operation_h",
+        "mesa3d_desktop-panvk_src_compiler_nir_nir_builder_opcodes_h",
+        "mesa3d_desktop-panvk_src_compiler_nir_nir_opcodes_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_common_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v10_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v12_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v13_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v4_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v5_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v6_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v7_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_genxml_v9_pack_h",
+        "mesa3d_desktop-panvk_src_panfrost_vulkan_panvk_entrypoints_h",
+        "mesa3d_desktop-panvk_src_util_format_u_format_gen_h",
+        "mesa3d_desktop-panvk_src_util_shader_stats_h",
+        "mesa3d_desktop-panvk_src_vulkan_runtime_vk_cmd_enqueue_entrypoints_h",
+        "mesa3d_desktop-panvk_src_vulkan_runtime_vk_cmd_queue_h",
+        "mesa3d_desktop-panvk_src_vulkan_runtime_vk_common_entrypoints_h",
+        "mesa3d_desktop-panvk_src_vulkan_runtime_vk_physical_device_features_h",
+        "mesa3d_desktop-panvk_src_vulkan_runtime_vk_physical_device_properties_h",
+        "mesa3d_desktop-panvk_src_vulkan_util_vk_dispatch_table_h",
+        "mesa3d_desktop-panvk_src_vulkan_util_vk_extensions_h",
+        "mesa3d_desktop-panvk_src_vulkan_wsi_wsi_common_entrypoints_h",
+    ],
     defaults: ["mesa3d-desktop-panvk-defaults"],
 }
 
@@ -2552,6 +4416,10 @@ cc_library_static {
         "src",
         "src/panfrost/shared",
     ],
+    generated_headers: [
+        "mesa3d_desktop-panvk_src_util_format_u_format_gen_h",
+        "mesa3d_desktop-panvk_src_util_shader_stats_h",
+    ],
     defaults: ["mesa3d-desktop-panvk-defaults"],
 }
 
@@ -2559,7 +4427,6 @@ cc_library_static {
     name: "mesa3d_desktop-panvk_src_compiler_spirv_libvtn_a",
     srcs: [
         "meson_generated/src/compiler/spirv/spirv_info.c",
-        "meson_generated/src/compiler/spirv/vtn_gather_types.c",
         "src/compiler/spirv/gl_spirv.c",
         "src/compiler/spirv/spirv_to_nir.c",
         "src/compiler/spirv/vtn_alu.c",
@@ -2587,7 +4454,57 @@ cc_library_static {
         "src/compiler/nir",
         "src/compiler/spirv",
     ],
+    generated_sources: ["mesa3d_desktop-panvk_src_compiler_spirv_vtn_gather_types_c"],
+    generated_headers: [
+        "mesa3d_desktop-panvk_src_compiler_builtin_types_h",
+        "mesa3d_desktop-panvk_src_compiler_ir_expression_operation_h",
+        "mesa3d_desktop-panvk_src_compiler_nir_nir_builder_opcodes_h",
+        "mesa3d_desktop-panvk_src_compiler_nir_nir_opcodes_h",
+        "mesa3d_desktop-panvk_src_compiler_spirv_vtn_generator_ids_h",
+        "mesa3d_desktop-panvk_src_util_format_u_format_gen_h",
+        "mesa3d_desktop-panvk_src_util_shader_stats_h",
+    ],
     defaults: ["mesa3d-desktop-panvk-defaults"],
+}
+
+python_binary_host {
+    name: "mesa3d_desktop-panvk_src_compiler_spirv_vtn_generator_ids_h_py",
+    main: "src/compiler/spirv/vtn_generator_ids_h.py",
+    srcs: ["src/compiler/spirv/vtn_generator_ids_h.py"],
+    defaults: ["mesa_python_default"],
+}
+
+cc_genrule {
+    name: "mesa3d_desktop-panvk_src_compiler_spirv_vtn_generator_ids_h",
+    cmd: "python3 $(location) $(location src/compiler/spirv/spir-v.xml) $(location vtn_generator_ids.h)",
+    srcs: ["src/compiler/spirv/spir-v.xml"],
+    out: ["vtn_generator_ids.h"],
+    tools: ["mesa3d_desktop-panvk_src_compiler_spirv_vtn_generator_ids_h_py"],
+    vendor_available: true,
+}
+
+python_binary_host {
+    name: "mesa3d_desktop-panvk_src_compiler_spirv_vtn_gather_types_c_py",
+    main: "src/compiler/spirv/vtn_gather_types_c.py",
+    srcs: ["src/compiler/spirv/vtn_gather_types_c.py"],
+    defaults: ["mesa_python_default"],
+}
+
+cc_genrule {
+    name: "mesa3d_desktop-panvk_src_compiler_spirv_vtn_gather_types_c",
+    cmd: "python3 $(location) $(location src/compiler/spirv/spirv.core.grammar.json) $(location vtn_gather_types.c)",
+    srcs: ["src/compiler/spirv/spirv.core.grammar.json"],
+    out: ["vtn_gather_types.c"],
+    tools: ["mesa3d_desktop-panvk_src_compiler_spirv_vtn_gather_types_c_py"],
+    vendor_available: true,
+}
+
+cc_genrule {
+    name: "mesa3d_desktop-panvk_src_panfrost_vulkan_panvk_entrypoints_c",
+    cmd: "cp $(in) $(out)",
+    srcs: [":mesa3d_desktop-panvk_n2s_src_panfrost_vulkan_panvk_entrypoints_h{n2s/src/panfrost/vulkan/panvk_entrypoints.c}"],
+    out: ["panvk_entrypoints.c"],
+    vendor_available: true,
 }
 
 cc_defaults {
@@ -2706,4 +4623,12 @@ cc_defaults {
     soc_specific: true,
     header_libs: ["libdrm_headers"],
     static_libs: ["libperfetto_client_experimental"],
+}
+
+python_defaults {
+    name: "mesa_python_default",
+    libs: [
+        "mako",
+        "pyyaml",
+    ],
 }

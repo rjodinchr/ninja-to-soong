@@ -40,13 +40,14 @@ impl Project for SpirvTools {
         }
 
         let generate_vksp_deps = !ctx.copy_to_aosp;
-        const GENERATED_TABLES: &str = "SPIRV-Tools_core_tables";
+        const GENERATED_TABLES_BODY: &str = "SPIRV-Tools_core_tables_body";
+        const GENERATED_TABLES_HEADER: &str = "SPIRV-Tools_core_tables_header";
         let mut targets_to_gen =
             NinjaTargetsToGenMap::from(&Dep::SpirvToolsTargets.get_ninja_targets(projects_map)?);
         if generate_vksp_deps {
             targets_to_gen = targets_to_gen
-                .push(target!("core_tables_body.inc", GENERATED_TABLES))
-                .push(target!("core_tables_header.inc", GENERATED_TABLES))
+                .push(target!("core_tables_body.inc", GENERATED_TABLES_BODY))
+                .push(target!("core_tables_header.inc", GENERATED_TABLES_HEADER))
         }
         let mut package = SoongPackage::new(
             &[],
@@ -83,10 +84,16 @@ impl Project for SpirvTools {
 cc_library_headers {{
     name: "SPIRV-Tools-sources",
     header_libs: ["{0}"],
-    generated_headers: ["{GENERATED_TABLES}"],
+    generated_headers: [
+        "{GENERATED_TABLES_BODY}",
+        "{GENERATED_TABLES_HEADER}",
+    ],
     export_include_dirs: ["."],
     export_header_lib_headers: ["{0}"],
-    export_generated_headers: ["{GENERATED_TABLES}"],
+    export_generated_headers: [
+        "{GENERATED_TABLES_BODY}",
+        "{GENERATED_TABLES_HEADER}",
+    ],
     vendor_available: true,
 }}
 "#,
