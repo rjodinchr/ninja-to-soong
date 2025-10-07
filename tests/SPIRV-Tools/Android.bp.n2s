@@ -44,7 +44,8 @@ cc_binary_host {
         "SPIRV-Tools_NonSemanticShaderDebugInfo100_h",
         "SPIRV-Tools_OpenCLDebugInfo100_h",
         "SPIRV-Tools_build-version_inc",
-        "SPIRV-Tools_core_tables",
+        "SPIRV-Tools_core_tables_body",
+        "SPIRV-Tools_core_tables_header",
         "SPIRV-Tools_generators_inc",
     ],
     header_libs: ["SPIRV-Headers-includes"],
@@ -139,7 +140,8 @@ cc_library_static {
         "SPIRV-Tools_NonSemanticShaderDebugInfo100_h",
         "SPIRV-Tools_OpenCLDebugInfo100_h",
         "SPIRV-Tools_build-version_inc",
-        "SPIRV-Tools_core_tables",
+        "SPIRV-Tools_core_tables_body",
+        "SPIRV-Tools_core_tables_header",
         "SPIRV-Tools_generators_inc",
     ],
     export_include_dirs: ["include"],
@@ -226,6 +228,15 @@ cc_genrule {
     host_supported: true,
 }
 
+cc_genrule {
+    name: "SPIRV-Tools_core_tables_header",
+    cmd: "cp $(in) $(out)",
+    srcs: [":SPIRV-Tools_n2s_core_tables_body_inc{n2s/core_tables_header.inc}"],
+    out: ["core_tables_header.inc"],
+    vendor_available: true,
+    host_supported: true,
+}
+
 python_binary_host {
     name: "SPIRV-Tools_utils_ggt_py",
     main: "utils/ggt.py",
@@ -236,8 +247,8 @@ python_binary_host {
 }
 
 cc_genrule {
-    name: "SPIRV-Tools_core_tables",
-    cmd: "python3 $(location) --core-tables-body-output=$(location core_tables_body.inc) --core-tables-header-output=$(location core_tables_header.inc) --spirv-core-grammar=$(location :SpirvHeaders_include_spirv_unified1_spirv_core_grammar_json) --extinst=,$(location :SpirvHeaders_include_spirv_unified1_extinst_glsl_std_450_grammar_json) --extinst=,$(location :SpirvHeaders_include_spirv_unified1_extinst_opencl_std_100_grammar_json) --extinst=CLDEBUG100_,$(location :SpirvHeaders_include_spirv_unified1_extinst_opencl_debuginfo_100_grammar_json) --extinst=SHDEBUG100_,$(location :SpirvHeaders_include_spirv_unified1_extinst_nonsemantic_shader_debuginfo_100_grammar_json) --extinst=,$(location :SpirvHeaders_include_spirv_unified1_extinst_spv-amd-shader-explicit-vertex-parameter_grammar_json) --extinst=,$(location :SpirvHeaders_include_spirv_unified1_extinst_spv-amd-shader-trinary-minmax_grammar_json) --extinst=,$(location :SpirvHeaders_include_spirv_unified1_extinst_spv-amd-gcn-shader_grammar_json) --extinst=,$(location :SpirvHeaders_include_spirv_unified1_extinst_spv-amd-shader-ballot_grammar_json) --extinst=,$(location :SpirvHeaders_include_spirv_unified1_extinst_debuginfo_grammar_json) --extinst=,$(location :SpirvHeaders_include_spirv_unified1_extinst_nonsemantic_clspvreflection_grammar_json) --extinst=,$(location :SpirvHeaders_include_spirv_unified1_extinst_nonsemantic_vkspreflection_grammar_json) --extinst=TOSA_,$(location :SpirvHeaders_include_spirv_unified1_extinst_tosa_001000_1_grammar_json)",
+    name: "SPIRV-Tools_n2s_core_tables_body_inc",
+    cmd: "python3 $(location) --core-tables-body-output=$(location n2s/core_tables_body.inc) --core-tables-header-output=$(location n2s/core_tables_header.inc) --spirv-core-grammar=$(location :SpirvHeaders_include_spirv_unified1_spirv_core_grammar_json) --extinst=,$(location :SpirvHeaders_include_spirv_unified1_extinst_glsl_std_450_grammar_json) --extinst=,$(location :SpirvHeaders_include_spirv_unified1_extinst_opencl_std_100_grammar_json) --extinst=CLDEBUG100_,$(location :SpirvHeaders_include_spirv_unified1_extinst_opencl_debuginfo_100_grammar_json) --extinst=SHDEBUG100_,$(location :SpirvHeaders_include_spirv_unified1_extinst_nonsemantic_shader_debuginfo_100_grammar_json) --extinst=,$(location :SpirvHeaders_include_spirv_unified1_extinst_spv-amd-shader-explicit-vertex-parameter_grammar_json) --extinst=,$(location :SpirvHeaders_include_spirv_unified1_extinst_spv-amd-shader-trinary-minmax_grammar_json) --extinst=,$(location :SpirvHeaders_include_spirv_unified1_extinst_spv-amd-gcn-shader_grammar_json) --extinst=,$(location :SpirvHeaders_include_spirv_unified1_extinst_spv-amd-shader-ballot_grammar_json) --extinst=,$(location :SpirvHeaders_include_spirv_unified1_extinst_debuginfo_grammar_json) --extinst=,$(location :SpirvHeaders_include_spirv_unified1_extinst_nonsemantic_clspvreflection_grammar_json) --extinst=,$(location :SpirvHeaders_include_spirv_unified1_extinst_nonsemantic_vkspreflection_grammar_json) --extinst=TOSA_,$(location :SpirvHeaders_include_spirv_unified1_extinst_tosa_001000_1_grammar_json)",
     srcs: [
         ":SpirvHeaders_include_spirv_unified1_extinst_debuginfo_grammar_json",
         ":SpirvHeaders_include_spirv_unified1_extinst_glsl_std_450_grammar_json",
@@ -254,10 +265,19 @@ cc_genrule {
         ":SpirvHeaders_include_spirv_unified1_spirv_core_grammar_json",
     ],
     out: [
-        "core_tables_body.inc",
-        "core_tables_header.inc",
+        "n2s/core_tables_body.inc",
+        "n2s/core_tables_header.inc",
     ],
     tools: ["SPIRV-Tools_utils_ggt_py"],
+    vendor_available: true,
+    host_supported: true,
+}
+
+cc_genrule {
+    name: "SPIRV-Tools_core_tables_body",
+    cmd: "cp $(in) $(out)",
+    srcs: [":SPIRV-Tools_n2s_core_tables_body_inc{n2s/core_tables_body.inc}"],
+    out: ["core_tables_body.inc"],
     vendor_available: true,
     host_supported: true,
 }
@@ -394,7 +414,8 @@ cc_library_static {
         "SPIRV-Tools_NonSemanticShaderDebugInfo100_h",
         "SPIRV-Tools_OpenCLDebugInfo100_h",
         "SPIRV-Tools_build-version_inc",
-        "SPIRV-Tools_core_tables",
+        "SPIRV-Tools_core_tables_body",
+        "SPIRV-Tools_core_tables_header",
         "SPIRV-Tools_generators_inc",
     ],
     export_include_dirs: ["include"],
@@ -416,7 +437,8 @@ cc_library_static {
         "SPIRV-Tools_NonSemanticShaderDebugInfo100_h",
         "SPIRV-Tools_OpenCLDebugInfo100_h",
         "SPIRV-Tools_build-version_inc",
-        "SPIRV-Tools_core_tables",
+        "SPIRV-Tools_core_tables_body",
+        "SPIRV-Tools_core_tables_header",
         "SPIRV-Tools_generators_inc",
     ],
     export_include_dirs: ["include"],
@@ -434,9 +456,15 @@ cc_library_headers {
 cc_library_headers {
     name: "SPIRV-Tools-sources",
     header_libs: ["SPIRV-Headers-includes-unified1"],
-    generated_headers: ["SPIRV-Tools_core_tables"],
+    generated_headers: [
+        "SPIRV-Tools_core_tables_body",
+        "SPIRV-Tools_core_tables_header",
+    ],
     export_include_dirs: ["."],
     export_header_lib_headers: ["SPIRV-Headers-includes-unified1"],
-    export_generated_headers: ["SPIRV-Tools_core_tables"],
+    export_generated_headers: [
+        "SPIRV-Tools_core_tables_body",
+        "SPIRV-Tools_core_tables_header",
+    ],
     vendor_available: true,
 }

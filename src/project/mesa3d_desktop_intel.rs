@@ -20,6 +20,70 @@ impl mesa3d_desktop::Mesa3dProject for Mesa3DDesktopIntel {
         path_to_string(&self.src_path.join("subprojects"))
     }
 
+    fn asset_filter(&self, asset: &Path) -> bool {
+        let asset = path_to_string(asset);
+        for name in [
+            // unsupported command arguments (XML sources)
+            "api_beginend_init.h",
+            "api_exec_decl.h",
+            "api_exec_init.c",
+            "api_hw_select_init.h",
+            "api_save.h",
+            "api_save_init.h",
+            "dispatch.h",
+            "es1_glapi_mapi_tmp.h",
+            "es2_glapi_mapi_tmp.h",
+            "genX_bits.h",
+            "get_hash.h",
+            "shared_glapi_mapi_tmp.h",
+            "unmarshal_table.c",
+            // unsupported command arguments
+            "brw_nir_lower_fsign.c",
+            "brw_nir_trig_workarounds.c",
+            "brw_nir_workarounds.c",
+            "isl_format_layout.c",
+            "tr_util.c",
+            "tr_util.h",
+            "u_tracepoints.c",
+            "u_tracepoints.h",
+            "vk_synchronization_helpers.c",
+            ".def",
+            // different include paths
+            "brw_device_sha1_gen.c",
+            "nir_intrinsics.c",
+            "nir_intrinsics.h",
+            "nir_intrinsics_indices.h",
+            "intel_perf_metrics.h",
+            "intel_tracepoints.c",
+            "intel_tracepoints.h",
+            "intel_tracepoints_perfetto.h",
+            "intel_wa.c",
+            "intel_wa.h",
+            // bison
+            "glcpp-parse.c",
+            "glcpp-parse.h",
+            "glsl_parser.cpp",
+            "glsl_parser.h",
+            "program_parse.tab.h",
+            "program_parse.tab.c",
+            // flex
+            "glcpp-lex.c",
+            "glsl_lexer.cpp",
+            "lex.yy.c",
+            // vtn_bindgen2
+            "_shaders_binding.cpp",
+            "_shaders_binding.h",
+            // ModuleNotFoundError: No module named 'license'
+            "enums.c",
+        ] {
+            if asset.ends_with(name) {
+                return false;
+            }
+        }
+        // unsupported command arguments (XML sources)
+        !asset.contains("marshal_generated")
+    }
+
     fn create_package(
         &mut self,
         ctx: &Context,

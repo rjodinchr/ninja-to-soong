@@ -159,6 +159,9 @@ impl Project for Fwupd {
     fn filter_gen_header(&self, _header: &Path) -> bool {
         false
     }
+    fn filter_gen_source(&self, _source: &Path) -> bool {
+        false
+    }
     fn filter_include(&self, include: &Path) -> bool {
         include != self.build_path.join("subprojects/libxmlb/src/libxmlb")
     }
