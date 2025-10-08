@@ -87,6 +87,7 @@ cc_binary {
     ],
     generated_headers: [
         "mesa3d_desktop-intel_src_intel_dev_intel_device_info_gen_h",
+        "mesa3d_desktop-intel_src_intel_dev_intel_wa_h",
         "mesa3d_desktop-intel_src_intel_genxml_gen110_cl_pack_h",
         "mesa3d_desktop-intel_src_intel_genxml_gen110_pack_h",
         "mesa3d_desktop-intel_src_intel_genxml_gen110_video_pack_h",
@@ -133,7 +134,9 @@ cc_binary {
         "mesa3d_desktop-intel_src_intel_genxml_gen90_pack_h",
         "mesa3d_desktop-intel_src_intel_genxml_gen90_video_pack_h",
         "mesa3d_desktop-intel_src_intel_genxml_genX_xml_h",
+        "mesa3d_desktop-intel_src_intel_perf_intel_perf_metrics_h",
         "mesa3d_desktop-intel_src_util_format_u_format_gen_h",
+        "mesa3d_desktop-intel_src_util_format_u_format_pack_h",
         "mesa3d_desktop-intel_src_util_shader_stats_h",
     ],
     defaults: ["mesa3d-desktop-intel-defaults"],
@@ -263,6 +266,7 @@ cc_library_static {
     ],
     generated_headers: [
         "mesa3d_desktop-intel_src_util_format_u_format_gen_h",
+        "mesa3d_desktop-intel_src_util_format_u_format_pack_h",
         "mesa3d_desktop-intel_src_util_shader_stats_h",
     ],
     defaults: ["mesa3d-desktop-intel-defaults"],
@@ -277,12 +281,15 @@ python_binary_host {
 
 cc_genrule {
     name: "mesa3d_desktop-intel_src_util_shader_stats_h",
-    cmd: "python3 $(location) $(location src/util/shader_stats.rnc) $(location src/util/shader_stats.xml) > $(location util/shader_stats.h)",
+    cmd: "python3 $(location) $(location src/util/shader_stats.rnc) $(location src/util/shader_stats.xml) > $(location shader_stats.h); cp $(location shader_stats.h) $(location util/shader_stats.h)",
     srcs: [
         "src/util/shader_stats.rnc",
         "src/util/shader_stats.xml",
     ],
-    out: ["util/shader_stats.h"],
+    out: [
+        "shader_stats.h",
+        "util/shader_stats.h",
+    ],
     tools: ["mesa3d_desktop-intel_src_util_process_shader_stats_py"],
     vendor_available: true,
 }
@@ -313,14 +320,35 @@ python_binary_host {
 }
 
 cc_genrule {
-    name: "mesa3d_desktop-intel_src_util_format_u_format_gen_h",
-    cmd: "python3 $(location) $(location src/util/format/u_format.yaml) --enums > $(location u_format_gen.h)",
+    name: "mesa3d_desktop-intel_src_util_format_u_format_pack_h",
+    cmd: "python3 $(location) $(location src/util/format/u_format.yaml) --header > $(location u_format_pack.h); cp $(location u_format_pack.h) $(location format/u_format_pack.h); cp $(location format/u_format_pack.h) $(location util/format/u_format_pack.h)",
     srcs: [
         "src/util/format/u_format.yaml",
         "src/util/format/u_format_pack.py",
         "src/util/format/u_format_parse.py",
     ],
-    out: ["u_format_gen.h"],
+    out: [
+        "format/u_format_pack.h",
+        "u_format_pack.h",
+        "util/format/u_format_pack.h",
+    ],
+    tools: ["mesa3d_desktop-intel_src_util_format_u_format_table_py"],
+    vendor_available: true,
+}
+
+cc_genrule {
+    name: "mesa3d_desktop-intel_src_util_format_u_format_gen_h",
+    cmd: "python3 $(location) $(location src/util/format/u_format.yaml) --enums > $(location u_format_gen.h); cp $(location u_format_gen.h) $(location format/u_format_gen.h); cp $(location format/u_format_gen.h) $(location util/format/u_format_gen.h)",
+    srcs: [
+        "src/util/format/u_format.yaml",
+        "src/util/format/u_format_pack.py",
+        "src/util/format/u_format_parse.py",
+    ],
+    out: [
+        "format/u_format_gen.h",
+        "u_format_gen.h",
+        "util/format/u_format_gen.h",
+    ],
     tools: ["mesa3d_desktop-intel_src_util_format_u_format_table_py"],
     vendor_available: true,
 }
@@ -403,8 +431,6 @@ cc_library_static {
         "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/intel",
-        "meson_generated/src/intel/dev",
-        "meson_generated/src/intel/perf",
         "meson_generated/src/util",
         "meson_generated/src/util/format",
         "src",
@@ -414,43 +440,23 @@ cc_library_static {
     generated_sources: ["mesa3d_desktop-intel_src_intel_perf_intel_perf_metrics_c"],
     generated_headers: [
         "mesa3d_desktop-intel_src_intel_dev_intel_device_info_gen_h",
+        "mesa3d_desktop-intel_src_intel_dev_intel_wa_h",
+        "mesa3d_desktop-intel_src_intel_perf_intel_perf_metrics_h",
         "mesa3d_desktop-intel_src_util_format_u_format_gen_h",
         "mesa3d_desktop-intel_src_util_shader_stats_h",
     ],
     defaults: ["mesa3d-desktop-intel-defaults"],
 }
 
-genrule {
-    name: "mesa3d_desktop-intel_src_intel_dev_intel_device_info_py_cp",
-    cmd: "cp $(in) $(out)",
-    srcs: ["src/intel/dev/intel_device_info.py"],
-    out: ["intel_device_info.py"],
-}
-
-python_binary_host {
-    name: "mesa3d_desktop-intel_src_intel_dev_intel_device_info_gen_h_py",
-    main: "src/intel/dev/intel_device_info_gen_h.py",
-    srcs: [
-        ":mesa3d_desktop-intel_src_intel_dev_intel_device_info_py_cp",
-        "src/intel/dev/intel_device_info_gen_h.py",
+cc_genrule {
+    name: "mesa3d_desktop-intel_src_intel_perf_intel_perf_metrics_h",
+    cmd: "cp $(in) $(location intel_perf_metrics.h); cp $(location intel_perf_metrics.h) $(location perf/intel_perf_metrics.h); cp $(location perf/intel_perf_metrics.h) $(location intel/perf/intel_perf_metrics.h)",
+    srcs: [":mesa3d_desktop-intel_n2s_src_intel_perf_intel_perf_metrics_c{n2s/src/intel/perf/intel_perf_metrics.h}"],
+    out: [
+        "intel/perf/intel_perf_metrics.h",
+        "intel_perf_metrics.h",
+        "perf/intel_perf_metrics.h",
     ],
-    defaults: ["mesa_python_default"],
-}
-
-cc_genrule {
-    name: "mesa3d_desktop-intel_src_intel_dev_intel_device_info_gen_h",
-    cmd: "python3 $(location) $(location intel/dev/intel_device_info_gen.h)",
-    srcs: ["src/intel/dev/intel_device_info.py"],
-    out: ["intel/dev/intel_device_info_gen.h"],
-    tools: ["mesa3d_desktop-intel_src_intel_dev_intel_device_info_gen_h_py"],
-    vendor_available: true,
-}
-
-cc_genrule {
-    name: "mesa3d_desktop-intel_src_intel_perf_intel_perf_metrics_c",
-    cmd: "cp $(in) $(out)",
-    srcs: [":mesa3d_desktop-intel_n2s_src_intel_perf_intel_perf_metrics_c{n2s/src/intel/perf/intel_perf_metrics.c}"],
-    out: ["intel_perf_metrics.c"],
     vendor_available: true,
 }
 
@@ -503,6 +509,75 @@ cc_genrule {
     vendor_available: true,
 }
 
+cc_genrule {
+    name: "mesa3d_desktop-intel_src_intel_dev_intel_wa_h",
+    cmd: "cp $(in) $(location intel_wa.h); cp $(location intel_wa.h) $(location dev/intel_wa.h); cp $(location dev/intel_wa.h) $(location intel/dev/intel_wa.h)",
+    srcs: [":mesa3d_desktop-intel_n2s_src_intel_dev_intel_wa_h{n2s/src/intel/dev/intel_wa.h}"],
+    out: [
+        "dev/intel_wa.h",
+        "intel/dev/intel_wa.h",
+        "intel_wa.h",
+    ],
+    vendor_available: true,
+}
+
+python_binary_host {
+    name: "mesa3d_desktop-intel_src_intel_dev_gen_wa_helpers_py",
+    main: "src/intel/dev/gen_wa_helpers.py",
+    srcs: ["src/intel/dev/gen_wa_helpers.py"],
+    defaults: ["mesa_python_default"],
+}
+
+cc_genrule {
+    name: "mesa3d_desktop-intel_n2s_src_intel_dev_intel_wa_h",
+    cmd: "python3 $(location) $(location src/intel/dev/mesa_defs.json) $(location n2s/src/intel/dev/intel_wa.h) $(location n2s/src/intel/dev/intel_wa.c)",
+    srcs: ["src/intel/dev/mesa_defs.json"],
+    out: [
+        "n2s/src/intel/dev/intel_wa.c",
+        "n2s/src/intel/dev/intel_wa.h",
+    ],
+    tools: ["mesa3d_desktop-intel_src_intel_dev_gen_wa_helpers_py"],
+    vendor_available: true,
+}
+
+genrule {
+    name: "mesa3d_desktop-intel_src_intel_dev_intel_device_info_py_cp",
+    cmd: "cp $(in) $(out)",
+    srcs: ["src/intel/dev/intel_device_info.py"],
+    out: ["intel_device_info.py"],
+}
+
+python_binary_host {
+    name: "mesa3d_desktop-intel_src_intel_dev_intel_device_info_gen_h_py",
+    main: "src/intel/dev/intel_device_info_gen_h.py",
+    srcs: [
+        ":mesa3d_desktop-intel_src_intel_dev_intel_device_info_py_cp",
+        "src/intel/dev/intel_device_info_gen_h.py",
+    ],
+    defaults: ["mesa_python_default"],
+}
+
+cc_genrule {
+    name: "mesa3d_desktop-intel_src_intel_dev_intel_device_info_gen_h",
+    cmd: "python3 $(location) $(location intel_device_info_gen.h); cp $(location intel_device_info_gen.h) $(location dev/intel_device_info_gen.h); cp $(location dev/intel_device_info_gen.h) $(location intel/dev/intel_device_info_gen.h)",
+    srcs: ["src/intel/dev/intel_device_info.py"],
+    out: [
+        "dev/intel_device_info_gen.h",
+        "intel/dev/intel_device_info_gen.h",
+        "intel_device_info_gen.h",
+    ],
+    tools: ["mesa3d_desktop-intel_src_intel_dev_intel_device_info_gen_h_py"],
+    vendor_available: true,
+}
+
+cc_genrule {
+    name: "mesa3d_desktop-intel_src_intel_perf_intel_perf_metrics_c",
+    cmd: "cp $(in) $(out)",
+    srcs: [":mesa3d_desktop-intel_n2s_src_intel_perf_intel_perf_metrics_c{n2s/src/intel/perf/intel_perf_metrics.c}"],
+    out: ["intel_perf_metrics.c"],
+    vendor_available: true,
+}
+
 cc_library_static {
     name: "mesa3d_desktop-intel_src_intel_isl_libisl_tiled_memcpy_sse41_a",
     srcs: ["src/intel/isl/isl_tiled_memcpy_sse41.c"],
@@ -511,7 +586,6 @@ cc_library_static {
         "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/intel",
-        "meson_generated/src/intel/dev",
         "meson_generated/src/intel/isl",
         "meson_generated/src/util",
         "meson_generated/src/util/format",
@@ -521,6 +595,7 @@ cc_library_static {
     ],
     generated_headers: [
         "mesa3d_desktop-intel_src_intel_dev_intel_device_info_gen_h",
+        "mesa3d_desktop-intel_src_intel_dev_intel_wa_h",
         "mesa3d_desktop-intel_src_util_format_u_format_gen_h",
         "mesa3d_desktop-intel_src_util_shader_stats_h",
     ],
@@ -535,7 +610,6 @@ cc_library_static {
         "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/intel",
-        "meson_generated/src/intel/dev",
         "meson_generated/src/intel/isl",
         "meson_generated/src/util",
         "meson_generated/src/util/format",
@@ -545,6 +619,7 @@ cc_library_static {
     ],
     generated_headers: [
         "mesa3d_desktop-intel_src_intel_dev_intel_device_info_gen_h",
+        "mesa3d_desktop-intel_src_intel_dev_intel_wa_h",
         "mesa3d_desktop-intel_src_util_format_u_format_gen_h",
         "mesa3d_desktop-intel_src_util_shader_stats_h",
     ],
@@ -565,7 +640,6 @@ cc_library_static {
         "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/intel",
-        "meson_generated/src/intel/dev",
         "meson_generated/src/intel/genxml",
         "meson_generated/src/intel/isl",
         "meson_generated/src/util",
@@ -577,6 +651,7 @@ cc_library_static {
     ],
     generated_headers: [
         "mesa3d_desktop-intel_src_intel_dev_intel_device_info_gen_h",
+        "mesa3d_desktop-intel_src_intel_dev_intel_wa_h",
         "mesa3d_desktop-intel_src_intel_genxml_gen110_cl_pack_h",
         "mesa3d_desktop-intel_src_intel_genxml_gen110_pack_h",
         "mesa3d_desktop-intel_src_intel_genxml_gen110_video_pack_h",
@@ -638,7 +713,7 @@ python_binary_host {
 
 cc_genrule {
     name: "mesa3d_desktop-intel_src_intel_genxml_genX_xml_h",
-    cmd: "python3 $(location) $(location src/intel/genxml/gen40.xml) $(location src/intel/genxml/gen45.xml) $(location src/intel/genxml/gen50.xml) $(location src/intel/genxml/gen60.xml) $(location src/intel/genxml/gen70.xml) $(location src/intel/genxml/gen75.xml) $(location src/intel/genxml/gen80.xml) $(location src/intel/genxml/gen90.xml) $(location src/intel/genxml/gen110.xml) $(location src/intel/genxml/gen120.xml) $(location src/intel/genxml/gen125.xml) $(location src/intel/genxml/gen200.xml) $(location src/intel/genxml/gen300.xml) > $(location genX_xml.h)",
+    cmd: "python3 $(location) $(location src/intel/genxml/gen40.xml) $(location src/intel/genxml/gen45.xml) $(location src/intel/genxml/gen50.xml) $(location src/intel/genxml/gen60.xml) $(location src/intel/genxml/gen70.xml) $(location src/intel/genxml/gen75.xml) $(location src/intel/genxml/gen80.xml) $(location src/intel/genxml/gen90.xml) $(location src/intel/genxml/gen110.xml) $(location src/intel/genxml/gen120.xml) $(location src/intel/genxml/gen125.xml) $(location src/intel/genxml/gen200.xml) $(location src/intel/genxml/gen300.xml) > $(location genX_xml.h); cp $(location genX_xml.h) $(location genxml/genX_xml.h); cp $(location genxml/genX_xml.h) $(location intel/genxml/genX_xml.h)",
     srcs: [
         "src/intel/genxml/gen110.xml",
         "src/intel/genxml/gen120.xml",
@@ -654,7 +729,11 @@ cc_genrule {
         "src/intel/genxml/gen80.xml",
         "src/intel/genxml/gen90.xml",
     ],
-    out: ["genX_xml.h"],
+    out: [
+        "genX_xml.h",
+        "genxml/genX_xml.h",
+        "intel/genxml/genX_xml.h",
+    ],
     tools: ["mesa3d_desktop-intel_src_util_gen_zipped_xml_file_py"],
     vendor_available: true,
 }
@@ -686,7 +765,7 @@ python_binary_host {
 
 cc_genrule {
     name: "mesa3d_desktop-intel_src_intel_genxml_gen90_video_pack_h",
-    cmd: "python3 $(location) $(location src/intel/genxml/gen90.xml) --engines=video > $(location genxml/gen90_video_pack.h)",
+    cmd: "python3 $(location) $(location src/intel/genxml/gen90.xml) --engines=video > $(location gen90_video_pack.h); cp $(location gen90_video_pack.h) $(location genxml/gen90_video_pack.h); cp $(location genxml/gen90_video_pack.h) $(location intel/genxml/gen90_video_pack.h)",
     srcs: [
         "src/intel/genxml/gen110.xml",
         "src/intel/genxml/gen120.xml",
@@ -707,14 +786,18 @@ cc_genrule {
         "src/intel/genxml/intel_genxml.py",
         "src/intel/genxml/util.py",
     ],
-    out: ["genxml/gen90_video_pack.h"],
+    out: [
+        "gen90_video_pack.h",
+        "genxml/gen90_video_pack.h",
+        "intel/genxml/gen90_video_pack.h",
+    ],
     tools: ["mesa3d_desktop-intel_src_intel_genxml_gen_pack_header_py"],
     vendor_available: true,
 }
 
 cc_genrule {
     name: "mesa3d_desktop-intel_src_intel_genxml_gen90_pack_h",
-    cmd: "python3 $(location) $(location src/intel/genxml/gen90.xml) --engines=render,blitter,compute > $(location genxml/gen90_pack.h)",
+    cmd: "python3 $(location) $(location src/intel/genxml/gen90.xml) --engines=render,blitter,compute > $(location gen90_pack.h); cp $(location gen90_pack.h) $(location genxml/gen90_pack.h); cp $(location genxml/gen90_pack.h) $(location intel/genxml/gen90_pack.h)",
     srcs: [
         "src/intel/genxml/gen110.xml",
         "src/intel/genxml/gen120.xml",
@@ -735,14 +818,18 @@ cc_genrule {
         "src/intel/genxml/intel_genxml.py",
         "src/intel/genxml/util.py",
     ],
-    out: ["genxml/gen90_pack.h"],
+    out: [
+        "gen90_pack.h",
+        "genxml/gen90_pack.h",
+        "intel/genxml/gen90_pack.h",
+    ],
     tools: ["mesa3d_desktop-intel_src_intel_genxml_gen_pack_header_py"],
     vendor_available: true,
 }
 
 cc_genrule {
     name: "mesa3d_desktop-intel_src_intel_genxml_gen90_cl_pack_h",
-    cmd: "python3 $(location) $(location src/intel/genxml/gen90.xml) --engines=render,blitter,compute --opencl --repack --include-symbols 3DSTATE_DS,3DSTATE_HS,3DSTATE_INDEX_BUFFER,3DSTATE_VERTEX_BUFFERS,3DPRIMITIVE,3DPRIMITIVE_EXTENDED,MI_ARB_CHECK,MI_BATCH_BUFFER_START,VERTEX_BUFFER_STATE > $(location genxml/gen90_cl_pack.h)",
+    cmd: "python3 $(location) $(location src/intel/genxml/gen90.xml) --engines=render,blitter,compute --opencl --repack --include-symbols 3DSTATE_DS,3DSTATE_HS,3DSTATE_INDEX_BUFFER,3DSTATE_VERTEX_BUFFERS,3DPRIMITIVE,3DPRIMITIVE_EXTENDED,MI_ARB_CHECK,MI_BATCH_BUFFER_START,VERTEX_BUFFER_STATE > $(location gen90_cl_pack.h); cp $(location gen90_cl_pack.h) $(location genxml/gen90_cl_pack.h); cp $(location genxml/gen90_cl_pack.h) $(location intel/genxml/gen90_cl_pack.h)",
     srcs: [
         "src/intel/genxml/gen110.xml",
         "src/intel/genxml/gen120.xml",
@@ -763,14 +850,18 @@ cc_genrule {
         "src/intel/genxml/intel_genxml.py",
         "src/intel/genxml/util.py",
     ],
-    out: ["genxml/gen90_cl_pack.h"],
+    out: [
+        "gen90_cl_pack.h",
+        "genxml/gen90_cl_pack.h",
+        "intel/genxml/gen90_cl_pack.h",
+    ],
     tools: ["mesa3d_desktop-intel_src_intel_genxml_gen_pack_header_py"],
     vendor_available: true,
 }
 
 cc_genrule {
     name: "mesa3d_desktop-intel_src_intel_genxml_gen80_video_pack_h",
-    cmd: "python3 $(location) $(location src/intel/genxml/gen80.xml) --engines=video > $(location genxml/gen80_video_pack.h)",
+    cmd: "python3 $(location) $(location src/intel/genxml/gen80.xml) --engines=video > $(location gen80_video_pack.h); cp $(location gen80_video_pack.h) $(location genxml/gen80_video_pack.h); cp $(location genxml/gen80_video_pack.h) $(location intel/genxml/gen80_video_pack.h)",
     srcs: [
         "src/intel/genxml/gen110.xml",
         "src/intel/genxml/gen120.xml",
@@ -791,14 +882,18 @@ cc_genrule {
         "src/intel/genxml/intel_genxml.py",
         "src/intel/genxml/util.py",
     ],
-    out: ["genxml/gen80_video_pack.h"],
+    out: [
+        "gen80_video_pack.h",
+        "genxml/gen80_video_pack.h",
+        "intel/genxml/gen80_video_pack.h",
+    ],
     tools: ["mesa3d_desktop-intel_src_intel_genxml_gen_pack_header_py"],
     vendor_available: true,
 }
 
 cc_genrule {
     name: "mesa3d_desktop-intel_src_intel_genxml_gen80_pack_h",
-    cmd: "python3 $(location) $(location src/intel/genxml/gen80.xml) --engines=render,blitter,compute > $(location genxml/gen80_pack.h)",
+    cmd: "python3 $(location) $(location src/intel/genxml/gen80.xml) --engines=render,blitter,compute > $(location gen80_pack.h); cp $(location gen80_pack.h) $(location genxml/gen80_pack.h); cp $(location genxml/gen80_pack.h) $(location intel/genxml/gen80_pack.h)",
     srcs: [
         "src/intel/genxml/gen110.xml",
         "src/intel/genxml/gen120.xml",
@@ -819,14 +914,18 @@ cc_genrule {
         "src/intel/genxml/intel_genxml.py",
         "src/intel/genxml/util.py",
     ],
-    out: ["genxml/gen80_pack.h"],
+    out: [
+        "gen80_pack.h",
+        "genxml/gen80_pack.h",
+        "intel/genxml/gen80_pack.h",
+    ],
     tools: ["mesa3d_desktop-intel_src_intel_genxml_gen_pack_header_py"],
     vendor_available: true,
 }
 
 cc_genrule {
     name: "mesa3d_desktop-intel_src_intel_genxml_gen80_cl_pack_h",
-    cmd: "python3 $(location) $(location src/intel/genxml/gen80.xml) --engines=render,blitter,compute --opencl --repack --include-symbols 3DSTATE_DS,3DSTATE_HS,3DSTATE_INDEX_BUFFER,3DSTATE_VERTEX_BUFFERS,3DPRIMITIVE,3DPRIMITIVE_EXTENDED,MI_ARB_CHECK,MI_BATCH_BUFFER_START,VERTEX_BUFFER_STATE > $(location genxml/gen80_cl_pack.h)",
+    cmd: "python3 $(location) $(location src/intel/genxml/gen80.xml) --engines=render,blitter,compute --opencl --repack --include-symbols 3DSTATE_DS,3DSTATE_HS,3DSTATE_INDEX_BUFFER,3DSTATE_VERTEX_BUFFERS,3DPRIMITIVE,3DPRIMITIVE_EXTENDED,MI_ARB_CHECK,MI_BATCH_BUFFER_START,VERTEX_BUFFER_STATE > $(location gen80_cl_pack.h); cp $(location gen80_cl_pack.h) $(location genxml/gen80_cl_pack.h); cp $(location genxml/gen80_cl_pack.h) $(location intel/genxml/gen80_cl_pack.h)",
     srcs: [
         "src/intel/genxml/gen110.xml",
         "src/intel/genxml/gen120.xml",
@@ -847,14 +946,18 @@ cc_genrule {
         "src/intel/genxml/intel_genxml.py",
         "src/intel/genxml/util.py",
     ],
-    out: ["genxml/gen80_cl_pack.h"],
+    out: [
+        "gen80_cl_pack.h",
+        "genxml/gen80_cl_pack.h",
+        "intel/genxml/gen80_cl_pack.h",
+    ],
     tools: ["mesa3d_desktop-intel_src_intel_genxml_gen_pack_header_py"],
     vendor_available: true,
 }
 
 cc_genrule {
     name: "mesa3d_desktop-intel_src_intel_genxml_gen75_video_pack_h",
-    cmd: "python3 $(location) $(location src/intel/genxml/gen75.xml) --engines=video > $(location genxml/gen75_video_pack.h)",
+    cmd: "python3 $(location) $(location src/intel/genxml/gen75.xml) --engines=video > $(location gen75_video_pack.h); cp $(location gen75_video_pack.h) $(location genxml/gen75_video_pack.h); cp $(location genxml/gen75_video_pack.h) $(location intel/genxml/gen75_video_pack.h)",
     srcs: [
         "src/intel/genxml/gen110.xml",
         "src/intel/genxml/gen120.xml",
@@ -875,14 +978,18 @@ cc_genrule {
         "src/intel/genxml/intel_genxml.py",
         "src/intel/genxml/util.py",
     ],
-    out: ["genxml/gen75_video_pack.h"],
+    out: [
+        "gen75_video_pack.h",
+        "genxml/gen75_video_pack.h",
+        "intel/genxml/gen75_video_pack.h",
+    ],
     tools: ["mesa3d_desktop-intel_src_intel_genxml_gen_pack_header_py"],
     vendor_available: true,
 }
 
 cc_genrule {
     name: "mesa3d_desktop-intel_src_intel_genxml_gen75_pack_h",
-    cmd: "python3 $(location) $(location src/intel/genxml/gen75.xml) --engines=render,blitter,compute > $(location genxml/gen75_pack.h)",
+    cmd: "python3 $(location) $(location src/intel/genxml/gen75.xml) --engines=render,blitter,compute > $(location gen75_pack.h); cp $(location gen75_pack.h) $(location genxml/gen75_pack.h); cp $(location genxml/gen75_pack.h) $(location intel/genxml/gen75_pack.h)",
     srcs: [
         "src/intel/genxml/gen110.xml",
         "src/intel/genxml/gen120.xml",
@@ -903,14 +1010,18 @@ cc_genrule {
         "src/intel/genxml/intel_genxml.py",
         "src/intel/genxml/util.py",
     ],
-    out: ["genxml/gen75_pack.h"],
+    out: [
+        "gen75_pack.h",
+        "genxml/gen75_pack.h",
+        "intel/genxml/gen75_pack.h",
+    ],
     tools: ["mesa3d_desktop-intel_src_intel_genxml_gen_pack_header_py"],
     vendor_available: true,
 }
 
 cc_genrule {
     name: "mesa3d_desktop-intel_src_intel_genxml_gen75_cl_pack_h",
-    cmd: "python3 $(location) $(location src/intel/genxml/gen75.xml) --engines=render,blitter,compute --opencl --repack --include-symbols 3DSTATE_DS,3DSTATE_HS,3DSTATE_INDEX_BUFFER,3DSTATE_VERTEX_BUFFERS,3DPRIMITIVE,3DPRIMITIVE_EXTENDED,MI_ARB_CHECK,MI_BATCH_BUFFER_START,VERTEX_BUFFER_STATE > $(location genxml/gen75_cl_pack.h)",
+    cmd: "python3 $(location) $(location src/intel/genxml/gen75.xml) --engines=render,blitter,compute --opencl --repack --include-symbols 3DSTATE_DS,3DSTATE_HS,3DSTATE_INDEX_BUFFER,3DSTATE_VERTEX_BUFFERS,3DPRIMITIVE,3DPRIMITIVE_EXTENDED,MI_ARB_CHECK,MI_BATCH_BUFFER_START,VERTEX_BUFFER_STATE > $(location gen75_cl_pack.h); cp $(location gen75_cl_pack.h) $(location genxml/gen75_cl_pack.h); cp $(location genxml/gen75_cl_pack.h) $(location intel/genxml/gen75_cl_pack.h)",
     srcs: [
         "src/intel/genxml/gen110.xml",
         "src/intel/genxml/gen120.xml",
@@ -931,14 +1042,18 @@ cc_genrule {
         "src/intel/genxml/intel_genxml.py",
         "src/intel/genxml/util.py",
     ],
-    out: ["genxml/gen75_cl_pack.h"],
+    out: [
+        "gen75_cl_pack.h",
+        "genxml/gen75_cl_pack.h",
+        "intel/genxml/gen75_cl_pack.h",
+    ],
     tools: ["mesa3d_desktop-intel_src_intel_genxml_gen_pack_header_py"],
     vendor_available: true,
 }
 
 cc_genrule {
     name: "mesa3d_desktop-intel_src_intel_genxml_gen70_video_pack_h",
-    cmd: "python3 $(location) $(location src/intel/genxml/gen70.xml) --engines=video > $(location genxml/gen70_video_pack.h)",
+    cmd: "python3 $(location) $(location src/intel/genxml/gen70.xml) --engines=video > $(location gen70_video_pack.h); cp $(location gen70_video_pack.h) $(location genxml/gen70_video_pack.h); cp $(location genxml/gen70_video_pack.h) $(location intel/genxml/gen70_video_pack.h)",
     srcs: [
         "src/intel/genxml/gen110.xml",
         "src/intel/genxml/gen120.xml",
@@ -959,14 +1074,18 @@ cc_genrule {
         "src/intel/genxml/intel_genxml.py",
         "src/intel/genxml/util.py",
     ],
-    out: ["genxml/gen70_video_pack.h"],
+    out: [
+        "gen70_video_pack.h",
+        "genxml/gen70_video_pack.h",
+        "intel/genxml/gen70_video_pack.h",
+    ],
     tools: ["mesa3d_desktop-intel_src_intel_genxml_gen_pack_header_py"],
     vendor_available: true,
 }
 
 cc_genrule {
     name: "mesa3d_desktop-intel_src_intel_genxml_gen70_pack_h",
-    cmd: "python3 $(location) $(location src/intel/genxml/gen70.xml) --engines=render,blitter,compute > $(location genxml/gen70_pack.h)",
+    cmd: "python3 $(location) $(location src/intel/genxml/gen70.xml) --engines=render,blitter,compute > $(location gen70_pack.h); cp $(location gen70_pack.h) $(location genxml/gen70_pack.h); cp $(location genxml/gen70_pack.h) $(location intel/genxml/gen70_pack.h)",
     srcs: [
         "src/intel/genxml/gen110.xml",
         "src/intel/genxml/gen120.xml",
@@ -987,14 +1106,18 @@ cc_genrule {
         "src/intel/genxml/intel_genxml.py",
         "src/intel/genxml/util.py",
     ],
-    out: ["genxml/gen70_pack.h"],
+    out: [
+        "gen70_pack.h",
+        "genxml/gen70_pack.h",
+        "intel/genxml/gen70_pack.h",
+    ],
     tools: ["mesa3d_desktop-intel_src_intel_genxml_gen_pack_header_py"],
     vendor_available: true,
 }
 
 cc_genrule {
     name: "mesa3d_desktop-intel_src_intel_genxml_gen70_cl_pack_h",
-    cmd: "python3 $(location) $(location src/intel/genxml/gen70.xml) --engines=render,blitter,compute --opencl --repack --include-symbols 3DSTATE_DS,3DSTATE_HS,3DSTATE_INDEX_BUFFER,3DSTATE_VERTEX_BUFFERS,3DPRIMITIVE,3DPRIMITIVE_EXTENDED,MI_ARB_CHECK,MI_BATCH_BUFFER_START,VERTEX_BUFFER_STATE > $(location genxml/gen70_cl_pack.h)",
+    cmd: "python3 $(location) $(location src/intel/genxml/gen70.xml) --engines=render,blitter,compute --opencl --repack --include-symbols 3DSTATE_DS,3DSTATE_HS,3DSTATE_INDEX_BUFFER,3DSTATE_VERTEX_BUFFERS,3DPRIMITIVE,3DPRIMITIVE_EXTENDED,MI_ARB_CHECK,MI_BATCH_BUFFER_START,VERTEX_BUFFER_STATE > $(location gen70_cl_pack.h); cp $(location gen70_cl_pack.h) $(location genxml/gen70_cl_pack.h); cp $(location genxml/gen70_cl_pack.h) $(location intel/genxml/gen70_cl_pack.h)",
     srcs: [
         "src/intel/genxml/gen110.xml",
         "src/intel/genxml/gen120.xml",
@@ -1015,14 +1138,18 @@ cc_genrule {
         "src/intel/genxml/intel_genxml.py",
         "src/intel/genxml/util.py",
     ],
-    out: ["genxml/gen70_cl_pack.h"],
+    out: [
+        "gen70_cl_pack.h",
+        "genxml/gen70_cl_pack.h",
+        "intel/genxml/gen70_cl_pack.h",
+    ],
     tools: ["mesa3d_desktop-intel_src_intel_genxml_gen_pack_header_py"],
     vendor_available: true,
 }
 
 cc_genrule {
     name: "mesa3d_desktop-intel_src_intel_genxml_gen60_video_pack_h",
-    cmd: "python3 $(location) $(location src/intel/genxml/gen60.xml) --engines=video > $(location genxml/gen60_video_pack.h)",
+    cmd: "python3 $(location) $(location src/intel/genxml/gen60.xml) --engines=video > $(location gen60_video_pack.h); cp $(location gen60_video_pack.h) $(location genxml/gen60_video_pack.h); cp $(location genxml/gen60_video_pack.h) $(location intel/genxml/gen60_video_pack.h)",
     srcs: [
         "src/intel/genxml/gen110.xml",
         "src/intel/genxml/gen120.xml",
@@ -1043,14 +1170,18 @@ cc_genrule {
         "src/intel/genxml/intel_genxml.py",
         "src/intel/genxml/util.py",
     ],
-    out: ["genxml/gen60_video_pack.h"],
+    out: [
+        "gen60_video_pack.h",
+        "genxml/gen60_video_pack.h",
+        "intel/genxml/gen60_video_pack.h",
+    ],
     tools: ["mesa3d_desktop-intel_src_intel_genxml_gen_pack_header_py"],
     vendor_available: true,
 }
 
 cc_genrule {
     name: "mesa3d_desktop-intel_src_intel_genxml_gen60_pack_h",
-    cmd: "python3 $(location) $(location src/intel/genxml/gen60.xml) --engines=render,blitter,compute > $(location genxml/gen60_pack.h)",
+    cmd: "python3 $(location) $(location src/intel/genxml/gen60.xml) --engines=render,blitter,compute > $(location gen60_pack.h); cp $(location gen60_pack.h) $(location genxml/gen60_pack.h); cp $(location genxml/gen60_pack.h) $(location intel/genxml/gen60_pack.h)",
     srcs: [
         "src/intel/genxml/gen110.xml",
         "src/intel/genxml/gen120.xml",
@@ -1071,14 +1202,18 @@ cc_genrule {
         "src/intel/genxml/intel_genxml.py",
         "src/intel/genxml/util.py",
     ],
-    out: ["genxml/gen60_pack.h"],
+    out: [
+        "gen60_pack.h",
+        "genxml/gen60_pack.h",
+        "intel/genxml/gen60_pack.h",
+    ],
     tools: ["mesa3d_desktop-intel_src_intel_genxml_gen_pack_header_py"],
     vendor_available: true,
 }
 
 cc_genrule {
     name: "mesa3d_desktop-intel_src_intel_genxml_gen60_cl_pack_h",
-    cmd: "python3 $(location) $(location src/intel/genxml/gen60.xml) --engines=render,blitter,compute --opencl --repack --include-symbols 3DSTATE_DS,3DSTATE_HS,3DSTATE_INDEX_BUFFER,3DSTATE_VERTEX_BUFFERS,3DPRIMITIVE,3DPRIMITIVE_EXTENDED,MI_ARB_CHECK,MI_BATCH_BUFFER_START,VERTEX_BUFFER_STATE > $(location genxml/gen60_cl_pack.h)",
+    cmd: "python3 $(location) $(location src/intel/genxml/gen60.xml) --engines=render,blitter,compute --opencl --repack --include-symbols 3DSTATE_DS,3DSTATE_HS,3DSTATE_INDEX_BUFFER,3DSTATE_VERTEX_BUFFERS,3DPRIMITIVE,3DPRIMITIVE_EXTENDED,MI_ARB_CHECK,MI_BATCH_BUFFER_START,VERTEX_BUFFER_STATE > $(location gen60_cl_pack.h); cp $(location gen60_cl_pack.h) $(location genxml/gen60_cl_pack.h); cp $(location genxml/gen60_cl_pack.h) $(location intel/genxml/gen60_cl_pack.h)",
     srcs: [
         "src/intel/genxml/gen110.xml",
         "src/intel/genxml/gen120.xml",
@@ -1099,14 +1234,18 @@ cc_genrule {
         "src/intel/genxml/intel_genxml.py",
         "src/intel/genxml/util.py",
     ],
-    out: ["genxml/gen60_cl_pack.h"],
+    out: [
+        "gen60_cl_pack.h",
+        "genxml/gen60_cl_pack.h",
+        "intel/genxml/gen60_cl_pack.h",
+    ],
     tools: ["mesa3d_desktop-intel_src_intel_genxml_gen_pack_header_py"],
     vendor_available: true,
 }
 
 cc_genrule {
     name: "mesa3d_desktop-intel_src_intel_genxml_gen50_video_pack_h",
-    cmd: "python3 $(location) $(location src/intel/genxml/gen50.xml) --engines=video > $(location genxml/gen50_video_pack.h)",
+    cmd: "python3 $(location) $(location src/intel/genxml/gen50.xml) --engines=video > $(location gen50_video_pack.h); cp $(location gen50_video_pack.h) $(location genxml/gen50_video_pack.h); cp $(location genxml/gen50_video_pack.h) $(location intel/genxml/gen50_video_pack.h)",
     srcs: [
         "src/intel/genxml/gen110.xml",
         "src/intel/genxml/gen120.xml",
@@ -1127,14 +1266,18 @@ cc_genrule {
         "src/intel/genxml/intel_genxml.py",
         "src/intel/genxml/util.py",
     ],
-    out: ["genxml/gen50_video_pack.h"],
+    out: [
+        "gen50_video_pack.h",
+        "genxml/gen50_video_pack.h",
+        "intel/genxml/gen50_video_pack.h",
+    ],
     tools: ["mesa3d_desktop-intel_src_intel_genxml_gen_pack_header_py"],
     vendor_available: true,
 }
 
 cc_genrule {
     name: "mesa3d_desktop-intel_src_intel_genxml_gen50_pack_h",
-    cmd: "python3 $(location) $(location src/intel/genxml/gen50.xml) --engines=render,blitter,compute > $(location genxml/gen50_pack.h)",
+    cmd: "python3 $(location) $(location src/intel/genxml/gen50.xml) --engines=render,blitter,compute > $(location gen50_pack.h); cp $(location gen50_pack.h) $(location genxml/gen50_pack.h); cp $(location genxml/gen50_pack.h) $(location intel/genxml/gen50_pack.h)",
     srcs: [
         "src/intel/genxml/gen110.xml",
         "src/intel/genxml/gen120.xml",
@@ -1155,14 +1298,18 @@ cc_genrule {
         "src/intel/genxml/intel_genxml.py",
         "src/intel/genxml/util.py",
     ],
-    out: ["genxml/gen50_pack.h"],
+    out: [
+        "gen50_pack.h",
+        "genxml/gen50_pack.h",
+        "intel/genxml/gen50_pack.h",
+    ],
     tools: ["mesa3d_desktop-intel_src_intel_genxml_gen_pack_header_py"],
     vendor_available: true,
 }
 
 cc_genrule {
     name: "mesa3d_desktop-intel_src_intel_genxml_gen50_cl_pack_h",
-    cmd: "python3 $(location) $(location src/intel/genxml/gen50.xml) --engines=render,blitter,compute --opencl --repack --include-symbols 3DSTATE_DS,3DSTATE_HS,3DSTATE_INDEX_BUFFER,3DSTATE_VERTEX_BUFFERS,3DPRIMITIVE,3DPRIMITIVE_EXTENDED,MI_ARB_CHECK,MI_BATCH_BUFFER_START,VERTEX_BUFFER_STATE > $(location genxml/gen50_cl_pack.h)",
+    cmd: "python3 $(location) $(location src/intel/genxml/gen50.xml) --engines=render,blitter,compute --opencl --repack --include-symbols 3DSTATE_DS,3DSTATE_HS,3DSTATE_INDEX_BUFFER,3DSTATE_VERTEX_BUFFERS,3DPRIMITIVE,3DPRIMITIVE_EXTENDED,MI_ARB_CHECK,MI_BATCH_BUFFER_START,VERTEX_BUFFER_STATE > $(location gen50_cl_pack.h); cp $(location gen50_cl_pack.h) $(location genxml/gen50_cl_pack.h); cp $(location genxml/gen50_cl_pack.h) $(location intel/genxml/gen50_cl_pack.h)",
     srcs: [
         "src/intel/genxml/gen110.xml",
         "src/intel/genxml/gen120.xml",
@@ -1183,14 +1330,18 @@ cc_genrule {
         "src/intel/genxml/intel_genxml.py",
         "src/intel/genxml/util.py",
     ],
-    out: ["genxml/gen50_cl_pack.h"],
+    out: [
+        "gen50_cl_pack.h",
+        "genxml/gen50_cl_pack.h",
+        "intel/genxml/gen50_cl_pack.h",
+    ],
     tools: ["mesa3d_desktop-intel_src_intel_genxml_gen_pack_header_py"],
     vendor_available: true,
 }
 
 cc_genrule {
     name: "mesa3d_desktop-intel_src_intel_genxml_gen45_video_pack_h",
-    cmd: "python3 $(location) $(location src/intel/genxml/gen45.xml) --engines=video > $(location genxml/gen45_video_pack.h)",
+    cmd: "python3 $(location) $(location src/intel/genxml/gen45.xml) --engines=video > $(location gen45_video_pack.h); cp $(location gen45_video_pack.h) $(location genxml/gen45_video_pack.h); cp $(location genxml/gen45_video_pack.h) $(location intel/genxml/gen45_video_pack.h)",
     srcs: [
         "src/intel/genxml/gen110.xml",
         "src/intel/genxml/gen120.xml",
@@ -1211,14 +1362,18 @@ cc_genrule {
         "src/intel/genxml/intel_genxml.py",
         "src/intel/genxml/util.py",
     ],
-    out: ["genxml/gen45_video_pack.h"],
+    out: [
+        "gen45_video_pack.h",
+        "genxml/gen45_video_pack.h",
+        "intel/genxml/gen45_video_pack.h",
+    ],
     tools: ["mesa3d_desktop-intel_src_intel_genxml_gen_pack_header_py"],
     vendor_available: true,
 }
 
 cc_genrule {
     name: "mesa3d_desktop-intel_src_intel_genxml_gen45_pack_h",
-    cmd: "python3 $(location) $(location src/intel/genxml/gen45.xml) --engines=render,blitter,compute > $(location genxml/gen45_pack.h)",
+    cmd: "python3 $(location) $(location src/intel/genxml/gen45.xml) --engines=render,blitter,compute > $(location gen45_pack.h); cp $(location gen45_pack.h) $(location genxml/gen45_pack.h); cp $(location genxml/gen45_pack.h) $(location intel/genxml/gen45_pack.h)",
     srcs: [
         "src/intel/genxml/gen110.xml",
         "src/intel/genxml/gen120.xml",
@@ -1239,14 +1394,18 @@ cc_genrule {
         "src/intel/genxml/intel_genxml.py",
         "src/intel/genxml/util.py",
     ],
-    out: ["genxml/gen45_pack.h"],
+    out: [
+        "gen45_pack.h",
+        "genxml/gen45_pack.h",
+        "intel/genxml/gen45_pack.h",
+    ],
     tools: ["mesa3d_desktop-intel_src_intel_genxml_gen_pack_header_py"],
     vendor_available: true,
 }
 
 cc_genrule {
     name: "mesa3d_desktop-intel_src_intel_genxml_gen45_cl_pack_h",
-    cmd: "python3 $(location) $(location src/intel/genxml/gen45.xml) --engines=render,blitter,compute --opencl --repack --include-symbols 3DSTATE_DS,3DSTATE_HS,3DSTATE_INDEX_BUFFER,3DSTATE_VERTEX_BUFFERS,3DPRIMITIVE,3DPRIMITIVE_EXTENDED,MI_ARB_CHECK,MI_BATCH_BUFFER_START,VERTEX_BUFFER_STATE > $(location genxml/gen45_cl_pack.h)",
+    cmd: "python3 $(location) $(location src/intel/genxml/gen45.xml) --engines=render,blitter,compute --opencl --repack --include-symbols 3DSTATE_DS,3DSTATE_HS,3DSTATE_INDEX_BUFFER,3DSTATE_VERTEX_BUFFERS,3DPRIMITIVE,3DPRIMITIVE_EXTENDED,MI_ARB_CHECK,MI_BATCH_BUFFER_START,VERTEX_BUFFER_STATE > $(location gen45_cl_pack.h); cp $(location gen45_cl_pack.h) $(location genxml/gen45_cl_pack.h); cp $(location genxml/gen45_cl_pack.h) $(location intel/genxml/gen45_cl_pack.h)",
     srcs: [
         "src/intel/genxml/gen110.xml",
         "src/intel/genxml/gen120.xml",
@@ -1267,14 +1426,18 @@ cc_genrule {
         "src/intel/genxml/intel_genxml.py",
         "src/intel/genxml/util.py",
     ],
-    out: ["genxml/gen45_cl_pack.h"],
+    out: [
+        "gen45_cl_pack.h",
+        "genxml/gen45_cl_pack.h",
+        "intel/genxml/gen45_cl_pack.h",
+    ],
     tools: ["mesa3d_desktop-intel_src_intel_genxml_gen_pack_header_py"],
     vendor_available: true,
 }
 
 cc_genrule {
     name: "mesa3d_desktop-intel_src_intel_genxml_gen40_video_pack_h",
-    cmd: "python3 $(location) $(location src/intel/genxml/gen40.xml) --engines=video > $(location genxml/gen40_video_pack.h)",
+    cmd: "python3 $(location) $(location src/intel/genxml/gen40.xml) --engines=video > $(location gen40_video_pack.h); cp $(location gen40_video_pack.h) $(location genxml/gen40_video_pack.h); cp $(location genxml/gen40_video_pack.h) $(location intel/genxml/gen40_video_pack.h)",
     srcs: [
         "src/intel/genxml/gen110.xml",
         "src/intel/genxml/gen120.xml",
@@ -1295,14 +1458,18 @@ cc_genrule {
         "src/intel/genxml/intel_genxml.py",
         "src/intel/genxml/util.py",
     ],
-    out: ["genxml/gen40_video_pack.h"],
+    out: [
+        "gen40_video_pack.h",
+        "genxml/gen40_video_pack.h",
+        "intel/genxml/gen40_video_pack.h",
+    ],
     tools: ["mesa3d_desktop-intel_src_intel_genxml_gen_pack_header_py"],
     vendor_available: true,
 }
 
 cc_genrule {
     name: "mesa3d_desktop-intel_src_intel_genxml_gen40_pack_h",
-    cmd: "python3 $(location) $(location src/intel/genxml/gen40.xml) --engines=render,blitter,compute > $(location genxml/gen40_pack.h)",
+    cmd: "python3 $(location) $(location src/intel/genxml/gen40.xml) --engines=render,blitter,compute > $(location gen40_pack.h); cp $(location gen40_pack.h) $(location genxml/gen40_pack.h); cp $(location genxml/gen40_pack.h) $(location intel/genxml/gen40_pack.h)",
     srcs: [
         "src/intel/genxml/gen110.xml",
         "src/intel/genxml/gen120.xml",
@@ -1323,14 +1490,18 @@ cc_genrule {
         "src/intel/genxml/intel_genxml.py",
         "src/intel/genxml/util.py",
     ],
-    out: ["genxml/gen40_pack.h"],
+    out: [
+        "gen40_pack.h",
+        "genxml/gen40_pack.h",
+        "intel/genxml/gen40_pack.h",
+    ],
     tools: ["mesa3d_desktop-intel_src_intel_genxml_gen_pack_header_py"],
     vendor_available: true,
 }
 
 cc_genrule {
     name: "mesa3d_desktop-intel_src_intel_genxml_gen40_cl_pack_h",
-    cmd: "python3 $(location) $(location src/intel/genxml/gen40.xml) --engines=render,blitter,compute --opencl --repack --include-symbols 3DSTATE_DS,3DSTATE_HS,3DSTATE_INDEX_BUFFER,3DSTATE_VERTEX_BUFFERS,3DPRIMITIVE,3DPRIMITIVE_EXTENDED,MI_ARB_CHECK,MI_BATCH_BUFFER_START,VERTEX_BUFFER_STATE > $(location genxml/gen40_cl_pack.h)",
+    cmd: "python3 $(location) $(location src/intel/genxml/gen40.xml) --engines=render,blitter,compute --opencl --repack --include-symbols 3DSTATE_DS,3DSTATE_HS,3DSTATE_INDEX_BUFFER,3DSTATE_VERTEX_BUFFERS,3DPRIMITIVE,3DPRIMITIVE_EXTENDED,MI_ARB_CHECK,MI_BATCH_BUFFER_START,VERTEX_BUFFER_STATE > $(location gen40_cl_pack.h); cp $(location gen40_cl_pack.h) $(location genxml/gen40_cl_pack.h); cp $(location genxml/gen40_cl_pack.h) $(location intel/genxml/gen40_cl_pack.h)",
     srcs: [
         "src/intel/genxml/gen110.xml",
         "src/intel/genxml/gen120.xml",
@@ -1351,14 +1522,18 @@ cc_genrule {
         "src/intel/genxml/intel_genxml.py",
         "src/intel/genxml/util.py",
     ],
-    out: ["genxml/gen40_cl_pack.h"],
+    out: [
+        "gen40_cl_pack.h",
+        "genxml/gen40_cl_pack.h",
+        "intel/genxml/gen40_cl_pack.h",
+    ],
     tools: ["mesa3d_desktop-intel_src_intel_genxml_gen_pack_header_py"],
     vendor_available: true,
 }
 
 cc_genrule {
     name: "mesa3d_desktop-intel_src_intel_genxml_gen300_video_pack_h",
-    cmd: "python3 $(location) $(location src/intel/genxml/gen300.xml) --engines=video > $(location genxml/gen300_video_pack.h)",
+    cmd: "python3 $(location) $(location src/intel/genxml/gen300.xml) --engines=video > $(location gen300_video_pack.h); cp $(location gen300_video_pack.h) $(location genxml/gen300_video_pack.h); cp $(location genxml/gen300_video_pack.h) $(location intel/genxml/gen300_video_pack.h)",
     srcs: [
         "src/intel/genxml/gen110.xml",
         "src/intel/genxml/gen120.xml",
@@ -1379,14 +1554,18 @@ cc_genrule {
         "src/intel/genxml/intel_genxml.py",
         "src/intel/genxml/util.py",
     ],
-    out: ["genxml/gen300_video_pack.h"],
+    out: [
+        "gen300_video_pack.h",
+        "genxml/gen300_video_pack.h",
+        "intel/genxml/gen300_video_pack.h",
+    ],
     tools: ["mesa3d_desktop-intel_src_intel_genxml_gen_pack_header_py"],
     vendor_available: true,
 }
 
 cc_genrule {
     name: "mesa3d_desktop-intel_src_intel_genxml_gen300_rt_pack_h",
-    cmd: "python3 $(location) $(location src/intel/genxml/gen300_rt.xml) --engines=render,blitter,compute > $(location genxml/gen300_rt_pack.h)",
+    cmd: "python3 $(location) $(location src/intel/genxml/gen300_rt.xml) --engines=render,blitter,compute > $(location gen300_rt_pack.h); cp $(location gen300_rt_pack.h) $(location genxml/gen300_rt_pack.h); cp $(location genxml/gen300_rt_pack.h) $(location intel/genxml/gen300_rt_pack.h)",
     srcs: [
         "src/intel/genxml/gen110.xml",
         "src/intel/genxml/gen120.xml",
@@ -1407,14 +1586,18 @@ cc_genrule {
         "src/intel/genxml/intel_genxml.py",
         "src/intel/genxml/util.py",
     ],
-    out: ["genxml/gen300_rt_pack.h"],
+    out: [
+        "gen300_rt_pack.h",
+        "genxml/gen300_rt_pack.h",
+        "intel/genxml/gen300_rt_pack.h",
+    ],
     tools: ["mesa3d_desktop-intel_src_intel_genxml_gen_pack_header_py"],
     vendor_available: true,
 }
 
 cc_genrule {
     name: "mesa3d_desktop-intel_src_intel_genxml_gen300_rt_cl_pack_h",
-    cmd: "python3 $(location) $(location src/intel/genxml/gen300_rt.xml) --engines=render,blitter,compute --opencl --repack --include-symbols 3DSTATE_DS,3DSTATE_HS,3DSTATE_INDEX_BUFFER,3DSTATE_VERTEX_BUFFERS,3DPRIMITIVE,3DPRIMITIVE_EXTENDED,MI_ARB_CHECK,MI_BATCH_BUFFER_START,VERTEX_BUFFER_STATE > $(location genxml/gen300_rt_cl_pack.h)",
+    cmd: "python3 $(location) $(location src/intel/genxml/gen300_rt.xml) --engines=render,blitter,compute --opencl --repack --include-symbols 3DSTATE_DS,3DSTATE_HS,3DSTATE_INDEX_BUFFER,3DSTATE_VERTEX_BUFFERS,3DPRIMITIVE,3DPRIMITIVE_EXTENDED,MI_ARB_CHECK,MI_BATCH_BUFFER_START,VERTEX_BUFFER_STATE > $(location gen300_rt_cl_pack.h); cp $(location gen300_rt_cl_pack.h) $(location genxml/gen300_rt_cl_pack.h); cp $(location genxml/gen300_rt_cl_pack.h) $(location intel/genxml/gen300_rt_cl_pack.h)",
     srcs: [
         "src/intel/genxml/gen110.xml",
         "src/intel/genxml/gen120.xml",
@@ -1435,14 +1618,18 @@ cc_genrule {
         "src/intel/genxml/intel_genxml.py",
         "src/intel/genxml/util.py",
     ],
-    out: ["genxml/gen300_rt_cl_pack.h"],
+    out: [
+        "gen300_rt_cl_pack.h",
+        "genxml/gen300_rt_cl_pack.h",
+        "intel/genxml/gen300_rt_cl_pack.h",
+    ],
     tools: ["mesa3d_desktop-intel_src_intel_genxml_gen_pack_header_py"],
     vendor_available: true,
 }
 
 cc_genrule {
     name: "mesa3d_desktop-intel_src_intel_genxml_gen300_pack_h",
-    cmd: "python3 $(location) $(location src/intel/genxml/gen300.xml) --engines=render,blitter,compute > $(location genxml/gen300_pack.h)",
+    cmd: "python3 $(location) $(location src/intel/genxml/gen300.xml) --engines=render,blitter,compute > $(location gen300_pack.h); cp $(location gen300_pack.h) $(location genxml/gen300_pack.h); cp $(location genxml/gen300_pack.h) $(location intel/genxml/gen300_pack.h)",
     srcs: [
         "src/intel/genxml/gen110.xml",
         "src/intel/genxml/gen120.xml",
@@ -1463,14 +1650,18 @@ cc_genrule {
         "src/intel/genxml/intel_genxml.py",
         "src/intel/genxml/util.py",
     ],
-    out: ["genxml/gen300_pack.h"],
+    out: [
+        "gen300_pack.h",
+        "genxml/gen300_pack.h",
+        "intel/genxml/gen300_pack.h",
+    ],
     tools: ["mesa3d_desktop-intel_src_intel_genxml_gen_pack_header_py"],
     vendor_available: true,
 }
 
 cc_genrule {
     name: "mesa3d_desktop-intel_src_intel_genxml_gen300_cl_pack_h",
-    cmd: "python3 $(location) $(location src/intel/genxml/gen300.xml) --engines=render,blitter,compute --opencl --repack --include-symbols 3DSTATE_DS,3DSTATE_HS,3DSTATE_INDEX_BUFFER,3DSTATE_VERTEX_BUFFERS,3DPRIMITIVE,3DPRIMITIVE_EXTENDED,MI_ARB_CHECK,MI_BATCH_BUFFER_START,VERTEX_BUFFER_STATE > $(location genxml/gen300_cl_pack.h)",
+    cmd: "python3 $(location) $(location src/intel/genxml/gen300.xml) --engines=render,blitter,compute --opencl --repack --include-symbols 3DSTATE_DS,3DSTATE_HS,3DSTATE_INDEX_BUFFER,3DSTATE_VERTEX_BUFFERS,3DPRIMITIVE,3DPRIMITIVE_EXTENDED,MI_ARB_CHECK,MI_BATCH_BUFFER_START,VERTEX_BUFFER_STATE > $(location gen300_cl_pack.h); cp $(location gen300_cl_pack.h) $(location genxml/gen300_cl_pack.h); cp $(location genxml/gen300_cl_pack.h) $(location intel/genxml/gen300_cl_pack.h)",
     srcs: [
         "src/intel/genxml/gen110.xml",
         "src/intel/genxml/gen120.xml",
@@ -1491,14 +1682,18 @@ cc_genrule {
         "src/intel/genxml/intel_genxml.py",
         "src/intel/genxml/util.py",
     ],
-    out: ["genxml/gen300_cl_pack.h"],
+    out: [
+        "gen300_cl_pack.h",
+        "genxml/gen300_cl_pack.h",
+        "intel/genxml/gen300_cl_pack.h",
+    ],
     tools: ["mesa3d_desktop-intel_src_intel_genxml_gen_pack_header_py"],
     vendor_available: true,
 }
 
 cc_genrule {
     name: "mesa3d_desktop-intel_src_intel_genxml_gen200_video_pack_h",
-    cmd: "python3 $(location) $(location src/intel/genxml/gen200.xml) --engines=video > $(location genxml/gen200_video_pack.h)",
+    cmd: "python3 $(location) $(location src/intel/genxml/gen200.xml) --engines=video > $(location gen200_video_pack.h); cp $(location gen200_video_pack.h) $(location genxml/gen200_video_pack.h); cp $(location genxml/gen200_video_pack.h) $(location intel/genxml/gen200_video_pack.h)",
     srcs: [
         "src/intel/genxml/gen110.xml",
         "src/intel/genxml/gen120.xml",
@@ -1519,14 +1714,18 @@ cc_genrule {
         "src/intel/genxml/intel_genxml.py",
         "src/intel/genxml/util.py",
     ],
-    out: ["genxml/gen200_video_pack.h"],
+    out: [
+        "gen200_video_pack.h",
+        "genxml/gen200_video_pack.h",
+        "intel/genxml/gen200_video_pack.h",
+    ],
     tools: ["mesa3d_desktop-intel_src_intel_genxml_gen_pack_header_py"],
     vendor_available: true,
 }
 
 cc_genrule {
     name: "mesa3d_desktop-intel_src_intel_genxml_gen200_rt_pack_h",
-    cmd: "python3 $(location) $(location src/intel/genxml/gen200_rt.xml) --engines=render,blitter,compute > $(location genxml/gen200_rt_pack.h)",
+    cmd: "python3 $(location) $(location src/intel/genxml/gen200_rt.xml) --engines=render,blitter,compute > $(location gen200_rt_pack.h); cp $(location gen200_rt_pack.h) $(location genxml/gen200_rt_pack.h); cp $(location genxml/gen200_rt_pack.h) $(location intel/genxml/gen200_rt_pack.h)",
     srcs: [
         "src/intel/genxml/gen110.xml",
         "src/intel/genxml/gen120.xml",
@@ -1547,14 +1746,18 @@ cc_genrule {
         "src/intel/genxml/intel_genxml.py",
         "src/intel/genxml/util.py",
     ],
-    out: ["genxml/gen200_rt_pack.h"],
+    out: [
+        "gen200_rt_pack.h",
+        "genxml/gen200_rt_pack.h",
+        "intel/genxml/gen200_rt_pack.h",
+    ],
     tools: ["mesa3d_desktop-intel_src_intel_genxml_gen_pack_header_py"],
     vendor_available: true,
 }
 
 cc_genrule {
     name: "mesa3d_desktop-intel_src_intel_genxml_gen200_rt_cl_pack_h",
-    cmd: "python3 $(location) $(location src/intel/genxml/gen200_rt.xml) --engines=render,blitter,compute --opencl --repack --include-symbols 3DSTATE_DS,3DSTATE_HS,3DSTATE_INDEX_BUFFER,3DSTATE_VERTEX_BUFFERS,3DPRIMITIVE,3DPRIMITIVE_EXTENDED,MI_ARB_CHECK,MI_BATCH_BUFFER_START,VERTEX_BUFFER_STATE > $(location genxml/gen200_rt_cl_pack.h)",
+    cmd: "python3 $(location) $(location src/intel/genxml/gen200_rt.xml) --engines=render,blitter,compute --opencl --repack --include-symbols 3DSTATE_DS,3DSTATE_HS,3DSTATE_INDEX_BUFFER,3DSTATE_VERTEX_BUFFERS,3DPRIMITIVE,3DPRIMITIVE_EXTENDED,MI_ARB_CHECK,MI_BATCH_BUFFER_START,VERTEX_BUFFER_STATE > $(location gen200_rt_cl_pack.h); cp $(location gen200_rt_cl_pack.h) $(location genxml/gen200_rt_cl_pack.h); cp $(location genxml/gen200_rt_cl_pack.h) $(location intel/genxml/gen200_rt_cl_pack.h)",
     srcs: [
         "src/intel/genxml/gen110.xml",
         "src/intel/genxml/gen120.xml",
@@ -1575,14 +1778,18 @@ cc_genrule {
         "src/intel/genxml/intel_genxml.py",
         "src/intel/genxml/util.py",
     ],
-    out: ["genxml/gen200_rt_cl_pack.h"],
+    out: [
+        "gen200_rt_cl_pack.h",
+        "genxml/gen200_rt_cl_pack.h",
+        "intel/genxml/gen200_rt_cl_pack.h",
+    ],
     tools: ["mesa3d_desktop-intel_src_intel_genxml_gen_pack_header_py"],
     vendor_available: true,
 }
 
 cc_genrule {
     name: "mesa3d_desktop-intel_src_intel_genxml_gen200_pack_h",
-    cmd: "python3 $(location) $(location src/intel/genxml/gen200.xml) --engines=render,blitter,compute > $(location genxml/gen200_pack.h)",
+    cmd: "python3 $(location) $(location src/intel/genxml/gen200.xml) --engines=render,blitter,compute > $(location gen200_pack.h); cp $(location gen200_pack.h) $(location genxml/gen200_pack.h); cp $(location genxml/gen200_pack.h) $(location intel/genxml/gen200_pack.h)",
     srcs: [
         "src/intel/genxml/gen110.xml",
         "src/intel/genxml/gen120.xml",
@@ -1603,14 +1810,18 @@ cc_genrule {
         "src/intel/genxml/intel_genxml.py",
         "src/intel/genxml/util.py",
     ],
-    out: ["genxml/gen200_pack.h"],
+    out: [
+        "gen200_pack.h",
+        "genxml/gen200_pack.h",
+        "intel/genxml/gen200_pack.h",
+    ],
     tools: ["mesa3d_desktop-intel_src_intel_genxml_gen_pack_header_py"],
     vendor_available: true,
 }
 
 cc_genrule {
     name: "mesa3d_desktop-intel_src_intel_genxml_gen200_cl_pack_h",
-    cmd: "python3 $(location) $(location src/intel/genxml/gen200.xml) --engines=render,blitter,compute --opencl --repack --include-symbols 3DSTATE_DS,3DSTATE_HS,3DSTATE_INDEX_BUFFER,3DSTATE_VERTEX_BUFFERS,3DPRIMITIVE,3DPRIMITIVE_EXTENDED,MI_ARB_CHECK,MI_BATCH_BUFFER_START,VERTEX_BUFFER_STATE > $(location genxml/gen200_cl_pack.h)",
+    cmd: "python3 $(location) $(location src/intel/genxml/gen200.xml) --engines=render,blitter,compute --opencl --repack --include-symbols 3DSTATE_DS,3DSTATE_HS,3DSTATE_INDEX_BUFFER,3DSTATE_VERTEX_BUFFERS,3DPRIMITIVE,3DPRIMITIVE_EXTENDED,MI_ARB_CHECK,MI_BATCH_BUFFER_START,VERTEX_BUFFER_STATE > $(location gen200_cl_pack.h); cp $(location gen200_cl_pack.h) $(location genxml/gen200_cl_pack.h); cp $(location genxml/gen200_cl_pack.h) $(location intel/genxml/gen200_cl_pack.h)",
     srcs: [
         "src/intel/genxml/gen110.xml",
         "src/intel/genxml/gen120.xml",
@@ -1631,14 +1842,18 @@ cc_genrule {
         "src/intel/genxml/intel_genxml.py",
         "src/intel/genxml/util.py",
     ],
-    out: ["genxml/gen200_cl_pack.h"],
+    out: [
+        "gen200_cl_pack.h",
+        "genxml/gen200_cl_pack.h",
+        "intel/genxml/gen200_cl_pack.h",
+    ],
     tools: ["mesa3d_desktop-intel_src_intel_genxml_gen_pack_header_py"],
     vendor_available: true,
 }
 
 cc_genrule {
     name: "mesa3d_desktop-intel_src_intel_genxml_gen125_video_pack_h",
-    cmd: "python3 $(location) $(location src/intel/genxml/gen125.xml) --engines=video > $(location genxml/gen125_video_pack.h)",
+    cmd: "python3 $(location) $(location src/intel/genxml/gen125.xml) --engines=video > $(location gen125_video_pack.h); cp $(location gen125_video_pack.h) $(location genxml/gen125_video_pack.h); cp $(location genxml/gen125_video_pack.h) $(location intel/genxml/gen125_video_pack.h)",
     srcs: [
         "src/intel/genxml/gen110.xml",
         "src/intel/genxml/gen120.xml",
@@ -1659,14 +1874,18 @@ cc_genrule {
         "src/intel/genxml/intel_genxml.py",
         "src/intel/genxml/util.py",
     ],
-    out: ["genxml/gen125_video_pack.h"],
+    out: [
+        "gen125_video_pack.h",
+        "genxml/gen125_video_pack.h",
+        "intel/genxml/gen125_video_pack.h",
+    ],
     tools: ["mesa3d_desktop-intel_src_intel_genxml_gen_pack_header_py"],
     vendor_available: true,
 }
 
 cc_genrule {
     name: "mesa3d_desktop-intel_src_intel_genxml_gen125_rt_pack_h",
-    cmd: "python3 $(location) $(location src/intel/genxml/gen125_rt.xml) --engines=render,blitter,compute > $(location genxml/gen125_rt_pack.h)",
+    cmd: "python3 $(location) $(location src/intel/genxml/gen125_rt.xml) --engines=render,blitter,compute > $(location gen125_rt_pack.h); cp $(location gen125_rt_pack.h) $(location genxml/gen125_rt_pack.h); cp $(location genxml/gen125_rt_pack.h) $(location intel/genxml/gen125_rt_pack.h)",
     srcs: [
         "src/intel/genxml/gen110.xml",
         "src/intel/genxml/gen120.xml",
@@ -1687,14 +1906,18 @@ cc_genrule {
         "src/intel/genxml/intel_genxml.py",
         "src/intel/genxml/util.py",
     ],
-    out: ["genxml/gen125_rt_pack.h"],
+    out: [
+        "gen125_rt_pack.h",
+        "genxml/gen125_rt_pack.h",
+        "intel/genxml/gen125_rt_pack.h",
+    ],
     tools: ["mesa3d_desktop-intel_src_intel_genxml_gen_pack_header_py"],
     vendor_available: true,
 }
 
 cc_genrule {
     name: "mesa3d_desktop-intel_src_intel_genxml_gen125_rt_cl_pack_h",
-    cmd: "python3 $(location) $(location src/intel/genxml/gen125_rt.xml) --engines=render,blitter,compute --opencl --repack --include-symbols 3DSTATE_DS,3DSTATE_HS,3DSTATE_INDEX_BUFFER,3DSTATE_VERTEX_BUFFERS,3DPRIMITIVE,3DPRIMITIVE_EXTENDED,MI_ARB_CHECK,MI_BATCH_BUFFER_START,VERTEX_BUFFER_STATE > $(location genxml/gen125_rt_cl_pack.h)",
+    cmd: "python3 $(location) $(location src/intel/genxml/gen125_rt.xml) --engines=render,blitter,compute --opencl --repack --include-symbols 3DSTATE_DS,3DSTATE_HS,3DSTATE_INDEX_BUFFER,3DSTATE_VERTEX_BUFFERS,3DPRIMITIVE,3DPRIMITIVE_EXTENDED,MI_ARB_CHECK,MI_BATCH_BUFFER_START,VERTEX_BUFFER_STATE > $(location gen125_rt_cl_pack.h); cp $(location gen125_rt_cl_pack.h) $(location genxml/gen125_rt_cl_pack.h); cp $(location genxml/gen125_rt_cl_pack.h) $(location intel/genxml/gen125_rt_cl_pack.h)",
     srcs: [
         "src/intel/genxml/gen110.xml",
         "src/intel/genxml/gen120.xml",
@@ -1715,14 +1938,18 @@ cc_genrule {
         "src/intel/genxml/intel_genxml.py",
         "src/intel/genxml/util.py",
     ],
-    out: ["genxml/gen125_rt_cl_pack.h"],
+    out: [
+        "gen125_rt_cl_pack.h",
+        "genxml/gen125_rt_cl_pack.h",
+        "intel/genxml/gen125_rt_cl_pack.h",
+    ],
     tools: ["mesa3d_desktop-intel_src_intel_genxml_gen_pack_header_py"],
     vendor_available: true,
 }
 
 cc_genrule {
     name: "mesa3d_desktop-intel_src_intel_genxml_gen125_pack_h",
-    cmd: "python3 $(location) $(location src/intel/genxml/gen125.xml) --engines=render,blitter,compute > $(location genxml/gen125_pack.h)",
+    cmd: "python3 $(location) $(location src/intel/genxml/gen125.xml) --engines=render,blitter,compute > $(location gen125_pack.h); cp $(location gen125_pack.h) $(location genxml/gen125_pack.h); cp $(location genxml/gen125_pack.h) $(location intel/genxml/gen125_pack.h)",
     srcs: [
         "src/intel/genxml/gen110.xml",
         "src/intel/genxml/gen120.xml",
@@ -1743,14 +1970,18 @@ cc_genrule {
         "src/intel/genxml/intel_genxml.py",
         "src/intel/genxml/util.py",
     ],
-    out: ["genxml/gen125_pack.h"],
+    out: [
+        "gen125_pack.h",
+        "genxml/gen125_pack.h",
+        "intel/genxml/gen125_pack.h",
+    ],
     tools: ["mesa3d_desktop-intel_src_intel_genxml_gen_pack_header_py"],
     vendor_available: true,
 }
 
 cc_genrule {
     name: "mesa3d_desktop-intel_src_intel_genxml_gen125_cl_pack_h",
-    cmd: "python3 $(location) $(location src/intel/genxml/gen125.xml) --engines=render,blitter,compute --opencl --repack --include-symbols 3DSTATE_DS,3DSTATE_HS,3DSTATE_INDEX_BUFFER,3DSTATE_VERTEX_BUFFERS,3DPRIMITIVE,3DPRIMITIVE_EXTENDED,MI_ARB_CHECK,MI_BATCH_BUFFER_START,VERTEX_BUFFER_STATE > $(location genxml/gen125_cl_pack.h)",
+    cmd: "python3 $(location) $(location src/intel/genxml/gen125.xml) --engines=render,blitter,compute --opencl --repack --include-symbols 3DSTATE_DS,3DSTATE_HS,3DSTATE_INDEX_BUFFER,3DSTATE_VERTEX_BUFFERS,3DPRIMITIVE,3DPRIMITIVE_EXTENDED,MI_ARB_CHECK,MI_BATCH_BUFFER_START,VERTEX_BUFFER_STATE > $(location gen125_cl_pack.h); cp $(location gen125_cl_pack.h) $(location genxml/gen125_cl_pack.h); cp $(location genxml/gen125_cl_pack.h) $(location intel/genxml/gen125_cl_pack.h)",
     srcs: [
         "src/intel/genxml/gen110.xml",
         "src/intel/genxml/gen120.xml",
@@ -1771,14 +2002,18 @@ cc_genrule {
         "src/intel/genxml/intel_genxml.py",
         "src/intel/genxml/util.py",
     ],
-    out: ["genxml/gen125_cl_pack.h"],
+    out: [
+        "gen125_cl_pack.h",
+        "genxml/gen125_cl_pack.h",
+        "intel/genxml/gen125_cl_pack.h",
+    ],
     tools: ["mesa3d_desktop-intel_src_intel_genxml_gen_pack_header_py"],
     vendor_available: true,
 }
 
 cc_genrule {
     name: "mesa3d_desktop-intel_src_intel_genxml_gen120_video_pack_h",
-    cmd: "python3 $(location) $(location src/intel/genxml/gen120.xml) --engines=video > $(location genxml/gen120_video_pack.h)",
+    cmd: "python3 $(location) $(location src/intel/genxml/gen120.xml) --engines=video > $(location gen120_video_pack.h); cp $(location gen120_video_pack.h) $(location genxml/gen120_video_pack.h); cp $(location genxml/gen120_video_pack.h) $(location intel/genxml/gen120_video_pack.h)",
     srcs: [
         "src/intel/genxml/gen110.xml",
         "src/intel/genxml/gen120.xml",
@@ -1799,14 +2034,18 @@ cc_genrule {
         "src/intel/genxml/intel_genxml.py",
         "src/intel/genxml/util.py",
     ],
-    out: ["genxml/gen120_video_pack.h"],
+    out: [
+        "gen120_video_pack.h",
+        "genxml/gen120_video_pack.h",
+        "intel/genxml/gen120_video_pack.h",
+    ],
     tools: ["mesa3d_desktop-intel_src_intel_genxml_gen_pack_header_py"],
     vendor_available: true,
 }
 
 cc_genrule {
     name: "mesa3d_desktop-intel_src_intel_genxml_gen120_pack_h",
-    cmd: "python3 $(location) $(location src/intel/genxml/gen120.xml) --engines=render,blitter,compute > $(location genxml/gen120_pack.h)",
+    cmd: "python3 $(location) $(location src/intel/genxml/gen120.xml) --engines=render,blitter,compute > $(location gen120_pack.h); cp $(location gen120_pack.h) $(location genxml/gen120_pack.h); cp $(location genxml/gen120_pack.h) $(location intel/genxml/gen120_pack.h)",
     srcs: [
         "src/intel/genxml/gen110.xml",
         "src/intel/genxml/gen120.xml",
@@ -1827,14 +2066,18 @@ cc_genrule {
         "src/intel/genxml/intel_genxml.py",
         "src/intel/genxml/util.py",
     ],
-    out: ["genxml/gen120_pack.h"],
+    out: [
+        "gen120_pack.h",
+        "genxml/gen120_pack.h",
+        "intel/genxml/gen120_pack.h",
+    ],
     tools: ["mesa3d_desktop-intel_src_intel_genxml_gen_pack_header_py"],
     vendor_available: true,
 }
 
 cc_genrule {
     name: "mesa3d_desktop-intel_src_intel_genxml_gen120_cl_pack_h",
-    cmd: "python3 $(location) $(location src/intel/genxml/gen120.xml) --engines=render,blitter,compute --opencl --repack --include-symbols 3DSTATE_DS,3DSTATE_HS,3DSTATE_INDEX_BUFFER,3DSTATE_VERTEX_BUFFERS,3DPRIMITIVE,3DPRIMITIVE_EXTENDED,MI_ARB_CHECK,MI_BATCH_BUFFER_START,VERTEX_BUFFER_STATE > $(location genxml/gen120_cl_pack.h)",
+    cmd: "python3 $(location) $(location src/intel/genxml/gen120.xml) --engines=render,blitter,compute --opencl --repack --include-symbols 3DSTATE_DS,3DSTATE_HS,3DSTATE_INDEX_BUFFER,3DSTATE_VERTEX_BUFFERS,3DPRIMITIVE,3DPRIMITIVE_EXTENDED,MI_ARB_CHECK,MI_BATCH_BUFFER_START,VERTEX_BUFFER_STATE > $(location gen120_cl_pack.h); cp $(location gen120_cl_pack.h) $(location genxml/gen120_cl_pack.h); cp $(location genxml/gen120_cl_pack.h) $(location intel/genxml/gen120_cl_pack.h)",
     srcs: [
         "src/intel/genxml/gen110.xml",
         "src/intel/genxml/gen120.xml",
@@ -1855,14 +2098,18 @@ cc_genrule {
         "src/intel/genxml/intel_genxml.py",
         "src/intel/genxml/util.py",
     ],
-    out: ["genxml/gen120_cl_pack.h"],
+    out: [
+        "gen120_cl_pack.h",
+        "genxml/gen120_cl_pack.h",
+        "intel/genxml/gen120_cl_pack.h",
+    ],
     tools: ["mesa3d_desktop-intel_src_intel_genxml_gen_pack_header_py"],
     vendor_available: true,
 }
 
 cc_genrule {
     name: "mesa3d_desktop-intel_src_intel_genxml_gen110_video_pack_h",
-    cmd: "python3 $(location) $(location src/intel/genxml/gen110.xml) --engines=video > $(location genxml/gen110_video_pack.h)",
+    cmd: "python3 $(location) $(location src/intel/genxml/gen110.xml) --engines=video > $(location gen110_video_pack.h); cp $(location gen110_video_pack.h) $(location genxml/gen110_video_pack.h); cp $(location genxml/gen110_video_pack.h) $(location intel/genxml/gen110_video_pack.h)",
     srcs: [
         "src/intel/genxml/gen110.xml",
         "src/intel/genxml/gen120.xml",
@@ -1883,14 +2130,18 @@ cc_genrule {
         "src/intel/genxml/intel_genxml.py",
         "src/intel/genxml/util.py",
     ],
-    out: ["genxml/gen110_video_pack.h"],
+    out: [
+        "gen110_video_pack.h",
+        "genxml/gen110_video_pack.h",
+        "intel/genxml/gen110_video_pack.h",
+    ],
     tools: ["mesa3d_desktop-intel_src_intel_genxml_gen_pack_header_py"],
     vendor_available: true,
 }
 
 cc_genrule {
     name: "mesa3d_desktop-intel_src_intel_genxml_gen110_pack_h",
-    cmd: "python3 $(location) $(location src/intel/genxml/gen110.xml) --engines=render,blitter,compute > $(location genxml/gen110_pack.h)",
+    cmd: "python3 $(location) $(location src/intel/genxml/gen110.xml) --engines=render,blitter,compute > $(location gen110_pack.h); cp $(location gen110_pack.h) $(location genxml/gen110_pack.h); cp $(location genxml/gen110_pack.h) $(location intel/genxml/gen110_pack.h)",
     srcs: [
         "src/intel/genxml/gen110.xml",
         "src/intel/genxml/gen120.xml",
@@ -1911,14 +2162,18 @@ cc_genrule {
         "src/intel/genxml/intel_genxml.py",
         "src/intel/genxml/util.py",
     ],
-    out: ["genxml/gen110_pack.h"],
+    out: [
+        "gen110_pack.h",
+        "genxml/gen110_pack.h",
+        "intel/genxml/gen110_pack.h",
+    ],
     tools: ["mesa3d_desktop-intel_src_intel_genxml_gen_pack_header_py"],
     vendor_available: true,
 }
 
 cc_genrule {
     name: "mesa3d_desktop-intel_src_intel_genxml_gen110_cl_pack_h",
-    cmd: "python3 $(location) $(location src/intel/genxml/gen110.xml) --engines=render,blitter,compute --opencl --repack --include-symbols 3DSTATE_DS,3DSTATE_HS,3DSTATE_INDEX_BUFFER,3DSTATE_VERTEX_BUFFERS,3DPRIMITIVE,3DPRIMITIVE_EXTENDED,MI_ARB_CHECK,MI_BATCH_BUFFER_START,VERTEX_BUFFER_STATE > $(location genxml/gen110_cl_pack.h)",
+    cmd: "python3 $(location) $(location src/intel/genxml/gen110.xml) --engines=render,blitter,compute --opencl --repack --include-symbols 3DSTATE_DS,3DSTATE_HS,3DSTATE_INDEX_BUFFER,3DSTATE_VERTEX_BUFFERS,3DPRIMITIVE,3DPRIMITIVE_EXTENDED,MI_ARB_CHECK,MI_BATCH_BUFFER_START,VERTEX_BUFFER_STATE > $(location gen110_cl_pack.h); cp $(location gen110_cl_pack.h) $(location genxml/gen110_cl_pack.h); cp $(location genxml/gen110_cl_pack.h) $(location intel/genxml/gen110_cl_pack.h)",
     srcs: [
         "src/intel/genxml/gen110.xml",
         "src/intel/genxml/gen120.xml",
@@ -1939,7 +2194,11 @@ cc_genrule {
         "src/intel/genxml/intel_genxml.py",
         "src/intel/genxml/util.py",
     ],
-    out: ["genxml/gen110_cl_pack.h"],
+    out: [
+        "gen110_cl_pack.h",
+        "genxml/gen110_cl_pack.h",
+        "intel/genxml/gen110_cl_pack.h",
+    ],
     tools: ["mesa3d_desktop-intel_src_intel_genxml_gen_pack_header_py"],
     vendor_available: true,
 }
@@ -1958,7 +2217,6 @@ cc_library_static {
         "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/intel",
-        "meson_generated/src/intel/dev",
         "meson_generated/src/intel/genxml",
         "meson_generated/src/intel/isl",
         "meson_generated/src/util",
@@ -1970,6 +2228,7 @@ cc_library_static {
     ],
     generated_headers: [
         "mesa3d_desktop-intel_src_intel_dev_intel_device_info_gen_h",
+        "mesa3d_desktop-intel_src_intel_dev_intel_wa_h",
         "mesa3d_desktop-intel_src_intel_genxml_gen110_cl_pack_h",
         "mesa3d_desktop-intel_src_intel_genxml_gen110_pack_h",
         "mesa3d_desktop-intel_src_intel_genxml_gen110_video_pack_h",
@@ -2035,7 +2294,6 @@ cc_library_static {
         "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/intel",
-        "meson_generated/src/intel/dev",
         "meson_generated/src/intel/genxml",
         "meson_generated/src/intel/isl",
         "meson_generated/src/util",
@@ -2047,6 +2305,7 @@ cc_library_static {
     ],
     generated_headers: [
         "mesa3d_desktop-intel_src_intel_dev_intel_device_info_gen_h",
+        "mesa3d_desktop-intel_src_intel_dev_intel_wa_h",
         "mesa3d_desktop-intel_src_intel_genxml_gen110_cl_pack_h",
         "mesa3d_desktop-intel_src_intel_genxml_gen110_pack_h",
         "mesa3d_desktop-intel_src_intel_genxml_gen110_video_pack_h",
@@ -2113,7 +2372,6 @@ cc_library_static {
         "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/intel",
-        "meson_generated/src/intel/dev",
         "meson_generated/src/intel/genxml",
         "meson_generated/src/intel/isl",
         "meson_generated/src/util",
@@ -2125,6 +2383,7 @@ cc_library_static {
     ],
     generated_headers: [
         "mesa3d_desktop-intel_src_intel_dev_intel_device_info_gen_h",
+        "mesa3d_desktop-intel_src_intel_dev_intel_wa_h",
         "mesa3d_desktop-intel_src_intel_genxml_gen110_cl_pack_h",
         "mesa3d_desktop-intel_src_intel_genxml_gen110_pack_h",
         "mesa3d_desktop-intel_src_intel_genxml_gen110_video_pack_h",
@@ -2191,7 +2450,6 @@ cc_library_static {
         "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/intel",
-        "meson_generated/src/intel/dev",
         "meson_generated/src/intel/genxml",
         "meson_generated/src/intel/isl",
         "meson_generated/src/util",
@@ -2203,6 +2461,7 @@ cc_library_static {
     ],
     generated_headers: [
         "mesa3d_desktop-intel_src_intel_dev_intel_device_info_gen_h",
+        "mesa3d_desktop-intel_src_intel_dev_intel_wa_h",
         "mesa3d_desktop-intel_src_intel_genxml_gen110_cl_pack_h",
         "mesa3d_desktop-intel_src_intel_genxml_gen110_pack_h",
         "mesa3d_desktop-intel_src_intel_genxml_gen110_video_pack_h",
@@ -2268,7 +2527,6 @@ cc_library_static {
         "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/intel",
-        "meson_generated/src/intel/dev",
         "meson_generated/src/intel/genxml",
         "meson_generated/src/intel/isl",
         "meson_generated/src/util",
@@ -2280,6 +2538,7 @@ cc_library_static {
     ],
     generated_headers: [
         "mesa3d_desktop-intel_src_intel_dev_intel_device_info_gen_h",
+        "mesa3d_desktop-intel_src_intel_dev_intel_wa_h",
         "mesa3d_desktop-intel_src_intel_genxml_gen110_cl_pack_h",
         "mesa3d_desktop-intel_src_intel_genxml_gen110_pack_h",
         "mesa3d_desktop-intel_src_intel_genxml_gen110_video_pack_h",
@@ -2346,7 +2605,6 @@ cc_library_static {
         "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/intel",
-        "meson_generated/src/intel/dev",
         "meson_generated/src/intel/genxml",
         "meson_generated/src/intel/isl",
         "meson_generated/src/util",
@@ -2358,6 +2616,7 @@ cc_library_static {
     ],
     generated_headers: [
         "mesa3d_desktop-intel_src_intel_dev_intel_device_info_gen_h",
+        "mesa3d_desktop-intel_src_intel_dev_intel_wa_h",
         "mesa3d_desktop-intel_src_intel_genxml_gen110_cl_pack_h",
         "mesa3d_desktop-intel_src_intel_genxml_gen110_pack_h",
         "mesa3d_desktop-intel_src_intel_genxml_gen110_video_pack_h",
@@ -2424,7 +2683,6 @@ cc_library_static {
         "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/intel",
-        "meson_generated/src/intel/dev",
         "meson_generated/src/intel/genxml",
         "meson_generated/src/intel/isl",
         "meson_generated/src/util",
@@ -2436,6 +2694,7 @@ cc_library_static {
     ],
     generated_headers: [
         "mesa3d_desktop-intel_src_intel_dev_intel_device_info_gen_h",
+        "mesa3d_desktop-intel_src_intel_dev_intel_wa_h",
         "mesa3d_desktop-intel_src_intel_genxml_gen110_cl_pack_h",
         "mesa3d_desktop-intel_src_intel_genxml_gen110_pack_h",
         "mesa3d_desktop-intel_src_intel_genxml_gen110_video_pack_h",
@@ -2502,7 +2761,6 @@ cc_library_static {
         "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/intel",
-        "meson_generated/src/intel/dev",
         "meson_generated/src/intel/genxml",
         "meson_generated/src/intel/isl",
         "meson_generated/src/util",
@@ -2514,6 +2772,7 @@ cc_library_static {
     ],
     generated_headers: [
         "mesa3d_desktop-intel_src_intel_dev_intel_device_info_gen_h",
+        "mesa3d_desktop-intel_src_intel_dev_intel_wa_h",
         "mesa3d_desktop-intel_src_intel_genxml_gen110_cl_pack_h",
         "mesa3d_desktop-intel_src_intel_genxml_gen110_pack_h",
         "mesa3d_desktop-intel_src_intel_genxml_gen110_video_pack_h",
@@ -2580,7 +2839,6 @@ cc_library_static {
         "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/intel",
-        "meson_generated/src/intel/dev",
         "meson_generated/src/intel/genxml",
         "meson_generated/src/intel/isl",
         "meson_generated/src/util",
@@ -2592,6 +2850,7 @@ cc_library_static {
     ],
     generated_headers: [
         "mesa3d_desktop-intel_src_intel_dev_intel_device_info_gen_h",
+        "mesa3d_desktop-intel_src_intel_dev_intel_wa_h",
         "mesa3d_desktop-intel_src_intel_genxml_gen110_cl_pack_h",
         "mesa3d_desktop-intel_src_intel_genxml_gen110_pack_h",
         "mesa3d_desktop-intel_src_intel_genxml_gen110_video_pack_h",
@@ -2658,7 +2917,6 @@ cc_library_static {
         "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/intel",
-        "meson_generated/src/intel/dev",
         "meson_generated/src/intel/genxml",
         "meson_generated/src/intel/isl",
         "meson_generated/src/util",
@@ -2670,6 +2928,7 @@ cc_library_static {
     ],
     generated_headers: [
         "mesa3d_desktop-intel_src_intel_dev_intel_device_info_gen_h",
+        "mesa3d_desktop-intel_src_intel_dev_intel_wa_h",
         "mesa3d_desktop-intel_src_intel_genxml_gen110_cl_pack_h",
         "mesa3d_desktop-intel_src_intel_genxml_gen110_pack_h",
         "mesa3d_desktop-intel_src_intel_genxml_gen110_video_pack_h",
@@ -2735,7 +2994,6 @@ cc_library_static {
         "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/intel",
-        "meson_generated/src/intel/dev",
         "meson_generated/src/intel/genxml",
         "meson_generated/src/intel/isl",
         "meson_generated/src/util",
@@ -2747,6 +3005,7 @@ cc_library_static {
     ],
     generated_headers: [
         "mesa3d_desktop-intel_src_intel_dev_intel_device_info_gen_h",
+        "mesa3d_desktop-intel_src_intel_dev_intel_wa_h",
         "mesa3d_desktop-intel_src_intel_genxml_gen110_cl_pack_h",
         "mesa3d_desktop-intel_src_intel_genxml_gen110_pack_h",
         "mesa3d_desktop-intel_src_intel_genxml_gen110_video_pack_h",
@@ -2814,7 +3073,6 @@ cc_library_static {
         "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/intel",
-        "meson_generated/src/intel/dev",
         "meson_generated/src/intel/genxml",
         "meson_generated/src/intel/isl",
         "meson_generated/src/util",
@@ -2825,6 +3083,7 @@ cc_library_static {
     ],
     generated_headers: [
         "mesa3d_desktop-intel_src_intel_dev_intel_device_info_gen_h",
+        "mesa3d_desktop-intel_src_intel_dev_intel_wa_h",
         "mesa3d_desktop-intel_src_util_format_u_format_gen_h",
         "mesa3d_desktop-intel_src_util_shader_stats_h",
     ],
@@ -2842,7 +3101,6 @@ cc_library_static {
         "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/intel",
-        "meson_generated/src/intel/dev",
         "meson_generated/src/intel/ds",
         "meson_generated/src/util",
         "meson_generated/src/util/format",
@@ -2853,6 +3111,7 @@ cc_library_static {
     ],
     generated_headers: [
         "mesa3d_desktop-intel_src_intel_dev_intel_device_info_gen_h",
+        "mesa3d_desktop-intel_src_intel_dev_intel_wa_h",
         "mesa3d_desktop-intel_src_util_format_u_format_gen_h",
         "mesa3d_desktop-intel_src_util_shader_stats_h",
     ],
@@ -2862,7 +3121,6 @@ cc_library_static {
 cc_library_static {
     name: "mesa3d_desktop-intel_src_intel_dev_libintel_dev_a",
     srcs: [
-        "meson_generated/src/intel/dev/intel_wa.c",
         "src/intel/dev/i915/intel_device_info.c",
         "src/intel/dev/intel_debug.c",
         "src/intel/dev/intel_device_info.c",
@@ -2875,19 +3133,28 @@ cc_library_static {
         "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/intel",
-        "meson_generated/src/intel/dev",
         "meson_generated/src/util",
         "meson_generated/src/util/format",
         "src",
         "src/intel",
         "src/intel/dev",
     ],
+    generated_sources: ["mesa3d_desktop-intel_src_intel_dev_intel_wa_c"],
     generated_headers: [
         "mesa3d_desktop-intel_src_intel_dev_intel_device_info_gen_h",
+        "mesa3d_desktop-intel_src_intel_dev_intel_wa_h",
         "mesa3d_desktop-intel_src_util_format_u_format_gen_h",
         "mesa3d_desktop-intel_src_util_shader_stats_h",
     ],
     defaults: ["mesa3d-desktop-intel-defaults"],
+}
+
+cc_genrule {
+    name: "mesa3d_desktop-intel_src_intel_dev_intel_wa_c",
+    cmd: "cp $(in) $(out)",
+    srcs: [":mesa3d_desktop-intel_n2s_src_intel_dev_intel_wa_h{n2s/src/intel/dev/intel_wa.c}"],
+    out: ["intel_wa.c"],
+    vendor_available: true,
 }
 
 cc_library_static {
@@ -2918,7 +3185,6 @@ cc_library_static {
         "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/intel",
-        "meson_generated/src/intel/dev",
         "meson_generated/src/intel/genxml",
         "meson_generated/src/util",
         "meson_generated/src/util/format",
@@ -2929,6 +3195,7 @@ cc_library_static {
     ],
     generated_headers: [
         "mesa3d_desktop-intel_src_intel_dev_intel_device_info_gen_h",
+        "mesa3d_desktop-intel_src_intel_dev_intel_wa_h",
         "mesa3d_desktop-intel_src_intel_genxml_gen110_cl_pack_h",
         "mesa3d_desktop-intel_src_intel_genxml_gen110_pack_h",
         "mesa3d_desktop-intel_src_intel_genxml_gen110_video_pack_h",
@@ -3058,6 +3325,7 @@ cc_library_shared {
     ],
     generated_headers: [
         "mesa3d_desktop-intel_src_intel_dev_intel_device_info_gen_h",
+        "mesa3d_desktop-intel_src_intel_dev_intel_wa_h",
         "mesa3d_desktop-intel_src_intel_genxml_gen110_cl_pack_h",
         "mesa3d_desktop-intel_src_intel_genxml_gen110_pack_h",
         "mesa3d_desktop-intel_src_intel_genxml_gen110_video_pack_h",
@@ -3104,7 +3372,9 @@ cc_library_shared {
         "mesa3d_desktop-intel_src_intel_genxml_gen90_pack_h",
         "mesa3d_desktop-intel_src_intel_genxml_gen90_video_pack_h",
         "mesa3d_desktop-intel_src_intel_genxml_genX_xml_h",
+        "mesa3d_desktop-intel_src_intel_perf_intel_perf_metrics_h",
         "mesa3d_desktop-intel_src_util_format_u_format_gen_h",
+        "mesa3d_desktop-intel_src_util_format_u_format_pack_h",
         "mesa3d_desktop-intel_src_util_shader_stats_h",
     ],
     defaults: ["mesa3d-desktop-intel-defaults"],
@@ -3186,9 +3456,7 @@ cc_library_shared {
         "meson_generated/src",
         "meson_generated/src/compiler",
         "meson_generated/src/compiler/nir",
-        "meson_generated/src/compiler/spirv",
         "meson_generated/src/intel",
-        "meson_generated/src/intel/dev",
         "meson_generated/src/intel/ds",
         "meson_generated/src/intel/genxml",
         "meson_generated/src/intel/shaders",
@@ -3216,8 +3484,10 @@ cc_library_shared {
         "mesa3d_desktop-intel_src_compiler_ir_expression_operation_h",
         "mesa3d_desktop-intel_src_compiler_nir_nir_builder_opcodes_h",
         "mesa3d_desktop-intel_src_compiler_nir_nir_opcodes_h",
+        "mesa3d_desktop-intel_src_compiler_spirv_spirv_info_h",
         "mesa3d_desktop-intel_src_compiler_spirv_vtn_generator_ids_h",
         "mesa3d_desktop-intel_src_intel_dev_intel_device_info_gen_h",
+        "mesa3d_desktop-intel_src_intel_dev_intel_wa_h",
         "mesa3d_desktop-intel_src_intel_genxml_gen110_cl_pack_h",
         "mesa3d_desktop-intel_src_intel_genxml_gen110_pack_h",
         "mesa3d_desktop-intel_src_intel_genxml_gen110_video_pack_h",
@@ -3264,9 +3534,11 @@ cc_library_shared {
         "mesa3d_desktop-intel_src_intel_genxml_gen90_pack_h",
         "mesa3d_desktop-intel_src_intel_genxml_gen90_video_pack_h",
         "mesa3d_desktop-intel_src_intel_genxml_genX_xml_h",
+        "mesa3d_desktop-intel_src_intel_perf_intel_perf_metrics_h",
         "mesa3d_desktop-intel_src_intel_vulkan_anv_entrypoints_h",
         "mesa3d_desktop-intel_src_util_driconf_static_h",
         "mesa3d_desktop-intel_src_util_format_u_format_gen_h",
+        "mesa3d_desktop-intel_src_util_format_u_format_pack_h",
         "mesa3d_desktop-intel_src_util_shader_stats_h",
         "mesa3d_desktop-intel_src_vulkan_runtime_vk_cmd_enqueue_entrypoints_h",
         "mesa3d_desktop-intel_src_vulkan_runtime_vk_cmd_queue_h",
@@ -3296,7 +3568,6 @@ cc_library_static {
         "include",
         "include/android_stub",
         "meson_generated/src",
-        "meson_generated/src/compiler/spirv",
         "meson_generated/src/util",
         "meson_generated/src/util/format",
         "meson_generated/src/vulkan/runtime",
@@ -3310,6 +3581,7 @@ cc_library_static {
     ],
     generated_sources: ["mesa3d_desktop-intel_src_vulkan_wsi_wsi_common_entrypoints_c"],
     generated_headers: [
+        "mesa3d_desktop-intel_src_compiler_spirv_spirv_info_h",
         "mesa3d_desktop-intel_src_util_format_u_format_gen_h",
         "mesa3d_desktop-intel_src_util_shader_stats_h",
         "mesa3d_desktop-intel_src_vulkan_runtime_vk_cmd_enqueue_entrypoints_h",
@@ -3326,9 +3598,13 @@ cc_library_static {
 
 cc_genrule {
     name: "mesa3d_desktop-intel_src_vulkan_wsi_wsi_common_entrypoints_h",
-    cmd: "cp $(in) $(out)",
+    cmd: "cp $(in) $(location wsi_common_entrypoints.h); cp $(location wsi_common_entrypoints.h) $(location wsi/wsi_common_entrypoints.h); cp $(location wsi/wsi_common_entrypoints.h) $(location vulkan/wsi/wsi_common_entrypoints.h)",
     srcs: [":mesa3d_desktop-intel_n2s_src_vulkan_wsi_wsi_common_entrypoints_h{n2s/src/vulkan/wsi/wsi_common_entrypoints.h}"],
-    out: ["wsi_common_entrypoints.h"],
+    out: [
+        "vulkan/wsi/wsi_common_entrypoints.h",
+        "wsi/wsi_common_entrypoints.h",
+        "wsi_common_entrypoints.h",
+    ],
     vendor_available: true,
 }
 
@@ -3375,9 +3651,13 @@ cc_genrule {
 
 cc_genrule {
     name: "mesa3d_desktop-intel_src_vulkan_util_vk_extensions_h",
-    cmd: "cp $(in) $(out)",
+    cmd: "cp $(in) $(location vk_extensions.h); cp $(location vk_extensions.h) $(location util/vk_extensions.h); cp $(location util/vk_extensions.h) $(location vulkan/util/vk_extensions.h)",
     srcs: [":mesa3d_desktop-intel_n2s_src_vulkan_util_vk_extensions_c{n2s/src/vulkan/util/vk_extensions.h}"],
-    out: ["vk_extensions.h"],
+    out: [
+        "util/vk_extensions.h",
+        "vk_extensions.h",
+        "vulkan/util/vk_extensions.h",
+    ],
     vendor_available: true,
 }
 
@@ -3408,9 +3688,13 @@ cc_genrule {
 
 cc_genrule {
     name: "mesa3d_desktop-intel_src_vulkan_util_vk_dispatch_table_h",
-    cmd: "cp $(in) $(out)",
+    cmd: "cp $(in) $(location vk_dispatch_table.h); cp $(location vk_dispatch_table.h) $(location util/vk_dispatch_table.h); cp $(location util/vk_dispatch_table.h) $(location vulkan/util/vk_dispatch_table.h)",
     srcs: [":mesa3d_desktop-intel_n2s_src_vulkan_util_vk_dispatch_table_c{n2s/src/vulkan/util/vk_dispatch_table.h}"],
-    out: ["vk_dispatch_table.h"],
+    out: [
+        "util/vk_dispatch_table.h",
+        "vk_dispatch_table.h",
+        "vulkan/util/vk_dispatch_table.h",
+    ],
     vendor_available: true,
 }
 
@@ -3443,9 +3727,13 @@ cc_genrule {
 
 cc_genrule {
     name: "mesa3d_desktop-intel_src_vulkan_runtime_vk_physical_device_properties_h",
-    cmd: "cp $(in) $(out)",
+    cmd: "cp $(in) $(location vk_physical_device_properties.h); cp $(location vk_physical_device_properties.h) $(location runtime/vk_physical_device_properties.h); cp $(location runtime/vk_physical_device_properties.h) $(location vulkan/runtime/vk_physical_device_properties.h)",
     srcs: [":mesa3d_desktop-intel_n2s_src_vulkan_runtime_vk_physical_device_properties_c{n2s/src/vulkan/runtime/vk_physical_device_properties.h}"],
-    out: ["vk_physical_device_properties.h"],
+    out: [
+        "runtime/vk_physical_device_properties.h",
+        "vk_physical_device_properties.h",
+        "vulkan/runtime/vk_physical_device_properties.h",
+    ],
     vendor_available: true,
 }
 
@@ -3476,9 +3764,13 @@ cc_genrule {
 
 cc_genrule {
     name: "mesa3d_desktop-intel_src_vulkan_runtime_vk_physical_device_features_h",
-    cmd: "cp $(in) $(out)",
+    cmd: "cp $(in) $(location vk_physical_device_features.h); cp $(location vk_physical_device_features.h) $(location runtime/vk_physical_device_features.h); cp $(location runtime/vk_physical_device_features.h) $(location vulkan/runtime/vk_physical_device_features.h)",
     srcs: [":mesa3d_desktop-intel_n2s_src_vulkan_runtime_vk_physical_device_features_c{n2s/src/vulkan/runtime/vk_physical_device_features.h}"],
-    out: ["vk_physical_device_features.h"],
+    out: [
+        "runtime/vk_physical_device_features.h",
+        "vk_physical_device_features.h",
+        "vulkan/runtime/vk_physical_device_features.h",
+    ],
     vendor_available: true,
 }
 
@@ -3509,9 +3801,13 @@ cc_genrule {
 
 cc_genrule {
     name: "mesa3d_desktop-intel_src_vulkan_runtime_vk_common_entrypoints_h",
-    cmd: "cp $(in) $(out)",
+    cmd: "cp $(in) $(location vk_common_entrypoints.h); cp $(location vk_common_entrypoints.h) $(location runtime/vk_common_entrypoints.h); cp $(location runtime/vk_common_entrypoints.h) $(location vulkan/runtime/vk_common_entrypoints.h)",
     srcs: [":mesa3d_desktop-intel_n2s_src_vulkan_runtime_vk_common_entrypoints_h{n2s/src/vulkan/runtime/vk_common_entrypoints.h}"],
-    out: ["vk_common_entrypoints.h"],
+    out: [
+        "runtime/vk_common_entrypoints.h",
+        "vk_common_entrypoints.h",
+        "vulkan/runtime/vk_common_entrypoints.h",
+    ],
     vendor_available: true,
 }
 
@@ -3533,9 +3829,13 @@ cc_genrule {
 
 cc_genrule {
     name: "mesa3d_desktop-intel_src_vulkan_runtime_vk_cmd_queue_h",
-    cmd: "cp $(in) $(out)",
+    cmd: "cp $(in) $(location vk_cmd_queue.h); cp $(location vk_cmd_queue.h) $(location runtime/vk_cmd_queue.h); cp $(location runtime/vk_cmd_queue.h) $(location vulkan/runtime/vk_cmd_queue.h)",
     srcs: [":mesa3d_desktop-intel_n2s_src_vulkan_runtime_vk_cmd_queue_c{n2s/src/vulkan/runtime/vk_cmd_queue.h}"],
-    out: ["vk_cmd_queue.h"],
+    out: [
+        "runtime/vk_cmd_queue.h",
+        "vk_cmd_queue.h",
+        "vulkan/runtime/vk_cmd_queue.h",
+    ],
     vendor_available: true,
 }
 
@@ -3568,9 +3868,13 @@ cc_genrule {
 
 cc_genrule {
     name: "mesa3d_desktop-intel_src_vulkan_runtime_vk_cmd_enqueue_entrypoints_h",
-    cmd: "cp $(in) $(out)",
+    cmd: "cp $(in) $(location vk_cmd_enqueue_entrypoints.h); cp $(location vk_cmd_enqueue_entrypoints.h) $(location runtime/vk_cmd_enqueue_entrypoints.h); cp $(location runtime/vk_cmd_enqueue_entrypoints.h) $(location vulkan/runtime/vk_cmd_enqueue_entrypoints.h)",
     srcs: [":mesa3d_desktop-intel_n2s_src_vulkan_runtime_vk_cmd_enqueue_entrypoints_h{n2s/src/vulkan/runtime/vk_cmd_enqueue_entrypoints.h}"],
-    out: ["vk_cmd_enqueue_entrypoints.h"],
+    out: [
+        "runtime/vk_cmd_enqueue_entrypoints.h",
+        "vk_cmd_enqueue_entrypoints.h",
+        "vulkan/runtime/vk_cmd_enqueue_entrypoints.h",
+    ],
     vendor_available: true,
 }
 
@@ -3587,6 +3891,37 @@ cc_genrule {
         "n2s/src/vulkan/runtime/vk_cmd_enqueue_entrypoints.h",
     ],
     tools: ["mesa3d_desktop-intel_src_vulkan_util_vk_entrypoints_gen_py"],
+    vendor_available: true,
+}
+
+cc_genrule {
+    name: "mesa3d_desktop-intel_src_compiler_spirv_spirv_info_h",
+    cmd: "cp $(in) $(location spirv_info.h); cp $(location spirv_info.h) $(location spirv/spirv_info.h); cp $(location spirv/spirv_info.h) $(location compiler/spirv/spirv_info.h)",
+    srcs: [":mesa3d_desktop-intel_n2s_src_compiler_spirv_spirv_info_h{n2s/src/compiler/spirv/spirv_info.h}"],
+    out: [
+        "compiler/spirv/spirv_info.h",
+        "spirv/spirv_info.h",
+        "spirv_info.h",
+    ],
+    vendor_available: true,
+}
+
+python_binary_host {
+    name: "mesa3d_desktop-intel_src_compiler_spirv_spirv_info_gen_py",
+    main: "src/compiler/spirv/spirv_info_gen.py",
+    srcs: ["src/compiler/spirv/spirv_info_gen.py"],
+    defaults: ["mesa_python_default"],
+}
+
+cc_genrule {
+    name: "mesa3d_desktop-intel_n2s_src_compiler_spirv_spirv_info_h",
+    cmd: "python3 $(location) --json $(location src/compiler/spirv/spirv.core.grammar.json) --out-h $(location n2s/src/compiler/spirv/spirv_info.h) --out-c $(location n2s/src/compiler/spirv/spirv_info.c)",
+    srcs: ["src/compiler/spirv/spirv.core.grammar.json"],
+    out: [
+        "n2s/src/compiler/spirv/spirv_info.c",
+        "n2s/src/compiler/spirv/spirv_info.h",
+    ],
+    tools: ["mesa3d_desktop-intel_src_compiler_spirv_spirv_info_gen_py"],
     vendor_available: true,
 }
 
@@ -3665,12 +4000,16 @@ python_binary_host {
 
 cc_genrule {
     name: "mesa3d_desktop-intel_src_compiler_nir_nir_opcodes_h",
-    cmd: "python3 $(location) > $(location nir_opcodes.h)",
+    cmd: "python3 $(location) > $(location nir_opcodes.h); cp $(location nir_opcodes.h) $(location nir/nir_opcodes.h); cp $(location nir/nir_opcodes.h) $(location compiler/nir/nir_opcodes.h)",
     srcs: [
         "src/compiler/nir/nir_intrinsics.py",
         "src/compiler/nir/nir_opcodes.py",
     ],
-    out: ["nir_opcodes.h"],
+    out: [
+        "compiler/nir/nir_opcodes.h",
+        "nir/nir_opcodes.h",
+        "nir_opcodes.h",
+    ],
     tools: ["mesa3d_desktop-intel_src_compiler_nir_nir_opcodes_h_py"],
     vendor_available: true,
 }
@@ -3688,12 +4027,16 @@ python_binary_host {
 
 cc_genrule {
     name: "mesa3d_desktop-intel_src_compiler_nir_nir_builder_opcodes_h",
-    cmd: "python3 $(location) > $(location nir_builder_opcodes.h)",
+    cmd: "python3 $(location) > $(location nir_builder_opcodes.h); cp $(location nir_builder_opcodes.h) $(location nir/nir_builder_opcodes.h); cp $(location nir/nir_builder_opcodes.h) $(location compiler/nir/nir_builder_opcodes.h)",
     srcs: [
         "src/compiler/nir/nir_intrinsics.py",
         "src/compiler/nir/nir_opcodes.py",
     ],
-    out: ["nir_builder_opcodes.h"],
+    out: [
+        "compiler/nir/nir_builder_opcodes.h",
+        "nir/nir_builder_opcodes.h",
+        "nir_builder_opcodes.h",
+    ],
     tools: ["mesa3d_desktop-intel_src_compiler_nir_nir_builder_opcodes_h_py"],
     vendor_available: true,
 }
@@ -3707,8 +4050,11 @@ python_binary_host {
 
 cc_genrule {
     name: "mesa3d_desktop-intel_src_compiler_ir_expression_operation_h",
-    cmd: "python3 $(location) enum > $(location ir_expression_operation.h)",
-    out: ["ir_expression_operation.h"],
+    cmd: "python3 $(location) enum > $(location ir_expression_operation.h); cp $(location ir_expression_operation.h) $(location compiler/ir_expression_operation.h)",
+    out: [
+        "compiler/ir_expression_operation.h",
+        "ir_expression_operation.h",
+    ],
     tools: ["mesa3d_desktop-intel_src_compiler_glsl_ir_expression_operation_py"],
     vendor_available: true,
 }
@@ -3732,12 +4078,15 @@ python_binary_host {
 
 cc_genrule {
     name: "mesa3d_desktop-intel_src_compiler_builtin_types_h",
-    cmd: "python3 $(location) $(location builtin_types.h)",
+    cmd: "python3 $(location) $(location builtin_types.h); cp $(location builtin_types.h) $(location compiler/builtin_types.h)",
     srcs: [
         ":mesa3d_desktop-intel_src_util_format_u_format_gen_h",
         "src/compiler/builtin_types.py",
     ],
-    out: ["builtin_types.h"],
+    out: [
+        "builtin_types.h",
+        "compiler/builtin_types.h",
+    ],
     tools: ["mesa3d_desktop-intel_src_compiler_builtin_types_h_py"],
     vendor_available: true,
 }
@@ -3787,7 +4136,6 @@ cc_library_static {
         "meson_generated/src",
         "meson_generated/src/compiler",
         "meson_generated/src/compiler/nir",
-        "meson_generated/src/compiler/spirv",
         "meson_generated/src/util",
         "meson_generated/src/util/format",
         "meson_generated/src/vulkan/runtime",
@@ -3805,6 +4153,7 @@ cc_library_static {
         "mesa3d_desktop-intel_src_compiler_ir_expression_operation_h",
         "mesa3d_desktop-intel_src_compiler_nir_nir_builder_opcodes_h",
         "mesa3d_desktop-intel_src_compiler_nir_nir_opcodes_h",
+        "mesa3d_desktop-intel_src_compiler_spirv_spirv_info_h",
         "mesa3d_desktop-intel_src_util_format_u_format_gen_h",
         "mesa3d_desktop-intel_src_util_shader_stats_h",
         "mesa3d_desktop-intel_src_vulkan_runtime_vk_cmd_enqueue_entrypoints_h",
@@ -3822,9 +4171,13 @@ cc_library_static {
 
 cc_genrule {
     name: "mesa3d_desktop-intel_src_vulkan_runtime_vk_format_info_h",
-    cmd: "cp $(in) $(out)",
+    cmd: "cp $(in) $(location vk_format_info.h); cp $(location vk_format_info.h) $(location runtime/vk_format_info.h); cp $(location runtime/vk_format_info.h) $(location vulkan/runtime/vk_format_info.h)",
     srcs: [":mesa3d_desktop-intel_n2s_src_vulkan_runtime_vk_format_info_c{n2s/src/vulkan/runtime/vk_format_info.h}"],
-    out: ["vk_format_info.h"],
+    out: [
+        "runtime/vk_format_info.h",
+        "vk_format_info.h",
+        "vulkan/runtime/vk_format_info.h",
+    ],
     vendor_available: true,
 }
 
@@ -3849,9 +4202,13 @@ cc_genrule {
 
 cc_genrule {
     name: "mesa3d_desktop-intel_src_vulkan_runtime_vk_dispatch_trampolines_h",
-    cmd: "cp $(in) $(out)",
+    cmd: "cp $(in) $(location vk_dispatch_trampolines.h); cp $(location vk_dispatch_trampolines.h) $(location runtime/vk_dispatch_trampolines.h); cp $(location runtime/vk_dispatch_trampolines.h) $(location vulkan/runtime/vk_dispatch_trampolines.h)",
     srcs: [":mesa3d_desktop-intel_n2s_src_vulkan_runtime_vk_dispatch_trampolines_c{n2s/src/vulkan/runtime/vk_dispatch_trampolines.h}"],
-    out: ["vk_dispatch_trampolines.h"],
+    out: [
+        "runtime/vk_dispatch_trampolines.h",
+        "vk_dispatch_trampolines.h",
+        "vulkan/runtime/vk_dispatch_trampolines.h",
+    ],
     vendor_available: true,
 }
 
@@ -3939,7 +4296,6 @@ cc_library_static {
         "meson_generated/src",
         "meson_generated/src/compiler",
         "meson_generated/src/compiler/nir",
-        "meson_generated/src/compiler/spirv",
         "meson_generated/src/util",
         "meson_generated/src/util/format",
         "meson_generated/src/vulkan/runtime",
@@ -3965,6 +4321,7 @@ cc_library_static {
         "mesa3d_desktop-intel_src_compiler_ir_expression_operation_h",
         "mesa3d_desktop-intel_src_compiler_nir_nir_builder_opcodes_h",
         "mesa3d_desktop-intel_src_compiler_nir_nir_opcodes_h",
+        "mesa3d_desktop-intel_src_compiler_spirv_spirv_info_h",
         "mesa3d_desktop-intel_src_util_format_u_format_gen_h",
         "mesa3d_desktop-intel_src_util_shader_stats_h",
         "mesa3d_desktop-intel_src_vulkan_runtime_vk_cmd_enqueue_entrypoints_h",
@@ -4080,7 +4437,6 @@ cc_library_static {
         "meson_generated/src",
         "meson_generated/src/compiler",
         "meson_generated/src/compiler/nir",
-        "meson_generated/src/compiler/spirv",
         "meson_generated/src/util",
         "meson_generated/src/util/format",
         "meson_generated/src/vulkan/runtime",
@@ -4096,6 +4452,7 @@ cc_library_static {
         "mesa3d_desktop-intel_src_compiler_ir_expression_operation_h",
         "mesa3d_desktop-intel_src_compiler_nir_nir_builder_opcodes_h",
         "mesa3d_desktop-intel_src_compiler_nir_nir_opcodes_h",
+        "mesa3d_desktop-intel_src_compiler_spirv_spirv_info_h",
         "mesa3d_desktop-intel_src_util_format_u_format_gen_h",
         "mesa3d_desktop-intel_src_util_shader_stats_h",
         "mesa3d_desktop-intel_src_vulkan_runtime_vk_cmd_enqueue_entrypoints_h",
@@ -4165,9 +4522,12 @@ python_binary_host {
 
 cc_genrule {
     name: "mesa3d_desktop-intel_src_util_driconf_static_h",
-    cmd: "python3 $(location) $(location src/util/00-mesa-defaults.conf) $(location driconf_static.h)",
+    cmd: "python3 $(location) $(location src/util/00-mesa-defaults.conf) $(location driconf_static.h); cp $(location driconf_static.h) $(location util/driconf_static.h)",
     srcs: ["src/util/00-mesa-defaults.conf"],
-    out: ["driconf_static.h"],
+    out: [
+        "driconf_static.h",
+        "util/driconf_static.h",
+    ],
     tools: ["mesa3d_desktop-intel_src_util_driconf_static_py"],
     vendor_available: true,
 }
@@ -4201,9 +4561,7 @@ cc_library_static {
         "meson_generated/src",
         "meson_generated/src/compiler",
         "meson_generated/src/compiler/nir",
-        "meson_generated/src/compiler/spirv",
         "meson_generated/src/intel",
-        "meson_generated/src/intel/dev",
         "meson_generated/src/intel/ds",
         "meson_generated/src/intel/genxml",
         "meson_generated/src/intel/shaders",
@@ -4231,7 +4589,9 @@ cc_library_static {
         "mesa3d_desktop-intel_src_compiler_ir_expression_operation_h",
         "mesa3d_desktop-intel_src_compiler_nir_nir_builder_opcodes_h",
         "mesa3d_desktop-intel_src_compiler_nir_nir_opcodes_h",
+        "mesa3d_desktop-intel_src_compiler_spirv_spirv_info_h",
         "mesa3d_desktop-intel_src_intel_dev_intel_device_info_gen_h",
+        "mesa3d_desktop-intel_src_intel_dev_intel_wa_h",
         "mesa3d_desktop-intel_src_intel_genxml_gen110_cl_pack_h",
         "mesa3d_desktop-intel_src_intel_genxml_gen110_pack_h",
         "mesa3d_desktop-intel_src_intel_genxml_gen110_video_pack_h",
@@ -4295,9 +4655,13 @@ cc_library_static {
 
 cc_genrule {
     name: "mesa3d_desktop-intel_src_intel_vulkan_anv_entrypoints_h",
-    cmd: "cp $(in) $(out)",
+    cmd: "cp $(in) $(location anv_entrypoints.h); cp $(location anv_entrypoints.h) $(location vulkan/anv_entrypoints.h); cp $(location vulkan/anv_entrypoints.h) $(location intel/vulkan/anv_entrypoints.h)",
     srcs: [":mesa3d_desktop-intel_n2s_src_intel_vulkan_anv_entrypoints_h{n2s/src/intel/vulkan/anv_entrypoints.h}"],
-    out: ["anv_entrypoints.h"],
+    out: [
+        "anv_entrypoints.h",
+        "intel/vulkan/anv_entrypoints.h",
+        "vulkan/anv_entrypoints.h",
+    ],
     vendor_available: true,
 }
 
@@ -4346,9 +4710,7 @@ cc_library_static {
         "meson_generated/src",
         "meson_generated/src/compiler",
         "meson_generated/src/compiler/nir",
-        "meson_generated/src/compiler/spirv",
         "meson_generated/src/intel",
-        "meson_generated/src/intel/dev",
         "meson_generated/src/intel/ds",
         "meson_generated/src/intel/genxml",
         "meson_generated/src/intel/shaders",
@@ -4376,7 +4738,9 @@ cc_library_static {
         "mesa3d_desktop-intel_src_compiler_ir_expression_operation_h",
         "mesa3d_desktop-intel_src_compiler_nir_nir_builder_opcodes_h",
         "mesa3d_desktop-intel_src_compiler_nir_nir_opcodes_h",
+        "mesa3d_desktop-intel_src_compiler_spirv_spirv_info_h",
         "mesa3d_desktop-intel_src_intel_dev_intel_device_info_gen_h",
+        "mesa3d_desktop-intel_src_intel_dev_intel_wa_h",
         "mesa3d_desktop-intel_src_intel_genxml_gen110_cl_pack_h",
         "mesa3d_desktop-intel_src_intel_genxml_gen110_pack_h",
         "mesa3d_desktop-intel_src_intel_genxml_gen110_video_pack_h",
@@ -4467,9 +4831,7 @@ cc_library_static {
         "meson_generated/src",
         "meson_generated/src/compiler",
         "meson_generated/src/compiler/nir",
-        "meson_generated/src/compiler/spirv",
         "meson_generated/src/intel",
-        "meson_generated/src/intel/dev",
         "meson_generated/src/intel/ds",
         "meson_generated/src/intel/genxml",
         "meson_generated/src/intel/shaders",
@@ -4497,7 +4859,9 @@ cc_library_static {
         "mesa3d_desktop-intel_src_compiler_ir_expression_operation_h",
         "mesa3d_desktop-intel_src_compiler_nir_nir_builder_opcodes_h",
         "mesa3d_desktop-intel_src_compiler_nir_nir_opcodes_h",
+        "mesa3d_desktop-intel_src_compiler_spirv_spirv_info_h",
         "mesa3d_desktop-intel_src_intel_dev_intel_device_info_gen_h",
+        "mesa3d_desktop-intel_src_intel_dev_intel_wa_h",
         "mesa3d_desktop-intel_src_intel_genxml_gen110_cl_pack_h",
         "mesa3d_desktop-intel_src_intel_genxml_gen110_pack_h",
         "mesa3d_desktop-intel_src_intel_genxml_gen110_video_pack_h",
@@ -4588,9 +4952,7 @@ cc_library_static {
         "meson_generated/src",
         "meson_generated/src/compiler",
         "meson_generated/src/compiler/nir",
-        "meson_generated/src/compiler/spirv",
         "meson_generated/src/intel",
-        "meson_generated/src/intel/dev",
         "meson_generated/src/intel/ds",
         "meson_generated/src/intel/genxml",
         "meson_generated/src/intel/shaders",
@@ -4618,7 +4980,9 @@ cc_library_static {
         "mesa3d_desktop-intel_src_compiler_ir_expression_operation_h",
         "mesa3d_desktop-intel_src_compiler_nir_nir_builder_opcodes_h",
         "mesa3d_desktop-intel_src_compiler_nir_nir_opcodes_h",
+        "mesa3d_desktop-intel_src_compiler_spirv_spirv_info_h",
         "mesa3d_desktop-intel_src_intel_dev_intel_device_info_gen_h",
+        "mesa3d_desktop-intel_src_intel_dev_intel_wa_h",
         "mesa3d_desktop-intel_src_intel_genxml_gen110_cl_pack_h",
         "mesa3d_desktop-intel_src_intel_genxml_gen110_pack_h",
         "mesa3d_desktop-intel_src_intel_genxml_gen110_video_pack_h",
@@ -4709,9 +5073,7 @@ cc_library_static {
         "meson_generated/src",
         "meson_generated/src/compiler",
         "meson_generated/src/compiler/nir",
-        "meson_generated/src/compiler/spirv",
         "meson_generated/src/intel",
-        "meson_generated/src/intel/dev",
         "meson_generated/src/intel/ds",
         "meson_generated/src/intel/genxml",
         "meson_generated/src/intel/shaders",
@@ -4739,7 +5101,9 @@ cc_library_static {
         "mesa3d_desktop-intel_src_compiler_ir_expression_operation_h",
         "mesa3d_desktop-intel_src_compiler_nir_nir_builder_opcodes_h",
         "mesa3d_desktop-intel_src_compiler_nir_nir_opcodes_h",
+        "mesa3d_desktop-intel_src_compiler_spirv_spirv_info_h",
         "mesa3d_desktop-intel_src_intel_dev_intel_device_info_gen_h",
+        "mesa3d_desktop-intel_src_intel_dev_intel_wa_h",
         "mesa3d_desktop-intel_src_intel_genxml_gen110_cl_pack_h",
         "mesa3d_desktop-intel_src_intel_genxml_gen110_pack_h",
         "mesa3d_desktop-intel_src_intel_genxml_gen110_video_pack_h",
@@ -4830,9 +5194,7 @@ cc_library_static {
         "meson_generated/src",
         "meson_generated/src/compiler",
         "meson_generated/src/compiler/nir",
-        "meson_generated/src/compiler/spirv",
         "meson_generated/src/intel",
-        "meson_generated/src/intel/dev",
         "meson_generated/src/intel/ds",
         "meson_generated/src/intel/genxml",
         "meson_generated/src/intel/shaders",
@@ -4860,7 +5222,9 @@ cc_library_static {
         "mesa3d_desktop-intel_src_compiler_ir_expression_operation_h",
         "mesa3d_desktop-intel_src_compiler_nir_nir_builder_opcodes_h",
         "mesa3d_desktop-intel_src_compiler_nir_nir_opcodes_h",
+        "mesa3d_desktop-intel_src_compiler_spirv_spirv_info_h",
         "mesa3d_desktop-intel_src_intel_dev_intel_device_info_gen_h",
+        "mesa3d_desktop-intel_src_intel_dev_intel_wa_h",
         "mesa3d_desktop-intel_src_intel_genxml_gen110_cl_pack_h",
         "mesa3d_desktop-intel_src_intel_genxml_gen110_pack_h",
         "mesa3d_desktop-intel_src_intel_genxml_gen110_video_pack_h",
@@ -4991,9 +5355,7 @@ cc_library_static {
         "meson_generated/src",
         "meson_generated/src/compiler",
         "meson_generated/src/compiler/nir",
-        "meson_generated/src/compiler/spirv",
         "meson_generated/src/intel",
-        "meson_generated/src/intel/dev",
         "meson_generated/src/intel/ds",
         "meson_generated/src/intel/genxml",
         "meson_generated/src/intel/shaders",
@@ -5021,7 +5383,9 @@ cc_library_static {
         "mesa3d_desktop-intel_src_compiler_ir_expression_operation_h",
         "mesa3d_desktop-intel_src_compiler_nir_nir_builder_opcodes_h",
         "mesa3d_desktop-intel_src_compiler_nir_nir_opcodes_h",
+        "mesa3d_desktop-intel_src_compiler_spirv_spirv_info_h",
         "mesa3d_desktop-intel_src_intel_dev_intel_device_info_gen_h",
+        "mesa3d_desktop-intel_src_intel_dev_intel_wa_h",
         "mesa3d_desktop-intel_src_intel_genxml_gen110_cl_pack_h",
         "mesa3d_desktop-intel_src_intel_genxml_gen110_pack_h",
         "mesa3d_desktop-intel_src_intel_genxml_gen110_video_pack_h",
@@ -5163,7 +5527,6 @@ cc_library_static {
         "meson_generated/src/compiler",
         "meson_generated/src/compiler/nir",
         "meson_generated/src/intel",
-        "meson_generated/src/intel/dev",
         "meson_generated/src/intel/ds",
         "meson_generated/src/util",
         "meson_generated/src/util/format",
@@ -5179,6 +5542,7 @@ cc_library_static {
         "mesa3d_desktop-intel_src_compiler_nir_nir_builder_opcodes_h",
         "mesa3d_desktop-intel_src_compiler_nir_nir_opcodes_h",
         "mesa3d_desktop-intel_src_intel_dev_intel_device_info_gen_h",
+        "mesa3d_desktop-intel_src_intel_dev_intel_wa_h",
         "mesa3d_desktop-intel_src_util_format_u_format_gen_h",
         "mesa3d_desktop-intel_src_util_shader_stats_h",
     ],
@@ -5202,7 +5566,6 @@ cc_library_static {
         "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/intel",
-        "meson_generated/src/intel/dev",
         "meson_generated/src/intel/genxml",
         "meson_generated/src/util",
         "meson_generated/src/util/format",
@@ -5212,6 +5575,7 @@ cc_library_static {
     ],
     generated_headers: [
         "mesa3d_desktop-intel_src_intel_dev_intel_device_info_gen_h",
+        "mesa3d_desktop-intel_src_intel_dev_intel_wa_h",
         "mesa3d_desktop-intel_src_intel_genxml_genX_xml_h",
         "mesa3d_desktop-intel_src_util_format_u_format_gen_h",
         "mesa3d_desktop-intel_src_util_shader_stats_h",
@@ -5325,10 +5689,8 @@ cc_library_static {
         "meson_generated/src",
         "meson_generated/src/compiler",
         "meson_generated/src/compiler/nir",
-        "meson_generated/src/compiler/spirv",
         "meson_generated/src/intel",
         "meson_generated/src/intel/compiler",
-        "meson_generated/src/intel/dev",
         "meson_generated/src/util",
         "meson_generated/src/util/format",
         "src",
@@ -5342,7 +5704,9 @@ cc_library_static {
         "mesa3d_desktop-intel_src_compiler_ir_expression_operation_h",
         "mesa3d_desktop-intel_src_compiler_nir_nir_builder_opcodes_h",
         "mesa3d_desktop-intel_src_compiler_nir_nir_opcodes_h",
+        "mesa3d_desktop-intel_src_compiler_spirv_spirv_info_h",
         "mesa3d_desktop-intel_src_intel_dev_intel_device_info_gen_h",
+        "mesa3d_desktop-intel_src_intel_dev_intel_wa_h",
         "mesa3d_desktop-intel_src_util_format_u_format_gen_h",
         "mesa3d_desktop-intel_src_util_shader_stats_h",
     ],
@@ -5364,7 +5728,6 @@ cc_library_static {
         "meson_generated/src/compiler",
         "meson_generated/src/compiler/nir",
         "meson_generated/src/intel",
-        "meson_generated/src/intel/dev",
         "meson_generated/src/intel/genxml",
         "meson_generated/src/util",
         "meson_generated/src/util/format",
@@ -5381,6 +5744,7 @@ cc_library_static {
         "mesa3d_desktop-intel_src_compiler_nir_nir_builder_opcodes_h",
         "mesa3d_desktop-intel_src_compiler_nir_nir_opcodes_h",
         "mesa3d_desktop-intel_src_intel_dev_intel_device_info_gen_h",
+        "mesa3d_desktop-intel_src_intel_dev_intel_wa_h",
         "mesa3d_desktop-intel_src_intel_genxml_gen110_cl_pack_h",
         "mesa3d_desktop-intel_src_intel_genxml_gen110_pack_h",
         "mesa3d_desktop-intel_src_intel_genxml_gen110_video_pack_h",
@@ -5436,7 +5800,6 @@ cc_library_static {
 cc_library_static {
     name: "mesa3d_desktop-intel_src_compiler_spirv_libvtn_a",
     srcs: [
-        "meson_generated/src/compiler/spirv/spirv_info.c",
         "src/compiler/spirv/gl_spirv.c",
         "src/compiler/spirv/spirv_to_nir.c",
         "src/compiler/spirv/vtn_alu.c",
@@ -5456,7 +5819,6 @@ cc_library_static {
         "meson_generated/src",
         "meson_generated/src/compiler",
         "meson_generated/src/compiler/nir",
-        "meson_generated/src/compiler/spirv",
         "meson_generated/src/util",
         "meson_generated/src/util/format",
         "src",
@@ -5464,12 +5826,16 @@ cc_library_static {
         "src/compiler/nir",
         "src/compiler/spirv",
     ],
-    generated_sources: ["mesa3d_desktop-intel_src_compiler_spirv_vtn_gather_types_c"],
+    generated_sources: [
+        "mesa3d_desktop-intel_src_compiler_spirv_spirv_info_c",
+        "mesa3d_desktop-intel_src_compiler_spirv_vtn_gather_types_c",
+    ],
     generated_headers: [
         "mesa3d_desktop-intel_src_compiler_builtin_types_h",
         "mesa3d_desktop-intel_src_compiler_ir_expression_operation_h",
         "mesa3d_desktop-intel_src_compiler_nir_nir_builder_opcodes_h",
         "mesa3d_desktop-intel_src_compiler_nir_nir_opcodes_h",
+        "mesa3d_desktop-intel_src_compiler_spirv_spirv_info_h",
         "mesa3d_desktop-intel_src_compiler_spirv_vtn_generator_ids_h",
         "mesa3d_desktop-intel_src_util_format_u_format_gen_h",
         "mesa3d_desktop-intel_src_util_shader_stats_h",
@@ -5486,9 +5852,13 @@ python_binary_host {
 
 cc_genrule {
     name: "mesa3d_desktop-intel_src_compiler_spirv_vtn_generator_ids_h",
-    cmd: "python3 $(location) $(location src/compiler/spirv/spir-v.xml) $(location vtn_generator_ids.h)",
+    cmd: "python3 $(location) $(location src/compiler/spirv/spir-v.xml) $(location vtn_generator_ids.h); cp $(location vtn_generator_ids.h) $(location spirv/vtn_generator_ids.h); cp $(location spirv/vtn_generator_ids.h) $(location compiler/spirv/vtn_generator_ids.h)",
     srcs: ["src/compiler/spirv/spir-v.xml"],
-    out: ["vtn_generator_ids.h"],
+    out: [
+        "compiler/spirv/vtn_generator_ids.h",
+        "spirv/vtn_generator_ids.h",
+        "vtn_generator_ids.h",
+    ],
     tools: ["mesa3d_desktop-intel_src_compiler_spirv_vtn_generator_ids_h_py"],
     vendor_available: true,
 }
@@ -5506,6 +5876,14 @@ cc_genrule {
     srcs: ["src/compiler/spirv/spirv.core.grammar.json"],
     out: ["vtn_gather_types.c"],
     tools: ["mesa3d_desktop-intel_src_compiler_spirv_vtn_gather_types_c_py"],
+    vendor_available: true,
+}
+
+cc_genrule {
+    name: "mesa3d_desktop-intel_src_compiler_spirv_spirv_info_c",
+    cmd: "cp $(in) $(out)",
+    srcs: [":mesa3d_desktop-intel_n2s_src_compiler_spirv_spirv_info_h{n2s/src/compiler/spirv/spirv_info.c}"],
+    out: ["spirv_info.c"],
     vendor_available: true,
 }
 
@@ -5979,13 +6357,17 @@ cc_library_shared {
         "mesa3d_desktop-intel_src_compiler_glsl_cross_platform_settings_piece_all_h",
         "mesa3d_desktop-intel_src_compiler_glsl_etc2_rgba_stitch_glsl_h",
         "mesa3d_desktop-intel_src_compiler_glsl_float64_glsl_h",
+        "mesa3d_desktop-intel_src_compiler_glsl_glcpp_glcpp-parse_h",
+        "mesa3d_desktop-intel_src_compiler_glsl_glsl_parser_h",
         "mesa3d_desktop-intel_src_compiler_glsl_ir_expression_operation_constant_h",
         "mesa3d_desktop-intel_src_compiler_glsl_ir_expression_operation_strings_h",
         "mesa3d_desktop-intel_src_compiler_ir_expression_operation_h",
         "mesa3d_desktop-intel_src_compiler_nir_nir_builder_opcodes_h",
         "mesa3d_desktop-intel_src_compiler_nir_nir_opcodes_h",
+        "mesa3d_desktop-intel_src_compiler_spirv_spirv_info_h",
         "mesa3d_desktop-intel_src_compiler_spirv_vtn_generator_ids_h",
         "mesa3d_desktop-intel_src_intel_dev_intel_device_info_gen_h",
+        "mesa3d_desktop-intel_src_intel_dev_intel_wa_h",
         "mesa3d_desktop-intel_src_intel_genxml_gen110_cl_pack_h",
         "mesa3d_desktop-intel_src_intel_genxml_gen110_pack_h",
         "mesa3d_desktop-intel_src_intel_genxml_gen110_video_pack_h",
@@ -6032,9 +6414,12 @@ cc_library_shared {
         "mesa3d_desktop-intel_src_intel_genxml_gen90_pack_h",
         "mesa3d_desktop-intel_src_intel_genxml_gen90_video_pack_h",
         "mesa3d_desktop-intel_src_intel_genxml_genX_xml_h",
+        "mesa3d_desktop-intel_src_intel_perf_intel_perf_metrics_h",
         "mesa3d_desktop-intel_src_mesa_format_info_h",
+        "mesa3d_desktop-intel_src_mesa_program_program_parse_tab_h",
         "mesa3d_desktop-intel_src_util_driconf_static_h",
         "mesa3d_desktop-intel_src_util_format_u_format_gen_h",
+        "mesa3d_desktop-intel_src_util_format_u_format_pack_h",
         "mesa3d_desktop-intel_src_util_shader_stats_h",
     ],
     defaults: ["mesa3d-desktop-intel-defaults"],
@@ -6071,8 +6456,6 @@ cc_library_static {
         "meson_generated/src/mesa/glapi/glapi/gen/marshal_generated6.c",
         "meson_generated/src/mesa/glapi/glapi/gen/marshal_generated7.c",
         "meson_generated/src/mesa/glapi/glapi/gen/unmarshal_table.c",
-        "meson_generated/src/mesa/program/lex.yy.c",
-        "meson_generated/src/mesa/program/program_parse.tab.c",
         "src/mesa/main/accum.c",
         "src/mesa/main/api_arrayelt.c",
         "src/mesa/main/arbprogram.c",
@@ -6284,13 +6667,10 @@ cc_library_static {
         "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/compiler",
-        "meson_generated/src/compiler/glsl",
         "meson_generated/src/compiler/nir",
-        "meson_generated/src/compiler/spirv",
         "meson_generated/src/gallium/auxiliary",
         "meson_generated/src/mesa",
         "meson_generated/src/mesa/glapi/glapi/gen",
-        "meson_generated/src/mesa/program",
         "meson_generated/src/util",
         "meson_generated/src/util/format",
         "src",
@@ -6301,7 +6681,11 @@ cc_library_static {
         "src/mesa",
         "src/mesa/main",
     ],
-    generated_sources: ["mesa3d_desktop-intel_src_mesa_format_fallback_c"],
+    generated_sources: [
+        "mesa3d_desktop-intel_src_mesa_format_fallback_c",
+        "mesa3d_desktop-intel_src_mesa_program_lex_yy_c",
+        "mesa3d_desktop-intel_src_mesa_program_program_parse_tab_c",
+    ],
     generated_headers: [
         "mesa3d_desktop-intel_src_compiler_builtin_types_h",
         "mesa3d_desktop-intel_src_compiler_glsl_astc_glsl_h",
@@ -6312,11 +6696,40 @@ cc_library_static {
         "mesa3d_desktop-intel_src_compiler_ir_expression_operation_h",
         "mesa3d_desktop-intel_src_compiler_nir_nir_builder_opcodes_h",
         "mesa3d_desktop-intel_src_compiler_nir_nir_opcodes_h",
+        "mesa3d_desktop-intel_src_compiler_spirv_spirv_info_h",
         "mesa3d_desktop-intel_src_mesa_format_info_h",
+        "mesa3d_desktop-intel_src_mesa_program_program_parse_tab_h",
         "mesa3d_desktop-intel_src_util_format_u_format_gen_h",
         "mesa3d_desktop-intel_src_util_shader_stats_h",
     ],
     defaults: ["mesa3d-desktop-intel-defaults"],
+}
+
+cc_genrule {
+    name: "mesa3d_desktop-intel_src_mesa_program_program_parse_tab_h",
+    cmd: "cp $(in) $(location program_parse.tab.h); cp $(location program_parse.tab.h) $(location program/program_parse.tab.h); cp $(location program/program_parse.tab.h) $(location mesa/program/program_parse.tab.h)",
+    srcs: [":mesa3d_desktop-intel_n2s_src_mesa_program_program_parse_tab_c{n2s/src/mesa/program/program_parse.tab.h}"],
+    out: [
+        "mesa/program/program_parse.tab.h",
+        "program/program_parse.tab.h",
+        "program_parse.tab.h",
+    ],
+    vendor_available: true,
+}
+
+cc_genrule {
+    name: "mesa3d_desktop-intel_n2s_src_mesa_program_program_parse_tab_c",
+    cmd: "M4=$(location m4) $(location bison) -Wno-deprecated -o $(location n2s/src/mesa/program/program_parse.tab.c) --defines=$(location n2s/src/mesa/program/program_parse.tab.h) $(location src/mesa/program/program_parse.y)",
+    srcs: ["src/mesa/program/program_parse.y"],
+    out: [
+        "n2s/src/mesa/program/program_parse.tab.c",
+        "n2s/src/mesa/program/program_parse.tab.h",
+    ],
+    tools: [
+        "bison",
+        "m4",
+    ],
+    vendor_available: true,
 }
 
 genrule {
@@ -6338,12 +6751,15 @@ python_binary_host {
 
 cc_genrule {
     name: "mesa3d_desktop-intel_src_mesa_format_info_h",
-    cmd: "python3 $(location) $(location src/mesa/main/formats.csv) > $(location format_info.h)",
+    cmd: "python3 $(location) $(location src/mesa/main/formats.csv) > $(location format_info.h); cp $(location format_info.h) $(location mesa/format_info.h)",
     srcs: [
         "src/mesa/main/format_parser.py",
         "src/mesa/main/formats.csv",
     ],
-    out: ["format_info.h"],
+    out: [
+        "format_info.h",
+        "mesa/format_info.h",
+    ],
     tools: ["mesa3d_desktop-intel_src_mesa_main_format_info_py"],
     vendor_available: true,
 }
@@ -6357,45 +6773,65 @@ python_binary_host {
 
 cc_genrule {
     name: "mesa3d_desktop-intel_src_compiler_glsl_etc2_rgba_stitch_glsl_h",
-    cmd: "python3 $(location) $(location src/compiler/glsl/etc2_rgba_stitch.glsl) $(location compiler/glsl/etc2_rgba_stitch_glsl.h) -n etc2_rgba_stitch_source",
+    cmd: "python3 $(location) $(location src/compiler/glsl/etc2_rgba_stitch.glsl) $(location etc2_rgba_stitch_glsl.h) -n etc2_rgba_stitch_source; cp $(location etc2_rgba_stitch_glsl.h) $(location glsl/etc2_rgba_stitch_glsl.h); cp $(location glsl/etc2_rgba_stitch_glsl.h) $(location compiler/glsl/etc2_rgba_stitch_glsl.h)",
     srcs: ["src/compiler/glsl/etc2_rgba_stitch.glsl"],
-    out: ["compiler/glsl/etc2_rgba_stitch_glsl.h"],
+    out: [
+        "compiler/glsl/etc2_rgba_stitch_glsl.h",
+        "etc2_rgba_stitch_glsl.h",
+        "glsl/etc2_rgba_stitch_glsl.h",
+    ],
     tools: ["mesa3d_desktop-intel_src_util_xxd_py"],
     vendor_available: true,
 }
 
 cc_genrule {
     name: "mesa3d_desktop-intel_src_compiler_glsl_cross_platform_settings_piece_all_h",
-    cmd: "python3 $(location) $(location src/compiler/glsl/CrossPlatformSettings_piece_all.glsl) $(location compiler/glsl/cross_platform_settings_piece_all.h) -n cross_platform_settings_piece_all_header",
+    cmd: "python3 $(location) $(location src/compiler/glsl/CrossPlatformSettings_piece_all.glsl) $(location cross_platform_settings_piece_all.h) -n cross_platform_settings_piece_all_header; cp $(location cross_platform_settings_piece_all.h) $(location glsl/cross_platform_settings_piece_all.h); cp $(location glsl/cross_platform_settings_piece_all.h) $(location compiler/glsl/cross_platform_settings_piece_all.h)",
     srcs: ["src/compiler/glsl/CrossPlatformSettings_piece_all.glsl"],
-    out: ["compiler/glsl/cross_platform_settings_piece_all.h"],
+    out: [
+        "compiler/glsl/cross_platform_settings_piece_all.h",
+        "cross_platform_settings_piece_all.h",
+        "glsl/cross_platform_settings_piece_all.h",
+    ],
     tools: ["mesa3d_desktop-intel_src_util_xxd_py"],
     vendor_available: true,
 }
 
 cc_genrule {
     name: "mesa3d_desktop-intel_src_compiler_glsl_bc4_glsl_h",
-    cmd: "python3 $(location) $(location src/compiler/glsl/bc4.glsl) $(location compiler/glsl/bc4_glsl.h) -n bc4_source",
+    cmd: "python3 $(location) $(location src/compiler/glsl/bc4.glsl) $(location bc4_glsl.h) -n bc4_source; cp $(location bc4_glsl.h) $(location glsl/bc4_glsl.h); cp $(location glsl/bc4_glsl.h) $(location compiler/glsl/bc4_glsl.h)",
     srcs: ["src/compiler/glsl/bc4.glsl"],
-    out: ["compiler/glsl/bc4_glsl.h"],
+    out: [
+        "bc4_glsl.h",
+        "compiler/glsl/bc4_glsl.h",
+        "glsl/bc4_glsl.h",
+    ],
     tools: ["mesa3d_desktop-intel_src_util_xxd_py"],
     vendor_available: true,
 }
 
 cc_genrule {
     name: "mesa3d_desktop-intel_src_compiler_glsl_bc1_glsl_h",
-    cmd: "python3 $(location) $(location src/compiler/glsl/bc1.glsl) $(location compiler/glsl/bc1_glsl.h) -n bc1_source",
+    cmd: "python3 $(location) $(location src/compiler/glsl/bc1.glsl) $(location bc1_glsl.h) -n bc1_source; cp $(location bc1_glsl.h) $(location glsl/bc1_glsl.h); cp $(location glsl/bc1_glsl.h) $(location compiler/glsl/bc1_glsl.h)",
     srcs: ["src/compiler/glsl/bc1.glsl"],
-    out: ["compiler/glsl/bc1_glsl.h"],
+    out: [
+        "bc1_glsl.h",
+        "compiler/glsl/bc1_glsl.h",
+        "glsl/bc1_glsl.h",
+    ],
     tools: ["mesa3d_desktop-intel_src_util_xxd_py"],
     vendor_available: true,
 }
 
 cc_genrule {
     name: "mesa3d_desktop-intel_src_compiler_glsl_astc_glsl_h",
-    cmd: "python3 $(location) $(location src/compiler/glsl/astc_decoder.glsl) $(location compiler/glsl/astc_glsl.h) -n astc_source",
+    cmd: "python3 $(location) $(location src/compiler/glsl/astc_decoder.glsl) $(location astc_glsl.h) -n astc_source; cp $(location astc_glsl.h) $(location glsl/astc_glsl.h); cp $(location glsl/astc_glsl.h) $(location compiler/glsl/astc_glsl.h)",
     srcs: ["src/compiler/glsl/astc_decoder.glsl"],
-    out: ["compiler/glsl/astc_glsl.h"],
+    out: [
+        "astc_glsl.h",
+        "compiler/glsl/astc_glsl.h",
+        "glsl/astc_glsl.h",
+    ],
     tools: ["mesa3d_desktop-intel_src_util_xxd_py"],
     vendor_available: true,
 }
@@ -6419,6 +6855,26 @@ cc_genrule {
     ],
     out: ["format_fallback.c"],
     tools: ["mesa3d_desktop-intel_src_mesa_main_format_fallback_py"],
+    vendor_available: true,
+}
+
+cc_genrule {
+    name: "mesa3d_desktop-intel_src_mesa_program_program_parse_tab_c",
+    cmd: "cp $(in) $(out)",
+    srcs: [":mesa3d_desktop-intel_n2s_src_mesa_program_program_parse_tab_c{n2s/src/mesa/program/program_parse.tab.c}"],
+    out: ["program_parse.tab.c"],
+    vendor_available: true,
+}
+
+cc_genrule {
+    name: "mesa3d_desktop-intel_src_mesa_program_lex_yy_c",
+    cmd: "M4=$(location m4) $(location flex) -o $(location lex.yy.c) $(location src/mesa/program/program_lexer.l)",
+    srcs: ["src/mesa/program/program_lexer.l"],
+    out: ["lex.yy.c"],
+    tools: [
+        "flex",
+        "m4",
+    ],
     vendor_available: true,
 }
 
@@ -6633,7 +7089,6 @@ cc_library_static {
         "meson_generated/src/compiler/nir",
         "meson_generated/src/gallium/auxiliary",
         "meson_generated/src/intel",
-        "meson_generated/src/intel/dev",
         "meson_generated/src/intel/ds",
         "meson_generated/src/intel/genxml",
         "meson_generated/src/intel/shaders",
@@ -6657,6 +7112,7 @@ cc_library_static {
         "mesa3d_desktop-intel_src_compiler_nir_nir_builder_opcodes_h",
         "mesa3d_desktop-intel_src_compiler_nir_nir_opcodes_h",
         "mesa3d_desktop-intel_src_intel_dev_intel_device_info_gen_h",
+        "mesa3d_desktop-intel_src_intel_dev_intel_wa_h",
         "mesa3d_desktop-intel_src_intel_genxml_gen110_cl_pack_h",
         "mesa3d_desktop-intel_src_intel_genxml_gen110_pack_h",
         "mesa3d_desktop-intel_src_intel_genxml_gen110_video_pack_h",
@@ -6726,7 +7182,6 @@ cc_library_static {
         "meson_generated/src/compiler/nir",
         "meson_generated/src/gallium/auxiliary",
         "meson_generated/src/intel",
-        "meson_generated/src/intel/dev",
         "meson_generated/src/intel/ds",
         "meson_generated/src/intel/genxml",
         "meson_generated/src/intel/shaders",
@@ -6750,6 +7205,7 @@ cc_library_static {
         "mesa3d_desktop-intel_src_compiler_nir_nir_builder_opcodes_h",
         "mesa3d_desktop-intel_src_compiler_nir_nir_opcodes_h",
         "mesa3d_desktop-intel_src_intel_dev_intel_device_info_gen_h",
+        "mesa3d_desktop-intel_src_intel_dev_intel_wa_h",
         "mesa3d_desktop-intel_src_intel_genxml_gen110_cl_pack_h",
         "mesa3d_desktop-intel_src_intel_genxml_gen110_pack_h",
         "mesa3d_desktop-intel_src_intel_genxml_gen110_video_pack_h",
@@ -6819,7 +7275,6 @@ cc_library_static {
         "meson_generated/src/compiler/nir",
         "meson_generated/src/gallium/auxiliary",
         "meson_generated/src/intel",
-        "meson_generated/src/intel/dev",
         "meson_generated/src/intel/ds",
         "meson_generated/src/intel/genxml",
         "meson_generated/src/intel/shaders",
@@ -6843,6 +7298,7 @@ cc_library_static {
         "mesa3d_desktop-intel_src_compiler_nir_nir_builder_opcodes_h",
         "mesa3d_desktop-intel_src_compiler_nir_nir_opcodes_h",
         "mesa3d_desktop-intel_src_intel_dev_intel_device_info_gen_h",
+        "mesa3d_desktop-intel_src_intel_dev_intel_wa_h",
         "mesa3d_desktop-intel_src_intel_genxml_gen110_cl_pack_h",
         "mesa3d_desktop-intel_src_intel_genxml_gen110_pack_h",
         "mesa3d_desktop-intel_src_intel_genxml_gen110_video_pack_h",
@@ -6912,7 +7368,6 @@ cc_library_static {
         "meson_generated/src/compiler/nir",
         "meson_generated/src/gallium/auxiliary",
         "meson_generated/src/intel",
-        "meson_generated/src/intel/dev",
         "meson_generated/src/intel/ds",
         "meson_generated/src/intel/genxml",
         "meson_generated/src/intel/shaders",
@@ -6936,6 +7391,7 @@ cc_library_static {
         "mesa3d_desktop-intel_src_compiler_nir_nir_builder_opcodes_h",
         "mesa3d_desktop-intel_src_compiler_nir_nir_opcodes_h",
         "mesa3d_desktop-intel_src_intel_dev_intel_device_info_gen_h",
+        "mesa3d_desktop-intel_src_intel_dev_intel_wa_h",
         "mesa3d_desktop-intel_src_intel_genxml_gen110_cl_pack_h",
         "mesa3d_desktop-intel_src_intel_genxml_gen110_pack_h",
         "mesa3d_desktop-intel_src_intel_genxml_gen110_video_pack_h",
@@ -7005,7 +7461,6 @@ cc_library_static {
         "meson_generated/src/compiler/nir",
         "meson_generated/src/gallium/auxiliary",
         "meson_generated/src/intel",
-        "meson_generated/src/intel/dev",
         "meson_generated/src/intel/ds",
         "meson_generated/src/intel/genxml",
         "meson_generated/src/intel/shaders",
@@ -7029,6 +7484,7 @@ cc_library_static {
         "mesa3d_desktop-intel_src_compiler_nir_nir_builder_opcodes_h",
         "mesa3d_desktop-intel_src_compiler_nir_nir_opcodes_h",
         "mesa3d_desktop-intel_src_intel_dev_intel_device_info_gen_h",
+        "mesa3d_desktop-intel_src_intel_dev_intel_wa_h",
         "mesa3d_desktop-intel_src_intel_genxml_gen110_cl_pack_h",
         "mesa3d_desktop-intel_src_intel_genxml_gen110_pack_h",
         "mesa3d_desktop-intel_src_intel_genxml_gen110_video_pack_h",
@@ -7098,7 +7554,6 @@ cc_library_static {
         "meson_generated/src/compiler/nir",
         "meson_generated/src/gallium/auxiliary",
         "meson_generated/src/intel",
-        "meson_generated/src/intel/dev",
         "meson_generated/src/intel/ds",
         "meson_generated/src/intel/genxml",
         "meson_generated/src/intel/shaders",
@@ -7122,6 +7577,7 @@ cc_library_static {
         "mesa3d_desktop-intel_src_compiler_nir_nir_builder_opcodes_h",
         "mesa3d_desktop-intel_src_compiler_nir_nir_opcodes_h",
         "mesa3d_desktop-intel_src_intel_dev_intel_device_info_gen_h",
+        "mesa3d_desktop-intel_src_intel_dev_intel_wa_h",
         "mesa3d_desktop-intel_src_intel_genxml_gen110_cl_pack_h",
         "mesa3d_desktop-intel_src_intel_genxml_gen110_pack_h",
         "mesa3d_desktop-intel_src_intel_genxml_gen110_video_pack_h",
@@ -7214,10 +7670,8 @@ cc_library_static {
         "meson_generated/src",
         "meson_generated/src/compiler",
         "meson_generated/src/compiler/nir",
-        "meson_generated/src/compiler/spirv",
         "meson_generated/src/gallium/auxiliary",
         "meson_generated/src/intel",
-        "meson_generated/src/intel/dev",
         "meson_generated/src/intel/ds",
         "meson_generated/src/intel/genxml",
         "meson_generated/src/mesa",
@@ -7239,7 +7693,9 @@ cc_library_static {
         "mesa3d_desktop-intel_src_compiler_ir_expression_operation_h",
         "mesa3d_desktop-intel_src_compiler_nir_nir_builder_opcodes_h",
         "mesa3d_desktop-intel_src_compiler_nir_nir_opcodes_h",
+        "mesa3d_desktop-intel_src_compiler_spirv_spirv_info_h",
         "mesa3d_desktop-intel_src_intel_dev_intel_device_info_gen_h",
+        "mesa3d_desktop-intel_src_intel_dev_intel_wa_h",
         "mesa3d_desktop-intel_src_intel_genxml_gen110_cl_pack_h",
         "mesa3d_desktop-intel_src_intel_genxml_gen110_pack_h",
         "mesa3d_desktop-intel_src_intel_genxml_gen110_video_pack_h",
@@ -7577,8 +8033,6 @@ cc_genrule {
 cc_library_static {
     name: "mesa3d_desktop-intel_src_compiler_glsl_libglsl_a",
     srcs: [
-        "meson_generated/src/compiler/glsl/glsl_lexer.cpp",
-        "meson_generated/src/compiler/glsl/glsl_parser.cpp",
         "src/compiler/glsl/ast_array_index.cpp",
         "src/compiler/glsl/ast_expr.cpp",
         "src/compiler/glsl/ast_function.cpp",
@@ -7654,7 +8108,6 @@ cc_library_static {
         "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/compiler",
-        "meson_generated/src/compiler/glsl",
         "meson_generated/src/compiler/nir",
         "meson_generated/src/gallium/auxiliary",
         "meson_generated/src/mesa",
@@ -7668,6 +8121,10 @@ cc_library_static {
         "src/gallium/include",
         "src/mesa",
     ],
+    generated_sources: [
+        "mesa3d_desktop-intel_src_compiler_glsl_glsl_lexer_cpp",
+        "mesa3d_desktop-intel_src_compiler_glsl_glsl_parser_cpp",
+    ],
     generated_headers: [
         "mesa3d_desktop-intel_src_compiler_builtin_types_h",
         "mesa3d_desktop-intel_src_compiler_glsl_astc_glsl_h",
@@ -7676,6 +8133,7 @@ cc_library_static {
         "mesa3d_desktop-intel_src_compiler_glsl_cross_platform_settings_piece_all_h",
         "mesa3d_desktop-intel_src_compiler_glsl_etc2_rgba_stitch_glsl_h",
         "mesa3d_desktop-intel_src_compiler_glsl_float64_glsl_h",
+        "mesa3d_desktop-intel_src_compiler_glsl_glsl_parser_h",
         "mesa3d_desktop-intel_src_compiler_glsl_ir_expression_operation_constant_h",
         "mesa3d_desktop-intel_src_compiler_glsl_ir_expression_operation_strings_h",
         "mesa3d_desktop-intel_src_compiler_ir_expression_operation_h",
@@ -7689,41 +8147,95 @@ cc_library_static {
 
 cc_genrule {
     name: "mesa3d_desktop-intel_src_compiler_glsl_ir_expression_operation_strings_h",
-    cmd: "python3 $(location) strings > $(location ir_expression_operation_strings.h)",
-    out: ["ir_expression_operation_strings.h"],
+    cmd: "python3 $(location) strings > $(location ir_expression_operation_strings.h); cp $(location ir_expression_operation_strings.h) $(location glsl/ir_expression_operation_strings.h); cp $(location glsl/ir_expression_operation_strings.h) $(location compiler/glsl/ir_expression_operation_strings.h)",
+    out: [
+        "compiler/glsl/ir_expression_operation_strings.h",
+        "glsl/ir_expression_operation_strings.h",
+        "ir_expression_operation_strings.h",
+    ],
     tools: ["mesa3d_desktop-intel_src_compiler_glsl_ir_expression_operation_py"],
     vendor_available: true,
 }
 
 cc_genrule {
     name: "mesa3d_desktop-intel_src_compiler_glsl_ir_expression_operation_constant_h",
-    cmd: "python3 $(location) constant > $(location ir_expression_operation_constant.h)",
-    out: ["ir_expression_operation_constant.h"],
+    cmd: "python3 $(location) constant > $(location ir_expression_operation_constant.h); cp $(location ir_expression_operation_constant.h) $(location glsl/ir_expression_operation_constant.h); cp $(location glsl/ir_expression_operation_constant.h) $(location compiler/glsl/ir_expression_operation_constant.h)",
+    out: [
+        "compiler/glsl/ir_expression_operation_constant.h",
+        "glsl/ir_expression_operation_constant.h",
+        "ir_expression_operation_constant.h",
+    ],
     tools: ["mesa3d_desktop-intel_src_compiler_glsl_ir_expression_operation_py"],
     vendor_available: true,
 }
 
 cc_genrule {
+    name: "mesa3d_desktop-intel_src_compiler_glsl_glsl_parser_h",
+    cmd: "cp $(in) $(location glsl_parser.h); cp $(location glsl_parser.h) $(location glsl/glsl_parser.h); cp $(location glsl/glsl_parser.h) $(location compiler/glsl/glsl_parser.h)",
+    srcs: [":mesa3d_desktop-intel_n2s_src_compiler_glsl_glsl_parser_cpp{n2s/src/compiler/glsl/glsl_parser.h}"],
+    out: [
+        "compiler/glsl/glsl_parser.h",
+        "glsl/glsl_parser.h",
+        "glsl_parser.h",
+    ],
+    vendor_available: true,
+}
+
+cc_genrule {
+    name: "mesa3d_desktop-intel_n2s_src_compiler_glsl_glsl_parser_cpp",
+    cmd: "M4=$(location m4) $(location bison) -Wno-deprecated -o $(location n2s/src/compiler/glsl/glsl_parser.cpp) -p _mesa_glsl_ --defines=$(location n2s/src/compiler/glsl/glsl_parser.h) $(location src/compiler/glsl/glsl_parser.yy)",
+    srcs: ["src/compiler/glsl/glsl_parser.yy"],
+    out: [
+        "n2s/src/compiler/glsl/glsl_parser.cpp",
+        "n2s/src/compiler/glsl/glsl_parser.h",
+    ],
+    tools: [
+        "bison",
+        "m4",
+    ],
+    vendor_available: true,
+}
+
+cc_genrule {
     name: "mesa3d_desktop-intel_src_compiler_glsl_float64_glsl_h",
-    cmd: "python3 $(location) $(location src/compiler/glsl/float64.glsl) $(location float64_glsl.h) -n float64_source",
+    cmd: "python3 $(location) $(location src/compiler/glsl/float64.glsl) $(location float64_glsl.h) -n float64_source; cp $(location float64_glsl.h) $(location glsl/float64_glsl.h); cp $(location glsl/float64_glsl.h) $(location compiler/glsl/float64_glsl.h)",
     srcs: ["src/compiler/glsl/float64.glsl"],
-    out: ["float64_glsl.h"],
+    out: [
+        "compiler/glsl/float64_glsl.h",
+        "float64_glsl.h",
+        "glsl/float64_glsl.h",
+    ],
     tools: ["mesa3d_desktop-intel_src_util_xxd_py"],
+    vendor_available: true,
+}
+
+cc_genrule {
+    name: "mesa3d_desktop-intel_src_compiler_glsl_glsl_lexer_cpp",
+    cmd: "M4=$(location m4) $(location flex) -o $(location glsl_lexer.cpp) $(location src/compiler/glsl/glsl_lexer.ll)",
+    srcs: ["src/compiler/glsl/glsl_lexer.ll"],
+    out: ["glsl_lexer.cpp"],
+    tools: [
+        "flex",
+        "m4",
+    ],
+    vendor_available: true,
+}
+
+cc_genrule {
+    name: "mesa3d_desktop-intel_src_compiler_glsl_glsl_parser_cpp",
+    cmd: "cp $(in) $(out)",
+    srcs: [":mesa3d_desktop-intel_n2s_src_compiler_glsl_glsl_parser_cpp{n2s/src/compiler/glsl/glsl_parser.cpp}"],
+    out: ["glsl_parser.cpp"],
     vendor_available: true,
 }
 
 cc_library_static {
     name: "mesa3d_desktop-intel_src_compiler_glsl_glcpp_libglcpp_a",
-    srcs: [
-        "meson_generated/src/compiler/glsl/glcpp/glcpp-lex.c",
-        "meson_generated/src/compiler/glsl/glcpp/glcpp-parse.c",
-        "src/compiler/glsl/glcpp/pp.c",
-    ],
+    srcs: ["src/compiler/glsl/glcpp/pp.c"],
     local_include_dirs: [
         "include",
         "include/android_stub",
         "meson_generated/src",
-        "meson_generated/src/compiler/glsl/glcpp",
         "meson_generated/src/gallium/auxiliary",
         "meson_generated/src/mesa",
         "meson_generated/src/util",
@@ -7734,11 +8246,64 @@ cc_library_static {
         "src/gallium/include",
         "src/mesa",
     ],
+    generated_sources: [
+        "mesa3d_desktop-intel_src_compiler_glsl_glcpp_glcpp-lex_c",
+        "mesa3d_desktop-intel_src_compiler_glsl_glcpp_glcpp-parse_c",
+    ],
     generated_headers: [
+        "mesa3d_desktop-intel_src_compiler_glsl_glcpp_glcpp-parse_h",
         "mesa3d_desktop-intel_src_util_format_u_format_gen_h",
         "mesa3d_desktop-intel_src_util_shader_stats_h",
     ],
     defaults: ["mesa3d-desktop-intel-defaults"],
+}
+
+cc_genrule {
+    name: "mesa3d_desktop-intel_src_compiler_glsl_glcpp_glcpp-parse_h",
+    cmd: "cp $(in) $(location glcpp-parse.h); cp $(location glcpp-parse.h) $(location glcpp/glcpp-parse.h); cp $(location glcpp/glcpp-parse.h) $(location glsl/glcpp/glcpp-parse.h); cp $(location glsl/glcpp/glcpp-parse.h) $(location compiler/glsl/glcpp/glcpp-parse.h)",
+    srcs: [":mesa3d_desktop-intel_n2s_src_compiler_glsl_glcpp_glcpp-parse_c{n2s/src/compiler/glsl/glcpp/glcpp-parse.h}"],
+    out: [
+        "compiler/glsl/glcpp/glcpp-parse.h",
+        "glcpp-parse.h",
+        "glcpp/glcpp-parse.h",
+        "glsl/glcpp/glcpp-parse.h",
+    ],
+    vendor_available: true,
+}
+
+cc_genrule {
+    name: "mesa3d_desktop-intel_n2s_src_compiler_glsl_glcpp_glcpp-parse_c",
+    cmd: "M4=$(location m4) $(location bison) -Wno-deprecated -o $(location n2s/src/compiler/glsl/glcpp/glcpp-parse.c) -p glcpp_parser_ --defines=$(location n2s/src/compiler/glsl/glcpp/glcpp-parse.h) $(location src/compiler/glsl/glcpp/glcpp-parse.y)",
+    srcs: ["src/compiler/glsl/glcpp/glcpp-parse.y"],
+    out: [
+        "n2s/src/compiler/glsl/glcpp/glcpp-parse.c",
+        "n2s/src/compiler/glsl/glcpp/glcpp-parse.h",
+    ],
+    tools: [
+        "bison",
+        "m4",
+    ],
+    vendor_available: true,
+}
+
+cc_genrule {
+    name: "mesa3d_desktop-intel_src_compiler_glsl_glcpp_glcpp-parse_c",
+    cmd: "cp $(in) $(out)",
+    srcs: [":mesa3d_desktop-intel_n2s_src_compiler_glsl_glcpp_glcpp-parse_c{n2s/src/compiler/glsl/glcpp/glcpp-parse.c}"],
+    out: ["glcpp-parse.c"],
+    vendor_available: true,
+}
+
+cc_genrule {
+    name: "mesa3d_desktop-intel_src_compiler_glsl_glcpp_glcpp-lex_c",
+    cmd: "M4=$(location m4) $(location flex) -o $(location glcpp-lex.c) $(location src/compiler/glsl/glcpp/glcpp-lex.l)",
+    srcs: ["src/compiler/glsl/glcpp/glcpp-lex.l"],
+    out: ["glcpp-lex.c"],
+    tools: [
+        "flex",
+        "m4",
+    ],
+    vendor_available: true,
 }
 
 cc_library_shared {
@@ -7815,13 +8380,17 @@ cc_library_shared {
         "mesa3d_desktop-intel_src_compiler_glsl_cross_platform_settings_piece_all_h",
         "mesa3d_desktop-intel_src_compiler_glsl_etc2_rgba_stitch_glsl_h",
         "mesa3d_desktop-intel_src_compiler_glsl_float64_glsl_h",
+        "mesa3d_desktop-intel_src_compiler_glsl_glcpp_glcpp-parse_h",
+        "mesa3d_desktop-intel_src_compiler_glsl_glsl_parser_h",
         "mesa3d_desktop-intel_src_compiler_glsl_ir_expression_operation_constant_h",
         "mesa3d_desktop-intel_src_compiler_glsl_ir_expression_operation_strings_h",
         "mesa3d_desktop-intel_src_compiler_ir_expression_operation_h",
         "mesa3d_desktop-intel_src_compiler_nir_nir_builder_opcodes_h",
         "mesa3d_desktop-intel_src_compiler_nir_nir_opcodes_h",
+        "mesa3d_desktop-intel_src_compiler_spirv_spirv_info_h",
         "mesa3d_desktop-intel_src_compiler_spirv_vtn_generator_ids_h",
         "mesa3d_desktop-intel_src_intel_dev_intel_device_info_gen_h",
+        "mesa3d_desktop-intel_src_intel_dev_intel_wa_h",
         "mesa3d_desktop-intel_src_intel_genxml_gen110_cl_pack_h",
         "mesa3d_desktop-intel_src_intel_genxml_gen110_pack_h",
         "mesa3d_desktop-intel_src_intel_genxml_gen110_video_pack_h",
@@ -7868,9 +8437,12 @@ cc_library_shared {
         "mesa3d_desktop-intel_src_intel_genxml_gen90_pack_h",
         "mesa3d_desktop-intel_src_intel_genxml_gen90_video_pack_h",
         "mesa3d_desktop-intel_src_intel_genxml_genX_xml_h",
+        "mesa3d_desktop-intel_src_intel_perf_intel_perf_metrics_h",
         "mesa3d_desktop-intel_src_mesa_format_info_h",
+        "mesa3d_desktop-intel_src_mesa_program_program_parse_tab_h",
         "mesa3d_desktop-intel_src_util_driconf_static_h",
         "mesa3d_desktop-intel_src_util_format_u_format_gen_h",
+        "mesa3d_desktop-intel_src_util_format_u_format_pack_h",
         "mesa3d_desktop-intel_src_util_shader_stats_h",
     ],
     relative_install_path: "egl",

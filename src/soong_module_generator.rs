@@ -553,14 +553,26 @@ where
             .collect::<Vec<_>>();
 
         if let Some((tool_module, some_modules)) = self.get_tool_module(&tool, python_inputs)? {
-            if let Some(modules) = some_modules {
+            return if let Some(modules) = some_modules {
                 Ok((Vec::new(), vec![tool_module], modules, cmd))
             } else {
                 Ok((Vec::new(), vec![tool_module], Vec::new(), cmd))
-            }
-        } else {
-            Ok((vec![tool], Vec::new(), Vec::new(), cmd))
+            };
         }
+        let tool_name = file_name(Path::new(&tool));
+        if ["bison", "flex"].contains(&tool_name.as_str()) {
+            return Ok((
+                Vec::new(),
+                vec![tool_name.clone(), String::from("m4")],
+                Vec::new(),
+                String::from("M4=$(location m4) ")
+                    + &cmd.replace(
+                        "$(location)",
+                        &(String::from("$(location ") + &tool_name + ")"),
+                    ),
+            ));
+        }
+        Ok((vec![tool], Vec::new(), Vec::new(), cmd))
     }
     pub fn generate_custom_command(
         &mut self,

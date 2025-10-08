@@ -27,9 +27,6 @@ pub trait Mesa3dProject {
             && !str.starts_with("src/android_stub") // dependencies
             && !str.ends_with("git_sha1.h") // git
             && !str.ends_with("spv.h") // glslangValidator
-            && !str.ends_with("u_format_pack.h") // different include paths
-            && !str.ends_with("spirv_info.h") // different include paths
-            && !str.ends_with("spirv_info.c") // spirv_info.h dependency
             && !str.ends_with("vk_enum_to_str.c") // --outdir
             && !str.ends_with("vk_enum_to_str.h") // --outdir
             && !str.ends_with("vk_enum_defines.h") // --outdir
@@ -149,9 +146,48 @@ soong_namespace {
     }
     fn extend_custom_command(
         &self,
-        _target: &Path,
-        module: SoongModule,
+        target: &Path,
+        mut module: SoongModule,
     ) -> Result<SoongModule, String> {
+        if let Some(prop) = module.get_prop("out") {
+            match prop.get_prop() {
+                SoongProp::VecStr(mut outs) => {
+                    if outs.len() == 1 && file_ext(Path::new(&outs[0])).starts_with("h") {
+                        let mut target = target.parent().unwrap();
+                        let mut cmd_suffix = String::new();
+                        while !target.ends_with("src") {
+                            let prefix = file_name(&target);
+                            target = target.parent().unwrap();
+                            let prev_out = outs.last().unwrap();
+                            let new_out = path_to_string(Path::new(&prefix).join(prev_out));
+                            cmd_suffix = cmd_suffix
+                                + "; cp $(location "
+                                + prev_out
+                                + ") $(location "
+                                + &new_out
+                                + ")";
+                            outs.push(new_out);
+                        }
+                        module.update_prop("out", |_| Ok(SoongProp::VecStr(outs.clone())))?;
+                        module.update_prop("cmd", |prop| {
+                            match prop {
+                                SoongProp::Str(cmd) => {
+                                    return Ok(SoongProp::Str(
+                                        cmd.replace(
+                                            "$(out)",
+                                            &(String::from("$(location ") + &outs[0] + ")"),
+                                        ) + &cmd_suffix,
+                                    ));
+                                }
+                                _ => (),
+                            }
+                            return Ok(prop);
+                        })?;
+                    }
+                }
+                _ => (),
+            }
+        }
         Ok(module.add_prop("vendor_available", SoongProp::Bool(true)))
     }
     fn extend_python_binary_host(
@@ -166,27 +202,7 @@ soong_namespace {
     }
 
     fn map_cmd_output(&self, output: &Path) -> PathBuf {
-        let file_name = file_name(output);
-
-        for out in [
-            "util/shader_stats.h",
-            "compiler/glsl/astc_glsl.h",
-            "compiler/glsl/bc1_glsl.h",
-            "compiler/glsl/bc4_glsl.h",
-            "compiler/glsl/cross_platform_settings_piece_all.h",
-            "compiler/glsl/etc2_rgba_stitch_glsl.h",
-            "perf/intel_perf_metrics.h",
-            "intel/dev/intel_device_info_gen.h",
-        ] {
-            if output.ends_with(out) {
-                return PathBuf::from(out);
-            }
-        }
-        if file_name.ends_with("_pack.h") {
-            strip_prefix(output, output.parent().unwrap().parent().unwrap())
-        } else {
-            PathBuf::from(file_name)
-        }
+        PathBuf::from(file_name(output))
     }
     fn map_lib(&self, library: &Path) -> Option<PathBuf> {
         if library.starts_with("src/android_stub")

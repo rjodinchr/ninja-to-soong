@@ -35,6 +35,9 @@ impl mesa3d_desktop::Mesa3dProject for Mesa3DDesktopIntel {
             "es2_glapi_mapi_tmp.h",
             "genX_bits.h",
             "get_hash.h",
+            "intel_tracepoints.c",
+            "intel_tracepoints.h",
+            "intel_tracepoints_perfetto.h",
             "shared_glapi_mapi_tmp.h",
             "unmarshal_table.c",
             // unsupported command arguments
@@ -48,28 +51,8 @@ impl mesa3d_desktop::Mesa3dProject for Mesa3DDesktopIntel {
             "u_tracepoints.h",
             "vk_synchronization_helpers.c",
             ".def",
-            // different include paths
+            // --outdir
             "brw_device_sha1_gen.c",
-            "nir_intrinsics.c",
-            "nir_intrinsics.h",
-            "nir_intrinsics_indices.h",
-            "intel_perf_metrics.h",
-            "intel_tracepoints.c",
-            "intel_tracepoints.h",
-            "intel_tracepoints_perfetto.h",
-            "intel_wa.c",
-            "intel_wa.h",
-            // bison
-            "glcpp-parse.c",
-            "glcpp-parse.h",
-            "glsl_parser.cpp",
-            "glsl_parser.h",
-            "program_parse.tab.h",
-            "program_parse.tab.c",
-            // flex
-            "glcpp-lex.c",
-            "glsl_lexer.cpp",
-            "lex.yy.c",
             // vtn_bindgen2
             "_shaders_binding.cpp",
             "_shaders_binding.h",
