@@ -26,7 +26,6 @@ pub trait Mesa3dProject {
             && !str.contains("libdrm") // dependency
             && !str.starts_with("src/android_stub") // dependencies
             && !str.ends_with("git_sha1.h") // git
-            && !str.ends_with("spv.h") // glslangValidator
     }
 }
 

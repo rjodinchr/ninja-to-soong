@@ -520,9 +520,24 @@ where
         } else {
             (String::from(cmd), tool_location)
         };
+        let mut tool_modules = Vec::new();
+        let glslang_validator = String::from("//external/deqp-deps/glslang:glslangValidator");
+        let tool_location = String::from("$(location ") + &tool + ")";
         for idx in 0..inputs.len() {
             if path_to_string(&inputs[idx]) == tool {
                 inputs.remove(idx);
+                break;
+            }
+        }
+        for idx in 0..inputs.len() {
+            if inputs[idx].ends_with("glslangValidator") {
+                let input = path_to_string(&inputs[idx]);
+                inputs.remove(idx);
+                tool_modules.push(glslang_validator.clone());
+                cmd = cmd.replace("$(location)", &tool_location).replace(
+                    &input,
+                    &(String::from("$(location ") + &glslang_validator + ")"),
+                );
                 break;
             }
         }
@@ -553,17 +568,24 @@ where
             .collect::<Vec<_>>();
 
         if let Some((tool_module, some_modules)) = self.get_tool_module(&tool, python_inputs)? {
+            cmd = cmd.replace(
+                &tool_location,
+                &(String::from("$(location ") + &tool_module + ")"),
+            );
+            tool_modules.push(tool_module);
             return if let Some(modules) = some_modules {
-                Ok((Vec::new(), vec![tool_module], modules, cmd))
+                Ok((Vec::new(), tool_modules, modules, cmd))
             } else {
-                Ok((Vec::new(), vec![tool_module], Vec::new(), cmd))
+                Ok((Vec::new(), tool_modules, Vec::new(), cmd))
             };
         }
         let tool_name = file_name(Path::new(&tool));
         if ["bison", "flex"].contains(&tool_name.as_str()) {
+            tool_modules.push(tool_name.clone());
+            tool_modules.push(String::from("m4"));
             return Ok((
                 Vec::new(),
-                vec![tool_name.clone(), String::from("m4")],
+                tool_modules,
                 Vec::new(),
                 String::from("M4=$(location m4) ")
                     + &cmd.replace(
@@ -572,7 +594,11 @@ where
                     ),
             ));
         }
-        Ok((vec![tool], Vec::new(), Vec::new(), cmd))
+        if tool_name == "glslangValidator" {
+            tool_modules.push(glslang_validator.clone());
+            return Ok((Vec::new(), tool_modules, Vec::new(), cmd));
+        }
+        Ok((vec![tool], tool_modules, Vec::new(), cmd))
     }
     pub fn generate_custom_command(
         &mut self,
