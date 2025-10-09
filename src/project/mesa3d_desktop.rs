@@ -27,13 +27,6 @@ pub trait Mesa3dProject {
             && !str.starts_with("src/android_stub") // dependencies
             && !str.ends_with("git_sha1.h") // git
             && !str.ends_with("spv.h") // glslangValidator
-            && !str.ends_with("vk_enum_to_str.c") // --outdir
-            && !str.ends_with("vk_enum_to_str.h") // --outdir
-            && !str.ends_with("vk_enum_defines.h") // --outdir
-            && !str.ends_with("vk_struct_type_cast.h") // --outdir
-            && !str.ends_with("nir_intrinsics.c") // --outdir
-            && !str.ends_with("nir_intrinsics.h") // --outdir
-            && !str.ends_with("nir_intrinsics_indices.h") // --outdir
     }
 }
 

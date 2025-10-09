@@ -1,0 +1,116 @@
+commit a8ab696033e999e673376c471e365f10713f960f
+Author: Matt Turner <mattst88@gmail.com>
+Date:   Mon Aug 4 18:41:01 2025 +0000
+
+    meson: Allow configuring with Android-internal perfetto
+    
+    This enables ninja-to-soong to generate an Android.bp that builds Mesa
+    against Android's `libperfetto_client_experimental` library.
+    
+    Part-of: <https://gitlab.freedesktop.org/mesa/mesa/-/merge_requests/36561>
+
+diff --git a/meson.build b/meson.build
+index 4351e1c711e..c3d21e3ff3d 100644
+--- a/meson.build
++++ b/meson.build
+@@ -2176,6 +2176,10 @@ if with_perfetto
+   pre_args += '-DHAVE_PERFETTO'
+ endif
+ 
++if get_option('android-libperfetto').enabled()
++  pre_args += '-DANDROID_LIBPERFETTO'
++endif
++
+ with_teflon = get_option('teflon')
+ if with_teflon and with_tests
+   dep_xtensor = dependency('xtensor')
+diff --git a/meson.options b/meson.options
+index 1e394aade9a..2b511687293 100644
+--- a/meson.options
++++ b/meson.options
+@@ -51,6 +51,12 @@ option(
+   description : 'Use Android\'s libbacktrace',
+ )
+ 
++option(
++  'android-libperfetto',
++  type : 'feature',
++  description : 'Use Android\'s libperfetto',
++)
++
+ option(
+   'dri-drivers-path',
+   type : 'string',
+diff --git a/src/tool/pps/pps.h b/src/tool/pps/pps.h
+index 2be10628de4..31ae565c43f 100644
+--- a/src/tool/pps/pps.h
++++ b/src/tool/pps/pps.h
+@@ -7,7 +7,16 @@
+ 
+ #pragma once
+ 
++#ifndef ANDROID_LIBPERFETTO
+ #include <perfetto.h>
++#else
++#include <perfetto/tracing.h>
++#include <perfetto/common/gpu_counter_descriptor.gen.h>
++#include <perfetto/common/gpu_counter_descriptor.pbzero.h>
++#include <perfetto/config/gpu/gpu_counter_config.pbzero.h>
++#include <perfetto/trace/clock_snapshot.pbzero.h>
++#include <perfetto/trace/gpu/gpu_counter_event.pbzero.h>
++#endif
+ 
+ #define PPS_LOG PERFETTO_LOG
+ #define PPS_LOG_IMPORTANT PERFETTO_ILOG
+diff --git a/src/util/perf/u_perfetto.cc b/src/util/perf/u_perfetto.cc
+index 5b91011ff26..e612b333991 100644
+--- a/src/util/perf/u_perfetto.cc
++++ b/src/util/perf/u_perfetto.cc
+@@ -23,7 +23,11 @@
+ 
+ #include "u_perfetto.h"
+ 
++#ifndef ANDROID_LIBPERFETTO
+ #include <perfetto.h>
++#else
++#include <perfetto/tracing.h>
++#endif
+ 
+ #include "c11/threads.h"
+ #include "util/macros.h"
+diff --git a/src/util/perf/u_perfetto_renderpass.h b/src/util/perf/u_perfetto_renderpass.h
+index e4b95e6466e..1ad73d51892 100644
+--- a/src/util/perf/u_perfetto_renderpass.h
++++ b/src/util/perf/u_perfetto_renderpass.h
+@@ -23,7 +23,11 @@
+ 
+ #include "vulkan/runtime/vk_object.h"
+ 
+-#include "perfetto.h"
++#ifndef ANDROID_LIBPERFETTO
++#include <perfetto.h>
++#else
++#include <perfetto/tracing.h>
++#endif
+ 
+ #include "util/hash_table.h"
+ #include "util/perf/u_trace.h"
+diff --git a/src/util/perf/u_trace.py b/src/util/perf/u_trace.py
+index 7502d60ec3d..8fbd406eb15 100644
+--- a/src/util/perf/u_trace.py
++++ b/src/util/perf/u_trace.py
+@@ -673,7 +673,14 @@ perfetto_utils_hdr_template = """\
+ #ifndef ${guard_name}
+ #define ${guard_name}
+ 
++#ifndef ANDROID_LIBPERFETTO
+ #include <perfetto.h>
++#else
++#include <perfetto/tracing.h>
++#include <perfetto/trace/clock_snapshot.pbzero.h>
++#include <perfetto/trace/gpu/gpu_render_stage_event.pbzero.h>
++#include <perfetto/trace/gpu/vulkan_api_event.pbzero.h>
++#endif
+ 
+ % for header in HEADERS:
+ #include "${header.hdr}"

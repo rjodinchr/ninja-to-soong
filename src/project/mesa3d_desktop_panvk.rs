@@ -29,10 +29,6 @@ impl mesa3d_desktop::Mesa3dProject for Mesa3DDesktopPanVK {
             && !asset.ends_with("panvk_tracepoints.c") // unsupported command arguments
             && !asset.ends_with("panvk_tracepoints.h") // unsupported command arguments
             && !asset.ends_with("panvk_tracepoints_perfetto.h") // unsupported command arguments
-            && !asset.ends_with("valhall_enums.h") // valhall_parse_isa
-            && !asset.ends_with("valhall.c") // valhall_parse_isa
-            && !asset.ends_with("valhall_disasm.c") // valhall_parse_isa
-            && !asset.ends_with("bifrost_gen_disasm.c") // valhall_parse_isa
     }
 
     fn create_package(
