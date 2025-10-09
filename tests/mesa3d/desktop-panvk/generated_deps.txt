@@ -1,13 +1,6 @@
 [
-    "src/compiler/nir/nir_intrinsics.c",
-    "src/compiler/nir/nir_intrinsics.h",
-    "src/compiler/nir/nir_intrinsics_indices.h",
     "src/git_sha1.h",
-    "src/panfrost/compiler/bifrost_gen_disasm.c",
     "src/panfrost/compiler/bifrost_nir_algebraic.c",
-    "src/panfrost/compiler/valhall/valhall.c",
-    "src/panfrost/compiler/valhall/valhall_disasm.c",
-    "src/panfrost/compiler/valhall/valhall_enums.h",
     "src/panfrost/libpan/libpan_shaders_v10.c",
     "src/panfrost/libpan/libpan_shaders_v10.h",
     "src/panfrost/libpan/libpan_shaders_v12.c",
@@ -34,8 +27,4 @@
     "src/panfrost/vulkan/panvk_tracepoints_perfetto.h",
     "src/util/format/u_format_gen.h",
     "src/vulkan/runtime/astc_spv.h",
-    "src/vulkan/util/vk_enum_defines.h",
-    "src/vulkan/util/vk_enum_to_str.c",
-    "src/vulkan/util/vk_enum_to_str.h",
-    "src/vulkan/util/vk_struct_type_cast.h",
 ]
