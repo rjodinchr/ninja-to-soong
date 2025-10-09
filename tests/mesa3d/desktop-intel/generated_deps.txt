@@ -1,5 +1,7 @@
 [
     "src/egl/egl.def",
+    "src/gallium/auxiliary/tr_util.c",
+    "src/gallium/auxiliary/tr_util.h",
     "src/gallium/auxiliary/u_tracepoints.c",
     "src/gallium/auxiliary/u_tracepoints.h",
     "src/git_sha1.h",

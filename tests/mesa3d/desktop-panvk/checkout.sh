@@ -10,9 +10,7 @@ bash "${SCRIPT_DIR}/../../checkout.sh" https://gitlab.freedesktop.org/mesa/mesa 
 
 for patch in \
     "mesa-cb86341829d.patch" \
-    "mesa-MR-37742.patch" \
-    "mesa-MR-37785.patch" \
-    "mesa-MR-37789.patch"
+    "mesa-c8b10b4512c.patch" 
 do
     git -C "${DEST}/vendor/google/graphics/mesa3d/desktop-panvk" apply "${SCRIPT_DIR}/../patches/${patch}"
 done
