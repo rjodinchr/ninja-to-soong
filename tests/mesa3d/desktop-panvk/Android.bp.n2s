@@ -615,7 +615,6 @@ cc_library_static {
         "meson_generated/src/panfrost",
         "meson_generated/src/panfrost/compiler",
         "meson_generated/src/panfrost/libpan",
-        "meson_generated/src/panfrost/midgard",
         "meson_generated/src/util",
         "meson_generated/src/util/format",
         "src",
@@ -858,7 +857,6 @@ cc_library_static {
         "include",
         "include/android_stub",
         "meson_generated/src",
-        "meson_generated/src/panfrost/midgard",
         "src",
         "src/panfrost/midgard",
     ],
@@ -869,7 +867,6 @@ cc_library_static {
 cc_library_static {
     name: "mesa3d_desktop-panvk_src_panfrost_midgard_libpanfrost_midgard_a",
     srcs: [
-        "meson_generated/src/panfrost/midgard/midgard_nir_algebraic.c",
         "src/panfrost/midgard/midgard_address.c",
         "src/panfrost/midgard/midgard_compile.c",
         "src/panfrost/midgard/midgard_derivatives.c",
@@ -897,7 +894,6 @@ cc_library_static {
         "include",
         "include/android_stub",
         "meson_generated/src",
-        "meson_generated/src/panfrost/midgard",
         "meson_generated/src/util",
         "meson_generated/src/util/format",
         "src",
@@ -905,6 +901,7 @@ cc_library_static {
         "src/compiler/nir",
         "src/panfrost/midgard",
     ],
+    generated_sources: ["mesa3d_desktop-panvk_src_panfrost_midgard_midgard_nir_algebraic_c"],
     generated_headers: [
         "mesa3d_desktop-panvk_src_compiler_builtin_types_h",
         "mesa3d_desktop-panvk_src_compiler_ir_expression_operation_h",
@@ -916,6 +913,36 @@ cc_library_static {
         "mesa3d_desktop-panvk_src_util_shader_stats_h",
     ],
     defaults: ["mesa3d-desktop-panvk-defaults"],
+}
+
+genrule {
+    name: "mesa3d_desktop-panvk_src_compiler_nir_nir_algebraic_py_cp",
+    cmd: "cp $(in) $(out)",
+    srcs: ["src/compiler/nir/nir_algebraic.py"],
+    out: ["nir_algebraic.py"],
+}
+
+python_binary_host {
+    name: "mesa3d_desktop-panvk_src_panfrost_midgard_midgard_nir_algebraic_py",
+    main: "src/panfrost/midgard/midgard_nir_algebraic.py",
+    srcs: [
+        ":mesa3d_desktop-panvk_src_compiler_nir_nir_algebraic_py_cp",
+        ":mesa3d_desktop-panvk_src_compiler_nir_nir_opcodes_py_cp",
+        "src/panfrost/midgard/midgard_nir_algebraic.py",
+    ],
+    defaults: ["mesa_python_default"],
+}
+
+cc_genrule {
+    name: "mesa3d_desktop-panvk_src_panfrost_midgard_midgard_nir_algebraic_c",
+    cmd: "python3 $(location) -p $(location src/compiler/nir/nir_algebraic.py)/../ > $(location midgard_nir_algebraic.c)",
+    srcs: [
+        "src/compiler/nir/nir_algebraic.py",
+        "src/compiler/nir/nir_opcodes.py",
+    ],
+    out: ["midgard_nir_algebraic.c"],
+    tools: ["mesa3d_desktop-panvk_src_panfrost_midgard_midgard_nir_algebraic_py"],
+    vendor_available: true,
 }
 
 cc_library_static {
@@ -940,7 +967,6 @@ cc_library_static {
         "meson_generated/src/panfrost",
         "meson_generated/src/panfrost/compiler",
         "meson_generated/src/panfrost/libpan",
-        "meson_generated/src/panfrost/midgard",
         "meson_generated/src/util",
         "meson_generated/src/util/format",
         "src",
@@ -987,7 +1013,6 @@ cc_library_static {
         "meson_generated/src/panfrost",
         "meson_generated/src/panfrost/compiler",
         "meson_generated/src/panfrost/libpan",
-        "meson_generated/src/panfrost/midgard",
         "meson_generated/src/util",
         "meson_generated/src/util/format",
         "src",
@@ -1027,7 +1052,6 @@ cc_library_static {
         "meson_generated/src/panfrost",
         "meson_generated/src/panfrost/compiler",
         "meson_generated/src/panfrost/libpan",
-        "meson_generated/src/panfrost/midgard",
         "meson_generated/src/util",
         "meson_generated/src/util/format",
         "src",
@@ -1067,7 +1091,6 @@ cc_library_static {
         "meson_generated/src/panfrost",
         "meson_generated/src/panfrost/compiler",
         "meson_generated/src/panfrost/libpan",
-        "meson_generated/src/panfrost/midgard",
         "meson_generated/src/util",
         "meson_generated/src/util/format",
         "src",
@@ -1107,7 +1130,6 @@ cc_library_static {
         "meson_generated/src/panfrost",
         "meson_generated/src/panfrost/compiler",
         "meson_generated/src/panfrost/libpan",
-        "meson_generated/src/panfrost/midgard",
         "meson_generated/src/util",
         "meson_generated/src/util/format",
         "src",
@@ -1147,7 +1169,6 @@ cc_library_static {
         "meson_generated/src/panfrost",
         "meson_generated/src/panfrost/compiler",
         "meson_generated/src/panfrost/libpan",
-        "meson_generated/src/panfrost/midgard",
         "meson_generated/src/util",
         "meson_generated/src/util/format",
         "src",
@@ -1187,7 +1208,6 @@ cc_library_static {
         "meson_generated/src/panfrost",
         "meson_generated/src/panfrost/compiler",
         "meson_generated/src/panfrost/libpan",
-        "meson_generated/src/panfrost/midgard",
         "meson_generated/src/util",
         "meson_generated/src/util/format",
         "src",
@@ -1227,7 +1247,6 @@ cc_library_static {
         "meson_generated/src/panfrost",
         "meson_generated/src/panfrost/compiler",
         "meson_generated/src/panfrost/libpan",
-        "meson_generated/src/panfrost/midgard",
         "meson_generated/src/util",
         "meson_generated/src/util/format",
         "src",
@@ -1272,7 +1291,6 @@ cc_library_static {
         "meson_generated/src/panfrost",
         "meson_generated/src/panfrost/compiler",
         "meson_generated/src/panfrost/libpan",
-        "meson_generated/src/panfrost/midgard",
         "meson_generated/src/util",
         "meson_generated/src/util/format",
         "src",
@@ -1325,7 +1343,6 @@ cc_library_static {
         "meson_generated/src/panfrost",
         "meson_generated/src/panfrost/compiler",
         "meson_generated/src/panfrost/libpan",
-        "meson_generated/src/panfrost/midgard",
         "meson_generated/src/util",
         "meson_generated/src/util/format",
         "src",
@@ -1378,7 +1395,6 @@ cc_library_static {
         "meson_generated/src/panfrost",
         "meson_generated/src/panfrost/compiler",
         "meson_generated/src/panfrost/libpan",
-        "meson_generated/src/panfrost/midgard",
         "meson_generated/src/util",
         "meson_generated/src/util/format",
         "src",
@@ -1431,7 +1447,6 @@ cc_library_static {
         "meson_generated/src/panfrost",
         "meson_generated/src/panfrost/compiler",
         "meson_generated/src/panfrost/libpan",
-        "meson_generated/src/panfrost/midgard",
         "meson_generated/src/util",
         "meson_generated/src/util/format",
         "src",
@@ -1484,7 +1499,6 @@ cc_library_static {
         "meson_generated/src/panfrost",
         "meson_generated/src/panfrost/compiler",
         "meson_generated/src/panfrost/libpan",
-        "meson_generated/src/panfrost/midgard",
         "meson_generated/src/util",
         "meson_generated/src/util/format",
         "src",
@@ -1537,7 +1551,6 @@ cc_library_static {
         "meson_generated/src/panfrost",
         "meson_generated/src/panfrost/compiler",
         "meson_generated/src/panfrost/libpan",
-        "meson_generated/src/panfrost/midgard",
         "meson_generated/src/util",
         "meson_generated/src/util/format",
         "src",
@@ -1590,7 +1603,6 @@ cc_library_static {
         "meson_generated/src/panfrost",
         "meson_generated/src/panfrost/compiler",
         "meson_generated/src/panfrost/libpan",
-        "meson_generated/src/panfrost/midgard",
         "meson_generated/src/util",
         "meson_generated/src/util/format",
         "src",
@@ -1643,7 +1655,6 @@ cc_library_static {
         "meson_generated/src/panfrost",
         "meson_generated/src/panfrost/compiler",
         "meson_generated/src/panfrost/libpan",
-        "meson_generated/src/panfrost/midgard",
         "meson_generated/src/util",
         "meson_generated/src/util/format",
         "src",
@@ -1694,7 +1705,6 @@ cc_library_static {
         "meson_generated/src/panfrost",
         "meson_generated/src/panfrost/compiler",
         "meson_generated/src/panfrost/libpan",
-        "meson_generated/src/panfrost/midgard",
         "meson_generated/src/util",
         "meson_generated/src/util/format",
         "src",
@@ -1734,7 +1744,6 @@ cc_library_static {
         "meson_generated/src/panfrost",
         "meson_generated/src/panfrost/compiler",
         "meson_generated/src/panfrost/libpan",
-        "meson_generated/src/panfrost/midgard",
         "meson_generated/src/util",
         "meson_generated/src/util/format",
         "src",
@@ -1778,7 +1787,6 @@ cc_library_static {
         "meson_generated/src/panfrost",
         "meson_generated/src/panfrost/compiler",
         "meson_generated/src/panfrost/libpan",
-        "meson_generated/src/panfrost/midgard",
         "meson_generated/src/util",
         "meson_generated/src/util/format",
         "src",
@@ -1830,7 +1838,6 @@ cc_library_static {
         "meson_generated/src/panfrost",
         "meson_generated/src/panfrost/compiler",
         "meson_generated/src/panfrost/libpan",
-        "meson_generated/src/panfrost/midgard",
         "meson_generated/src/util",
         "meson_generated/src/util/format",
         "src",
@@ -1882,7 +1889,6 @@ cc_library_static {
         "meson_generated/src/panfrost",
         "meson_generated/src/panfrost/compiler",
         "meson_generated/src/panfrost/libpan",
-        "meson_generated/src/panfrost/midgard",
         "meson_generated/src/util",
         "meson_generated/src/util/format",
         "src",
@@ -1934,7 +1940,6 @@ cc_library_static {
         "meson_generated/src/panfrost",
         "meson_generated/src/panfrost/compiler",
         "meson_generated/src/panfrost/libpan",
-        "meson_generated/src/panfrost/midgard",
         "meson_generated/src/util",
         "meson_generated/src/util/format",
         "src",
@@ -1986,7 +1991,6 @@ cc_library_static {
         "meson_generated/src/panfrost",
         "meson_generated/src/panfrost/compiler",
         "meson_generated/src/panfrost/libpan",
-        "meson_generated/src/panfrost/midgard",
         "meson_generated/src/util",
         "meson_generated/src/util/format",
         "src",
@@ -2038,7 +2042,6 @@ cc_library_static {
         "meson_generated/src/panfrost",
         "meson_generated/src/panfrost/compiler",
         "meson_generated/src/panfrost/libpan",
-        "meson_generated/src/panfrost/midgard",
         "meson_generated/src/util",
         "meson_generated/src/util/format",
         "src",
@@ -2090,7 +2093,6 @@ cc_library_static {
         "meson_generated/src/panfrost",
         "meson_generated/src/panfrost/compiler",
         "meson_generated/src/panfrost/libpan",
-        "meson_generated/src/panfrost/midgard",
         "meson_generated/src/util",
         "meson_generated/src/util/format",
         "src",
@@ -2142,7 +2144,6 @@ cc_library_static {
         "meson_generated/src/panfrost",
         "meson_generated/src/panfrost/compiler",
         "meson_generated/src/panfrost/libpan",
-        "meson_generated/src/panfrost/midgard",
         "meson_generated/src/util",
         "meson_generated/src/util/format",
         "src",
@@ -2192,7 +2193,6 @@ cc_library_static {
         "meson_generated/src/panfrost",
         "meson_generated/src/panfrost/compiler",
         "meson_generated/src/panfrost/libpan",
-        "meson_generated/src/panfrost/midgard",
         "meson_generated/src/util",
         "meson_generated/src/util/format",
         "src",
@@ -2281,7 +2281,6 @@ cc_library_static {
 cc_library_static {
     name: "mesa3d_desktop-panvk_src_panfrost_compiler_libpanfrost_bifrost_a",
     srcs: [
-        "meson_generated/src/panfrost/compiler/bifrost_nir_algebraic.c",
         "meson_generated/src/panfrost/compiler/valhall/valhall.c",
         "src/panfrost/compiler/bi_helper_invocations.c",
         "src/panfrost/compiler/bi_iterator_schedule.c",
@@ -2328,7 +2327,6 @@ cc_library_static {
         "meson_generated/src/panfrost/compiler",
         "meson_generated/src/panfrost/compiler/valhall",
         "meson_generated/src/panfrost/libpan",
-        "meson_generated/src/panfrost/midgard",
         "meson_generated/src/util",
         "meson_generated/src/util/format",
         "src",
@@ -2348,6 +2346,7 @@ cc_library_static {
         "mesa3d_desktop-panvk_src_panfrost_compiler_bi_packer_c",
         "mesa3d_desktop-panvk_src_panfrost_compiler_bi_printer_c",
         "mesa3d_desktop-panvk_src_panfrost_compiler_bi_swizzles_c",
+        "mesa3d_desktop-panvk_src_panfrost_compiler_bifrost_nir_algebraic_c",
     ],
     generated_headers: [
         "mesa3d_desktop-panvk_src_compiler_builtin_types_h",
@@ -2438,6 +2437,29 @@ cc_genrule {
         "panfrost/compiler/bi_builder.h",
     ],
     tools: ["mesa3d_desktop-panvk_src_panfrost_compiler_bi_builder_h_py"],
+    vendor_available: true,
+}
+
+python_binary_host {
+    name: "mesa3d_desktop-panvk_src_panfrost_compiler_bifrost_nir_algebraic_py",
+    main: "src/panfrost/compiler/bifrost_nir_algebraic.py",
+    srcs: [
+        ":mesa3d_desktop-panvk_src_compiler_nir_nir_algebraic_py_cp",
+        ":mesa3d_desktop-panvk_src_compiler_nir_nir_opcodes_py_cp",
+        "src/panfrost/compiler/bifrost_nir_algebraic.py",
+    ],
+    defaults: ["mesa_python_default"],
+}
+
+cc_genrule {
+    name: "mesa3d_desktop-panvk_src_panfrost_compiler_bifrost_nir_algebraic_c",
+    cmd: "python3 $(location) -p $(location src/compiler/nir/nir_algebraic.py)/../ > $(location bifrost_nir_algebraic.c)",
+    srcs: [
+        "src/compiler/nir/nir_algebraic.py",
+        "src/compiler/nir/nir_opcodes.py",
+    ],
+    out: ["bifrost_nir_algebraic.c"],
+    tools: ["mesa3d_desktop-panvk_src_panfrost_compiler_bifrost_nir_algebraic_py"],
     vendor_available: true,
 }
 
@@ -2882,13 +2904,6 @@ cc_genrule {
     vendor_available: true,
 }
 
-genrule {
-    name: "mesa3d_desktop-panvk_src_compiler_nir_nir_algebraic_py_cp",
-    cmd: "cp $(in) $(out)",
-    srcs: ["src/compiler/nir/nir_algebraic.py"],
-    out: ["nir_algebraic.py"],
-}
-
 python_binary_host {
     name: "mesa3d_desktop-panvk_src_compiler_nir_nir_opt_algebraic_py",
     main: "src/compiler/nir/nir_opt_algebraic.py",
@@ -3063,7 +3078,6 @@ cc_library_shared {
     name: "mesa3d_desktop-panvk_libvulkan_panfrost",
     stem: "vulkan.panfrost",
     srcs: [
-        "meson_generated/src/panfrost/vulkan/panvk_tracepoints.c",
         "src/panfrost/vulkan/panvk_android.c",
         "src/panfrost/vulkan/panvk_buffer.c",
         "src/panfrost/vulkan/panvk_cmd_pool.c",
@@ -3155,8 +3169,6 @@ cc_library_shared {
         "meson_generated/src/panfrost",
         "meson_generated/src/panfrost/compiler",
         "meson_generated/src/panfrost/libpan",
-        "meson_generated/src/panfrost/midgard",
-        "meson_generated/src/panfrost/vulkan",
         "meson_generated/src/util",
         "meson_generated/src/util/format",
         "meson_generated/src/vulkan/runtime",
@@ -3177,7 +3189,10 @@ cc_library_shared {
         "src/vulkan/util",
         "src/vulkan/wsi",
     ],
-    generated_sources: ["mesa3d_desktop-panvk_src_panfrost_vulkan_panvk_entrypoints_c"],
+    generated_sources: [
+        "mesa3d_desktop-panvk_src_panfrost_vulkan_panvk_entrypoints_c",
+        "mesa3d_desktop-panvk_src_panfrost_vulkan_panvk_tracepoints_c",
+    ],
     generated_headers: [
         "mesa3d_desktop-panvk_src_compiler_builtin_types_h",
         "mesa3d_desktop-panvk_src_compiler_ir_expression_operation_h",
@@ -3199,6 +3214,8 @@ cc_library_shared {
         "mesa3d_desktop-panvk_src_panfrost_genxml_v7_pack_h",
         "mesa3d_desktop-panvk_src_panfrost_genxml_v9_pack_h",
         "mesa3d_desktop-panvk_src_panfrost_vulkan_panvk_entrypoints_h",
+        "mesa3d_desktop-panvk_src_panfrost_vulkan_panvk_tracepoints_h",
+        "mesa3d_desktop-panvk_src_panfrost_vulkan_panvk_tracepoints_perfetto_h",
         "mesa3d_desktop-panvk_src_util_driconf_static_h",
         "mesa3d_desktop-panvk_src_util_format_u_format_gen_h",
         "mesa3d_desktop-panvk_src_util_format_u_format_pack_h",
@@ -4234,8 +4251,6 @@ cc_library_static {
         "meson_generated/src/panfrost",
         "meson_generated/src/panfrost/compiler",
         "meson_generated/src/panfrost/libpan",
-        "meson_generated/src/panfrost/midgard",
-        "meson_generated/src/panfrost/vulkan",
         "meson_generated/src/util",
         "meson_generated/src/util/format",
         "meson_generated/src/vulkan/runtime",
@@ -4276,6 +4291,7 @@ cc_library_static {
         "mesa3d_desktop-panvk_src_panfrost_genxml_v7_pack_h",
         "mesa3d_desktop-panvk_src_panfrost_genxml_v9_pack_h",
         "mesa3d_desktop-panvk_src_panfrost_vulkan_panvk_entrypoints_h",
+        "mesa3d_desktop-panvk_src_panfrost_vulkan_panvk_tracepoints_h",
         "mesa3d_desktop-panvk_src_util_format_u_format_gen_h",
         "mesa3d_desktop-panvk_src_util_shader_stats_h",
         "mesa3d_desktop-panvk_src_vulkan_runtime_vk_cmd_enqueue_entrypoints_h",
@@ -4291,6 +4307,48 @@ cc_library_static {
         "mesa3d_desktop-panvk_src_vulkan_wsi_wsi_common_entrypoints_h",
     ],
     defaults: ["mesa3d-desktop-panvk-defaults"],
+}
+
+cc_genrule {
+    name: "mesa3d_desktop-panvk_src_panfrost_vulkan_panvk_tracepoints_h",
+    cmd: "cp $(in) $(location panvk_tracepoints.h); cp $(location panvk_tracepoints.h) $(location vulkan/panvk_tracepoints.h); cp $(location vulkan/panvk_tracepoints.h) $(location panfrost/vulkan/panvk_tracepoints.h)",
+    srcs: [":mesa3d_desktop-panvk_n2s_src_panfrost_vulkan_panvk_tracepoints_h{n2s/src/panfrost/vulkan/panvk_tracepoints.h}"],
+    out: [
+        "panfrost/vulkan/panvk_tracepoints.h",
+        "panvk_tracepoints.h",
+        "vulkan/panvk_tracepoints.h",
+    ],
+    vendor_available: true,
+}
+
+genrule {
+    name: "mesa3d_desktop-panvk_src_util_perf_u_trace_py_cp",
+    cmd: "cp $(in) $(out)",
+    srcs: ["src/util/perf/u_trace.py"],
+    out: ["u_trace.py"],
+}
+
+python_binary_host {
+    name: "mesa3d_desktop-panvk_src_panfrost_vulkan_panvk_tracepoints_py",
+    main: "src/panfrost/vulkan/panvk_tracepoints.py",
+    srcs: [
+        ":mesa3d_desktop-panvk_src_util_perf_u_trace_py_cp",
+        "src/panfrost/vulkan/panvk_tracepoints.py",
+    ],
+    defaults: ["mesa_python_default"],
+}
+
+cc_genrule {
+    name: "mesa3d_desktop-panvk_n2s_src_panfrost_vulkan_panvk_tracepoints_h",
+    cmd: "python3 $(location) --import-path $(location src/util/perf/u_trace.py)/../ --utrace-hdr $(location n2s/src/panfrost/vulkan/panvk_tracepoints.h) --perfetto-hdr $(location n2s/src/panfrost/vulkan/panvk_tracepoints_perfetto.h) --utrace-src $(location n2s/src/panfrost/vulkan/panvk_tracepoints.c)",
+    srcs: ["src/util/perf/u_trace.py"],
+    out: [
+        "n2s/src/panfrost/vulkan/panvk_tracepoints.c",
+        "n2s/src/panfrost/vulkan/panvk_tracepoints.h",
+        "n2s/src/panfrost/vulkan/panvk_tracepoints_perfetto.h",
+    ],
+    tools: ["mesa3d_desktop-panvk_src_panfrost_vulkan_panvk_tracepoints_py"],
+    vendor_available: true,
 }
 
 cc_genrule {
@@ -4366,8 +4424,6 @@ cc_library_static {
         "meson_generated/src/panfrost",
         "meson_generated/src/panfrost/compiler",
         "meson_generated/src/panfrost/libpan",
-        "meson_generated/src/panfrost/midgard",
-        "meson_generated/src/panfrost/vulkan",
         "meson_generated/src/util",
         "meson_generated/src/util/format",
         "meson_generated/src/vulkan/runtime",
@@ -4408,6 +4464,7 @@ cc_library_static {
         "mesa3d_desktop-panvk_src_panfrost_genxml_v7_pack_h",
         "mesa3d_desktop-panvk_src_panfrost_genxml_v9_pack_h",
         "mesa3d_desktop-panvk_src_panfrost_vulkan_panvk_entrypoints_h",
+        "mesa3d_desktop-panvk_src_panfrost_vulkan_panvk_tracepoints_h",
         "mesa3d_desktop-panvk_src_util_format_u_format_gen_h",
         "mesa3d_desktop-panvk_src_util_shader_stats_h",
         "mesa3d_desktop-panvk_src_vulkan_runtime_vk_cmd_enqueue_entrypoints_h",
@@ -4472,8 +4529,6 @@ cc_library_static {
         "meson_generated/src/panfrost",
         "meson_generated/src/panfrost/compiler",
         "meson_generated/src/panfrost/libpan",
-        "meson_generated/src/panfrost/midgard",
-        "meson_generated/src/panfrost/vulkan",
         "meson_generated/src/util",
         "meson_generated/src/util/format",
         "meson_generated/src/vulkan/runtime",
@@ -4514,6 +4569,7 @@ cc_library_static {
         "mesa3d_desktop-panvk_src_panfrost_genxml_v7_pack_h",
         "mesa3d_desktop-panvk_src_panfrost_genxml_v9_pack_h",
         "mesa3d_desktop-panvk_src_panfrost_vulkan_panvk_entrypoints_h",
+        "mesa3d_desktop-panvk_src_panfrost_vulkan_panvk_tracepoints_h",
         "mesa3d_desktop-panvk_src_util_format_u_format_gen_h",
         "mesa3d_desktop-panvk_src_util_shader_stats_h",
         "mesa3d_desktop-panvk_src_vulkan_runtime_vk_cmd_enqueue_entrypoints_h",
@@ -4578,8 +4634,6 @@ cc_library_static {
         "meson_generated/src/panfrost",
         "meson_generated/src/panfrost/compiler",
         "meson_generated/src/panfrost/libpan",
-        "meson_generated/src/panfrost/midgard",
-        "meson_generated/src/panfrost/vulkan",
         "meson_generated/src/util",
         "meson_generated/src/util/format",
         "meson_generated/src/vulkan/runtime",
@@ -4620,6 +4674,7 @@ cc_library_static {
         "mesa3d_desktop-panvk_src_panfrost_genxml_v7_pack_h",
         "mesa3d_desktop-panvk_src_panfrost_genxml_v9_pack_h",
         "mesa3d_desktop-panvk_src_panfrost_vulkan_panvk_entrypoints_h",
+        "mesa3d_desktop-panvk_src_panfrost_vulkan_panvk_tracepoints_h",
         "mesa3d_desktop-panvk_src_util_format_u_format_gen_h",
         "mesa3d_desktop-panvk_src_util_shader_stats_h",
         "mesa3d_desktop-panvk_src_vulkan_runtime_vk_cmd_enqueue_entrypoints_h",
@@ -4684,8 +4739,6 @@ cc_library_static {
         "meson_generated/src/panfrost",
         "meson_generated/src/panfrost/compiler",
         "meson_generated/src/panfrost/libpan",
-        "meson_generated/src/panfrost/midgard",
-        "meson_generated/src/panfrost/vulkan",
         "meson_generated/src/util",
         "meson_generated/src/util/format",
         "meson_generated/src/vulkan/runtime",
@@ -4726,6 +4779,7 @@ cc_library_static {
         "mesa3d_desktop-panvk_src_panfrost_genxml_v7_pack_h",
         "mesa3d_desktop-panvk_src_panfrost_genxml_v9_pack_h",
         "mesa3d_desktop-panvk_src_panfrost_vulkan_panvk_entrypoints_h",
+        "mesa3d_desktop-panvk_src_panfrost_vulkan_panvk_tracepoints_h",
         "mesa3d_desktop-panvk_src_util_format_u_format_gen_h",
         "mesa3d_desktop-panvk_src_util_shader_stats_h",
         "mesa3d_desktop-panvk_src_vulkan_runtime_vk_cmd_enqueue_entrypoints_h",
@@ -4852,6 +4906,26 @@ cc_genrule {
     cmd: "cp $(in) $(out)",
     srcs: [":mesa3d_desktop-panvk_n2s_src_compiler_spirv_spirv_info_h{n2s/src/compiler/spirv/spirv_info.c}"],
     out: ["spirv_info.c"],
+    vendor_available: true,
+}
+
+cc_genrule {
+    name: "mesa3d_desktop-panvk_src_panfrost_vulkan_panvk_tracepoints_perfetto_h",
+    cmd: "cp $(in) $(location panvk_tracepoints_perfetto.h); cp $(location panvk_tracepoints_perfetto.h) $(location vulkan/panvk_tracepoints_perfetto.h); cp $(location vulkan/panvk_tracepoints_perfetto.h) $(location panfrost/vulkan/panvk_tracepoints_perfetto.h)",
+    srcs: [":mesa3d_desktop-panvk_n2s_src_panfrost_vulkan_panvk_tracepoints_h{n2s/src/panfrost/vulkan/panvk_tracepoints_perfetto.h}"],
+    out: [
+        "panfrost/vulkan/panvk_tracepoints_perfetto.h",
+        "panvk_tracepoints_perfetto.h",
+        "vulkan/panvk_tracepoints_perfetto.h",
+    ],
+    vendor_available: true,
+}
+
+cc_genrule {
+    name: "mesa3d_desktop-panvk_src_panfrost_vulkan_panvk_tracepoints_c",
+    cmd: "cp $(in) $(out)",
+    srcs: [":mesa3d_desktop-panvk_n2s_src_panfrost_vulkan_panvk_tracepoints_h{n2s/src/panfrost/vulkan/panvk_tracepoints.c}"],
+    out: ["panvk_tracepoints.c"],
     vendor_available: true,
 }
 

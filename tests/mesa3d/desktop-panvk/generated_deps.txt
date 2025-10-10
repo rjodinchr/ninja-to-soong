@@ -1,7 +1,6 @@
 [
     "src/git_sha1.h",
     "src/panfrost/compiler/bifrost_gen_disasm.c",
-    "src/panfrost/compiler/bifrost_nir_algebraic.c",
     "src/panfrost/compiler/valhall/valhall.c",
     "src/panfrost/compiler/valhall/valhall_disasm.c",
     "src/panfrost/compiler/valhall/valhall_enums.h",
@@ -25,10 +24,6 @@
     "src/panfrost/libpan/libpan_v6.h",
     "src/panfrost/libpan/libpan_v7.cpp",
     "src/panfrost/libpan/libpan_v7.h",
-    "src/panfrost/midgard/midgard_nir_algebraic.c",
-    "src/panfrost/vulkan/panvk_tracepoints.c",
-    "src/panfrost/vulkan/panvk_tracepoints.h",
-    "src/panfrost/vulkan/panvk_tracepoints_perfetto.h",
     "src/util/format/u_format_gen.h",
     "src/vulkan/runtime/astc_spv.h",
 ]
