@@ -390,6 +390,18 @@ where
             cmd = format!("echo \\\"{rsp_inputs_string}\\\" > {rsp} && {cmd}")
                 .replace("${rspfile}", &rsp);
         }
+        for input in &inputs {
+            let canonicalize_input = canonicalize_path(input, self.build_path);
+            let replace_input = format!(
+                "$(location {0})/..",
+                path_to_string(strip_prefix(&canonicalize_input, self.src_path,))
+            );
+            let input = path_to_string(input.parent().unwrap());
+            let canonicalize_input = path_to_string(canonicalize_input.parent().unwrap());
+            cmd = cmd
+                .replace(&input, &replace_input)
+                .replace(&canonicalize_input, &replace_input);
+        }
         cmd
     }
     fn get_dep_id(&self, input: &PathBuf) -> String {

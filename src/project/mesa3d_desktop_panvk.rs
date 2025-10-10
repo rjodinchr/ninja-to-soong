@@ -24,11 +24,6 @@ impl mesa3d_desktop::Mesa3dProject for Mesa3DDesktopPanVK {
         let asset = path_to_string(asset);
         !asset.contains("libpan/libpan_v") // mesa_clc
             && !asset.contains("libpan/libpan_shaders_v") // mesa_clc
-            && !asset.ends_with("bifrost_nir_algebraic.c") // unsupported command arguments
-            && !asset.ends_with("midgard_nir_algebraic.c") // unsupported command arguments
-            && !asset.ends_with("panvk_tracepoints.c") // unsupported command arguments
-            && !asset.ends_with("panvk_tracepoints.h") // unsupported command arguments
-            && !asset.ends_with("panvk_tracepoints_perfetto.h") // unsupported command arguments
             && !asset.ends_with("valhall_enums.h") // valhall_parse_isa
             && !asset.ends_with("valhall.c") // valhall_parse_isa
             && !asset.ends_with("valhall_disasm.c") // valhall_parse_isa
