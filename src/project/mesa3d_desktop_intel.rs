@@ -45,6 +45,8 @@ impl mesa3d_desktop::Mesa3dProject for Mesa3DDesktopIntel {
             "brw_nir_trig_workarounds.c",
             "brw_nir_workarounds.c",
             "isl_format_layout.c",
+            "tr_util.c",
+            "tr_util.h",
             "u_tracepoints.c",
             "u_tracepoints.h",
             "vk_synchronization_helpers.c",

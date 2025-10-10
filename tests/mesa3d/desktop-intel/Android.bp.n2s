@@ -3375,7 +3375,6 @@ cc_library_shared {
         "mesa3d_desktop-intel_src_compiler_nir_nir_opcodes_h",
         "mesa3d_desktop-intel_src_compiler_spirv_spirv_info_h",
         "mesa3d_desktop-intel_src_compiler_spirv_vtn_generator_ids_h",
-        "mesa3d_desktop-intel_src_gallium_auxiliary_tr_util_h",
         "mesa3d_desktop-intel_src_intel_dev_intel_device_info_gen_h",
         "mesa3d_desktop-intel_src_intel_dev_intel_wa_h",
         "mesa3d_desktop-intel_src_intel_genxml_gen110_cl_pack_h",
@@ -3546,7 +3545,6 @@ cc_library_shared {
         "mesa3d_desktop-intel_src_compiler_nir_nir_opcodes_h",
         "mesa3d_desktop-intel_src_compiler_spirv_spirv_info_h",
         "mesa3d_desktop-intel_src_compiler_spirv_vtn_generator_ids_h",
-        "mesa3d_desktop-intel_src_gallium_auxiliary_tr_util_h",
         "mesa3d_desktop-intel_src_intel_dev_intel_device_info_gen_h",
         "mesa3d_desktop-intel_src_intel_dev_intel_wa_h",
         "mesa3d_desktop-intel_src_intel_genxml_gen110_cl_pack_h",
@@ -5540,6 +5538,7 @@ cc_library_static {
 cc_library_static {
     name: "mesa3d_desktop-intel_src_gallium_auxiliary_libgallium_a",
     srcs: [
+        "meson_generated/src/gallium/auxiliary/tr_util.c",
         "meson_generated/src/gallium/auxiliary/u_tracepoints.c",
         "src/gallium/auxiliary/cso_cache/cso_cache.c",
         "src/gallium/auxiliary/cso_cache/cso_context.c",
@@ -5702,7 +5701,6 @@ cc_library_static {
         "src/loader",
     ],
     generated_sources: [
-        "mesa3d_desktop-intel_src_gallium_auxiliary_tr_util_c",
         "mesa3d_desktop-intel_src_gallium_auxiliary_u_indices_gen_c",
         "mesa3d_desktop-intel_src_gallium_auxiliary_u_unfilled_gen_c",
     ],
@@ -5713,45 +5711,9 @@ cc_library_static {
         "mesa3d_desktop-intel_src_compiler_nir_nir_intrinsics_h",
         "mesa3d_desktop-intel_src_compiler_nir_nir_intrinsics_indices_h",
         "mesa3d_desktop-intel_src_compiler_nir_nir_opcodes_h",
-        "mesa3d_desktop-intel_src_gallium_auxiliary_tr_util_h",
         "mesa3d_desktop-intel_src_util_format_u_format_gen_h",
     ],
     defaults: ["mesa3d-desktop-intel-defaults"],
-}
-
-cc_genrule {
-    name: "mesa3d_desktop-intel_src_gallium_auxiliary_tr_util_h",
-    cmd: "cp $(in) $(location tr_util.h); cp $(location tr_util.h) $(location auxiliary/tr_util.h); cp $(location auxiliary/tr_util.h) $(location gallium/auxiliary/tr_util.h)",
-    srcs: [":mesa3d_desktop-intel_n2s_src_gallium_auxiliary_tr_util_c{n2s/src/gallium/auxiliary/tr_util.h}"],
-    out: [
-        "auxiliary/tr_util.h",
-        "gallium/auxiliary/tr_util.h",
-        "tr_util.h",
-    ],
-    vendor_available: true,
-}
-
-python_binary_host {
-    name: "mesa3d_desktop-intel_src_gallium_auxiliary_driver_trace_enums2names_py",
-    main: "src/gallium/auxiliary/driver_trace/enums2names.py",
-    srcs: ["src/gallium/auxiliary/driver_trace/enums2names.py"],
-    defaults: ["mesa_python_default"],
-}
-
-cc_genrule {
-    name: "mesa3d_desktop-intel_n2s_src_gallium_auxiliary_tr_util_c",
-    cmd: "python3 $(location) $(location src/gallium/include/pipe/p_defines.h) $(location src/gallium/include/pipe/p_video_enums.h) $(location src/util/blend.h) -C $(location n2s/src/gallium/auxiliary/tr_util.c) -H $(location n2s/src/gallium/auxiliary/tr_util.h)",
-    srcs: [
-        "src/gallium/include/pipe/p_defines.h",
-        "src/gallium/include/pipe/p_video_enums.h",
-        "src/util/blend.h",
-    ],
-    out: [
-        "n2s/src/gallium/auxiliary/tr_util.c",
-        "n2s/src/gallium/auxiliary/tr_util.h",
-    ],
-    tools: ["mesa3d_desktop-intel_src_gallium_auxiliary_driver_trace_enums2names_py"],
-    vendor_available: true,
 }
 
 python_binary_host {
@@ -5781,14 +5743,6 @@ cc_genrule {
     cmd: "python3 $(location) $(location u_indices_gen.c)",
     out: ["u_indices_gen.c"],
     tools: ["mesa3d_desktop-intel_src_gallium_auxiliary_indices_u_indices_gen_py"],
-    vendor_available: true,
-}
-
-cc_genrule {
-    name: "mesa3d_desktop-intel_src_gallium_auxiliary_tr_util_c",
-    cmd: "cp $(in) $(out)",
-    srcs: [":mesa3d_desktop-intel_n2s_src_gallium_auxiliary_tr_util_c{n2s/src/gallium/auxiliary/tr_util.c}"],
-    out: ["tr_util.c"],
     vendor_available: true,
 }
 
@@ -6582,7 +6536,6 @@ cc_library_shared {
         "mesa3d_desktop-intel_src_compiler_nir_nir_opcodes_h",
         "mesa3d_desktop-intel_src_compiler_spirv_spirv_info_h",
         "mesa3d_desktop-intel_src_compiler_spirv_vtn_generator_ids_h",
-        "mesa3d_desktop-intel_src_gallium_auxiliary_tr_util_h",
         "mesa3d_desktop-intel_src_intel_dev_intel_device_info_gen_h",
         "mesa3d_desktop-intel_src_intel_dev_intel_wa_h",
         "mesa3d_desktop-intel_src_intel_genxml_gen110_cl_pack_h",
@@ -8691,7 +8644,6 @@ cc_library_shared {
         "mesa3d_desktop-intel_src_compiler_nir_nir_opcodes_h",
         "mesa3d_desktop-intel_src_compiler_spirv_spirv_info_h",
         "mesa3d_desktop-intel_src_compiler_spirv_vtn_generator_ids_h",
-        "mesa3d_desktop-intel_src_gallium_auxiliary_tr_util_h",
         "mesa3d_desktop-intel_src_intel_dev_intel_device_info_gen_h",
         "mesa3d_desktop-intel_src_intel_dev_intel_wa_h",
         "mesa3d_desktop-intel_src_intel_genxml_gen110_cl_pack_h",

@@ -1,6 +1,10 @@
 [
     "src/git_sha1.h",
+    "src/panfrost/compiler/bifrost_gen_disasm.c",
     "src/panfrost/compiler/bifrost_nir_algebraic.c",
+    "src/panfrost/compiler/valhall/valhall.c",
+    "src/panfrost/compiler/valhall/valhall_disasm.c",
+    "src/panfrost/compiler/valhall/valhall_enums.h",
     "src/panfrost/libpan/libpan_shaders_v10.c",
     "src/panfrost/libpan/libpan_shaders_v10.h",
     "src/panfrost/libpan/libpan_shaders_v12.c",
