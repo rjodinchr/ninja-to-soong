@@ -116,7 +116,7 @@ impl Project for OpenclCts {
             ctx,
         )?;
 
-        let gen_deps = package.get_gen_deps();
+        let gen_deps = package.get_dep_gen_assets();
         let mut spirv_new_data = Vec::new();
         for dep in gen_deps {
             if dep.ends_with("spirv.core.grammar.json") {
@@ -155,7 +155,7 @@ impl Project for OpenclCts {
             );
         }
         self.gen_deps = package
-            .get_gen_deps()
+            .get_dep_gen_assets()
             .into_iter()
             .filter_map(|dep| {
                 if let Ok(strip) = dep.strip_prefix(&self.spirv_headers_path) {

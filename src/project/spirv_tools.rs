@@ -71,7 +71,7 @@ impl Project for SpirvTools {
             vec![String::from("include")],
         ));
         self.gen_deps = package
-            .get_gen_deps()
+            .get_dep_custom_cmd_inputs()
             .into_iter()
             .map(|header| path_to_string(strip_prefix(header, &self.spirv_headers_path)))
             .collect();

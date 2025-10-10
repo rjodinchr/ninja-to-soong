@@ -83,7 +83,7 @@ where
             self.create_package(ctx, &src_path, &build_path, &ndk_path, MESON_GENERATED)?;
 
         let gen_deps = package
-            .get_gen_deps()
+            .get_dep_gen_assets()
             .into_iter()
             .filter(|include| !include.starts_with("subprojects"))
             .collect();

@@ -102,7 +102,7 @@ impl Project for LlvmProject {
             ));
         }
 
-        let mut gen_deps = package.get_gen_deps();
+        let mut gen_deps = package.get_dep_gen_assets();
         gen_deps.extend(libclc_binaries);
         common::ninja_build(&build_path, &gen_deps, ctx)?;
         gen_deps.extend(

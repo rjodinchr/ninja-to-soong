@@ -60,7 +60,6 @@
     "src/mapi/glapi/gen/unmarshal_table.c",
     "src/mapi/shared-glapi/shared_glapi_mapi_tmp.h",
     "src/mesa/get_hash.h",
-    "src/util/format/u_format_gen.h",
     "src/vulkan/runtime/astc_spv.h",
     "src/vulkan/runtime/bvh/lbvh_generate_ir.spv.h",
     "src/vulkan/runtime/bvh/lbvh_main.spv.h",

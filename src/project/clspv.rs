@@ -62,7 +62,7 @@ impl Project for Clspv {
         )?
         .add_visibilities(Dep::ClspvTargets.get_visibilities(projects_map)?);
 
-        let gen_deps = package.get_gen_deps();
+        let gen_deps = package.get_dep_custom_cmd_inputs();
         self.gen_deps.insert(
             Dep::ClangHeaders,
             gen_deps

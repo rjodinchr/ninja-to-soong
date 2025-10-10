@@ -236,16 +236,22 @@ impl SoongPackage {
         Ok(package)
     }
 
-    pub fn get_gen_deps(&mut self) -> Vec<PathBuf> {
-        self.internals.deps.sort_unstable();
-        self.internals.deps.dedup();
-        std::mem::take(&mut self.internals.deps)
+    pub fn get_dep_gen_assets(&mut self) -> Vec<PathBuf> {
+        self.internals.gen_assets.sort_unstable();
+        self.internals.gen_assets.dedup();
+        std::mem::take(&mut self.internals.gen_assets)
     }
 
-    pub fn get_gen_libs(&mut self) -> Vec<PathBuf> {
+    pub fn get_dep_libs(&mut self) -> Vec<PathBuf> {
         self.internals.libs.sort_unstable();
         self.internals.libs.dedup();
         std::mem::take(&mut self.internals.libs)
+    }
+
+    pub fn get_dep_custom_cmd_inputs(&mut self) -> Vec<PathBuf> {
+        self.internals.custom_cmd_inputs.sort_unstable();
+        self.internals.custom_cmd_inputs.dedup();
+        std::mem::take(&mut self.internals.custom_cmd_inputs)
     }
 
     pub fn generate<T>(
