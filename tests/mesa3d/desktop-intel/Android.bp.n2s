@@ -575,7 +575,6 @@ cc_library_static {
         "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/intel",
-        "meson_generated/src/intel/isl",
         "src",
         "src/intel",
         "src/intel/isl",
@@ -596,7 +595,6 @@ cc_library_static {
         "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/intel",
-        "meson_generated/src/intel/isl",
         "src",
         "src/intel",
         "src/intel/isl",
@@ -624,7 +622,6 @@ cc_library_static {
         "meson_generated/src",
         "meson_generated/src/intel",
         "meson_generated/src/intel/genxml",
-        "meson_generated/src/intel/isl",
         "src",
         "src/intel",
         "src/intel/genxml",
@@ -2198,7 +2195,6 @@ cc_library_static {
         "meson_generated/src",
         "meson_generated/src/intel",
         "meson_generated/src/intel/genxml",
-        "meson_generated/src/intel/isl",
         "src",
         "src/intel",
         "src/intel/genxml",
@@ -2272,7 +2268,6 @@ cc_library_static {
         "meson_generated/src",
         "meson_generated/src/intel",
         "meson_generated/src/intel/genxml",
-        "meson_generated/src/intel/isl",
         "src",
         "src/intel",
         "src/intel/genxml",
@@ -2347,7 +2342,6 @@ cc_library_static {
         "meson_generated/src",
         "meson_generated/src/intel",
         "meson_generated/src/intel/genxml",
-        "meson_generated/src/intel/isl",
         "src",
         "src/intel",
         "src/intel/genxml",
@@ -2422,7 +2416,6 @@ cc_library_static {
         "meson_generated/src",
         "meson_generated/src/intel",
         "meson_generated/src/intel/genxml",
-        "meson_generated/src/intel/isl",
         "src",
         "src/intel",
         "src/intel/genxml",
@@ -2496,7 +2489,6 @@ cc_library_static {
         "meson_generated/src",
         "meson_generated/src/intel",
         "meson_generated/src/intel/genxml",
-        "meson_generated/src/intel/isl",
         "src",
         "src/intel",
         "src/intel/genxml",
@@ -2571,7 +2563,6 @@ cc_library_static {
         "meson_generated/src",
         "meson_generated/src/intel",
         "meson_generated/src/intel/genxml",
-        "meson_generated/src/intel/isl",
         "src",
         "src/intel",
         "src/intel/genxml",
@@ -2646,7 +2637,6 @@ cc_library_static {
         "meson_generated/src",
         "meson_generated/src/intel",
         "meson_generated/src/intel/genxml",
-        "meson_generated/src/intel/isl",
         "src",
         "src/intel",
         "src/intel/genxml",
@@ -2721,7 +2711,6 @@ cc_library_static {
         "meson_generated/src",
         "meson_generated/src/intel",
         "meson_generated/src/intel/genxml",
-        "meson_generated/src/intel/isl",
         "src",
         "src/intel",
         "src/intel/genxml",
@@ -2796,7 +2785,6 @@ cc_library_static {
         "meson_generated/src",
         "meson_generated/src/intel",
         "meson_generated/src/intel/genxml",
-        "meson_generated/src/intel/isl",
         "src",
         "src/intel",
         "src/intel/genxml",
@@ -2871,7 +2859,6 @@ cc_library_static {
         "meson_generated/src",
         "meson_generated/src/intel",
         "meson_generated/src/intel/genxml",
-        "meson_generated/src/intel/isl",
         "src",
         "src/intel",
         "src/intel/genxml",
@@ -2945,7 +2932,6 @@ cc_library_static {
         "meson_generated/src",
         "meson_generated/src/intel",
         "meson_generated/src/intel/genxml",
-        "meson_generated/src/intel/isl",
         "src",
         "src/intel",
         "src/intel/genxml",
@@ -3008,7 +2994,6 @@ cc_library_static {
 cc_library_static {
     name: "mesa3d_desktop-intel_src_intel_isl_libisl_a",
     srcs: [
-        "meson_generated/src/intel/isl/isl_format_layout.c",
         "src/intel/isl/isl.c",
         "src/intel/isl/isl_aux_info.c",
         "src/intel/isl/isl_drm.c",
@@ -3021,17 +3006,33 @@ cc_library_static {
         "meson_generated/src",
         "meson_generated/src/intel",
         "meson_generated/src/intel/genxml",
-        "meson_generated/src/intel/isl",
         "src",
         "src/intel",
         "src/intel/isl",
     ],
+    generated_sources: ["mesa3d_desktop-intel_src_intel_isl_isl_format_layout_c"],
     generated_headers: [
         "mesa3d_desktop-intel_src_intel_dev_intel_device_info_gen_h",
         "mesa3d_desktop-intel_src_intel_dev_intel_wa_h",
         "mesa3d_desktop-intel_src_util_format_u_format_gen_h",
     ],
     defaults: ["mesa3d-desktop-intel-defaults"],
+}
+
+python_binary_host {
+    name: "mesa3d_desktop-intel_src_intel_isl_gen_format_layout_py",
+    main: "src/intel/isl/gen_format_layout.py",
+    srcs: ["src/intel/isl/gen_format_layout.py"],
+    defaults: ["mesa_python_default"],
+}
+
+cc_genrule {
+    name: "mesa3d_desktop-intel_src_intel_isl_isl_format_layout_c",
+    cmd: "python3 $(location) --csv $(location src/intel/isl/isl_format_layout.csv) --out $(location isl_format_layout.c)",
+    srcs: ["src/intel/isl/isl_format_layout.csv"],
+    out: ["isl_format_layout.c"],
+    tools: ["mesa3d_desktop-intel_src_intel_isl_gen_format_layout_py"],
+    vendor_available: true,
 }
 
 cc_library_static {
@@ -3353,6 +3354,7 @@ cc_library_shared {
         "mesa3d_desktop-intel_src_compiler_nir_nir_opcodes_h",
         "mesa3d_desktop-intel_src_compiler_spirv_spirv_info_h",
         "mesa3d_desktop-intel_src_compiler_spirv_vtn_generator_ids_h",
+        "mesa3d_desktop-intel_src_gallium_auxiliary_u_tracepoints_h",
         "mesa3d_desktop-intel_src_intel_dev_intel_device_info_gen_h",
         "mesa3d_desktop-intel_src_intel_dev_intel_wa_h",
         "mesa3d_desktop-intel_src_intel_genxml_gen110_cl_pack_h",
@@ -3402,6 +3404,7 @@ cc_library_shared {
         "mesa3d_desktop-intel_src_intel_genxml_gen90_video_pack_h",
         "mesa3d_desktop-intel_src_intel_genxml_genX_xml_h",
         "mesa3d_desktop-intel_src_intel_perf_intel_perf_metrics_h",
+        "mesa3d_desktop-intel_src_mapi_es2api_gles2_def",
         "mesa3d_desktop-intel_src_mesa_format_info_h",
         "mesa3d_desktop-intel_src_mesa_program_program_parse_tab_h",
         "mesa3d_desktop-intel_src_util_driconf_static_h",
@@ -3411,6 +3414,22 @@ cc_library_shared {
     ],
     relative_install_path: "egl",
     defaults: ["mesa3d-desktop-intel-defaults"],
+}
+
+python_binary_host {
+    name: "mesa3d_desktop-intel_bin_gen_vs_module_defs_py",
+    main: "bin/gen_vs_module_defs.py",
+    srcs: ["bin/gen_vs_module_defs.py"],
+    defaults: ["mesa_python_default"],
+}
+
+cc_genrule {
+    name: "mesa3d_desktop-intel_src_mapi_es2api_gles2_def",
+    cmd: "python3 $(location) --in_file $(location src/mapi/es2api/gles2.def.in) --out_file $(location gles2.def) --compiler_abi gcc --compiler_id clang --cpu_family x86_64",
+    srcs: ["src/mapi/es2api/gles2.def.in"],
+    out: ["gles2.def"],
+    tools: ["mesa3d_desktop-intel_bin_gen_vs_module_defs_py"],
+    vendor_available: true,
 }
 
 cc_library_shared {
@@ -3522,6 +3541,7 @@ cc_library_shared {
         "mesa3d_desktop-intel_src_compiler_nir_nir_opcodes_h",
         "mesa3d_desktop-intel_src_compiler_spirv_spirv_info_h",
         "mesa3d_desktop-intel_src_compiler_spirv_vtn_generator_ids_h",
+        "mesa3d_desktop-intel_src_gallium_auxiliary_u_tracepoints_h",
         "mesa3d_desktop-intel_src_intel_dev_intel_device_info_gen_h",
         "mesa3d_desktop-intel_src_intel_dev_intel_wa_h",
         "mesa3d_desktop-intel_src_intel_genxml_gen110_cl_pack_h",
@@ -4406,8 +4426,6 @@ cc_library_static {
 cc_library_static {
     name: "mesa3d_desktop-intel_src_intel_compiler_libintel_compiler_a",
     srcs: [
-        "meson_generated/src/intel/compiler/brw_nir_lower_fsign.c",
-        "meson_generated/src/intel/compiler/brw_nir_trig_workarounds.c",
         "src/intel/compiler/brw_analysis.cpp",
         "src/intel/compiler/brw_analysis_def.cpp",
         "src/intel/compiler/brw_analysis_liveness.cpp",
@@ -4507,14 +4525,17 @@ cc_library_static {
         "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/intel",
-        "meson_generated/src/intel/compiler",
         "src",
         "src/compiler",
         "src/compiler/nir",
         "src/intel",
         "src/intel/compiler",
     ],
-    generated_sources: ["mesa3d_desktop-intel_src_intel_compiler_brw_device_sha1_gen_c"],
+    generated_sources: [
+        "mesa3d_desktop-intel_src_intel_compiler_brw_device_sha1_gen_c",
+        "mesa3d_desktop-intel_src_intel_compiler_brw_nir_lower_fsign_c",
+        "mesa3d_desktop-intel_src_intel_compiler_brw_nir_trig_workarounds_c",
+    ],
     generated_headers: [
         "mesa3d_desktop-intel_src_compiler_builtin_types_h",
         "mesa3d_desktop-intel_src_compiler_ir_expression_operation_h",
@@ -4546,6 +4567,59 @@ cc_genrule {
     srcs: ["src/intel/dev/intel_device_info.py"],
     out: ["brw_device_sha1_gen.c"],
     tools: ["mesa3d_desktop-intel_src_intel_compiler_brw_device_sha1_gen_c_py"],
+    vendor_available: true,
+}
+
+genrule {
+    name: "mesa3d_desktop-intel_src_compiler_nir_nir_algebraic_py_cp",
+    cmd: "cp $(in) $(out)",
+    srcs: ["src/compiler/nir/nir_algebraic.py"],
+    out: ["nir_algebraic.py"],
+}
+
+python_binary_host {
+    name: "mesa3d_desktop-intel_src_intel_compiler_brw_nir_trig_workarounds_py",
+    main: "src/intel/compiler/brw_nir_trig_workarounds.py",
+    srcs: [
+        ":mesa3d_desktop-intel_src_compiler_nir_nir_algebraic_py_cp",
+        ":mesa3d_desktop-intel_src_compiler_nir_nir_opcodes_py_cp",
+        "src/intel/compiler/brw_nir_trig_workarounds.py",
+    ],
+    defaults: ["mesa_python_default"],
+}
+
+cc_genrule {
+    name: "mesa3d_desktop-intel_src_intel_compiler_brw_nir_trig_workarounds_c",
+    cmd: "python3 $(location) -p $(location src/compiler/nir/nir_algebraic.py)/../ > $(location brw_nir_trig_workarounds.c)",
+    srcs: [
+        "src/compiler/nir/nir_algebraic.py",
+        "src/compiler/nir/nir_opcodes.py",
+    ],
+    out: ["brw_nir_trig_workarounds.c"],
+    tools: ["mesa3d_desktop-intel_src_intel_compiler_brw_nir_trig_workarounds_py"],
+    vendor_available: true,
+}
+
+python_binary_host {
+    name: "mesa3d_desktop-intel_src_intel_compiler_brw_nir_lower_fsign_py",
+    main: "src/intel/compiler/brw_nir_lower_fsign.py",
+    srcs: [
+        ":mesa3d_desktop-intel_src_compiler_nir_nir_algebraic_py_cp",
+        ":mesa3d_desktop-intel_src_compiler_nir_nir_opcodes_py_cp",
+        "src/intel/compiler/brw_nir_lower_fsign.py",
+    ],
+    defaults: ["mesa_python_default"],
+}
+
+cc_genrule {
+    name: "mesa3d_desktop-intel_src_intel_compiler_brw_nir_lower_fsign_c",
+    cmd: "python3 $(location) -p $(location src/compiler/nir/nir_algebraic.py)/../ > $(location brw_nir_lower_fsign.c)",
+    srcs: [
+        "src/compiler/nir/nir_algebraic.py",
+        "src/compiler/nir/nir_opcodes.py",
+    ],
+    out: ["brw_nir_lower_fsign.c"],
+    tools: ["mesa3d_desktop-intel_src_intel_compiler_brw_nir_lower_fsign_py"],
     vendor_available: true,
 }
 
@@ -5491,7 +5565,6 @@ cc_library_static {
     name: "mesa3d_desktop-intel_src_gallium_auxiliary_libgallium_a",
     srcs: [
         "meson_generated/src/gallium/auxiliary/tr_util.c",
-        "meson_generated/src/gallium/auxiliary/u_tracepoints.c",
         "src/gallium/auxiliary/cso_cache/cso_cache.c",
         "src/gallium/auxiliary/cso_cache/cso_context.c",
         "src/gallium/auxiliary/cso_cache/cso_hash.c",
@@ -5653,6 +5726,7 @@ cc_library_static {
     ],
     generated_sources: [
         "mesa3d_desktop-intel_src_gallium_auxiliary_u_indices_gen_c",
+        "mesa3d_desktop-intel_src_gallium_auxiliary_u_tracepoints_c",
         "mesa3d_desktop-intel_src_gallium_auxiliary_u_unfilled_gen_c",
     ],
     generated_headers: [
@@ -5662,9 +5736,40 @@ cc_library_static {
         "mesa3d_desktop-intel_src_compiler_nir_nir_intrinsics_h",
         "mesa3d_desktop-intel_src_compiler_nir_nir_intrinsics_indices_h",
         "mesa3d_desktop-intel_src_compiler_nir_nir_opcodes_h",
+        "mesa3d_desktop-intel_src_gallium_auxiliary_u_tracepoints_h",
         "mesa3d_desktop-intel_src_util_format_u_format_gen_h",
     ],
     defaults: ["mesa3d-desktop-intel-defaults"],
+}
+
+genrule {
+    name: "mesa3d_desktop-intel_src_util_perf_u_trace_py_cp",
+    cmd: "cp $(in) $(out)",
+    srcs: ["src/util/perf/u_trace.py"],
+    out: ["u_trace.py"],
+}
+
+python_binary_host {
+    name: "mesa3d_desktop-intel_src_gallium_auxiliary_util_u_tracepoints_py",
+    main: "src/gallium/auxiliary/util/u_tracepoints.py",
+    srcs: [
+        ":mesa3d_desktop-intel_src_util_perf_u_trace_py_cp",
+        "src/gallium/auxiliary/util/u_tracepoints.py",
+    ],
+    defaults: ["mesa_python_default"],
+}
+
+cc_genrule {
+    name: "mesa3d_desktop-intel_src_gallium_auxiliary_u_tracepoints_h",
+    cmd: "python3 $(location) -p $(location src/util/perf/u_trace.py)/../ -H $(location u_tracepoints.h); cp $(location u_tracepoints.h) $(location auxiliary/u_tracepoints.h); cp $(location auxiliary/u_tracepoints.h) $(location gallium/auxiliary/u_tracepoints.h)",
+    srcs: ["src/util/perf/u_trace.py"],
+    out: [
+        "auxiliary/u_tracepoints.h",
+        "gallium/auxiliary/u_tracepoints.h",
+        "u_tracepoints.h",
+    ],
+    tools: ["mesa3d_desktop-intel_src_gallium_auxiliary_util_u_tracepoints_py"],
+    vendor_available: true,
 }
 
 python_binary_host {
@@ -5694,6 +5799,15 @@ cc_genrule {
     cmd: "python3 $(location) $(location u_indices_gen.c)",
     out: ["u_indices_gen.c"],
     tools: ["mesa3d_desktop-intel_src_gallium_auxiliary_indices_u_indices_gen_py"],
+    vendor_available: true,
+}
+
+cc_genrule {
+    name: "mesa3d_desktop-intel_src_gallium_auxiliary_u_tracepoints_c",
+    cmd: "python3 $(location) -p $(location src/util/perf/u_trace.py)/../ -C $(location u_tracepoints.c)",
+    srcs: ["src/util/perf/u_trace.py"],
+    out: ["u_tracepoints.c"],
+    tools: ["mesa3d_desktop-intel_src_gallium_auxiliary_util_u_tracepoints_py"],
     vendor_available: true,
 }
 
@@ -6100,13 +6214,6 @@ cc_genrule {
     vendor_available: true,
 }
 
-genrule {
-    name: "mesa3d_desktop-intel_src_compiler_nir_nir_algebraic_py_cp",
-    cmd: "cp $(in) $(out)",
-    srcs: ["src/compiler/nir/nir_algebraic.py"],
-    out: ["nir_algebraic.py"],
-}
-
 python_binary_host {
     name: "mesa3d_desktop-intel_src_compiler_nir_nir_opt_algebraic_py",
     main: "src/compiler/nir/nir_opt_algebraic.py",
@@ -6483,6 +6590,7 @@ cc_library_shared {
         "mesa3d_desktop-intel_src_compiler_nir_nir_opcodes_h",
         "mesa3d_desktop-intel_src_compiler_spirv_spirv_info_h",
         "mesa3d_desktop-intel_src_compiler_spirv_vtn_generator_ids_h",
+        "mesa3d_desktop-intel_src_gallium_auxiliary_u_tracepoints_h",
         "mesa3d_desktop-intel_src_intel_dev_intel_device_info_gen_h",
         "mesa3d_desktop-intel_src_intel_dev_intel_wa_h",
         "mesa3d_desktop-intel_src_intel_genxml_gen110_cl_pack_h",
@@ -6532,6 +6640,7 @@ cc_library_shared {
         "mesa3d_desktop-intel_src_intel_genxml_gen90_video_pack_h",
         "mesa3d_desktop-intel_src_intel_genxml_genX_xml_h",
         "mesa3d_desktop-intel_src_intel_perf_intel_perf_metrics_h",
+        "mesa3d_desktop-intel_src_mapi_es1api_gles1_def",
         "mesa3d_desktop-intel_src_mesa_format_info_h",
         "mesa3d_desktop-intel_src_mesa_program_program_parse_tab_h",
         "mesa3d_desktop-intel_src_util_driconf_static_h",
@@ -6541,6 +6650,15 @@ cc_library_shared {
     ],
     relative_install_path: "egl",
     defaults: ["mesa3d-desktop-intel-defaults"],
+}
+
+cc_genrule {
+    name: "mesa3d_desktop-intel_src_mapi_es1api_gles1_def",
+    cmd: "python3 $(location) --in_file $(location src/mapi/es1api/gles1.def.in) --out_file $(location gles1.def) --compiler_abi gcc --compiler_id clang --cpu_family x86_64",
+    srcs: ["src/mapi/es1api/gles1.def.in"],
+    out: ["gles1.def"],
+    tools: ["mesa3d_desktop-intel_bin_gen_vs_module_defs_py"],
+    vendor_available: true,
 }
 
 cc_library_shared {
@@ -7336,7 +7454,6 @@ cc_genrule {
 cc_library_static {
     name: "mesa3d_desktop-intel_src_vulkan_runtime_libvulkan_lite_runtime_a",
     srcs: [
-        "meson_generated/src/vulkan/runtime/vk_synchronization_helpers.c",
         "src/vulkan/runtime/rmv/vk_rmv_common.c",
         "src/vulkan/runtime/rmv/vk_rmv_exporter.c",
         "src/vulkan/runtime/vk_android.c",
@@ -7404,6 +7521,7 @@ cc_library_static {
         "mesa3d_desktop-intel_src_vulkan_runtime_vk_physical_device_features_c",
         "mesa3d_desktop-intel_src_vulkan_runtime_vk_physical_device_properties_c",
         "mesa3d_desktop-intel_src_vulkan_runtime_vk_physical_device_spirv_caps_c",
+        "mesa3d_desktop-intel_src_vulkan_runtime_vk_synchronization_helpers_c",
     ],
     generated_headers: [
         "mesa3d_desktop-intel_src_compiler_builtin_types_h",
@@ -7428,6 +7546,28 @@ cc_library_static {
         "mesa3d_desktop-intel_src_vulkan_util_vk_struct_type_cast_h",
     ],
     defaults: ["mesa3d-desktop-intel-defaults"],
+}
+
+python_binary_host {
+    name: "mesa3d_desktop-intel_src_vulkan_util_vk_synchronization_helpers_gen_py",
+    main: "src/vulkan/util/vk_synchronization_helpers_gen.py",
+    srcs: [
+        ":mesa3d_desktop-intel_src_vulkan_util_vk_extensions_py_cp",
+        "src/vulkan/util/vk_synchronization_helpers_gen.py",
+    ],
+    defaults: ["mesa_python_default"],
+}
+
+cc_genrule {
+    name: "mesa3d_desktop-intel_src_vulkan_runtime_vk_synchronization_helpers_c",
+    cmd: "python3 $(location) --xml $(location src/vulkan/registry/vk.xml) --out-c $(location vk_synchronization_helpers.c) --beta false",
+    srcs: [
+        "src/vulkan/registry/vk.xml",
+        "src/vulkan/util/vk_extensions.py",
+    ],
+    out: ["vk_synchronization_helpers.c"],
+    tools: ["mesa3d_desktop-intel_src_vulkan_util_vk_synchronization_helpers_gen_py"],
+    vendor_available: true,
 }
 
 genrule {
@@ -8545,7 +8685,6 @@ cc_library_shared {
         "include",
         "include/android_stub",
         "meson_generated/src",
-        "meson_generated/src/egl",
         "meson_generated/src/gallium/auxiliary",
         "meson_generated/src/mapi/glapi/gen",
         "meson_generated/src/mesa",
@@ -8577,6 +8716,8 @@ cc_library_shared {
         "mesa3d_desktop-intel_src_compiler_nir_nir_opcodes_h",
         "mesa3d_desktop-intel_src_compiler_spirv_spirv_info_h",
         "mesa3d_desktop-intel_src_compiler_spirv_vtn_generator_ids_h",
+        "mesa3d_desktop-intel_src_egl_egl_def",
+        "mesa3d_desktop-intel_src_gallium_auxiliary_u_tracepoints_h",
         "mesa3d_desktop-intel_src_intel_dev_intel_device_info_gen_h",
         "mesa3d_desktop-intel_src_intel_dev_intel_wa_h",
         "mesa3d_desktop-intel_src_intel_genxml_gen110_cl_pack_h",
@@ -8635,6 +8776,15 @@ cc_library_shared {
     ],
     relative_install_path: "egl",
     defaults: ["mesa3d-desktop-intel-defaults"],
+}
+
+cc_genrule {
+    name: "mesa3d_desktop-intel_src_egl_egl_def",
+    cmd: "python3 $(location) --in_file $(location src/egl/main/egl.def.in) --out_file $(location egl.def) --compiler_abi gcc --compiler_id clang --cpu_family x86_64",
+    srcs: ["src/egl/main/egl.def.in"],
+    out: ["egl.def"],
+    tools: ["mesa3d_desktop-intel_bin_gen_vs_module_defs_py"],
+    vendor_available: true,
 }
 
 cc_defaults {

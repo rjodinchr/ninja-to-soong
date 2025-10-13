@@ -41,16 +41,8 @@ impl mesa3d_desktop::Mesa3dProject for Mesa3DDesktopIntel {
             "shared_glapi_mapi_tmp.h",
             "unmarshal_table.c",
             // unsupported command arguments
-            "brw_nir_lower_fsign.c",
-            "brw_nir_trig_workarounds.c",
-            "brw_nir_workarounds.c",
-            "isl_format_layout.c",
             "tr_util.c",
             "tr_util.h",
-            "u_tracepoints.c",
-            "u_tracepoints.h",
-            "vk_synchronization_helpers.c",
-            ".def",
             // vtn_bindgen2
             "_shaders_binding.cpp",
             "_shaders_binding.h",
