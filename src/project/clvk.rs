@@ -65,7 +65,7 @@ impl Project for Clvk {
             ProjectId::OpenclIcdLoader.get_visibility(projects_map)?
         ]);
 
-        let gen_libs = package.get_gen_libs();
+        let gen_libs = package.get_dep_libs();
         for (dep, prefix) in [
             (Dep::ClspvTargets, "clspv"),
             (Dep::LlvmProjectTargets, "llvm-project"),

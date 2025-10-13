@@ -11,8 +11,9 @@ use crate::utils::*;
 
 #[derive(Default)]
 pub struct SoongModuleGeneratorInternals {
-    pub deps: Vec<PathBuf>,
+    pub gen_assets: Vec<PathBuf>,
     pub libs: Vec<PathBuf>,
+    pub custom_cmd_inputs: Vec<PathBuf>,
     python_binaries: std::collections::HashSet<String>,
     python_libraries: std::collections::HashSet<String>,
 }
@@ -183,11 +184,11 @@ where
                 if (filter_header && !self.project.filter_gen_header(asset))
                     || (!filter_header && !self.project.filter_gen_source(asset))
                 {
-                    self.internals.deps.push(PathBuf::from(asset));
+                    self.internals.gen_assets.push(PathBuf::from(asset));
                     return None;
                 }
                 let Some(target) = self.targets_map.get(asset) else {
-                    self.internals.deps.push(PathBuf::from(asset));
+                    self.internals.gen_assets.push(PathBuf::from(asset));
                     return None;
                 };
                 Some(match self.targets_to_gen.get_name(asset) {
@@ -608,8 +609,12 @@ where
             .collect::<Vec<String>>();
         for (dep, dep_target_name) in &deps {
             sources.push(format!(":{dep_target_name}"));
-            if !dep_target_name.contains("{n2s/") {
-                self.internals.deps.push(dep.clone());
+            if let Some(dep_target) = self.targets_map.get(dep) {
+                if !self.filter_target(dep_target) {
+                    self.internals.custom_cmd_inputs.push(dep.clone());
+                }
+            } else {
+                self.internals.custom_cmd_inputs.push(dep.clone());
             }
         }
         let target_outputs = target.get_outputs();

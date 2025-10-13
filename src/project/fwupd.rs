@@ -65,7 +65,7 @@ impl Project for Fwupd {
             ctx,
         )?;
 
-        let mut gen_deps = package.get_gen_deps();
+        let mut gen_deps = package.get_dep_gen_assets();
         common::ninja_build(&self.build_path, &gen_deps, ctx)?;
         gen_deps.extend(
             [
