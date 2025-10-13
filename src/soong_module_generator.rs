@@ -338,29 +338,92 @@ where
         outputs: &Vec<PathBuf>,
         deps: Vec<(PathBuf, String)>,
     ) -> String {
+        let mut marker_id = 0;
+        let mut markers = Vec::new();
+        let mut replace_with_marker = |froms: Vec<String>, replace: String| {
+            let marker = String::from("<<") + &marker_id.to_string() + ">>";
+            marker_id += 1;
+            for from in froms {
+                cmd = cmd.replace(&from, &marker);
+            }
+            markers.push((marker, replace));
+        };
+
         for output in outputs {
-            let marker = "<output>";
-            let replace_output = path_to_string(self.map_cmd_output(output));
-            cmd = cmd
-                .replace(&path_to_string(output), marker)
-                .replace(&format!(" {0}", file_name(output)), &format!(" {marker}"))
-                .replace(marker, &format!("$(location {replace_output})"));
+            replace_with_marker(
+                vec![
+                    path_to_string(canonicalize_path(output, self.build_path)),
+                    path_to_string(output),
+                    file_name(output),
+                ],
+                format!(
+                    "$(location {0})",
+                    path_to_string(self.map_cmd_output(output))
+                ),
+            );
         }
         for input in &inputs {
-            let replace_input = path_to_string(strip_prefix(
-                canonicalize_path(input, self.build_path),
-                self.src_path,
-            ));
-            cmd = cmd.replace(
-                &path_to_string(input),
-                &format!("$(location {replace_input})"),
-            )
+            let canonicalize_input = path_to_string(canonicalize_path(input, self.build_path));
+            let input_string = path_to_string(&input);
+            let froms = if input_string.contains(&canonicalize_input) {
+                vec![input_string, canonicalize_input]
+            } else {
+                vec![canonicalize_input, input_string]
+            };
+            replace_with_marker(
+                froms,
+                format!(
+                    "$(location {0})",
+                    path_to_string(strip_prefix(
+                        canonicalize_path(input, self.build_path),
+                        self.src_path,
+                    ))
+                ),
+            );
         }
         for (dep, dep_target_name) in deps {
-            cmd = cmd.replace(
-                &path_to_string(&dep),
-                &format!("$(location :{dep_target_name})"),
-            )
+            replace_with_marker(
+                vec![
+                    path_to_string(canonicalize_path(&dep, self.build_path)),
+                    path_to_string(&dep),
+                ],
+                format!("$(location :{dep_target_name})"),
+            );
+        }
+        for input in &inputs {
+            let canonicalize_input = canonicalize_path(input, self.build_path);
+            replace_with_marker(
+                vec![
+                    path_to_string(canonicalize_input.parent().unwrap()),
+                    path_to_string(input.parent().unwrap()),
+                ],
+                format!(
+                    "$(location {0})/..",
+                    path_to_string(strip_prefix(&canonicalize_input, self.src_path,))
+                ),
+            );
+        }
+        for output in outputs {
+            let output_string = path_to_string(output.parent().unwrap());
+            let canonicalize_output = canonicalize_path(&output_string, self.build_path);
+            let stripped_output = strip_prefix(&canonicalize_output, self.build_path.join("n2s"));
+            let mut froms = vec![
+                path_to_string(&canonicalize_output),
+                path_to_string(canonicalize_path(&stripped_output, self.build_path)),
+            ];
+            if !output_string.is_empty() {
+                froms.push(output_string);
+            }
+            replace_with_marker(
+                froms,
+                format!(
+                    "$$(dirname $(location {0}))",
+                    path_to_string(self.map_cmd_output(output))
+                ),
+            );
+        }
+        for (marker, location) in markers {
+            cmd = cmd.replace(&marker, &location);
         }
         if let Some((rsp_file, rsp_content)) = rule_cmd.rsp_info {
             let rsp_inputs = rsp_content
@@ -390,18 +453,6 @@ where
             let rsp = format!("$(genDir)/{rsp_file}");
             cmd = format!("echo \\\"{rsp_inputs_string}\\\" > {rsp} && {cmd}")
                 .replace("${rspfile}", &rsp);
-        }
-        for input in &inputs {
-            let canonicalize_input = canonicalize_path(input, self.build_path);
-            let replace_input = format!(
-                "$(location {0})/..",
-                path_to_string(strip_prefix(&canonicalize_input, self.src_path,))
-            );
-            let input = path_to_string(input.parent().unwrap());
-            let canonicalize_input = path_to_string(canonicalize_input.parent().unwrap());
-            cmd = cmd
-                .replace(&input, &replace_input)
-                .replace(&canonicalize_input, &replace_input);
         }
         cmd
     }
@@ -526,7 +577,6 @@ where
                 None => cmd.replace(str::from_utf8(&cmd.as_bytes()[begin..]).unwrap(), ""),
             };
         }
-        cmd = cmd.replace(&path_to_string_with_separator(self.build_path), "");
         let tool_location = String::from("$(location) ");
         let (tool, mut cmd) = if let Some((tool, cmd)) = cmd.split_once(" ") {
             (String::from(tool), tool_location + cmd)

@@ -11,7 +11,6 @@ bash "${SCRIPT_DIR}/../../checkout.sh" https://gitlab.freedesktop.org/mesa/mesa 
 for patch in \
     "mesa-a8ab696033e.patch" \
     "mesa-2f9fd1768ae.patch" \
-    "mesa-cb86341829d.patch" \
     "mesa-c8b10b4512c.patch" 
 do
     git -C "${DEST}/vendor/google/graphics/mesa3d/desktop-intel" apply "${SCRIPT_DIR}/../patches/${patch}"

@@ -9,7 +9,6 @@ SCRIPT_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
 bash "${SCRIPT_DIR}/../../checkout.sh" https://gitlab.freedesktop.org/mesa/mesa 29ccbb21f30553d6a39967ae013748063b73005a "${DEST}/vendor/google/graphics/mesa3d/desktop-panvk"
 
 for patch in \
-    "mesa-cb86341829d.patch" \
     "mesa-c8b10b4512c.patch" 
 do
     git -C "${DEST}/vendor/google/graphics/mesa3d/desktop-panvk" apply "${SCRIPT_DIR}/../patches/${patch}"
