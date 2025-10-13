@@ -4045,7 +4045,7 @@ python_binary_host {
 
 cc_genrule {
     name: "mesa3d_desktop-intel_src_compiler_nir_nir_intrinsics_indices_h",
-    cmd: "python3 $(location) --out $(location nir_intrinsics_indices.h); cp $(location nir_intrinsics_indices.h) $(location nir/nir_intrinsics_indices.h); cp $(location nir/nir_intrinsics_indices.h) $(location compiler/nir/nir_intrinsics_indices.h)",
+    cmd: "python3 $(location) --outdir $$(dirname $(location nir_intrinsics_indices.h)); cp $(location nir_intrinsics_indices.h) $(location nir/nir_intrinsics_indices.h); cp $(location nir/nir_intrinsics_indices.h) $(location compiler/nir/nir_intrinsics_indices.h)",
     srcs: ["src/compiler/nir/nir_intrinsics.py"],
     out: [
         "compiler/nir/nir_intrinsics_indices.h",
@@ -4068,7 +4068,7 @@ python_binary_host {
 
 cc_genrule {
     name: "mesa3d_desktop-intel_src_compiler_nir_nir_intrinsics_h",
-    cmd: "python3 $(location) --out $(location nir_intrinsics.h); cp $(location nir_intrinsics.h) $(location nir/nir_intrinsics.h); cp $(location nir/nir_intrinsics.h) $(location compiler/nir/nir_intrinsics.h)",
+    cmd: "python3 $(location) --outdir $$(dirname $(location nir_intrinsics.h)); cp $(location nir_intrinsics.h) $(location nir/nir_intrinsics.h); cp $(location nir/nir_intrinsics.h) $(location compiler/nir/nir_intrinsics.h)",
     srcs: ["src/compiler/nir/nir_intrinsics.py"],
     out: [
         "compiler/nir/nir_intrinsics.h",
@@ -4542,7 +4542,7 @@ python_binary_host {
 
 cc_genrule {
     name: "mesa3d_desktop-intel_src_intel_compiler_brw_device_sha1_gen_c",
-    cmd: "python3 $(location) --out $(location brw_device_sha1_gen.c)",
+    cmd: "python3 $(location) --outdir $$(dirname $(location brw_device_sha1_gen.c))",
     srcs: ["src/intel/dev/intel_device_info.py"],
     out: ["brw_device_sha1_gen.c"],
     tools: ["mesa3d_desktop-intel_src_intel_compiler_brw_device_sha1_gen_c_py"],
@@ -6047,7 +6047,7 @@ python_binary_host {
 
 cc_genrule {
     name: "mesa3d_desktop-intel_src_compiler_nir_nir_intrinsics_c",
-    cmd: "python3 $(location) --out $(location nir_intrinsics.c)",
+    cmd: "python3 $(location) --outdir $$(dirname $(location nir_intrinsics.c))",
     srcs: ["src/compiler/nir/nir_intrinsics.py"],
     out: ["nir_intrinsics.c"],
     tools: ["mesa3d_desktop-intel_src_compiler_nir_nir_intrinsics_c_py"],
@@ -6822,7 +6822,7 @@ python_binary_host {
 
 cc_genrule {
     name: "mesa3d_desktop-intel_src_vulkan_util_vk_struct_type_cast_h",
-    cmd: "python3 $(location) --xml $(location src/vulkan/registry/vk.xml) --out $(location vk_struct_type_cast.h) --beta false; cp $(location vk_struct_type_cast.h) $(location util/vk_struct_type_cast.h); cp $(location util/vk_struct_type_cast.h) $(location vulkan/util/vk_struct_type_cast.h)",
+    cmd: "python3 $(location) --xml $(location src/vulkan/registry/vk.xml) --outdir $$(dirname $(location vk_struct_type_cast.h)) --beta false; cp $(location vk_struct_type_cast.h) $(location util/vk_struct_type_cast.h); cp $(location util/vk_struct_type_cast.h) $(location vulkan/util/vk_struct_type_cast.h)",
     srcs: [
         "src/vulkan/registry/vk.xml",
         "src/vulkan/util/vk_extensions.py",
@@ -6897,7 +6897,7 @@ python_binary_host {
 
 cc_genrule {
     name: "mesa3d_desktop-intel_n2s_src_vulkan_util_vk_enum_to_str_c",
-    cmd: "python3 $(location) --xml $(location src/vulkan/registry/vk.xml) --out-c $(location n2s/src/vulkan/util/vk_enum_to_str.c) --out-h $(location n2s/src/vulkan/util/vk_enum_to_str.h) --out-d $(location n2s/src/vulkan/util/vk_enum_defines.h) --beta false",
+    cmd: "python3 $(location) --xml $(location src/vulkan/registry/vk.xml) --outdir $$(dirname $(location n2s/src/vulkan/util/vk_enum_to_str.c)) --beta false",
     srcs: [
         "src/vulkan/registry/vk.xml",
         "src/vulkan/util/vk_extensions.py",
