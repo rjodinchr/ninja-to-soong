@@ -23,7 +23,9 @@ impl mesa3d_desktop::Mesa3dProject for Mesa3DDesktopIntel {
     fn asset_filter(&self, asset: &Path) -> bool {
         let asset = path_to_string(asset);
         for name in [
-            // unsupported command arguments (XML sources)
+            // https://gitlab.freedesktop.org/mesa/mesa/-/merge_requests/37864
+            // https://gitlab.freedesktop.org/mesa/mesa/-/merge_requests/37865
+            // https://gitlab.freedesktop.org/mesa/mesa/-/merge_requests/37866
             "api_beginend_init.h",
             "api_exec_decl.h",
             "api_exec_init.c",
@@ -31,29 +33,31 @@ impl mesa3d_desktop::Mesa3dProject for Mesa3DDesktopIntel {
             "api_save.h",
             "api_save_init.h",
             "dispatch.h",
+            "enums.c",
             "es1_glapi_mapi_tmp.h",
             "es2_glapi_mapi_tmp.h",
-            "genX_bits.h",
             "get_hash.h",
             "intel_tracepoints.c",
             "intel_tracepoints.h",
             "intel_tracepoints_perfetto.h",
             "shared_glapi_mapi_tmp.h",
             "unmarshal_table.c",
-            // unsupported command arguments
+            // https://gitlab.freedesktop.org/mesa/mesa/-/merge_requests/37785
             "tr_util.c",
             "tr_util.h",
+            // unsupported command arguments "$$"
+            "genX_bits.h",
             // vtn_bindgen2
             "_shaders_binding.cpp",
             "_shaders_binding.h",
-            // ModuleNotFoundError: No module named 'license'
-            "enums.c",
         ] {
             if asset.ends_with(name) {
                 return false;
             }
         }
-        // unsupported command arguments (XML sources)
+        // https://gitlab.freedesktop.org/mesa/mesa/-/merge_requests/37864
+        // https://gitlab.freedesktop.org/mesa/mesa/-/merge_requests/37865
+        // https://gitlab.freedesktop.org/mesa/mesa/-/merge_requests/37866
         !asset.contains("marshal_generated")
     }
 

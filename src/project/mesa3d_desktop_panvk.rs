@@ -22,12 +22,14 @@ impl mesa3d_desktop::Mesa3dProject for Mesa3DDesktopPanVK {
 
     fn asset_filter(&self, asset: &Path) -> bool {
         let asset = path_to_string(asset);
-        !asset.contains("libpan/libpan_v") // mesa_clc
-            && !asset.contains("libpan/libpan_shaders_v") // mesa_clc
-            && !asset.ends_with("valhall_enums.h") // valhall_parse_isa
-            && !asset.ends_with("valhall.c") // valhall_parse_isa
-            && !asset.ends_with("valhall_disasm.c") // valhall_parse_isa
-            && !asset.ends_with("bifrost_gen_disasm.c") // valhall_parse_isa
+        // mesa_clc
+        !asset.contains("libpan/libpan_v")
+            && !asset.contains("libpan/libpan_shaders_v")
+            // https://gitlab.freedesktop.org/mesa/mesa/-/merge_requests/37742
+            && !asset.ends_with("valhall_enums.h")
+            && !asset.ends_with("valhall.c")
+            && !asset.ends_with("valhall_disasm.c")
+            && !asset.ends_with("bifrost_gen_disasm.c")
     }
 
     fn create_package(
