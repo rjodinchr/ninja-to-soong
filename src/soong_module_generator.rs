@@ -349,19 +349,6 @@ where
             markers.push((marker, replace));
         };
 
-        for output in outputs {
-            replace_with_marker(
-                vec![
-                    path_to_string(canonicalize_path(output, self.build_path)),
-                    path_to_string(output),
-                    file_name(output),
-                ],
-                format!(
-                    "$(location {0})",
-                    path_to_string(self.map_cmd_output(output))
-                ),
-            );
-        }
         for input in &inputs {
             let canonicalize_input = path_to_string(canonicalize_path(input, self.build_path));
             let input_string = path_to_string(&input);
@@ -388,6 +375,19 @@ where
                     path_to_string(&dep),
                 ],
                 format!("$(location :{dep_target_name})"),
+            );
+        }
+        for output in outputs {
+            replace_with_marker(
+                vec![
+                    path_to_string(canonicalize_path(output, self.build_path)),
+                    path_to_string(output),
+                    file_name(output),
+                ],
+                format!(
+                    "$(location {0})",
+                    path_to_string(self.map_cmd_output(output))
+                ),
             );
         }
         for input in &inputs {
