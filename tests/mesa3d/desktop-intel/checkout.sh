@@ -6,7 +6,7 @@ set -xe
 DEST="$1"
 SCRIPT_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
 
-bash "${SCRIPT_DIR}/../../checkout.sh" https://gitlab.freedesktop.org/mesa/mesa a30a465cba30e2c1aea3b153792910cf891f3aeb "${DEST}/vendor/google/graphics/mesa3d/desktop-intel"
+bash "${SCRIPT_DIR}/../../checkout.sh" https://gitlab.freedesktop.org/mesa/mesa 7fc153c93fd5e44643dc53a7b5189896b67aed2b "${DEST}/vendor/google/graphics/mesa3d/desktop-intel"
 
 for patch in \
     "mesa-a8ab696033e.patch" \

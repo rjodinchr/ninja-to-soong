@@ -8870,7 +8870,7 @@ cc_defaults {
         "-DMESA_DEBUG=0",
         "-DNDEBUG",
         "-DPACKAGE_BUGREPORT=\"https://gitlab.freedesktop.org/mesa/mesa/-/issues\"",
-        "-DPACKAGE_VERSION=\"25.2.1\"",
+        "-DPACKAGE_VERSION=\"25.2.2\"",
         "-DSUPPORT_INTEL_INTEGRATED_GPUS",
         "-DTHREAD_SANITIZER=0",
         "-DUSE_GCC_ATOMIC_BUILTINS",
