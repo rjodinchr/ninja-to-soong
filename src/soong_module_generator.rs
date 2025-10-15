@@ -456,7 +456,7 @@ where
         }
         cmd
     }
-    fn get_dep_id(&self, input: &PathBuf) -> String {
+    fn get_dep_id(&self, input: &Path) -> String {
         let Some(target) = self.targets_map.get(&input) else {
             return path_to_id(Path::new(self.project.get_name()).join(&input));
         };
@@ -497,7 +497,12 @@ where
         tool: &str,
         python_inputs: Vec<PathBuf>,
     ) -> Result<Option<(String, Option<Vec<SoongModule>>)>, String> {
-        if !tool.ends_with(".py") {
+        if let Ok(tool_target_path) = Path::new(tool).strip_prefix(self.build_path) {
+            return Ok(Some((
+                String::from(":") + &self.get_dep_id(tool_target_path),
+                None,
+            )));
+        } else if !tool.ends_with(".py") {
             return Ok(None);
         }
         let tool_module = path_to_id(Path::new(self.project.get_name()).join(&tool));
@@ -658,7 +663,10 @@ where
             })
             .collect::<Vec<String>>();
         for (dep, dep_target_name) in &deps {
-            sources.push(format!(":{dep_target_name}"));
+            let src = format!(":{dep_target_name}");
+            if !tool_modules.contains(&src) {
+                sources.push(src);
+            }
             if let Some(dep_target) = self.targets_map.get(dep) {
                 if !self.filter_target(dep_target) {
                     self.internals.custom_cmd_inputs.push(dep.clone());
