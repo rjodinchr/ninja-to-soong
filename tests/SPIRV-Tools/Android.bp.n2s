@@ -14,7 +14,6 @@ package {
     default_visibility: [
         "//external/OpenCL-CTS",
         "//external/clvk",
-        "//external/vulkan-shader-profiler",
     ],
     default_applicable_licenses: ["SPIRV-Tools_license"],
 }
@@ -105,6 +104,7 @@ cc_library_static {
         "source/val/validate_execution_limitations.cpp",
         "source/val/validate_extensions.cpp",
         "source/val/validate_function.cpp",
+        "source/val/validate_graph.cpp",
         "source/val/validate_id.cpp",
         "source/val/validate_image.cpp",
         "source/val/validate_instruction.cpp",
@@ -209,25 +209,6 @@ cc_genrule {
     host_supported: true,
 }
 
-python_binary_host {
-    name: "SPIRV-Tools_utils_generate_registry_tables_py",
-    main: "utils/generate_registry_tables.py",
-    srcs: [
-        "utils/Table/*.py",
-        "utils/generate_registry_tables.py",
-    ],
-}
-
-cc_genrule {
-    name: "SPIRV-Tools_generators_inc",
-    cmd: "python3 $(location) --xml=$(location :SpirvHeaders_include_spirv_spir-v_xml) --generator-output=$(location generators.inc)",
-    srcs: [":SpirvHeaders_include_spirv_spir-v_xml"],
-    out: ["generators.inc"],
-    tools: ["SPIRV-Tools_utils_generate_registry_tables_py"],
-    vendor_available: true,
-    host_supported: true,
-}
-
 cc_genrule {
     name: "SPIRV-Tools_core_tables_header",
     cmd: "cp $(in) $(out)",
@@ -278,6 +259,25 @@ cc_genrule {
     cmd: "cp $(in) $(out)",
     srcs: [":SPIRV-Tools_n2s_core_tables_body_inc{n2s/core_tables_body.inc}"],
     out: ["core_tables_body.inc"],
+    vendor_available: true,
+    host_supported: true,
+}
+
+python_binary_host {
+    name: "SPIRV-Tools_utils_generate_registry_tables_py",
+    main: "utils/generate_registry_tables.py",
+    srcs: [
+        "utils/Table/*.py",
+        "utils/generate_registry_tables.py",
+    ],
+}
+
+cc_genrule {
+    name: "SPIRV-Tools_generators_inc",
+    cmd: "python3 $(location) --xml=$(location :SpirvHeaders_include_spirv_spir-v_xml) --generator-output=$(location generators.inc)",
+    srcs: [":SpirvHeaders_include_spirv_spir-v_xml"],
+    out: ["generators.inc"],
+    tools: ["SPIRV-Tools_utils_generate_registry_tables_py"],
     vendor_available: true,
     host_supported: true,
 }
@@ -426,7 +426,10 @@ cc_library_static {
 
 cc_library_static {
     name: "SPIRV-Tools_source_link_libSPIRV-Tools-link_a",
-    srcs: ["source/link/linker.cpp"],
+    srcs: [
+        "source/link/fnvar.cpp",
+        "source/link/linker.cpp",
+    ],
     cflags: ["-Wno-implicit-fallthrough"],
     local_include_dirs: [
         "",
@@ -451,6 +454,7 @@ cc_library_headers {
     name: "SPIRV-Tools-includes",
     export_include_dirs: ["include"],
     vendor_available: true,
+    host_supported: true,
 }
 
 cc_library_headers {

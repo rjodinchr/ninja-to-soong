@@ -6,6 +6,7 @@ use super::*;
 #[derive(Default)]
 pub struct OpenclCts {
     src_path: PathBuf,
+    build_path: PathBuf,
     spirv_headers_path: PathBuf,
     gen_deps: Vec<String>,
 }
@@ -59,19 +60,19 @@ impl Project for OpenclCts {
         projects_map: &ProjectsMap,
     ) -> Result<String, String> {
         self.src_path = ctx.get_android_path(self)?;
-        let build_path = ctx.temp_path.join(self.get_name());
+        self.build_path = ctx.temp_path.join(self.get_name());
         let ndk_path = get_ndk_path(&ctx.temp_path, ctx)?;
         self.spirv_headers_path = ProjectId::SpirvHeaders.get_android_path(projects_map, ctx)?;
 
         const CSV_FILENAME: &str = "opencl_conformance_tests_full.csv";
-        let csv_file_path = build_path.join(CSV_FILENAME);
+        let csv_file_path = self.build_path.join(CSV_FILENAME);
         if !ctx.skip_gen_ninja {
             execute_cmd!(
                 "bash",
                 [
                     &path_to_string(ctx.get_script_path(self).join("gen-ninja.sh")),
                     &path_to_string(&self.src_path),
-                    &path_to_string(&build_path),
+                    &path_to_string(&self.build_path),
                     &path_to_string(&ndk_path),
                     &path_to_string(&self.spirv_headers_path),
                 ]
@@ -107,10 +108,10 @@ impl Project for OpenclCts {
         )
         .generate(
             NinjaTargetsToGenMap::from(&targets),
-            parse_build_ninja::<CmakeNinjaTarget>(&build_path)?,
+            parse_build_ninja::<CmakeNinjaTarget>(&self.build_path)?,
             &self.src_path,
             &ndk_path,
-            &build_path,
+            &self.build_path,
             None,
             self,
             ctx,
@@ -242,9 +243,6 @@ cc_test {{
             .print(ctx)
     }
 
-    fn get_deps_prefix(&self) -> Vec<(PathBuf, Dep)> {
-        vec![(self.spirv_headers_path.clone(), Dep::SpirvHeaders)]
-    }
     fn get_deps(&self, dep: Dep) -> Vec<NinjaTargetToGen> {
         match dep {
             Dep::SpirvToolsTargets => vec![target_typed!(
@@ -298,8 +296,18 @@ cc_test {{
             .add_prop("host_supported", SoongProp::Bool(true)))
     }
 
-    fn map_cmd_output(&self, output: &Path) -> PathBuf {
-        PathBuf::from(file_name(output))
+    fn map_cmd_input(&self, input: &Path) -> Option<String> {
+        if input.starts_with(&self.spirv_headers_path) {
+            return Some(Dep::SpirvHeaders.get_id(
+                input,
+                &self.spirv_headers_path,
+                &self.build_path,
+            ));
+        }
+        None
+    }
+    fn map_cmd_output(&self, output: &Path) -> Option<String> {
+        Some(file_name(output))
     }
     fn map_lib(&self, lib: &Path) -> Option<PathBuf> {
         if lib.ends_with("libOpenCL") {

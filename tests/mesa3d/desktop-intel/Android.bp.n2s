@@ -7792,7 +7792,7 @@ python_binary_host {
 
 cc_genrule {
     name: "mesa3d_desktop-intel_n2s_src_intel_ds_intel_tracepoints_h",
-    cmd: "python3 $(location) -p $(location src/util/perf/u_trace.py)/../ --utrace-hdr $(location n2s/src/intel/ds/intel_tracepoints.h) --perfetto-hdr $(location n2s/src/intel/ds/intel_tracepoints_perfetto.h) --utrace-src $(location n2s/src/intel/ds/intel_tracepoints.c)",
+    cmd: "python3 $(location) -p $$(dirname $(location src/util/perf/u_trace.py))/ --utrace-hdr $(location n2s/src/intel/ds/intel_tracepoints.h) --perfetto-hdr $(location n2s/src/intel/ds/intel_tracepoints_perfetto.h) --utrace-src $(location n2s/src/intel/ds/intel_tracepoints.c)",
     srcs: ["src/util/perf/u_trace.py"],
     out: [
         "n2s/src/intel/ds/intel_tracepoints.c",
@@ -8021,7 +8021,7 @@ python_binary_host {
 
 cc_genrule {
     name: "mesa3d_desktop-intel_src_intel_compiler_brw_nir_trig_workarounds_c",
-    cmd: "python3 $(location) -p $(location src/compiler/nir/nir_algebraic.py)/../ > $(location brw_nir_trig_workarounds.c)",
+    cmd: "python3 $(location) -p $$(dirname $(location src/compiler/nir/nir_algebraic.py))/ > $(location brw_nir_trig_workarounds.c)",
     srcs: [
         "src/compiler/nir/nir_algebraic.py",
         "src/compiler/nir/nir_opcodes.py",
@@ -8044,7 +8044,7 @@ python_binary_host {
 
 cc_genrule {
     name: "mesa3d_desktop-intel_src_intel_compiler_brw_nir_lower_fsign_c",
-    cmd: "python3 $(location) -p $(location src/compiler/nir/nir_algebraic.py)/../ > $(location brw_nir_lower_fsign.c)",
+    cmd: "python3 $(location) -p $$(dirname $(location src/compiler/nir/nir_algebraic.py))/ > $(location brw_nir_lower_fsign.c)",
     srcs: [
         "src/compiler/nir/nir_algebraic.py",
         "src/compiler/nir/nir_opcodes.py",
@@ -9169,7 +9169,7 @@ python_binary_host {
 
 cc_genrule {
     name: "mesa3d_desktop-intel_src_gallium_auxiliary_u_tracepoints_h",
-    cmd: "python3 $(location) -p $(location src/util/perf/u_trace.py)/../ -H $(location u_tracepoints.h); cp $(location u_tracepoints.h) $(location auxiliary/u_tracepoints.h); cp $(location auxiliary/u_tracepoints.h) $(location gallium/auxiliary/u_tracepoints.h)",
+    cmd: "python3 $(location) -p $$(dirname $(location src/util/perf/u_trace.py))/ -H $(location u_tracepoints.h); cp $(location u_tracepoints.h) $(location auxiliary/u_tracepoints.h); cp $(location auxiliary/u_tracepoints.h) $(location gallium/auxiliary/u_tracepoints.h)",
     srcs: ["src/util/perf/u_trace.py"],
     out: [
         "auxiliary/u_tracepoints.h",
@@ -9212,7 +9212,7 @@ cc_genrule {
 
 cc_genrule {
     name: "mesa3d_desktop-intel_src_gallium_auxiliary_u_tracepoints_c",
-    cmd: "python3 $(location) -p $(location src/util/perf/u_trace.py)/../ -C $(location u_tracepoints.c)",
+    cmd: "python3 $(location) -p $$(dirname $(location src/util/perf/u_trace.py))/ -C $(location u_tracepoints.c)",
     srcs: ["src/util/perf/u_trace.py"],
     out: ["u_tracepoints.c"],
     tools: ["mesa3d_desktop-intel_src_gallium_auxiliary_util_u_tracepoints_py"],

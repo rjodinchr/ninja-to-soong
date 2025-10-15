@@ -80,8 +80,9 @@ impl Project for Clspv {
             gen_deps
                 .iter()
                 .filter_map(|dep| {
-                    if file_name(dep) == "clspv--.bc" || file_name(dep) == "clspv64--.bc" {
-                        return Some(path_to_string(strip_prefix(dep, "third_party/llvm")));
+                    let file_name = file_name(dep);
+                    if file_name == "clspv--.bc" || file_name == "clspv64--.bc" {
+                        return Some(file_name);
                     }
                     None
                 })
@@ -103,13 +104,6 @@ impl Project for Clspv {
         package.print(ctx)
     }
 
-    fn get_deps_prefix(&self) -> Vec<(PathBuf, Dep)> {
-        vec![
-            (self.spirv_headers_path.clone(), Dep::SpirvHeaders),
-            (self.llvm_project_path.join("clang"), Dep::ClangHeaders),
-            (PathBuf::from("third_party/llvm"), Dep::LibclcBins),
-        ]
-    }
     fn get_deps(&self, dep: Dep) -> Vec<NinjaTargetToGen> {
         match self.gen_deps.get(&dep) {
             Some(gen_deps) => gen_deps.iter().map(|lib| target!(lib)).collect(),
@@ -139,15 +133,29 @@ impl Project for Clspv {
         Ok(module.add_prop("vendor_available", SoongProp::Bool(true)))
     }
 
-    fn map_cmd_output(&self, output: &Path) -> PathBuf {
+    fn map_cmd_input(&self, input: &Path) -> Option<String> {
+        for (prefix, dep) in [
+            (&self.spirv_headers_path, Dep::SpirvHeaders),
+            (&self.llvm_project_path.join("clang"), Dep::ClangHeaders),
+        ] {
+            if input.starts_with(&prefix) {
+                return Some(dep.get_id(&input, prefix, &self.build_path));
+            }
+        }
+        if let Ok(prefix) = input.strip_prefix(PathBuf::from("/libclc")) {
+            return Some(path_to_id(PathBuf::from("libclc").join(prefix)));
+        }
+        None
+    }
+    fn map_cmd_output(&self, output: &Path) -> Option<String> {
         let mut prefix = output;
         while let Some(parent) = prefix.parent() {
             prefix = parent;
             if file_name(prefix) == "include" {
-                return strip_prefix(output, prefix);
+                return Some(path_to_string(strip_prefix(output, prefix)));
             }
         }
-        PathBuf::from(output)
+        Some(path_to_string(output))
     }
 
     fn filter_cflag(&self, _cflag: &str) -> bool {

@@ -926,7 +926,7 @@ python_binary_host {
 
 cc_genrule {
     name: "mesa3d_desktop-panvk_src_panfrost_midgard_midgard_nir_algebraic_c",
-    cmd: "python3 $(location) -p $(location src/compiler/nir/nir_algebraic.py)/../ > $(location midgard_nir_algebraic.c)",
+    cmd: "python3 $(location) -p $$(dirname $(location src/compiler/nir/nir_algebraic.py))/ > $(location midgard_nir_algebraic.c)",
     srcs: [
         "src/compiler/nir/nir_algebraic.py",
         "src/compiler/nir/nir_opcodes.py",
@@ -2386,7 +2386,7 @@ python_binary_host {
 
 cc_genrule {
     name: "mesa3d_desktop-panvk_src_panfrost_compiler_bifrost_nir_algebraic_c",
-    cmd: "python3 $(location) -p $(location src/compiler/nir/nir_algebraic.py)/../ > $(location bifrost_nir_algebraic.c)",
+    cmd: "python3 $(location) -p $$(dirname $(location src/compiler/nir/nir_algebraic.py))/ > $(location bifrost_nir_algebraic.c)",
     srcs: [
         "src/compiler/nir/nir_algebraic.py",
         "src/compiler/nir/nir_opcodes.py",
@@ -4255,7 +4255,7 @@ python_binary_host {
 
 cc_genrule {
     name: "mesa3d_desktop-panvk_n2s_src_panfrost_vulkan_panvk_tracepoints_h",
-    cmd: "python3 $(location) --import-path $(location src/util/perf/u_trace.py)/../ --utrace-hdr $(location n2s/src/panfrost/vulkan/panvk_tracepoints.h) --perfetto-hdr $(location n2s/src/panfrost/vulkan/panvk_tracepoints_perfetto.h) --utrace-src $(location n2s/src/panfrost/vulkan/panvk_tracepoints.c)",
+    cmd: "python3 $(location) --import-path $$(dirname $(location src/util/perf/u_trace.py))/ --utrace-hdr $(location n2s/src/panfrost/vulkan/panvk_tracepoints.h) --perfetto-hdr $(location n2s/src/panfrost/vulkan/panvk_tracepoints_perfetto.h) --utrace-src $(location n2s/src/panfrost/vulkan/panvk_tracepoints.c)",
     srcs: ["src/util/perf/u_trace.py"],
     out: [
         "n2s/src/panfrost/vulkan/panvk_tracepoints.c",
