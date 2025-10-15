@@ -20,6 +20,7 @@ define_ProjectId!(
     (Clvk, clvk),
     (Clspv, clspv),
     (Fwupd, fwupd),
+    (LibCLC, libclc),
     (LlvmProject, llvm_project),
     (Mesa3DDesktopIntel, mesa3d_desktop_intel),
     (Mesa3DDesktopPanVK, mesa3d_desktop_panvk),

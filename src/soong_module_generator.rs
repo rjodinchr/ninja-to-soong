@@ -640,6 +640,9 @@ where
                     ),
             ));
         }
+        if ["opt", "llvm-link", "clang"].contains(&tool_name.as_str()) {
+            return Ok((Vec::new(), vec![tool_name.clone()], Vec::new(), cmd));
+        }
         Ok((vec![tool], Vec::new(), Vec::new(), cmd))
     }
     pub fn generate_custom_command(
