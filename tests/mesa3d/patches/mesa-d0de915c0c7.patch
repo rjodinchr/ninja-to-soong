@@ -1,0 +1,267 @@
+commit d0de915c0c7e641a0eaae49ff38df86fa40a45aa
+Author: Romaric Jodin <rjodin@google.com>
+Date:   Tue Oct 14 11:49:28 2025 +0200
+
+    glapi: static_data: do not use __file__ to get gl symbols file
+    
+    Use an explicit path for libgl-symbols.txt from the build system
+    instead of reconstructing it from __file__.
+    
+    The issue is that for Android build system, everything is sandboxed
+    and that file is not in the same root as the python script. Thus we
+    need a proper explicit path in meson to be able to translate it to a
+    legal Android construct that is capable of finding that file.
+    
+    Update everything using libgl_public_functions to propagate that path.
+    
+    Ref #14072
+    
+    Part-of: <https://gitlab.freedesktop.org/mesa/mesa/-/merge_requests/37866>
+
+diff --git a/src/mapi/glapi/gen/glX_XML.py b/src/mapi/glapi/gen/glX_XML.py
+index 53ef3e42582..eed727a142b 100644
+--- a/src/mapi/glapi/gen/glX_XML.py
++++ b/src/mapi/glapi/gen/glX_XML.py
+@@ -27,7 +27,6 @@
+ import gl_XML
+ import license
+ import sys, getopt, string
+-import static_data
+ 
+ 
+ class glx_item_factory(gl_XML.gl_item_factory):
+@@ -456,13 +455,13 @@ class glx_function(gl_XML.gl_function):
+         return (name in self.glx_vendorpriv_names) and self.glx_sop
+ 
+ 
+-    def static_glx_name(self, name):
++    def static_glx_name(self, name, gl_symbols):
+         if self.has_different_protocol(name):
+             for n in self.glx_vendorpriv_names:
+-                if n in static_data.libgl_public_functions:
++                if n in gl_symbols:
+                     return n
+ 
+-        return self.static_name(name)
++        return self.static_name(name, gl_symbols)
+ 
+ 
+     def client_supported_for_indirect(self):
+diff --git a/src/mapi/glapi/gen/glX_proto_send.py b/src/mapi/glapi/gen/glX_proto_send.py
+index a676bc09ae1..f4df230eea3 100644
+--- a/src/mapi/glapi/gen/glX_proto_send.py
++++ b/src/mapi/glapi/gen/glX_proto_send.py
+@@ -150,7 +150,7 @@ class glx_pixel_function_stub(glX_XML.glx_function):
+ 
+ 
+ class PrintGlxProtoStubs(glX_proto_common.glx_print_proto):
+-    def __init__(self):
++    def __init__(self, gl_symbols_filename):
+         glX_proto_common.glx_print_proto.__init__(self)
+         self.name = "glX_proto_send.py (from Mesa)"
+         self.license = license.bsd_license_template % ( "(C) Copyright IBM Corporation 2004, 2005", "IBM")
+@@ -159,6 +159,7 @@ class PrintGlxProtoStubs(glX_proto_common.glx_print_proto):
+         self.generic_sizes = [3, 4, 6, 8, 12, 16, 24, 32]
+         self.pixel_stubs = {}
+         self.debug = 0
++        self.gl_symbols = static_data.get_libgl_public_functions(gl_symbols_filename)
+         return
+ 
+     def printRealHeader(self):
+@@ -384,7 +385,7 @@ const GLuint __glXDefaultPixelStore[9] = { 0, 0, 0, 0, 0, 0, 0, 0, 1 };
+                 else:
+                     ret_string = "return "
+ 
+-                func_name = func.static_glx_name(name)
++                func_name = func.static_glx_name(name, self.gl_symbols)
+                 print('#define %s %d' % (func.opcode_vendor_name(name), func.glx_vendorpriv))
+                 print('%s gl%s(%s)' % (func.return_type, func_name, func.get_parameter_string()))
+                 print('{')
+@@ -987,7 +988,7 @@ struct _glapi_table * __glXNewIndirectAPI( void )
+ 
+ 
+ class PrintGlxProtoInit_h(gl_XML.gl_print_base):
+-    def __init__(self):
++    def __init__(self, gl_symbols_filename):
+         gl_XML.gl_print_base.__init__(self)
+ 
+         self.name = "glX_proto_send.py (from Mesa)"
+@@ -995,6 +996,7 @@ class PrintGlxProtoInit_h(gl_XML.gl_print_base):
+ """Copyright 1998-1999 Precision Insight, Inc., Cedar Park, Texas.
+ (C) Copyright IBM Corporation 2004""", "PRECISION INSIGHT, IBM")
+         self.header_tag = "_INDIRECT_H_"
++        self.gl_symbols = static_data.get_libgl_public_functions(gl_symbols_filename)
+         return
+ 
+ 
+@@ -1037,8 +1039,8 @@ extern NOINLINE GLubyte * __glXSetupVendorRequest(
+ 
+             for n in func.entry_points:
+                 if func.has_different_protocol(n):
+-                    asdf = func.static_glx_name(n)
+-                    if asdf not in static_data.libgl_public_functions:
++                    asdf = func.static_glx_name(n, self.gl_symbols)
++                    if asdf not in gl_symbols:
+                         print('extern %s gl%s(%s);' % (func.return_type, asdf, params))
+                         # give it a easy-to-remember name
+                         if func.client_handcode:
+@@ -1070,6 +1072,9 @@ def _parser():
+                         action='store_true',
+                         dest='debug',
+                         help='turn debug mode on.')
++    parser.add_argument('-s',
++                        dest='gl_symbols_filename',
++                        help='Path to libgl-functions.txt')
+     return parser.parse_args()
+ 
+ 
+@@ -1078,11 +1083,11 @@ def main():
+     args = _parser()
+ 
+     if args.mode == "proto":
+-        printer = PrintGlxProtoStubs()
++        printer = PrintGlxProtoStubs(args.gl_symbols_filename)
+     elif args.mode == "init_c":
+         printer = PrintGlxProtoInit_c()
+     elif args.mode == "init_h":
+-        printer = PrintGlxProtoInit_h()
++        printer = PrintGlxProtoInit_h(args.gl_symbols_filename)
+ 
+     printer.debug = args.debug
+     api = gl_XML.parse_GL_API(args.filename, glX_XML.glx_item_factory())
+diff --git a/src/mapi/glapi/gen/gl_XML.py b/src/mapi/glapi/gen/gl_XML.py
+index 2bfc0bf4469..a996591a925 100644
+--- a/src/mapi/glapi/gen/gl_XML.py
++++ b/src/mapi/glapi/gen/gl_XML.py
+@@ -721,8 +721,8 @@ class gl_function( gl_item ):
+ 
+         return p_string
+ 
+-    def static_name(self, name):
+-        if name in static_data.libgl_public_functions:
++    def static_name(self, name, gl_symbols):
++        if name in gl_symbols:
+             return name
+         else:
+             return "_dispatch_stub_%u" % (self.offset)
+diff --git a/src/mapi/glapi/gen/meson.build b/src/mapi/glapi/gen/meson.build
+index 136ea56d85e..b8a107e4f7d 100644
+--- a/src/mapi/glapi/gen/meson.build
++++ b/src/mapi/glapi/gen/meson.build
+@@ -3,9 +3,9 @@
+ 
+ glapi_mapi_tmp_h = custom_target(
+   'glapi_mapi_tmp.h',
+-  input : ['../../mapi_abi.py', 'gl_and_es_API.xml'],
++  input : ['../../mapi_abi.py', 'gl_and_es_API.xml', '../../../glx/libgl-symbols.txt'],
+   output : 'glapi_mapi_tmp.h',
+-  command : [prog_python, '@INPUT0@', '--printer', 'glapi', '@INPUT1@'],
++  command : [prog_python, '@INPUT0@', '--printer', 'glapi', '--gl_symbols', '@INPUT2@', '@INPUT1@'],
+   depend_files : glapi_xml_py_deps,
+   capture : true,
+ )
+@@ -128,9 +128,9 @@ glx_generated = []
+ foreach x : [['indirect.c', 'proto'], ['indirect.h', 'init_h'], ['indirect_init.c', 'init_c']]
+   glx_generated += custom_target(
+     x[0],
+-    input : ['glX_proto_send.py', 'gl_API.xml'],
++    input : ['glX_proto_send.py', 'gl_API.xml', '../../../glx/libgl-symbols.txt'],
+     output : x[0],
+-    command : [prog_python, '@INPUT0@', '-f', '@INPUT1@', '-m', x[1]],
++    command : [prog_python, '@INPUT0@', '-f', '@INPUT1@', '-m', x[1], '-s', '@INPUT2@'],
+     depend_files : glapi_xml_py_deps,
+     capture : true,
+   )
+diff --git a/src/mapi/glapi/gen/static_data.py b/src/mapi/glapi/gen/static_data.py
+index 74ac2405c52..42396ff2fcd 100644
+--- a/src/mapi/glapi/gen/static_data.py
++++ b/src/mapi/glapi/gen/static_data.py
+@@ -1680,9 +1680,10 @@ for name in all_functions:
+ function_count = i
+ 
+ # Exported from libGL.so
+-libgl_public_functions = set()
+-with open(os.path.join(os.path.dirname(os.path.abspath(__file__)),
+-                       '..', '..', '..', 'glx', 'libgl-symbols.txt'), 'r') as f:
+-    for line in f:
+-        if len(line) > 3 and line[0:2] == 'gl' and line[2] != 'X':
+-            libgl_public_functions.add(line[2:].rstrip())
++def get_libgl_public_functions(libgl_symbols_filename):
++    libgl_public_functions = set()
++    with open(libgl_symbols_filename, 'r') as f:
++        for line in f:
++            if len(line) > 3 and line[0:2] == 'gl' and line[2] != 'X':
++                libgl_public_functions.add(line[2:].rstrip())
++    return libgl_public_functions
+diff --git a/src/mapi/mapi_abi.py b/src/mapi/mapi_abi.py
+index 0eea9bed892..aa03ed408ad 100644
+--- a/src/mapi/mapi_abi.py
++++ b/src/mapi/mapi_abi.py
+@@ -131,9 +131,10 @@ class ABIEntry(object):
+         return self.slot < other.slot
+ 
+ 
+-def abi_parse_xml(xml):
++def abi_parse_xml(xml, gl_symbols_filename):
+     """Parse a GLAPI XML file for ABI entries."""
+     api = gl_XML.parse_GL_API(xml, glX_XML.glx_item_factory())
++    gl_symbols = static_data.get_libgl_public_functions(gl_symbols_filename)
+ 
+     entry_dict = {}
+     for func in api.functionIterateByOffset():
+@@ -145,7 +146,7 @@ def abi_parse_xml(xml):
+         for name in entry_points:
+             attrs = {
+                     'slot': func.offset,
+-                    'hidden': name not in static_data.libgl_public_functions,
++                    'hidden': name not in gl_symbols,
+                     'alias': None if name == func.name else func.name,
+                     'handcode': bool(func.has_different_protocol(name)),
+             }
+@@ -160,7 +161,7 @@ def abi_parse_xml(xml):
+                     raise Exception('recursive alias %s' % ent.name)
+                 attrs['alias'] = alias
+             if attrs['handcode']:
+-                attrs['handcode'] = func.static_glx_name(name)
++                attrs['handcode'] = func.static_glx_name(name, gl_symbols)
+             else:
+                 attrs['handcode'] = None
+ 
+@@ -522,9 +523,11 @@ def parse_args():
+     parser = OptionParser(usage='usage: %prog [options] <xml_file>')
+     parser.add_option('-p', '--printer', dest='printer',
+             help='printer to use: %s' % (", ".join(printers)))
++    parser.add_option('-s', '--gl_symbols', dest='gl_symbols_filename',
++                      help='Path to libgl-symbols.txt')
+ 
+     options, args = parser.parse_args()
+-    if not args or options.printer not in printers:
++    if not args or options.printer not in printers or not os.path.exists(options.gl_symbols_filename):
+         parser.print_help()
+         sys.exit(1)
+ 
+@@ -542,7 +545,7 @@ def main():
+ 
+     filename, options = parse_args()
+ 
+-    entries = abi_parse_xml(filename)
++    entries = abi_parse_xml(filename, options.gl_symbols_filename)
+     abi_sanity_check(entries)
+ 
+     printer = printers[options.printer](entries)
+diff --git a/src/mapi/shared-glapi/meson.build b/src/mapi/shared-glapi/meson.build
+index f37b39c1b94..6aea4dd8095 100644
+--- a/src/mapi/shared-glapi/meson.build
++++ b/src/mapi/shared-glapi/meson.build
+@@ -3,9 +3,9 @@
+ 
+ shared_glapi_mapi_tmp_h = custom_target(
+   'shared_glapi_mapi_tmp.h',
+-  input : ['../mapi_abi.py', '../glapi/gen/gl_and_es_API.xml'],
++  input : ['../mapi_abi.py', '../glapi/gen/gl_and_es_API.xml', '../../glx/libgl-symbols.txt'],
+   output : 'shared_glapi_mapi_tmp.h',
+-  command : [prog_python, '@INPUT0@', '--printer', 'shared-glapi', '@INPUT1@'],
++  command : [prog_python, '@INPUT0@', '--printer', 'shared-glapi', '--gl_symbols', '@INPUT2@', '@INPUT1@'],
+   depend_files : glapi_xml_py_deps,
+   capture : true,
+ )
