@@ -20,6 +20,7 @@ define_ProjectId!(
     (Clvk, clvk),
     (Clspv, clspv),
     (Fwupd, fwupd),
+    (LibCLC, libclc),
     (LlvmProject, llvm_project),
     (Mesa3DDesktopIntel, mesa3d_desktop_intel),
     (Mesa3DDesktopPanVK, mesa3d_desktop_panvk),
@@ -52,8 +53,8 @@ impl ProjectId {
 define_Dep!(
     (ClangHeaders, LlvmProject, (Clspv)),
     (ClspvTargets, Clspv, (Clvk)),
-    (LibclcBins, LlvmProject, (Clspv)),
-    (LlvmProjectTargets, LlvmProject, (Clvk)),
+    (LibclcBins, LibCLC, (Clspv)),
+    (LlvmProjectTargets, LlvmProject, (Clvk, LibCLC)),
     (SpirvHeaders, SpirvHeaders, (Clspv, SpirvTools, OpenclCts)),
     (SpirvToolsTargets, SpirvTools, (Clvk, OpenclCts))
 );
@@ -128,9 +129,6 @@ pub trait Project {
         projects_map: &ProjectsMap,
     ) -> Result<String, String>;
     // DEPENDENCIES FUNCTIONS
-    fn get_deps_prefix(&self) -> Vec<(PathBuf, Dep)> {
-        Vec::new()
-    }
     fn get_deps(&self, _dep: Dep) -> Vec<NinjaTargetToGen> {
         Vec::new()
     }
@@ -153,10 +151,16 @@ pub trait Project {
         Ok(None)
     }
     // MAP FUNCTIONS
-    fn map_cmd_output(&self, output: &Path) -> PathBuf {
-        PathBuf::from(output)
+    fn map_cmd_input(&self, _input: &Path) -> Option<String> {
+        None
+    }
+    fn map_cmd_output(&self, _output: &Path) -> Option<String> {
+        None
     }
     fn map_lib(&self, _lib: &Path) -> Option<PathBuf> {
+        None
+    }
+    fn map_tool_module(&self, _tool_module: &Path) -> Option<PathBuf> {
         None
     }
     // FILTER FUNCTIONS

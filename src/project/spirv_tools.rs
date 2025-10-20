@@ -39,16 +39,8 @@ impl Project for SpirvTools {
             )?;
         }
 
-        let generate_vksp_deps = !ctx.copy_to_aosp;
         const GENERATED_TABLES_BODY: &str = "SPIRV-Tools_core_tables_body";
         const GENERATED_TABLES_HEADER: &str = "SPIRV-Tools_core_tables_header";
-        let mut targets_to_gen =
-            NinjaTargetsToGenMap::from(&Dep::SpirvToolsTargets.get_ninja_targets(projects_map)?);
-        if generate_vksp_deps {
-            targets_to_gen = targets_to_gen
-                .push(target!("core_tables_body.inc", GENERATED_TABLES_BODY))
-                .push(target!("core_tables_header.inc", GENERATED_TABLES_HEADER))
-        }
         let mut package = SoongPackage::new(
             &[],
             "SPIRV-Tools_license",
@@ -56,7 +48,9 @@ impl Project for SpirvTools {
             &["LICENSE"],
         )
         .generate(
-            targets_to_gen,
+            NinjaTargetsToGenMap::from(&Dep::SpirvToolsTargets.get_ninja_targets(projects_map)?)
+                .push(target!("core_tables_body.inc", GENERATED_TABLES_BODY))
+                .push(target!("core_tables_header.inc", GENERATED_TABLES_HEADER)),
             parse_build_ninja::<CmakeNinjaTarget>(&self.build_path)?,
             &src_path,
             &ndk_path,
@@ -76,11 +70,9 @@ impl Project for SpirvTools {
             .map(|header| path_to_string(strip_prefix(header, &self.spirv_headers_path)))
             .collect();
 
-        if generate_vksp_deps {
-            package = package
-                .add_visibilities(vec![String::from("//external/vulkan-shader-profiler")])
-                .add_raw_suffix(&format!(
-                    r#"
+        package
+            .add_raw_suffix(&format!(
+                r#"
 cc_library_headers {{
     name: "SPIRV-Tools-sources",
     header_libs: ["{0}"],
@@ -97,15 +89,11 @@ cc_library_headers {{
     vendor_available: true,
 }}
 "#,
-                    CcLibraryHeaders::SpirvHeadersUnified1.str()
-                ))
-        }
-        package.print(ctx)
+                CcLibraryHeaders::SpirvHeadersUnified1.str()
+            ))
+            .print(ctx)
     }
 
-    fn get_deps_prefix(&self) -> Vec<(PathBuf, Dep)> {
-        vec![(self.spirv_headers_path.clone(), Dep::SpirvHeaders)]
-    }
     fn get_deps(&self, dep: Dep) -> Vec<NinjaTargetToGen> {
         match dep {
             Dep::SpirvHeaders => self
@@ -152,6 +140,17 @@ cc_library_headers {{
         module: SoongModule,
     ) -> Result<Option<SoongModule>, String> {
         Ok(Some(module.extend_prop("srcs", vec!["utils/Table/*.py"])?))
+    }
+
+    fn map_cmd_input(&self, input: &Path) -> Option<String> {
+        if input.starts_with(&self.spirv_headers_path) {
+            return Some(Dep::SpirvHeaders.get_id(
+                input,
+                &self.spirv_headers_path,
+                &self.build_path,
+            ));
+        }
+        None
     }
 
     fn filter_cflag(&self, _cflag: &str) -> bool {

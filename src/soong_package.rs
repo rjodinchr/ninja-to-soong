@@ -254,6 +254,12 @@ impl SoongPackage {
         std::mem::take(&mut self.internals.custom_cmd_inputs)
     }
 
+    pub fn get_dep_tools_module(&mut self) -> Vec<PathBuf> {
+        self.internals.tools_module.sort_unstable();
+        self.internals.tools_module.dedup();
+        std::mem::take(&mut self.internals.tools_module)
+    }
+
     pub fn generate<T>(
         mut self,
         targets_to_gen: NinjaTargetsToGenMap,

@@ -42,7 +42,7 @@ jobs:
           set -x
           key_folders=".github/workflows/*.yml"
           if [ "${{ matrix.project }}" == "OpenCL" ]; then
-            projects="clvk clspv llvm-project SPIRV-Tools SPIRV-Headers OpenCL-CTS OpenCL-ICD-Loader OpenCL-Headers clpeak"
+            projects="clvk clspv llvm-project SPIRV-Tools SPIRV-Headers OpenCL-CTS OpenCL-ICD-Loader OpenCL-Headers clpeak libclc"
           elif [ "${{ matrix.project }}" == "fwupd" ]; then
             key_folders="${key_folders} tests/fwupd/build.ninja"
             projects="fwupd"

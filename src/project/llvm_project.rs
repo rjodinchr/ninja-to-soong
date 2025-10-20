@@ -56,7 +56,6 @@ impl Project for LlvmProject {
             ctx,
         )?
         .add_visibilities(Dep::ClangHeaders.get_visibilities(projects_map)?)
-        .add_visibilities(Dep::LibclcBins.get_visibilities(projects_map)?)
         .add_visibilities(Dep::LlvmProjectTargets.get_visibilities(projects_map)?)
         .add_module(SoongModule::new_cc_library_headers(
             CcLibraryHeaders::Llvm,
@@ -87,23 +86,36 @@ impl Project for LlvmProject {
                     SoongProp::VecStr(vec![String::from(RAW_DEFAULTS)]),
                 ),
         );
+        let llvm_static_libs = package
+            .get_modules_name()
+            .into_iter()
+            .filter(|module| module.starts_with("llvm-project_lib_lib"))
+            .collect();
+        package = package.add_module(
+            SoongModule::new("cc_defaults")
+                .add_prop("name", SoongProp::Str(CcDefaults::Llvm.str()))
+                .add_prop(
+                    "header_libs",
+                    SoongProp::VecStr(vec![
+                        CcLibraryHeaders::Llvm.str(),
+                        CcLibraryHeaders::Clang.str(),
+                    ]),
+                )
+                .add_prop("static_libs", SoongProp::VecStr(llvm_static_libs))
+                .add_prop("shared_libs", SoongProp::VecStr(vec![String::from("libz")]))
+                .add_prop(
+                    "cflags",
+                    SoongProp::VecStr(vec![String::from("-DHAVE_LLVM=0x1700")]),
+                ),
+        );
         for clang_header in Dep::ClangHeaders.get(projects_map)? {
             package = package.add_module(SoongModule::new_filegroup(
                 Dep::ClangHeaders.get_id(&clang_header, Path::new("clang"), &build_path),
                 vec![path_to_string(clang_header)],
             ));
         }
-        let libclc_binaries = Dep::LibclcBins.get(projects_map)?;
-        for binary in &libclc_binaries {
-            let file_path = cmake_generated_path.join(binary);
-            package = package.add_module(SoongModule::new_filegroup(
-                Dep::LibclcBins.get_id(&file_path, cmake_generated_path, &build_path),
-                vec![path_to_string(file_path)],
-            ));
-        }
 
         let mut gen_deps = package.get_dep_gen_assets();
-        gen_deps.extend(libclc_binaries);
         common::ninja_build(&build_path, &gen_deps, ctx)?;
         gen_deps.extend(
             [
@@ -120,11 +132,27 @@ impl Project for LlvmProject {
                 "tools/clang/lib/Basic/VCSVersion.inc",
                 "tools/clang/include/clang/Basic/Version.inc",
                 "tools/clang/include/clang/Config/config.h",
+                "tools/clang/tools/driver/clang-driver.cpp",
             ]
             .map(|dep| PathBuf::from(dep)),
         );
         package.filter_gen_deps(CMAKE_GENERATED, &gen_deps)?;
         common::copy_gen_deps(gen_deps, CMAKE_GENERATED, &build_path, ctx, self)?;
+        if ctx.copy_to_aosp {
+            let llvm_config_h_path = ctx
+                .get_android_path(self)?
+                .join(CMAKE_GENERATED)
+                .join("include/llvm/Config/config.h");
+            write_file(
+                &llvm_config_h_path,
+                &read_file(&llvm_config_h_path)?
+                    .replace("#define HAVE_MALLINFO2 1", "//#define HAVE_MALLINFO2 1")
+                    .replace(
+                        "#define HAVE_DECL_ARC4RANDOM 1",
+                        "//#define HAVE_DECL_ARC4RANDOM 1",
+                    ),
+            )?;
+        }
 
         package
             .add_raw_suffix(&format!(
@@ -133,6 +161,7 @@ cc_defaults {{
     name: "{RAW_DEFAULTS}",
     optimize_for_size: true,
     vendor_available: true,
+    host_supported: true,
     cflags: [
         "-Wno-error",
         "-Wno-unreachable-code-loop-increment",
@@ -143,24 +172,21 @@ cc_defaults {{
             .print(ctx)
     }
 
-    fn extend_module(&self, target: &Path, module: SoongModule) -> Result<SoongModule, String> {
-        let (cflags, libs) = if target.ends_with("libLLVMSupport.a") {
-            (
-                vec![
-                    "-DBLAKE3_NO_AVX512",
-                    "-DBLAKE3_NO_AVX2",
-                    "-DBLAKE3_NO_SSE41",
-                    "-DBLAKE3_NO_SSE2",
-                ],
-                vec!["libz"],
-            )
-        } else {
-            (Vec::new(), Vec::new())
-        };
-        module
-            .add_prop("defaults", SoongProp::VecStr(vec![String::from(DEFAULTS)]))
-            .extend_prop("cflags", cflags)?
-            .extend_prop("shared_libs", libs)
+    fn extend_module(&self, target: &Path, mut module: SoongModule) -> Result<SoongModule, String> {
+        if target.ends_with("libLLVMSupport.a") {
+            module = module
+                .extend_prop(
+                    "cflags",
+                    vec![
+                        "-DBLAKE3_NO_AVX512",
+                        "-DBLAKE3_NO_AVX2",
+                        "-DBLAKE3_NO_SSE41",
+                        "-DBLAKE3_NO_SSE2",
+                    ],
+                )?
+                .extend_prop("shared_libs", vec!["libz"])?
+        }
+        Ok(module.add_prop("defaults", SoongProp::VecStr(vec![String::from(DEFAULTS)])))
     }
 
     fn filter_cflag(&self, _cflag: &str) -> bool {
@@ -172,7 +198,13 @@ cc_defaults {{
     fn filter_gen_header(&self, _header: &Path) -> bool {
         false
     }
+    fn filter_lib(&self, lib: &str) -> bool {
+        !lib.contains("atomic")
+    }
+    fn filter_link_flag(&self, _flag: &str) -> bool {
+        false
+    }
     fn filter_target(&self, input: &Path) -> bool {
-        input.starts_with("lib")
+        input.starts_with("lib") || input.starts_with("bin")
     }
 }

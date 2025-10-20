@@ -194,8 +194,8 @@ soong_namespace {
         )))
     }
 
-    fn map_cmd_output(&self, output: &Path) -> PathBuf {
-        PathBuf::from(file_name(output))
+    fn map_cmd_output(&self, output: &Path) -> Option<String> {
+        Some(file_name(output))
     }
     fn map_lib(&self, library: &Path) -> Option<PathBuf> {
         if library.starts_with("src/android_stub")

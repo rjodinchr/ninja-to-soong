@@ -14,6 +14,7 @@ pub struct SoongModuleGeneratorInternals {
     pub gen_assets: Vec<PathBuf>,
     pub libs: Vec<PathBuf>,
     pub custom_cmd_inputs: Vec<PathBuf>,
+    pub tools_module: Vec<PathBuf>,
     python_binaries: std::collections::HashSet<String>,
     python_libraries: std::collections::HashSet<String>,
 }
@@ -326,30 +327,21 @@ where
     fn map_cmd_output(&self, output: &Path) -> String {
         if output.starts_with("n2s") {
             path_to_string(output)
+        } else if let Some(output) = self.project.map_cmd_output(output) {
+            output
         } else {
-            path_to_string(self.project.map_cmd_output(output))
+            path_to_string(output)
         }
     }
-    fn get_cmd(
+    fn replace_in_splitted_cmd(
         &self,
-        mut cmd: String,
-        rule_cmd: NinjaRuleCmd,
-        inputs: Vec<PathBuf>,
+        cmd: &str,
+        inputs: &Vec<PathBuf>,
         outputs: &Vec<PathBuf>,
-        deps: Vec<(PathBuf, String)>,
+        deps: &Vec<(PathBuf, String)>,
     ) -> String {
-        let mut marker_id = 0;
-        let mut markers = Vec::new();
-        let mut replace_with_marker = |froms: Vec<String>, replace: String| {
-            let marker = String::from("<<") + &marker_id.to_string() + ">>";
-            marker_id += 1;
-            for from in froms {
-                cmd = cmd.replace(&from, &marker);
-            }
-            markers.push((marker, replace));
-        };
-
-        for input in &inputs {
+        let cmd = String::from(cmd);
+        for input in inputs {
             let canonicalize_input = path_to_string(canonicalize_path(input, self.build_path));
             let input_string = path_to_string(&input);
             let froms = if input_string.contains(&canonicalize_input) {
@@ -357,51 +349,54 @@ where
             } else {
                 vec![canonicalize_input, input_string]
             };
-            replace_with_marker(
-                froms,
-                format!(
+            if froms.contains(&cmd) {
+                return format!(
                     "$(location {0})",
                     path_to_string(strip_prefix(
                         canonicalize_path(input, self.build_path),
                         self.src_path,
                     ))
-                ),
-            );
+                );
+            }
         }
         for (dep, dep_target_name) in deps {
-            replace_with_marker(
-                vec![
-                    path_to_string(canonicalize_path(&dep, self.build_path)),
-                    path_to_string(&dep),
-                ],
-                format!("$(location :{dep_target_name})"),
-            );
+            if vec![
+                path_to_string(canonicalize_path(&dep, self.build_path)),
+                path_to_string(&dep),
+            ]
+            .contains(&cmd)
+            {
+                return format!("$(location :{dep_target_name})");
+            }
         }
         for output in outputs {
-            replace_with_marker(
-                vec![
-                    path_to_string(canonicalize_path(output, self.build_path)),
-                    path_to_string(output),
-                    file_name(output),
-                ],
-                format!(
+            if vec![
+                path_to_string(canonicalize_path(output, self.build_path)),
+                path_to_string(output),
+                file_name(output),
+            ]
+            .contains(&cmd)
+            {
+                return format!(
                     "$(location {0})",
                     path_to_string(self.map_cmd_output(output))
-                ),
-            );
+                );
+            }
         }
-        for input in &inputs {
+        for input in inputs {
             let canonicalize_input = canonicalize_path(input, self.build_path);
-            replace_with_marker(
-                vec![
-                    path_to_string(canonicalize_input.parent().unwrap()),
-                    path_to_string(input.parent().unwrap()),
-                ],
-                format!(
-                    "$(location {0})/..",
-                    path_to_string(strip_prefix(&canonicalize_input, self.src_path,))
-                ),
-            );
+            for from in vec![
+                path_to_string(canonicalize_input.parent().unwrap()),
+                path_to_string(input.parent().unwrap()),
+            ] {
+                if let Some(suffix) = cmd.strip_prefix(&from) {
+                    return format!(
+                        "$$(dirname $(location {0})){1}",
+                        path_to_string(strip_prefix(&canonicalize_input, self.src_path,)),
+                        suffix,
+                    );
+                }
+            }
         }
         for output in outputs {
             let output_string = path_to_string(output.parent().unwrap());
@@ -414,17 +409,44 @@ where
             if !output_string.is_empty() {
                 froms.push(output_string);
             }
-            replace_with_marker(
-                froms,
-                format!(
-                    "$$(dirname $(location {0}))",
-                    path_to_string(self.map_cmd_output(output))
-                ),
-            );
+            for from in froms {
+                if let Some(suffix) = cmd.strip_prefix(&from) {
+                    return format!(
+                        "$$(dirname $(location {0})){1}",
+                        path_to_string(self.map_cmd_output(output)),
+                        suffix,
+                    );
+                }
+            }
         }
-        for (marker, location) in markers {
-            cmd = cmd.replace(&marker, &location);
-        }
+        cmd
+    }
+    fn split_cmd(
+        &self,
+        mut separators: Vec<&str>,
+        cmd: &str,
+        inputs: &Vec<PathBuf>,
+        outputs: &Vec<PathBuf>,
+        deps: &Vec<(PathBuf, String)>,
+    ) -> String {
+        let Some(separator) = separators.pop() else {
+            return self.replace_in_splitted_cmd(cmd, inputs, outputs, deps);
+        };
+        cmd.split(separator)
+            .into_iter()
+            .map(|split| self.split_cmd(separators.clone(), split, inputs, outputs, deps))
+            .collect::<Vec<_>>()
+            .join(separator)
+    }
+    fn get_cmd(
+        &self,
+        mut cmd: String,
+        rule_cmd: NinjaRuleCmd,
+        inputs: Vec<PathBuf>,
+        outputs: &Vec<PathBuf>,
+        deps: Vec<(PathBuf, String)>,
+    ) -> String {
+        cmd = self.split_cmd(vec![" ", "=", "-I", ","], &cmd, &inputs, outputs, &deps);
         if let Some((rsp_file, rsp_content)) = rule_cmd.rsp_info {
             let rsp_inputs = rsp_content
                 .split(" ")
@@ -477,12 +499,9 @@ where
         inputs
             .into_iter()
             .filter_map(|input| {
-                for (prefix, dep) in self.project.get_deps_prefix() {
-                    if input.starts_with(&prefix) {
-                        let dep_id = dep.get_id(&input, &prefix, self.build_path);
-                        deps.push((input, dep_id));
-                        return None;
-                    }
+                if let Some(mapped_input) = self.project.map_cmd_input(&input) {
+                    deps.push((input, mapped_input));
+                    return None;
                 }
                 if canonicalize_path(&input, self.build_path).starts_with(self.build_path) {
                     deps.push((input.clone(), self.get_dep_id(&input)));
@@ -494,33 +513,36 @@ where
     }
     fn get_tool_module(
         &mut self,
-        tool: &str,
+        tool: &Path,
         python_inputs: Vec<PathBuf>,
     ) -> Result<Option<(String, Option<Vec<SoongModule>>)>, String> {
-        if let Ok(tool_target_path) = Path::new(tool).strip_prefix(self.build_path) {
+        if let Some(tool_module) = self.project.map_tool_module(tool) {
+            self.internals.tools_module.push(tool_module.clone());
+            return Ok(Some((path_to_id(tool_module), None)));
+        } else if let Ok(tool_target_path) = Path::new(tool).strip_prefix(self.build_path) {
             return Ok(Some((
                 String::from(":") + &self.get_dep_id(tool_target_path),
                 None,
             )));
-        } else if !tool.ends_with(".py") {
+        } else if !file_name(tool).ends_with(".py") {
             return Ok(None);
         }
-        let tool_module = path_to_id(Path::new(self.project.get_name()).join(&tool));
+        let tool_module = path_to_id(Path::new(self.project.get_name()).join(tool));
         if !self.internals.python_binaries.contains(&tool_module) {
             let mut modules = Vec::new();
-            let (src, main) = if file_stem(Path::new(tool)).contains(".") {
+            let (src, main) = if file_stem(tool).contains(".") {
                 let new_tool = path_to_id(PathBuf::from(tool)) + ".py";
                 let name = path_to_id(Path::new(self.project.get_name()).join(&new_tool));
                 modules.push(
                     SoongModule::new("genrule")
                         .add_prop("name", SoongProp::Str(name.clone()))
                         .add_prop("cmd", SoongProp::Str(String::from("cp $(in) $(out)")))
-                        .add_prop("srcs", SoongProp::VecStr(vec![String::from(tool)]))
+                        .add_prop("srcs", SoongProp::VecStr(vec![path_to_string(tool)]))
                         .add_prop("out", SoongProp::VecStr(vec![new_tool.clone()])),
                 );
                 (String::from(":") + &name, new_tool)
             } else {
-                (String::from(tool), String::from(tool))
+                (path_to_string(tool), path_to_string(tool))
             };
 
             let mut srcs = Vec::new();
@@ -602,10 +624,7 @@ where
         if tool.ends_with(".py") {
             cmd = String::from("python3 ") + &cmd;
         }
-        let tool = path_to_string(strip_prefix(
-            canonicalize_path(&tool, self.build_path),
-            self.src_path,
-        ));
+        let tool = strip_prefix(canonicalize_path(&tool, self.build_path), self.src_path);
         let python_inputs = inputs
             .iter()
             .filter_map(|input| {
@@ -627,7 +646,7 @@ where
                 Ok((Vec::new(), vec![tool_module], Vec::new(), cmd))
             };
         }
-        let tool_name = file_name(Path::new(&tool));
+        let tool_name = file_name(&tool);
         if ["bison", "flex"].contains(&tool_name.as_str()) {
             return Ok((
                 Vec::new(),
@@ -640,7 +659,7 @@ where
                     ),
             ));
         }
-        Ok((vec![tool], Vec::new(), Vec::new(), cmd))
+        Ok((vec![path_to_string(tool)], Vec::new(), Vec::new(), cmd))
     }
     pub fn generate_custom_command(
         &mut self,
