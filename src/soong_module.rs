@@ -33,7 +33,7 @@ impl CcDefaults {
     }
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq)]
 pub enum SoongProp {
     Str(String),
     VecStr(Vec<String>),
@@ -42,7 +42,7 @@ pub enum SoongProp {
     None,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq)]
 pub struct SoongNamedProp {
     name: String,
     prop: SoongProp,
@@ -198,7 +198,7 @@ impl SoongNamedProp {
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone, PartialEq)]
 pub struct SoongModule {
     name: String,
     props: Vec<SoongNamedProp>,

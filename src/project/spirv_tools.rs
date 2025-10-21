@@ -94,15 +94,11 @@ cc_library_headers {{
             .print(ctx)
     }
 
-    fn get_deps(&self, dep: Dep) -> Vec<NinjaTargetToGen> {
-        match dep {
-            Dep::SpirvHeaders => self
-                .gen_deps
-                .iter()
-                .map(|header| target!(header.as_str()))
-                .collect(),
-            _ => Vec::new(),
-        }
+    fn get_deps(&self, _dep: Dep) -> Vec<NinjaTargetToGen> {
+        self.gen_deps
+            .iter()
+            .map(|header| target!(header.as_str()))
+            .collect()
     }
 
     fn extend_module(&self, target: &Path, mut module: SoongModule) -> Result<SoongModule, String> {
@@ -138,8 +134,8 @@ cc_library_headers {{
         &self,
         _python_binary_path: &Path,
         module: SoongModule,
-    ) -> Result<Option<SoongModule>, String> {
-        Ok(Some(module.extend_prop("srcs", vec!["utils/Table/*.py"])?))
+    ) -> Result<SoongModule, String> {
+        Ok(module.extend_prop("srcs", vec!["utils/Table/*.py"])?)
     }
 
     fn map_cmd_input(&self, input: &Path) -> Option<String> {

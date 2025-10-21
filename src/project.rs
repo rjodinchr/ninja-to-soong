@@ -146,9 +146,9 @@ pub trait Project {
     fn extend_python_binary_host(
         &self,
         _python_binary_path: &Path,
-        _module: SoongModule,
-    ) -> Result<Option<SoongModule>, String> {
-        Ok(None)
+        module: SoongModule,
+    ) -> Result<SoongModule, String> {
+        Ok(module)
     }
     // MAP FUNCTIONS
     fn map_cmd_input(&self, _input: &Path) -> Option<String> {
@@ -177,9 +177,6 @@ pub trait Project {
         true
     }
     fn filter_include(&self, _include: &Path) -> bool {
-        true
-    }
-    fn filter_input_target(&self, _input_target: &Path) -> bool {
         true
     }
     fn filter_lib(&self, _lib: &str) -> bool {

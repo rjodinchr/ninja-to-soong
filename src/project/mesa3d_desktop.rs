@@ -188,11 +188,11 @@ soong_namespace {
         &self,
         _python_binary_path: &Path,
         module: SoongModule,
-    ) -> Result<Option<SoongModule>, String> {
-        Ok(Some(module.add_prop(
+    ) -> Result<SoongModule, String> {
+        Ok(module.add_prop(
             "defaults",
             SoongProp::VecStr(vec![String::from(MESA_PYTHON_DEFAULT)]),
-        )))
+        ))
     }
 
     fn map_cmd_output(&self, output: &Path) -> Option<String> {
