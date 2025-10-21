@@ -37,6 +37,12 @@ const SKIP_BUILD: &str = "--skip-build";
 const SKIP_BUILD_SHORT: &str = "-s";
 const SKIP_GEN_NINJA: &str = "--skip-gen-ninja";
 const SKIP_GEN_NINJA_SHORT: &str = "-S";
+const HELP: &str = "--help";
+const HELP_SHORT: &str = "-h";
+
+const TESTS_FOLDER: &str = "tests";
+const SCRIPTS_FOLDER: &str = "scripts";
+const TARGET_FOLDER: &str = "target";
 
 impl Context {
     pub fn get_temp_path(&self, build_path: &Path) -> Result<PathBuf, String> {
@@ -48,11 +54,11 @@ impl Context {
     }
 
     pub fn get_test_path(&self, project: &dyn Project) -> PathBuf {
-        self.n2s_path.join("tests").join(project.get_name())
+        self.n2s_path.join(TESTS_FOLDER).join(project.get_name())
     }
 
     pub fn get_script_path(&self, project: &dyn Project) -> PathBuf {
-        self.n2s_path.join("scripts").join(project.get_name())
+        self.n2s_path.join(SCRIPTS_FOLDER).join(project.get_name())
     }
 
     pub fn get_android_path(&self, project: &dyn Project) -> Result<PathBuf, String> {
@@ -130,7 +136,7 @@ impl Context {
                 }
                 CLEAN_GEN_NINJA_SHORT | CLEAN_GEN_NINJA => ctx.clean_gen_ninja = true,
                 CLEAN_TMP_SHORT | CLEAN_TMP => clean_tmp = true,
-                "-h" | "--help" => {
+                HELP_SHORT | HELP => {
                     let mut projects_help = projects_map
                         .iter()
                         .map(|(_, project)| format!("  {0}\n", project.get_name()))
@@ -150,7 +156,7 @@ OPTIONS:
 {COPY_TO_AOSP_SHORT}, {COPY_TO_AOSP}\t\tCopy generated Soong files into the Android tree
 {SKIP_BUILD_SHORT}, {SKIP_BUILD}\t\tSkip build step
 {SKIP_GEN_NINJA_SHORT}, {SKIP_GEN_NINJA}\t\tSkip generation of Ninja files
--h, --help\t\t\tDisplay the help and exit
+{HELP_SHORT}, {HELP}\t\t\tDisplay the help and exit
 ",
                         projects_help.concat()
                     );
@@ -184,15 +190,16 @@ OPTIONS:
         match env::current_exe() {
             Ok(exe_path) => {
                 ctx.exe_path = PathBuf::from(exe_path.parent().unwrap());
-                ctx.n2s_path = PathBuf::from(
-                    ctx.exe_path // <ninja-to-soong>/target/<build-mode>
-                        .parent() // <ninja-to-soong>/target
-                        .unwrap()
-                        .parent() // <ninja-to-soong>
-                        .unwrap(),
-                );
+                let target = ctx
+                    .exe_path // <ninja-to-soong>/target/<build-mode>
+                    .parent() // <ninja-to-soong>/target
+                    .unwrap();
+                if file_name(target) != TARGET_FOLDER {
+                    return error!("Executable is not in its expected build folder. Cannot figure out where test folder is.");
+                }
+                ctx.n2s_path = PathBuf::from(target.parent().unwrap());
                 let root_contents = ls_dir(&ctx.n2s_path);
-                for entry in ["scripts", "src", "target", "tests"] {
+                for entry in [TESTS_FOLDER, SCRIPTS_FOLDER, TARGET_FOLDER] {
                     if !root_contents.contains(&ctx.n2s_path.join(entry)) {
                         return error!("Executable is not in its expected build folder. Cannot figure out where test folder is.");
                     }
