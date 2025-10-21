@@ -28,8 +28,8 @@ impl Project for Fwupd {
         } else {
             PathBuf::from("/ninja-to-soong-fwupd")
         };
-        self.build_path = ctx.temp_path.join(self.get_name());
-        let ndk_path = get_ndk_path(&ctx.temp_path, ctx)?;
+        self.build_path = ctx.get_temp_path(Path::new(self.get_name()))?;
+        let ndk_path = get_ndk_path(ctx)?;
 
         if !ctx.skip_gen_ninja {
             execute_cmd!(

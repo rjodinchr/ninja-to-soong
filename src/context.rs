@@ -10,7 +10,8 @@ use crate::utils::*;
 #[derive(Default, Clone)]
 pub struct Context {
     pub projects_to_generate: VecDeque<ProjectId>,
-    pub temp_path: PathBuf,
+    temp_path: PathBuf,
+    clean_gen_ninja: bool,
     n2s_path: PathBuf,
     android_path: Option<PathBuf>,
     external_project_path: Option<PathBuf>,
@@ -23,13 +24,29 @@ pub struct Context {
 }
 
 const AOSP_PATH: &str = "--aosp-path";
+const AOSP_PATH_SHORT: &str = "-p";
 const EXT_PROJ_PATH: &str = "--ext-proj-path";
+const EXT_PROJ_PATH_SHORT: &str = "-e";
 const CLEAN_TMP: &str = "--clean-tmp";
+const CLEAN_TMP_SHORT: &str = "-C";
+const CLEAN_GEN_NINJA: &str = "--clean-gen-ninja";
+const CLEAN_GEN_NINJA_SHORT: &str = "-c";
 const COPY_TO_AOSP: &str = "--copy-to-aosp";
+const COPY_TO_AOSP_SHORT: &str = "-a";
 const SKIP_BUILD: &str = "--skip-build";
+const SKIP_BUILD_SHORT: &str = "-s";
 const SKIP_GEN_NINJA: &str = "--skip-gen-ninja";
+const SKIP_GEN_NINJA_SHORT: &str = "-S";
 
 impl Context {
+    pub fn get_temp_path(&self, build_path: &Path) -> Result<PathBuf, String> {
+        let path = self.temp_path.join(build_path);
+        if self.clean_gen_ninja && path != self.temp_path && remove_dir(&path)? {
+            print_info!("{0:#?} removed", path);
+        }
+        Ok(path)
+    }
+
     pub fn get_test_path(&self, project: &dyn Project) -> PathBuf {
         self.n2s_path.join("tests").join(project.get_name())
     }
@@ -81,7 +98,7 @@ impl Context {
         let mut ctx = Self::default();
         while let Some(arg) = iter.next() {
             match arg.as_str() {
-                AOSP_PATH => {
+                AOSP_PATH_SHORT | AOSP_PATH => {
                     let Some(path) = iter.next() else {
                         return error!("<path> missing for {AOSP_PATH}");
                     };
@@ -91,7 +108,7 @@ impl Context {
                     }
                     ctx.android_path = Some(android_path);
                 }
-                EXT_PROJ_PATH => {
+                EXT_PROJ_PATH_SHORT | EXT_PROJ_PATH => {
                     let Some(path) = iter.next() else {
                         return error!("<path> missing for {EXT_PROJ_PATH}");
                     };
@@ -102,16 +119,17 @@ impl Context {
                     ctx.projects_to_generate.push_back(ProjectId::External);
                     ctx.external_project_path = Some(path);
                 }
-                SKIP_GEN_NINJA => {
+                SKIP_GEN_NINJA_SHORT | SKIP_GEN_NINJA => {
                     ctx.skip_gen_ninja = true;
                     ctx.skip_build = true
                 }
-                SKIP_BUILD => ctx.skip_build = true,
-                COPY_TO_AOSP => {
+                SKIP_BUILD_SHORT | SKIP_BUILD => ctx.skip_build = true,
+                COPY_TO_AOSP_SHORT | COPY_TO_AOSP => {
                     ctx.copy_to_aosp = true;
                     ctx.wildcardize_paths = true;
                 }
-                CLEAN_TMP => clean_tmp = true,
+                CLEAN_GEN_NINJA_SHORT | CLEAN_GEN_NINJA => ctx.clean_gen_ninja = true,
+                CLEAN_TMP_SHORT | CLEAN_TMP => clean_tmp = true,
                 "-h" | "--help" => {
                     let mut projects_help = projects_map
                         .iter()
@@ -125,13 +143,14 @@ USAGE: {exec} [OPTIONS] [PROJECTS]
 PROJECTS:
 {0}
 OPTIONS:
-{AOSP_PATH} <path>       Path to Android tree
-{EXT_PROJ_PATH} <path>   Path to external project rust file
-{CLEAN_TMP}              Remove temporary directory before running
-{COPY_TO_AOSP}           Copy generated Soong files into the Android tree
-{SKIP_BUILD}             Skip build step
-{SKIP_GEN_NINJA}         Skip generation of Ninja files
--h, --help               Display the help and exit
+{AOSP_PATH_SHORT}, {AOSP_PATH} <path>\t\tPath to Android tree
+{EXT_PROJ_PATH_SHORT}, {EXT_PROJ_PATH} <path>\tPath to external project rust file
+{CLEAN_TMP_SHORT}, {CLEAN_TMP}\t\t\tRemove temporary directory before running
+{CLEAN_GEN_NINJA_SHORT}, {CLEAN_GEN_NINJA}\t\tRemove selected projects old build directories before running
+{COPY_TO_AOSP_SHORT}, {COPY_TO_AOSP}\t\tCopy generated Soong files into the Android tree
+{SKIP_BUILD_SHORT}, {SKIP_BUILD}\t\tSkip build step
+{SKIP_GEN_NINJA_SHORT}, {SKIP_GEN_NINJA}\t\tSkip generation of Ninja files
+-h, --help\t\t\tDisplay the help and exit
 ",
                         projects_help.concat()
                     );
@@ -182,11 +201,6 @@ OPTIONS:
                     .parent() // <aosp>
                     .unwrap(),
             ));
-        }
-        // PROJECTS_TO_GENERATE
-        if ctx.projects_to_generate.len() == 0 {
-            ctx.projects_to_generate =
-                VecDeque::from_iter(projects_map.iter().map(|(key, _)| *key));
         }
 
         Ok(ctx)

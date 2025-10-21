@@ -64,7 +64,10 @@ fn get_library(ctx: &Context) -> Result<Library, String> {
     if !path.exists() {
         return error!("external project path ({path:#?} does not exist");
     }
-    let library_path = path_to_string(ctx.temp_path.join("external_project.so"));
+    let library_path = path_to_string(
+        ctx.get_temp_path(Path::new(""))?
+            .join("external_project.so"),
+    );
     execute_cmd!(
         "rustc",
         [

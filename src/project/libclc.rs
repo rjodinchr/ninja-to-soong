@@ -23,7 +23,7 @@ impl Project for LibCLC {
         projects_map: &ProjectsMap,
     ) -> Result<String, String> {
         self.src_path = ctx.get_android_path(self)?;
-        let build_path = ctx.temp_path.join(self.get_name());
+        let build_path = ctx.get_temp_path(Path::new(self.get_name()))?;
 
         if !ctx.skip_gen_ninja {
             execute_cmd!(

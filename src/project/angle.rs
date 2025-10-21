@@ -45,7 +45,7 @@ impl Angle {
         ndk_path: &Path,
         target_cpu: &str,
     ) -> Result<SoongPackage, String> {
-        self.build_path = ctx.temp_path.join(self.get_name()).join(target_cpu);
+        self.build_path = ctx.get_temp_path(&Path::new(self.get_name()).join(target_cpu))?;
         if !ctx.skip_gen_ninja {
             execute_cmd!(
                 "bash",

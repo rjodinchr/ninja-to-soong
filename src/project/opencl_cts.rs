@@ -60,8 +60,8 @@ impl Project for OpenclCts {
         projects_map: &ProjectsMap,
     ) -> Result<String, String> {
         self.src_path = ctx.get_android_path(self)?;
-        self.build_path = ctx.temp_path.join(self.get_name());
-        let ndk_path = get_ndk_path(&ctx.temp_path, ctx)?;
+        self.build_path = ctx.get_temp_path(Path::new(self.get_name()))?;
+        let ndk_path = get_ndk_path(ctx)?;
         self.spirv_headers_path = ProjectId::SpirvHeaders.get_android_path(projects_map, ctx)?;
 
         const CSV_FILENAME: &str = "opencl_conformance_tests_full.csv";
