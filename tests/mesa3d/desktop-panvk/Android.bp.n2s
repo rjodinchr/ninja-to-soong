@@ -109,6 +109,7 @@ cc_binary {
         "mesa3d_desktop-panvk_src_compiler_nir_nir_opcodes_h",
         "mesa3d_desktop-panvk_src_panfrost_compiler_bi_builder_h",
         "mesa3d_desktop-panvk_src_panfrost_compiler_bi_opcodes_h",
+        "mesa3d_desktop-panvk_src_panfrost_compiler_valhall_valhall_enums_h",
         "mesa3d_desktop-panvk_src_panfrost_genxml_common_pack_h",
         "mesa3d_desktop-panvk_src_panfrost_genxml_v10_pack_h",
         "mesa3d_desktop-panvk_src_panfrost_genxml_v12_pack_h",
@@ -608,7 +609,6 @@ cc_library_static {
         "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/panfrost",
-        "meson_generated/src/panfrost/compiler",
         "meson_generated/src/panfrost/libpan",
         "src",
         "src/compiler",
@@ -956,7 +956,6 @@ cc_library_static {
         "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/panfrost",
-        "meson_generated/src/panfrost/compiler",
         "meson_generated/src/panfrost/libpan",
         "src",
         "src/compiler",
@@ -1000,7 +999,6 @@ cc_library_static {
         "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/panfrost",
-        "meson_generated/src/panfrost/compiler",
         "meson_generated/src/panfrost/libpan",
         "src",
         "src/panfrost",
@@ -1037,7 +1035,6 @@ cc_library_static {
         "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/panfrost",
-        "meson_generated/src/panfrost/compiler",
         "meson_generated/src/panfrost/libpan",
         "src",
         "src/panfrost",
@@ -1074,7 +1071,6 @@ cc_library_static {
         "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/panfrost",
-        "meson_generated/src/panfrost/compiler",
         "meson_generated/src/panfrost/libpan",
         "src",
         "src/panfrost",
@@ -1111,7 +1107,6 @@ cc_library_static {
         "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/panfrost",
-        "meson_generated/src/panfrost/compiler",
         "meson_generated/src/panfrost/libpan",
         "src",
         "src/panfrost",
@@ -1148,7 +1143,6 @@ cc_library_static {
         "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/panfrost",
-        "meson_generated/src/panfrost/compiler",
         "meson_generated/src/panfrost/libpan",
         "src",
         "src/panfrost",
@@ -1185,7 +1179,6 @@ cc_library_static {
         "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/panfrost",
-        "meson_generated/src/panfrost/compiler",
         "meson_generated/src/panfrost/libpan",
         "src",
         "src/panfrost",
@@ -1222,7 +1215,6 @@ cc_library_static {
         "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/panfrost",
-        "meson_generated/src/panfrost/compiler",
         "meson_generated/src/panfrost/libpan",
         "src",
         "src/panfrost",
@@ -1264,7 +1256,6 @@ cc_library_static {
         "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/panfrost",
-        "meson_generated/src/panfrost/compiler",
         "meson_generated/src/panfrost/libpan",
         "src",
         "src/compiler",
@@ -1314,7 +1305,6 @@ cc_library_static {
         "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/panfrost",
-        "meson_generated/src/panfrost/compiler",
         "meson_generated/src/panfrost/libpan",
         "src",
         "src/compiler",
@@ -1364,7 +1354,6 @@ cc_library_static {
         "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/panfrost",
-        "meson_generated/src/panfrost/compiler",
         "meson_generated/src/panfrost/libpan",
         "src",
         "src/compiler",
@@ -1414,7 +1403,6 @@ cc_library_static {
         "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/panfrost",
-        "meson_generated/src/panfrost/compiler",
         "meson_generated/src/panfrost/libpan",
         "src",
         "src/compiler",
@@ -1464,7 +1452,6 @@ cc_library_static {
         "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/panfrost",
-        "meson_generated/src/panfrost/compiler",
         "meson_generated/src/panfrost/libpan",
         "src",
         "src/compiler",
@@ -1514,7 +1501,6 @@ cc_library_static {
         "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/panfrost",
-        "meson_generated/src/panfrost/compiler",
         "meson_generated/src/panfrost/libpan",
         "src",
         "src/compiler",
@@ -1564,7 +1550,6 @@ cc_library_static {
         "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/panfrost",
-        "meson_generated/src/panfrost/compiler",
         "meson_generated/src/panfrost/libpan",
         "src",
         "src/compiler",
@@ -1614,7 +1599,6 @@ cc_library_static {
         "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/panfrost",
-        "meson_generated/src/panfrost/compiler",
         "meson_generated/src/panfrost/libpan",
         "src",
         "src/compiler",
@@ -1662,7 +1646,6 @@ cc_library_static {
         "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/panfrost",
-        "meson_generated/src/panfrost/compiler",
         "meson_generated/src/panfrost/libpan",
         "src",
         "src/panfrost",
@@ -1699,7 +1682,6 @@ cc_library_static {
         "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/panfrost",
-        "meson_generated/src/panfrost/compiler",
         "meson_generated/src/panfrost/libpan",
         "src",
         "src/panfrost",
@@ -1740,7 +1722,6 @@ cc_library_static {
         "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/panfrost",
-        "meson_generated/src/panfrost/compiler",
         "meson_generated/src/panfrost/libpan",
         "src",
         "src/compiler",
@@ -1789,7 +1770,6 @@ cc_library_static {
         "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/panfrost",
-        "meson_generated/src/panfrost/compiler",
         "meson_generated/src/panfrost/libpan",
         "src",
         "src/compiler",
@@ -1838,7 +1818,6 @@ cc_library_static {
         "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/panfrost",
-        "meson_generated/src/panfrost/compiler",
         "meson_generated/src/panfrost/libpan",
         "src",
         "src/compiler",
@@ -1887,7 +1866,6 @@ cc_library_static {
         "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/panfrost",
-        "meson_generated/src/panfrost/compiler",
         "meson_generated/src/panfrost/libpan",
         "src",
         "src/compiler",
@@ -1936,7 +1914,6 @@ cc_library_static {
         "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/panfrost",
-        "meson_generated/src/panfrost/compiler",
         "meson_generated/src/panfrost/libpan",
         "src",
         "src/compiler",
@@ -1985,7 +1962,6 @@ cc_library_static {
         "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/panfrost",
-        "meson_generated/src/panfrost/compiler",
         "meson_generated/src/panfrost/libpan",
         "src",
         "src/compiler",
@@ -2034,7 +2010,6 @@ cc_library_static {
         "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/panfrost",
-        "meson_generated/src/panfrost/compiler",
         "meson_generated/src/panfrost/libpan",
         "src",
         "src/compiler",
@@ -2083,7 +2058,6 @@ cc_library_static {
         "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/panfrost",
-        "meson_generated/src/panfrost/compiler",
         "meson_generated/src/panfrost/libpan",
         "src",
         "src/compiler",
@@ -2130,7 +2104,6 @@ cc_library_static {
         "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/panfrost",
-        "meson_generated/src/panfrost/compiler",
         "meson_generated/src/panfrost/libpan",
         "src",
         "src/compiler",
@@ -2170,23 +2143,50 @@ cc_library_static {
 
 cc_library_static {
     name: "mesa3d_desktop-panvk_src_panfrost_compiler_valhall_libpanfrost_valhall_disasm_a",
-    srcs: ["meson_generated/src/panfrost/compiler/valhall/valhall_disasm.c"],
     local_include_dirs: [
         "include",
         "include/android_stub",
         "meson_generated/src",
-        "meson_generated/src/panfrost/compiler/valhall",
         "src",
         "src/panfrost/compiler/valhall",
     ],
+    generated_sources: ["mesa3d_desktop-panvk_src_panfrost_compiler_valhall_valhall_disasm_c"],
     generated_headers: ["mesa3d_desktop-panvk_src_util_shader_stats_h"],
     defaults: ["mesa3d-desktop-panvk-defaults"],
+}
+
+genrule {
+    name: "mesa3d_desktop-panvk_src_panfrost_compiler_valhall_valhall_py_cp",
+    cmd: "cp $(in) $(out)",
+    srcs: ["src/panfrost/compiler/valhall/valhall.py"],
+    out: ["valhall.py"],
+}
+
+python_binary_host {
+    name: "mesa3d_desktop-panvk_src_panfrost_compiler_valhall_disasm_py",
+    main: "src/panfrost/compiler/valhall/disasm.py",
+    srcs: [
+        ":mesa3d_desktop-panvk_src_panfrost_compiler_valhall_valhall_py_cp",
+        "src/panfrost/compiler/valhall/disasm.py",
+    ],
+    defaults: ["mesa_python_default"],
+}
+
+cc_genrule {
+    name: "mesa3d_desktop-panvk_src_panfrost_compiler_valhall_valhall_disasm_c",
+    cmd: "python3 $(location) --xml $(location src/panfrost/compiler/valhall/ISA.xml) > $(location valhall_disasm.c)",
+    srcs: [
+        "src/panfrost/compiler/valhall/ISA.xml",
+        "src/panfrost/compiler/valhall/valhall.py",
+    ],
+    out: ["valhall_disasm.c"],
+    tools: ["mesa3d_desktop-panvk_src_panfrost_compiler_valhall_disasm_py"],
+    vendor_available: true,
 }
 
 cc_library_static {
     name: "mesa3d_desktop-panvk_src_panfrost_compiler_libpanfrost_bifrost_disasm_a",
     srcs: [
-        "meson_generated/src/panfrost/compiler/bifrost_gen_disasm.c",
         "src/panfrost/compiler/bi_print_common.c",
         "src/panfrost/compiler/bifrost/disassemble.c",
     ],
@@ -2194,12 +2194,12 @@ cc_library_static {
         "include",
         "include/android_stub",
         "meson_generated/src",
-        "meson_generated/src/panfrost/compiler",
         "src",
         "src/compiler",
         "src/compiler/nir",
         "src/panfrost/compiler",
     ],
+    generated_sources: ["mesa3d_desktop-panvk_src_panfrost_compiler_bifrost_gen_disasm_c"],
     generated_headers: [
         "mesa3d_desktop-panvk_src_compiler_builtin_types_h",
         "mesa3d_desktop-panvk_src_compiler_ir_expression_operation_h",
@@ -2213,10 +2213,38 @@ cc_library_static {
     defaults: ["mesa3d-desktop-panvk-defaults"],
 }
 
+genrule {
+    name: "mesa3d_desktop-panvk_src_panfrost_compiler_bifrost_isa_py_cp",
+    cmd: "cp $(in) $(out)",
+    srcs: ["src/panfrost/compiler/bifrost_isa.py"],
+    out: ["bifrost_isa.py"],
+}
+
+python_binary_host {
+    name: "mesa3d_desktop-panvk_src_panfrost_compiler_gen_disasm_py",
+    main: "src/panfrost/compiler/gen_disasm.py",
+    srcs: [
+        ":mesa3d_desktop-panvk_src_panfrost_compiler_bifrost_isa_py_cp",
+        "src/panfrost/compiler/gen_disasm.py",
+    ],
+    defaults: ["mesa_python_default"],
+}
+
+cc_genrule {
+    name: "mesa3d_desktop-panvk_src_panfrost_compiler_bifrost_gen_disasm_c",
+    cmd: "python3 $(location) $(location src/panfrost/compiler/bifrost/ISA.xml) > $(location bifrost_gen_disasm.c)",
+    srcs: [
+        "src/panfrost/compiler/bifrost/ISA.xml",
+        "src/panfrost/compiler/bifrost_isa.py",
+    ],
+    out: ["bifrost_gen_disasm.c"],
+    tools: ["mesa3d_desktop-panvk_src_panfrost_compiler_gen_disasm_py"],
+    vendor_available: true,
+}
+
 cc_library_static {
     name: "mesa3d_desktop-panvk_src_panfrost_compiler_libpanfrost_bifrost_a",
     srcs: [
-        "meson_generated/src/panfrost/compiler/valhall/valhall.c",
         "src/panfrost/compiler/bi_helper_invocations.c",
         "src/panfrost/compiler/bi_iterator_schedule.c",
         "src/panfrost/compiler/bi_layout.c",
@@ -2259,8 +2287,6 @@ cc_library_static {
         "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/panfrost",
-        "meson_generated/src/panfrost/compiler",
-        "meson_generated/src/panfrost/compiler/valhall",
         "meson_generated/src/panfrost/libpan",
         "src",
         "src/compiler",
@@ -2280,6 +2306,7 @@ cc_library_static {
         "mesa3d_desktop-panvk_src_panfrost_compiler_bi_printer_c",
         "mesa3d_desktop-panvk_src_panfrost_compiler_bi_swizzles_c",
         "mesa3d_desktop-panvk_src_panfrost_compiler_bifrost_nir_algebraic_c",
+        "mesa3d_desktop-panvk_src_panfrost_compiler_valhall_valhall_c",
     ],
     generated_headers: [
         "mesa3d_desktop-panvk_src_compiler_builtin_types_h",
@@ -2290,6 +2317,7 @@ cc_library_static {
         "mesa3d_desktop-panvk_src_compiler_nir_nir_opcodes_h",
         "mesa3d_desktop-panvk_src_panfrost_compiler_bi_builder_h",
         "mesa3d_desktop-panvk_src_panfrost_compiler_bi_opcodes_h",
+        "mesa3d_desktop-panvk_src_panfrost_compiler_valhall_valhall_enums_h",
         "mesa3d_desktop-panvk_src_util_format_u_format_gen_h",
         "mesa3d_desktop-panvk_src_util_shader_stats_h",
     ],
@@ -2297,17 +2325,44 @@ cc_library_static {
 }
 
 genrule {
+    name: "mesa3d_desktop-panvk_src_panfrost_compiler_valhall_valhall_enums_h_py_py",
+    cmd: "cp $(in) $(out)",
+    srcs: ["src/panfrost/compiler/valhall/valhall_enums.h.py"],
+    out: ["src_panfrost_compiler_valhall_valhall_enums_h_py.py"],
+}
+
+python_binary_host {
+    name: "mesa3d_desktop-panvk_src_panfrost_compiler_valhall_valhall_enums_h_py",
+    main: "src_panfrost_compiler_valhall_valhall_enums_h_py.py",
+    srcs: [
+        ":mesa3d_desktop-panvk_src_panfrost_compiler_valhall_valhall_enums_h_py_py",
+        ":mesa3d_desktop-panvk_src_panfrost_compiler_valhall_valhall_py_cp",
+    ],
+    defaults: ["mesa_python_default"],
+}
+
+cc_genrule {
+    name: "mesa3d_desktop-panvk_src_panfrost_compiler_valhall_valhall_enums_h",
+    cmd: "python3 $(location) --xml $(location src/panfrost/compiler/valhall/ISA.xml) > $(location valhall_enums.h); cp $(location valhall_enums.h) $(location valhall/valhall_enums.h); cp $(location valhall/valhall_enums.h) $(location compiler/valhall/valhall_enums.h); cp $(location compiler/valhall/valhall_enums.h) $(location panfrost/compiler/valhall/valhall_enums.h)",
+    srcs: [
+        "src/panfrost/compiler/valhall/ISA.xml",
+        "src/panfrost/compiler/valhall/valhall.py",
+    ],
+    out: [
+        "compiler/valhall/valhall_enums.h",
+        "panfrost/compiler/valhall/valhall_enums.h",
+        "valhall/valhall_enums.h",
+        "valhall_enums.h",
+    ],
+    tools: ["mesa3d_desktop-panvk_src_panfrost_compiler_valhall_valhall_enums_h_py"],
+    vendor_available: true,
+}
+
+genrule {
     name: "mesa3d_desktop-panvk_src_panfrost_compiler_bi_opcodes_h_py_py",
     cmd: "cp $(in) $(out)",
     srcs: ["src/panfrost/compiler/bi_opcodes.h.py"],
     out: ["src_panfrost_compiler_bi_opcodes_h_py.py"],
-}
-
-genrule {
-    name: "mesa3d_desktop-panvk_src_panfrost_compiler_bifrost_isa_py_cp",
-    cmd: "cp $(in) $(out)",
-    srcs: ["src/panfrost/compiler/bifrost_isa.py"],
-    out: ["bifrost_isa.py"],
 }
 
 python_binary_host {
@@ -2370,6 +2425,35 @@ cc_genrule {
         "panfrost/compiler/bi_builder.h",
     ],
     tools: ["mesa3d_desktop-panvk_src_panfrost_compiler_bi_builder_h_py"],
+    vendor_available: true,
+}
+
+genrule {
+    name: "mesa3d_desktop-panvk_src_panfrost_compiler_valhall_valhall_c_py_py",
+    cmd: "cp $(in) $(out)",
+    srcs: ["src/panfrost/compiler/valhall/valhall.c.py"],
+    out: ["src_panfrost_compiler_valhall_valhall_c_py.py"],
+}
+
+python_binary_host {
+    name: "mesa3d_desktop-panvk_src_panfrost_compiler_valhall_valhall_c_py",
+    main: "src_panfrost_compiler_valhall_valhall_c_py.py",
+    srcs: [
+        ":mesa3d_desktop-panvk_src_panfrost_compiler_valhall_valhall_c_py_py",
+        ":mesa3d_desktop-panvk_src_panfrost_compiler_valhall_valhall_py_cp",
+    ],
+    defaults: ["mesa_python_default"],
+}
+
+cc_genrule {
+    name: "mesa3d_desktop-panvk_src_panfrost_compiler_valhall_valhall_c",
+    cmd: "python3 $(location) --xml $(location src/panfrost/compiler/valhall/ISA.xml) > $(location valhall.c)",
+    srcs: [
+        "src/panfrost/compiler/valhall/ISA.xml",
+        "src/panfrost/compiler/valhall/valhall.py",
+    ],
+    out: ["valhall.c"],
+    tools: ["mesa3d_desktop-panvk_src_panfrost_compiler_valhall_valhall_c_py"],
     vendor_available: true,
 }
 
@@ -2988,6 +3072,7 @@ cc_library_shared {
         "mesa3d_desktop-panvk_src_compiler_nir_nir_opcodes_h",
         "mesa3d_desktop-panvk_src_panfrost_compiler_bi_builder_h",
         "mesa3d_desktop-panvk_src_panfrost_compiler_bi_opcodes_h",
+        "mesa3d_desktop-panvk_src_panfrost_compiler_valhall_valhall_enums_h",
         "mesa3d_desktop-panvk_src_panfrost_genxml_common_pack_h",
         "mesa3d_desktop-panvk_src_panfrost_genxml_v10_pack_h",
         "mesa3d_desktop-panvk_src_panfrost_genxml_v12_pack_h",
@@ -3098,7 +3183,6 @@ cc_library_shared {
         "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/panfrost",
-        "meson_generated/src/panfrost/compiler",
         "meson_generated/src/panfrost/libpan",
         "meson_generated/src/vulkan/runtime",
         "src",
@@ -3133,6 +3217,7 @@ cc_library_shared {
         "mesa3d_desktop-panvk_src_compiler_spirv_vtn_generator_ids_h",
         "mesa3d_desktop-panvk_src_panfrost_compiler_bi_builder_h",
         "mesa3d_desktop-panvk_src_panfrost_compiler_bi_opcodes_h",
+        "mesa3d_desktop-panvk_src_panfrost_compiler_valhall_valhall_enums_h",
         "mesa3d_desktop-panvk_src_panfrost_genxml_common_pack_h",
         "mesa3d_desktop-panvk_src_panfrost_genxml_v10_pack_h",
         "mesa3d_desktop-panvk_src_panfrost_genxml_v12_pack_h",
@@ -4166,7 +4251,6 @@ cc_library_static {
         "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/panfrost",
-        "meson_generated/src/panfrost/compiler",
         "meson_generated/src/panfrost/libpan",
         "meson_generated/src/vulkan/runtime",
         "src",
@@ -4337,7 +4421,6 @@ cc_library_static {
         "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/panfrost",
-        "meson_generated/src/panfrost/compiler",
         "meson_generated/src/panfrost/libpan",
         "meson_generated/src/vulkan/runtime",
         "src",
@@ -4440,7 +4523,6 @@ cc_library_static {
         "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/panfrost",
-        "meson_generated/src/panfrost/compiler",
         "meson_generated/src/panfrost/libpan",
         "meson_generated/src/vulkan/runtime",
         "src",
@@ -4543,7 +4625,6 @@ cc_library_static {
         "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/panfrost",
-        "meson_generated/src/panfrost/compiler",
         "meson_generated/src/panfrost/libpan",
         "meson_generated/src/vulkan/runtime",
         "src",
@@ -4646,7 +4727,6 @@ cc_library_static {
         "include/android_stub",
         "meson_generated/src",
         "meson_generated/src/panfrost",
-        "meson_generated/src/panfrost/compiler",
         "meson_generated/src/panfrost/libpan",
         "meson_generated/src/vulkan/runtime",
         "src",
