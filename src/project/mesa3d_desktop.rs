@@ -46,12 +46,13 @@ where
         _projects_map: &ProjectsMap,
     ) -> Result<String, String> {
         let src_path = ctx.get_android_path(self)?;
-        let ndk_path = get_ndk_path(&ctx.temp_path, ctx)?;
-        let build_path = ctx.temp_path.join(self.get_name());
+        let ndk_path = get_ndk_path(ctx)?;
+        let build_path = ctx.get_temp_path(Path::new(self.get_name()))?;
+        let mesa_clc_build_path =
+            ctx.get_temp_path(&Path::new("mesa_clc").join(self.get_name()))?;
         let script_path = ctx.get_script_path(self);
 
         let mesa_clc_path = if !ctx.skip_build {
-            let mesa_clc_build_path = ctx.temp_path.join("mesa_clc");
             execute_cmd!(
                 "bash",
                 [

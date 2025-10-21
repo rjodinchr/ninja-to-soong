@@ -85,7 +85,7 @@ jobs:
           do
             bash "tests/${checkout}/checkout.sh" "${{ env.android }}"
           done
-          ${{ env.prefix }} cargo run --features debug_project --release -- --skip-build --aosp-path "${{ env.android }}" ${{ env.projects }} ${{ env.extra_args }}
+          ${{ env.prefix }} cargo run --features debug_project --release -- --clean-tmp --skip-build --aosp-path "${{ env.android }}" ${{ env.projects }} ${{ env.extra_args }}
       - name: Tests w/ cache
         if: steps.checkout-repositories.outputs.cache-hit == 'true'
         shell: bash

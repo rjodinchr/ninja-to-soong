@@ -32,18 +32,19 @@
 
 ## Options
 
-* `--aosp-path <path>`: Path to Android tree
-* `--ext-proj-path <path>`: Path to external project rust file
-* `--clean-tmp`: Remove the temporary directory before running
-* `--copy-to-aosp`: Copy generated Soong files into the Android tree
-* `--skip-build`: Skip build step
-* `--skip-gen-ninja`: Skip generation of Ninja files
+* `-p`, `--aosp-path <path>`: Path to Android tree
+* `-e`, `--ext-proj-path <path>`: Path to external project rust file
+* `-C`, `--clean-tmp`: Remove the temporary directory before running
+* `-c`, `--clean-gen-ninja`: Remove selected projects old build directories before running
+* `-a`, `--copy-to-aosp`: Copy generated Soong files into the Android tree
+* `-s`, `--skip-build`: Skip build step
+* `-S`, `--skip-gen-ninja`: Skip generation of Ninja files
 * `-h`, `--help`: Display the help and exit
 
 ## Environment variables
 
 * `N2S_ANGLE_PATH`: Path to angle sources (default: `<aosp-path>/external/angle`)
-* `N2S_NDK`: Android NDK (default: `android-ndk-r27c`)
+* `N2S_NDK`: Android NDK (default: `android-ndk-r27d`)
 * `N2S_NDK_PATH`: Path to Android NDK (default: temporary directory)
 * `N2S_TMP_PATH`: Path used by `ninja-to-soong` to store its temporary directories (default: `std::env::temp_dir()`)
 
@@ -56,7 +57,8 @@
 | [clspv](https://github.com/google/clspv) | `CMake` | `clvk` dependencies |
 | [clvk](https://github.com/kpet/clvk) | `CMake` | `libclvk.so` |
 | [fwupd](https://github.com/fwupd/fwupd.git) (WIP) | `Meson` | `fwupdmgr` & `fwupd-binder` |
-| [llvm-project](https://github.com/llvm/llvm-project) | `CMake` | `clvk` & `clspv` dependencies |
+| [libclc](https://libclc.llvm.org/) | `CMake` | `clspv` dependencies |
+| [llvm-project](https://github.com/llvm/llvm-project) | `CMake` | `clvk`, `clspv` dependencies & `libclc` dependencies |
 | [mesa](https://www.mesa3d.org/) | `meson` | `libgallium_dri.so`, `libglapi.so`, `libEGL_mesa.so`, `libGLESv2_mesa.so`, `libGLESv1_CM_mesa.so`, `libvulkan_${VENDOR}.so` |
 | [OpenCL-CTS](https://github.com/KhronosGroup/OpenCL-CTS) | `CMake` | Every binary in `test_conformance/opencl_conformance_tests_full.csv` |
 | [OpenCL-ICD-Loader](https://github.com/KhronosGroup/OpenCL-ICD-Loader) | `CMake` | `libOpenCL.so` |

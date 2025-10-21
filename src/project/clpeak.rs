@@ -21,8 +21,8 @@ impl Project for Clpeak {
         _projects_map: &ProjectsMap,
     ) -> Result<String, String> {
         self.src_path = ctx.get_android_path(self)?;
-        let build_path = ctx.temp_path.join(self.get_name());
-        let ndk_path = get_ndk_path(&ctx.temp_path, ctx)?;
+        let build_path = ctx.get_temp_path(Path::new(self.get_name()))?;
+        let ndk_path = get_ndk_path(ctx)?;
 
         if !ctx.skip_gen_ninja {
             execute_cmd!(

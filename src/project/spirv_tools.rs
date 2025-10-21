@@ -23,7 +23,7 @@ impl Project for SpirvTools {
         projects_map: &ProjectsMap,
     ) -> Result<String, String> {
         let src_path = ctx.get_android_path(self)?;
-        self.build_path = ctx.temp_path.join(self.get_name());
+        self.build_path = ctx.get_temp_path(Path::new(self.get_name()))?;
         let ndk_path = PathBuf::from("SPIRV-Tools-ndk");
         self.spirv_headers_path = ProjectId::SpirvHeaders.get_android_path(projects_map, ctx)?;
 
