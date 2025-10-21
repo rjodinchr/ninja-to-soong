@@ -164,6 +164,9 @@ OPTIONS:
                 },
             }
         }
+        if (clean_tmp || ctx.clean_gen_ninja) && ctx.skip_gen_ninja {
+            return error!("Clean & skip Ninja generation are incompatible");
+        }
         // TEMP_PATH
         ctx.temp_path = if let Ok(dir) = env::var("N2S_TMP_PATH") {
             PathBuf::from(dir)
