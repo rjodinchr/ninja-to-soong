@@ -14,6 +14,7 @@ for patch in \
     "mesa-ed0c18ae4aa.patch" \
     "mesa-a8ab696033e.patch" \
     "mesa-2f9fd1768ae.patch" \
+    "mesa-c0f332f1cba.patch" \
     "mesa-c8b10b4512c.patch" 
 do
     git -C "${DEST}/vendor/google/graphics/mesa3d/desktop-intel" apply "${SCRIPT_DIR}/../patches/${patch}"

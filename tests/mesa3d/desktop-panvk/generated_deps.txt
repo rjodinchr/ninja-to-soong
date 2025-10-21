@@ -20,5 +20,4 @@
     "src/panfrost/libpan/libpan_v6.h",
     "src/panfrost/libpan/libpan_v7.cpp",
     "src/panfrost/libpan/libpan_v7.h",
-    "src/vulkan/runtime/astc_spv.h",
 ]
