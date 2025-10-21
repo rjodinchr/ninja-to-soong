@@ -18,30 +18,18 @@ ANDROID_PLATFORM="${ANDROID_PLATFORM}" NDK_PATH="${NDK_PATH}" \
 envsubst < "${SCRIPT_DIR}/${AOSP_AARCH64}.template" > "${MESON_LOCAL_PATH}/${AOSP_AARCH64}"
 
 PKG_CONFIG_PATH="${PKG_CONFIG_PATH}:${SCRIPT_DIR}" \
-PATH="${MESA_CLC_PATH}:${PATH}" \
 meson setup \
-    --cross-file "${AOSP_AARCH64}" \
     --libdir lib64 \
     --sysconfdir=/system/vendor/etc \
-    -Dandroid-libbacktrace=disabled \
-    -Dllvm=disabled \
     -Degl=disabled \
-    -Dplatform-sdk-version=${ANDROID_PLATFORM} \
-    -Dandroid-stub=true \
-    -Dandroid-libperfetto=enabled \
-    -Dplatforms=android \
-    -Dperfetto=true \
-    -Dcpp_rtti=false \
     -Dtools= \
-    -Dvulkan-drivers=panfrost \
+    -Dvulkan-drivers=swrast \
     -Dgallium-drivers= \
     -Dvideo-codecs= \
     -Dgles1=disabled \
     -Dgles2=disabled \
     -Dopengl=false \
     -Dbuildtype=release \
-    -Dmesa-clc=system \
-    -Dprecomp-compiler=system \
     -Dallow-fallback-for=libdrm,perfetto \
     -Dstrip=true \
     --reconfigure \

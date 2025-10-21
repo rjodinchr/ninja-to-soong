@@ -46,23 +46,7 @@ impl mesa3d_desktop::Mesa3dProject for Mesa3DDesktopPanVK {
             &["licenses/Apache-2.0", "licenses/MIT", "licenses/BSL-1.0"],
         )
         .generate(
-            NinjaTargetsToGenMap::from(&[
-                target!(
-                    "src/panfrost/vulkan/libvulkan_panfrost.so",
-                    "mesa3d_desktop-panvk_libvulkan_panfrost",
-                    "vulkan.panfrost"
-                ),
-                target!(
-                    "src/tool/pps/pps-producer",
-                    "mesa3d_desktop-panvk_pps-producer",
-                    "pps-producer"
-                ),
-                target!(
-                    "src/tool/pps/libgpudataproducer.so",
-                    "mesa3d_desktop-panvk_libgpudataproducer",
-                    "libgpudataproducer_panfrost"
-                ),
-            ]),
+            NinjaTargetsToGenMap::from(&[target!("src/gallium/targets/lavapipe/libvulkan_lvp.so")]),
             parse_build_ninja::<MesonNinjaTarget>(&build_path)?,
             &self.src_path,
             &ndk_path,
@@ -76,7 +60,10 @@ impl mesa3d_desktop::Mesa3dProject for Mesa3DDesktopPanVK {
     fn get_default_module(&self, package: &SoongPackage) -> Result<SoongModule, String> {
         Ok(SoongModule::new("cc_defaults")
             .add_prop("name", SoongProp::Str(String::from(DEFAULTS)))
-            .add_props(package.get_props("mesa3d_desktop-panvk_pps-producer", vec!["cflags"])?)
+            .add_props(package.get_props(
+                "mesa3d_desktop-panvk_src_x11_libloader_x11_a",
+                vec!["cflags"],
+            )?)
             .add_prop(
                 "defaults",
                 SoongProp::VecStr(vec![String::from(RAW_DEFAULTS)]),
