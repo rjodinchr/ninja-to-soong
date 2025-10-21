@@ -187,7 +187,13 @@ OPTIONS:
                         .unwrap()
                         .parent() // <ninja-to-soong>
                         .unwrap(),
-                )
+                );
+                let root_contents = ls_dir(&ctx.n2s_path);
+                for entry in ["scripts", "src", "target", "tests"] {
+                    if !root_contents.contains(&ctx.n2s_path.join(entry)) {
+                        return error!("Executable is not in its expected build folder. Cannot figure out where test folder is.");
+                    }
+                }
             }
             Err(err) => return error!("Could not get current executable path: {err}"),
         };
