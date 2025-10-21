@@ -262,9 +262,7 @@ where
 
             let mut input_cflags = self.get_defines(input_target.get_defines());
             input_cflags.extend(self.get_cflags(input_target.get_cflags()));
-            if self.project.filter_input_target(input)
-                && !Self::defines_conflict(&mut defines, &input_cflags)
-            {
+            if !Self::defines_conflict(&mut defines, &input_cflags) {
                 whole_static_libs
                     .extend(self.get_libs(input_target.get_libs_static_whole(), &module_name));
                 static_libs.extend(self.get_libs(input_target.get_libs_static(), &module_name));
@@ -567,18 +565,21 @@ where
             }
 
             srcs.push(src);
-            let Some(module) = self.project.extend_python_binary_host(
-                &self.src_path.join(&tool),
-                SoongModule::new("python_binary_host")
-                    .add_prop("name", SoongProp::Str(tool_module.clone()))
-                    .add_prop("main", SoongProp::Str(main))
-                    .add_prop("srcs", SoongProp::VecStr(srcs)),
-            )?
-            else {
+            srcs.sort_unstable();
+            srcs.dedup();
+            let multiple_srcs = srcs.len() > 1;
+            let module = SoongModule::new("python_binary_host")
+                .add_prop("name", SoongProp::Str(tool_module.clone()))
+                .add_prop("main", SoongProp::Str(main))
+                .add_prop("srcs", SoongProp::VecStr(srcs));
+            let extended_module = self
+                .project
+                .extend_python_binary_host(&self.src_path.join(&tool), module.clone())?;
+            if !multiple_srcs && module == extended_module {
                 return Ok(None);
-            };
+            }
             self.internals.python_binaries.insert(tool_module.clone());
-            modules.push(module);
+            modules.push(extended_module);
             return Ok(Some((tool_module, Some(modules))));
         }
         Ok(Some((tool_module, None)))
