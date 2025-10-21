@@ -120,25 +120,23 @@ prebuilt_etc {{
         if target.ends_with("api_tests") {
             header_libs.push(CcLibraryHeaders::SpirvHeaders.str());
             header_libs.push(String::from("vulkan_headers"));
-            module = module.add_prop(
-                "test_config",
-                SoongProp::Str(String::from("android/api_tests.xml")),
-            );
+            module = module
+                .add_prop(
+                    "test_config",
+                    SoongProp::Str(String::from("android/api_tests.xml")),
+                )
+                .extend_prop("cflags", vec!["-Wno-missing-braces"])?;
         } else if target.ends_with("simple_test") {
             module = module.add_prop("gtest", SoongProp::Bool(false)).add_prop(
                 "test_config",
                 SoongProp::Str(String::from("android/simple_test.xml")),
             );
+        } else if target.ends_with("libOpenCL.so") {
+            module = module.extend_prop("shared_libs", vec!["libz"])?;
         }
-        let cflags = if target.ends_with("api_tests") {
-            vec!["-Wno-missing-braces"]
-        } else {
-            Vec::new()
-        };
-        module
+        Ok(module
             .add_prop("soc_specific", SoongProp::Bool(true))
-            .add_prop("header_libs", SoongProp::VecStr(header_libs))
-            .extend_prop("cflags", cflags)
+            .add_prop("header_libs", SoongProp::VecStr(header_libs)))
     }
 
     fn map_lib(&self, library: &Path) -> Option<PathBuf> {
