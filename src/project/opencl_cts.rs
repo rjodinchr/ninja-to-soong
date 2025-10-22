@@ -3,6 +3,8 @@
 
 use super::*;
 
+const SPIRV_AS: &str = "spirv-as";
+
 #[derive(Default)]
 pub struct OpenclCts {
     src_path: PathBuf,
@@ -149,10 +151,7 @@ impl Project for OpenclCts {
                     )
                     .add_prop("srcs", SoongProp::VecStr(vec![path_to_string(source)]))
                     .add_prop("output_extension", SoongProp::Str(file_ext(&dep)))
-                    .add_prop(
-                        "tools",
-                        SoongProp::VecStr(vec![String::from("//external/SPIRV-Tools:spirv-as")]),
-                    ),
+                    .add_prop("tools", SoongProp::VecStr(vec![String::from(SPIRV_AS)])),
             );
         }
         self.gen_deps = package
@@ -245,11 +244,9 @@ cc_test {{
 
     fn get_deps(&self, dep: Dep) -> Vec<NinjaTargetToGen> {
         match dep {
-            Dep::SpirvToolsTargets => vec![target_typed!(
-                "tools/spirv-as",
-                "cc_binary_host",
-                "spirv-as"
-            )],
+            Dep::SpirvToolsTargets => {
+                vec![target_typed!("tools/spirv-as", "cc_binary_host", SPIRV_AS)]
+            }
             Dep::SpirvHeaders => self.gen_deps.iter().map(|lib| target!(lib)).collect(),
             _ => Vec::new(),
         }
