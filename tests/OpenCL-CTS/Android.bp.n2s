@@ -1013,7 +1013,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/assume.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -1021,7 +1021,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/assume.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -1029,7 +1029,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/atomic_dec_global.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -1037,7 +1037,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/atomic_dec_global.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -1045,7 +1045,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/atomic_inc_global.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -1053,7 +1053,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/atomic_inc_global.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -1061,7 +1061,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/basic.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -1069,7 +1069,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/basic.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -1077,7 +1077,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/branch_conditional.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -1085,7 +1085,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/branch_conditional.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -1093,7 +1093,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/branch_conditional_weighted.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -1101,7 +1101,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/branch_conditional_weighted.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -1109,7 +1109,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/branch_simple.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -1117,7 +1117,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/branch_simple.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -1125,7 +1125,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/composite_construct_int4.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -1133,7 +1133,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/composite_construct_int4.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -1141,7 +1141,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/composite_construct_struct.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -1149,7 +1149,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/composite_construct_struct.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -1157,7 +1157,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/constant_char_simple.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -1165,7 +1165,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/constant_char_simple.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -1173,7 +1173,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/constant_double_simple.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -1181,7 +1181,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/constant_double_simple.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -1189,7 +1189,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/constant_false_simple.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -1197,7 +1197,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/constant_false_simple.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -1205,7 +1205,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/constant_float_simple.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -1213,7 +1213,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/constant_float_simple.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -1221,7 +1221,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/constant_half_simple.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -1229,7 +1229,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/constant_half_simple.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -1237,7 +1237,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/constant_int3_simple.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -1245,7 +1245,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/constant_int3_simple.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -1253,7 +1253,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/constant_int4_simple.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -1261,7 +1261,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/constant_int4_simple.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -1269,7 +1269,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/constant_int_simple.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -1277,7 +1277,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/constant_int_simple.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -1285,7 +1285,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/constant_long_simple.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -1293,7 +1293,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/constant_long_simple.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -1301,7 +1301,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/constant_short_simple.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -1309,7 +1309,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/constant_short_simple.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -1317,7 +1317,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/constant_struct_int_char_simple.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -1325,7 +1325,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/constant_struct_int_char_simple.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -1333,7 +1333,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/constant_struct_int_float_simple.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -1341,7 +1341,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/constant_struct_int_float_simple.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -1349,7 +1349,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/constant_struct_struct_simple.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -1357,7 +1357,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/constant_struct_struct_simple.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -1365,7 +1365,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/constant_true_simple.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -1373,7 +1373,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/constant_true_simple.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -1381,7 +1381,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/constant_uchar_simple.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -1389,7 +1389,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/constant_uchar_simple.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -1397,7 +1397,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/constant_uint_simple.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -1405,7 +1405,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/constant_uint_simple.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -1413,7 +1413,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/constant_ulong_simple.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -1421,7 +1421,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/constant_ulong_simple.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -1429,7 +1429,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/constant_ushort_simple.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -1437,7 +1437,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/constant_ushort_simple.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -1445,7 +1445,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/copy_char_simple.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -1453,7 +1453,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/copy_char_simple.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -1461,7 +1461,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/copy_double_simple.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -1469,7 +1469,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/copy_double_simple.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -1477,7 +1477,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/copy_float_simple.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -1485,7 +1485,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/copy_float_simple.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -1493,7 +1493,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/copy_half_simple.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -1501,7 +1501,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/copy_half_simple.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -1509,7 +1509,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/copy_int3_simple.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -1517,7 +1517,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/copy_int3_simple.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -1525,7 +1525,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/copy_int4_simple.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -1533,7 +1533,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/copy_int4_simple.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -1541,7 +1541,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/copy_int_simple.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -1549,7 +1549,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/copy_int_simple.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -1557,7 +1557,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/copy_long_simple.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -1565,7 +1565,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/copy_long_simple.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -1573,7 +1573,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/copy_short_simple.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -1581,7 +1581,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/copy_short_simple.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -1589,7 +1589,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/copy_struct_int_char_simple.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -1597,7 +1597,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/copy_struct_int_char_simple.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -1605,7 +1605,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/copy_struct_int_float_simple.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -1613,7 +1613,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/copy_struct_int_float_simple.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -1621,7 +1621,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/copy_struct_struct_simple.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -1629,7 +1629,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/copy_struct_struct_simple.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -1637,7 +1637,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/copy_uchar_simple.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -1645,7 +1645,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/copy_uchar_simple.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -1653,7 +1653,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/copy_uint_simple.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -1661,7 +1661,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/copy_uint_simple.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -1669,7 +1669,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/copy_ulong_simple.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -1677,7 +1677,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/copy_ulong_simple.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -1685,7 +1685,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/copy_ushort_simple.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -1693,7 +1693,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/copy_ushort_simple.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -1701,7 +1701,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/decorate_aliased.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -1709,7 +1709,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/decorate_aliased.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -1717,7 +1717,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/decorate_alignment.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -1725,7 +1725,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/decorate_alignment.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -1733,7 +1733,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/decorate_constant.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -1741,7 +1741,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/decorate_constant.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -1749,7 +1749,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/decorate_constant_fail.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -1757,7 +1757,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/decorate_constant_fail.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -1765,7 +1765,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/decorate_cpacked.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -1773,7 +1773,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/decorate_cpacked.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -1781,7 +1781,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/decorate_restrict.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -1789,7 +1789,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/decorate_restrict.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -1797,7 +1797,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/decorate_rounding_rte_double_long.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -1805,7 +1805,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/decorate_rounding_rte_double_long.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -1813,7 +1813,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/decorate_rounding_rte_float_int.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -1821,7 +1821,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/decorate_rounding_rte_float_int.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -1829,7 +1829,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/decorate_rounding_rte_half_short.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -1837,7 +1837,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/decorate_rounding_rte_half_short.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -1845,7 +1845,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/decorate_rounding_rtn_double_long.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -1853,7 +1853,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/decorate_rounding_rtn_double_long.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -1861,7 +1861,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/decorate_rounding_rtn_float_int.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -1869,7 +1869,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/decorate_rounding_rtn_float_int.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -1877,7 +1877,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/decorate_rounding_rtn_half_short.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -1885,7 +1885,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/decorate_rounding_rtn_half_short.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -1893,7 +1893,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/decorate_rounding_rtp_double_long.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -1901,7 +1901,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/decorate_rounding_rtp_double_long.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -1909,7 +1909,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/decorate_rounding_rtp_float_int.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -1917,7 +1917,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/decorate_rounding_rtp_float_int.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -1925,7 +1925,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/decorate_rounding_rtp_half_short.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -1933,7 +1933,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/decorate_rounding_rtp_half_short.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -1941,7 +1941,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/decorate_rounding_rtz_double_long.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -1949,7 +1949,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/decorate_rounding_rtz_double_long.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -1957,7 +1957,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/decorate_rounding_rtz_float_int.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -1965,7 +1965,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/decorate_rounding_rtz_float_int.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -1973,7 +1973,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/decorate_rounding_rtz_half_short.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -1981,7 +1981,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/decorate_rounding_rtz_half_short.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -1989,7 +1989,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/decorate_saturated_conversion_double_to_int.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -1997,7 +1997,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/decorate_saturated_conversion_double_to_int.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -2005,7 +2005,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/decorate_saturated_conversion_double_to_uint.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -2013,7 +2013,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/decorate_saturated_conversion_double_to_uint.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -2021,7 +2021,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/decorate_saturated_conversion_float_to_char.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -2029,7 +2029,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/decorate_saturated_conversion_float_to_char.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -2037,7 +2037,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/decorate_saturated_conversion_float_to_short.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -2045,7 +2045,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/decorate_saturated_conversion_float_to_short.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -2053,7 +2053,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/decorate_saturated_conversion_float_to_uchar.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -2061,7 +2061,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/decorate_saturated_conversion_float_to_uchar.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -2069,7 +2069,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/decorate_saturated_conversion_float_to_ushort.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -2077,7 +2077,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/decorate_saturated_conversion_float_to_ushort.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -2085,7 +2085,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/decorate_saturated_conversion_half_to_char.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -2093,7 +2093,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/decorate_saturated_conversion_half_to_char.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -2101,7 +2101,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/decorate_saturated_conversion_half_to_uchar.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -2109,7 +2109,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/decorate_saturated_conversion_half_to_uchar.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -2117,7 +2117,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/expect_bool.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -2125,7 +2125,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/expect_bool.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -2133,7 +2133,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/expect_char.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -2141,7 +2141,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/expect_char.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -2149,7 +2149,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/expect_int.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -2157,7 +2157,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/expect_int.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -2165,7 +2165,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/expect_long.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -2173,7 +2173,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/expect_long.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -2181,7 +2181,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/expect_short.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -2189,7 +2189,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/expect_short.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -2197,7 +2197,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/ext_cl_khr_spirv_no_integer_wrap_decoration_fadd_int.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -2205,7 +2205,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/ext_cl_khr_spirv_no_integer_wrap_decoration_fadd_int.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -2213,7 +2213,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/ext_cl_khr_spirv_no_integer_wrap_decoration_fadd_uint.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -2221,7 +2221,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/ext_cl_khr_spirv_no_integer_wrap_decoration_fadd_uint.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -2229,7 +2229,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/ext_cl_khr_spirv_no_integer_wrap_decoration_fmul_int.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -2237,7 +2237,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/ext_cl_khr_spirv_no_integer_wrap_decoration_fmul_int.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -2245,7 +2245,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/ext_cl_khr_spirv_no_integer_wrap_decoration_fmul_uint.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -2253,7 +2253,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/ext_cl_khr_spirv_no_integer_wrap_decoration_fmul_uint.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -2261,7 +2261,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/ext_cl_khr_spirv_no_integer_wrap_decoration_fnegate_int.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -2269,7 +2269,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/ext_cl_khr_spirv_no_integer_wrap_decoration_fnegate_int.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -2277,7 +2277,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/ext_cl_khr_spirv_no_integer_wrap_decoration_fshiftleft_int.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -2285,7 +2285,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/ext_cl_khr_spirv_no_integer_wrap_decoration_fshiftleft_int.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -2293,7 +2293,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/ext_cl_khr_spirv_no_integer_wrap_decoration_fshiftleft_uint.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -2301,7 +2301,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/ext_cl_khr_spirv_no_integer_wrap_decoration_fshiftleft_uint.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -2309,7 +2309,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/ext_cl_khr_spirv_no_integer_wrap_decoration_fsub_int.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -2317,7 +2317,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/ext_cl_khr_spirv_no_integer_wrap_decoration_fsub_int.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -2325,7 +2325,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/ext_cl_khr_spirv_no_integer_wrap_decoration_fsub_uint.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -2333,7 +2333,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/ext_cl_khr_spirv_no_integer_wrap_decoration_fsub_uint.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -2341,7 +2341,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/fadd_double.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -2349,7 +2349,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/fadd_double.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -2357,7 +2357,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/fadd_double2.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -2365,7 +2365,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/fadd_double2.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -2373,7 +2373,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/fadd_float.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -2381,7 +2381,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/fadd_float.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -2389,7 +2389,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/fadd_float4.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -2397,7 +2397,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/fadd_float4.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -2405,7 +2405,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/fadd_half.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -2413,7 +2413,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/fadd_half.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -2421,7 +2421,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/fdiv_double.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -2429,7 +2429,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/fdiv_double.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -2437,7 +2437,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/fdiv_double2.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -2445,7 +2445,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/fdiv_double2.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -2453,7 +2453,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/fdiv_float.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -2461,7 +2461,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/fdiv_float.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -2469,7 +2469,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/fdiv_float4.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -2477,7 +2477,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/fdiv_float4.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -2485,7 +2485,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/fdiv_half.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -2493,7 +2493,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/fdiv_half.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -2501,7 +2501,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/fmod_double.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -2509,7 +2509,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/fmod_double.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -2517,7 +2517,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/fmod_double2.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -2525,7 +2525,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/fmod_double2.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -2533,7 +2533,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/fmod_float.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -2541,7 +2541,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/fmod_float.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -2549,7 +2549,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/fmod_float4.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -2557,7 +2557,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/fmod_float4.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -2565,7 +2565,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/fmod_half.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -2573,7 +2573,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/fmod_half.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -2581,7 +2581,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/fmul_double.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -2589,7 +2589,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/fmul_double.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -2597,7 +2597,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/fmul_double2.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -2605,7 +2605,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/fmul_double2.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -2613,7 +2613,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/fmul_float.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -2621,7 +2621,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/fmul_float.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -2629,7 +2629,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/fmul_float4.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -2637,7 +2637,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/fmul_float4.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -2645,7 +2645,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/fmul_half.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -2653,7 +2653,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/fmul_half.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -2661,7 +2661,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/frem_double.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -2669,7 +2669,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/frem_double.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -2677,7 +2677,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/frem_double2.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -2685,7 +2685,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/frem_double2.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -2693,7 +2693,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/frem_float.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -2701,7 +2701,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/frem_float.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -2709,7 +2709,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/frem_float4.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -2717,7 +2717,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/frem_float4.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -2725,7 +2725,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/frem_half.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -2733,7 +2733,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/frem_half.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -2741,7 +2741,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/fsub_double.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -2749,7 +2749,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/fsub_double.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -2757,7 +2757,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/fsub_double2.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -2765,7 +2765,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/fsub_double2.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -2773,7 +2773,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/fsub_float.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -2781,7 +2781,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/fsub_float.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -2789,7 +2789,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/fsub_float4.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -2797,7 +2797,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/fsub_float4.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -2805,7 +2805,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/fsub_half.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -2813,7 +2813,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/fsub_half.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -2821,7 +2821,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/label_simple.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -2829,7 +2829,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/label_simple.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -2837,7 +2837,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/lifetime_simple.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -2845,7 +2845,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/lifetime_simple.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -2853,7 +2853,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/linkage_export.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -2861,7 +2861,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/linkage_export.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -2869,7 +2869,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/linkage_import.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -2877,7 +2877,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/linkage_import.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -2885,7 +2885,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/linkage_linkonce_odr_main.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -2893,7 +2893,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/linkage_linkonce_odr_main.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -2901,7 +2901,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/linkage_linkonce_odr_noa_main.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -2909,7 +2909,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/linkage_linkonce_odr_noa_main.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -2917,7 +2917,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/linkage_linkonce_odr_obj.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -2925,7 +2925,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/linkage_linkonce_odr_obj.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -2933,7 +2933,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/loop_merge_branch_conditional_dont_unroll.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -2941,7 +2941,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/loop_merge_branch_conditional_dont_unroll.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -2949,7 +2949,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/loop_merge_branch_conditional_none.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -2957,7 +2957,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/loop_merge_branch_conditional_none.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -2965,7 +2965,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/loop_merge_branch_conditional_unroll.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -2973,7 +2973,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/loop_merge_branch_conditional_unroll.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -2981,7 +2981,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/loop_merge_branch_dont_unroll.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -2989,7 +2989,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/loop_merge_branch_dont_unroll.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -2997,7 +2997,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/loop_merge_branch_none.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -3005,7 +3005,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/loop_merge_branch_none.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -3013,7 +3013,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/loop_merge_branch_unroll.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -3021,7 +3021,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/loop_merge_branch_unroll.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -3029,7 +3029,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/op_function_const.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -3037,7 +3037,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/op_function_const.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -3045,7 +3045,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/op_function_inline.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -3053,7 +3053,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/op_function_inline.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -3061,7 +3061,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/op_function_noinline.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -3069,7 +3069,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/op_function_noinline.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -3077,7 +3077,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/op_function_none.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -3085,7 +3085,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/op_function_none.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -3093,7 +3093,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/op_function_pure.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -3101,7 +3101,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/op_function_pure.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -3109,7 +3109,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/op_function_pure_ptr.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -3117,7 +3117,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/op_function_pure_ptr.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -3125,7 +3125,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/op_neg_double.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -3133,7 +3133,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/op_neg_double.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -3141,7 +3141,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/op_neg_float.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -3149,7 +3149,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/op_neg_float.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -3157,7 +3157,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/op_neg_float4.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -3165,7 +3165,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/op_neg_float4.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -3173,7 +3173,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/op_neg_half.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -3181,7 +3181,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/op_neg_half.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -3189,7 +3189,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/op_neg_int.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -3197,7 +3197,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/op_neg_int.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -3205,7 +3205,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/op_neg_int4.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -3213,7 +3213,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/op_neg_int4.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -3221,7 +3221,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/op_neg_long.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -3229,7 +3229,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/op_neg_long.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -3237,7 +3237,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/op_neg_short.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -3245,7 +3245,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/op_neg_short.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -3253,7 +3253,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/op_not_int.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -3261,7 +3261,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/op_not_int.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -3269,7 +3269,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/op_not_int4.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -3277,7 +3277,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/op_not_int4.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -3285,7 +3285,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/op_not_long.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -3293,7 +3293,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/op_not_long.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -3301,7 +3301,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/op_not_short.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -3309,7 +3309,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/op_not_short.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -3317,7 +3317,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/op_spec_constant_double_simple.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -3325,7 +3325,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/op_spec_constant_double_simple.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -3333,7 +3333,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/op_spec_constant_false_simple.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -3341,7 +3341,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/op_spec_constant_false_simple.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -3349,7 +3349,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/op_spec_constant_float_simple.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -3357,7 +3357,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/op_spec_constant_float_simple.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -3365,7 +3365,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/op_spec_constant_half_simple.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -3373,7 +3373,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/op_spec_constant_half_simple.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -3381,7 +3381,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/op_spec_constant_true_simple.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -3389,7 +3389,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/op_spec_constant_true_simple.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -3397,7 +3397,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/op_spec_constant_uchar_simple.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -3405,7 +3405,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/op_spec_constant_uchar_simple.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -3413,7 +3413,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/op_spec_constant_uint_simple.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -3421,7 +3421,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/op_spec_constant_uint_simple.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -3429,7 +3429,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/op_spec_constant_ulong_simple.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -3437,7 +3437,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/op_spec_constant_ulong_simple.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -3445,7 +3445,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/op_spec_constant_ushort_simple.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -3453,7 +3453,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/op_spec_constant_ushort_simple.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -3461,7 +3461,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/opaque.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -3469,7 +3469,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/opaque.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -3477,7 +3477,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/phi_2.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -3485,7 +3485,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/phi_2.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -3493,7 +3493,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/phi_3.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -3501,7 +3501,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/phi_3.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -3509,7 +3509,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/phi_4.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -3517,7 +3517,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/phi_4.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -3525,7 +3525,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/select_if_dont_flatten.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -3533,7 +3533,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/select_if_dont_flatten.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -3541,7 +3541,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/select_if_flatten.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -3549,7 +3549,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/select_if_flatten.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -3557,7 +3557,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/select_if_none.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -3565,7 +3565,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/select_if_none.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -3573,7 +3573,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/select_switch_dont_flatten.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -3581,7 +3581,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/select_switch_dont_flatten.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -3589,7 +3589,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/select_switch_flatten.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -3597,7 +3597,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/select_switch_flatten.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -3605,7 +3605,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/select_switch_none.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -3613,7 +3613,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/select_switch_none.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -3621,7 +3621,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.1 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/spv1.1/basic.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -3629,7 +3629,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.1 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/spv1.1/basic.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -3637,7 +3637,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.2 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/spv1.2/basic.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -3645,7 +3645,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.2 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/spv1.2/basic.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -3653,7 +3653,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.3 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/spv1.3/basic.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -3661,7 +3661,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.3 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/spv1.3/basic.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -3669,7 +3669,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.4 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/spv1.4/basic.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -3677,7 +3677,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.4 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/spv1.4/basic.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -3685,7 +3685,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.4 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/spv1.4/copylogical_struct.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -3693,7 +3693,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.4 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/spv1.4/copylogical_struct.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -3701,7 +3701,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.4 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/spv1.4/copymemory_memory_operands.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -3709,7 +3709,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.4 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/spv1.4/copymemory_memory_operands.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -3717,7 +3717,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.4 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/spv1.4/image_operand_signextend.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -3725,7 +3725,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.4 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/spv1.4/image_operand_signextend.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -3733,7 +3733,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.4 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/spv1.4/image_operand_zeroextend.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -3741,7 +3741,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.4 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/spv1.4/image_operand_zeroextend.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -3749,7 +3749,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.4 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/spv1.4/loop_control_iterationmultiple.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -3757,7 +3757,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.4 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/spv1.4/loop_control_iterationmultiple.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -3765,7 +3765,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.4 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/spv1.4/loop_control_maxiterations.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -3773,7 +3773,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.4 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/spv1.4/loop_control_maxiterations.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -3781,7 +3781,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.4 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/spv1.4/loop_control_miniterations.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -3789,7 +3789,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.4 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/spv1.4/loop_control_miniterations.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -3797,7 +3797,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.4 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/spv1.4/loop_control_partialcount.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -3805,7 +3805,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.4 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/spv1.4/loop_control_partialcount.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -3813,7 +3813,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.4 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/spv1.4/loop_control_peelcount.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -3821,7 +3821,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.4 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/spv1.4/loop_control_peelcount.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -3829,7 +3829,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.4 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/spv1.4/no_integer_wrap_decoration_fadd_int.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -3837,7 +3837,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.4 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/spv1.4/no_integer_wrap_decoration_fadd_int.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -3845,7 +3845,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.4 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/spv1.4/no_integer_wrap_decoration_fadd_uint.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -3853,7 +3853,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.4 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/spv1.4/no_integer_wrap_decoration_fadd_uint.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -3861,7 +3861,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.4 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/spv1.4/no_integer_wrap_decoration_fmul_int.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -3869,7 +3869,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.4 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/spv1.4/no_integer_wrap_decoration_fmul_int.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -3877,7 +3877,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.4 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/spv1.4/no_integer_wrap_decoration_fmul_uint.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -3885,7 +3885,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.4 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/spv1.4/no_integer_wrap_decoration_fmul_uint.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -3893,7 +3893,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.4 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/spv1.4/no_integer_wrap_decoration_fnegate_int.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -3901,7 +3901,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.4 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/spv1.4/no_integer_wrap_decoration_fnegate_int.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -3909,7 +3909,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.4 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/spv1.4/no_integer_wrap_decoration_fshiftleft_int.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -3917,7 +3917,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.4 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/spv1.4/no_integer_wrap_decoration_fshiftleft_int.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -3925,7 +3925,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.4 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/spv1.4/no_integer_wrap_decoration_fshiftleft_uint.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -3933,7 +3933,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.4 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/spv1.4/no_integer_wrap_decoration_fshiftleft_uint.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -3941,7 +3941,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.4 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/spv1.4/no_integer_wrap_decoration_fsub_int.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -3949,7 +3949,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.4 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/spv1.4/no_integer_wrap_decoration_fsub_int.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -3957,7 +3957,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.4 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/spv1.4/no_integer_wrap_decoration_fsub_uint.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -3965,7 +3965,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.4 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/spv1.4/no_integer_wrap_decoration_fsub_uint.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -3973,7 +3973,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.4 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/spv1.4/nonwriteable_decoration_function_storage_class.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -3981,7 +3981,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.4 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/spv1.4/nonwriteable_decoration_function_storage_class.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -3989,7 +3989,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.4 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/spv1.4/ptrops.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -3997,7 +3997,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.4 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/spv1.4/ptrops.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -4005,7 +4005,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.4 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/spv1.4/select_struct.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -4013,7 +4013,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.4 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/spv1.4/select_struct.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -4021,7 +4021,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.4 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/spv1.4/usersemantic_decoratestring.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -4029,7 +4029,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.4 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/spv1.4/usersemantic_decoratestring.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -4037,7 +4037,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.4 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/spv1.4/usersemantic_memberdecoratestring.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -4045,7 +4045,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.4 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/spv1.4/usersemantic_memberdecoratestring.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -4053,7 +4053,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.5 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/spv1.5/basic.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -4061,7 +4061,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.5 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/spv1.5/basic.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -4069,7 +4069,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.6 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/spv1.6/basic.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -4077,7 +4077,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.6 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/spv1.6/basic.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -4085,7 +4085,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.6 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/spv1.6/image_operand_nontemporal.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -4093,7 +4093,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.6 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/spv1.6/image_operand_nontemporal.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -4101,7 +4101,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.6 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/spv1.6/uniformdecoration_uniform.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -4109,7 +4109,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.6 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/spv1.6/uniformdecoration_uniform.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -4117,7 +4117,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.6 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/spv1.6/uniformdecoration_uniformid.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -4125,7 +4125,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.6 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/spv1.6/uniformdecoration_uniformid.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -4133,7 +4133,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/undef_char_simple.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -4141,7 +4141,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/undef_char_simple.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -4149,7 +4149,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/undef_double_simple.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -4157,7 +4157,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/undef_double_simple.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -4165,7 +4165,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/undef_false_simple.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -4173,7 +4173,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/undef_false_simple.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -4181,7 +4181,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/undef_float_simple.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -4189,7 +4189,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/undef_float_simple.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -4197,7 +4197,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/undef_half_simple.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -4205,7 +4205,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/undef_half_simple.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -4213,7 +4213,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/undef_int3_simple.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -4221,7 +4221,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/undef_int3_simple.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -4229,7 +4229,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/undef_int4_simple.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -4237,7 +4237,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/undef_int4_simple.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -4245,7 +4245,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/undef_int_simple.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -4253,7 +4253,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/undef_int_simple.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -4261,7 +4261,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/undef_long_simple.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -4269,7 +4269,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/undef_long_simple.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -4277,7 +4277,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/undef_short_simple.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -4285,7 +4285,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/undef_short_simple.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -4293,7 +4293,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/undef_struct_int_char_simple.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -4301,7 +4301,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/undef_struct_int_char_simple.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -4309,7 +4309,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/undef_struct_int_float_simple.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -4317,7 +4317,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/undef_struct_int_float_simple.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -4325,7 +4325,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/undef_struct_struct_simple.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -4333,7 +4333,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/undef_struct_struct_simple.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -4341,7 +4341,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/undef_true_simple.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -4349,7 +4349,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/undef_true_simple.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -4357,7 +4357,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/undef_uchar_simple.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -4365,7 +4365,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/undef_uchar_simple.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -4373,7 +4373,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/undef_uint_simple.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -4381,7 +4381,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/undef_uint_simple.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -4389,7 +4389,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/undef_ulong_simple.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -4397,7 +4397,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/undef_ulong_simple.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -4405,7 +4405,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/undef_ushort_simple.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -4413,7 +4413,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/undef_ushort_simple.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -4421,7 +4421,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/unreachable_simple.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -4429,7 +4429,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/unreachable_simple.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -4437,7 +4437,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/vector_char16_extract.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -4445,7 +4445,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/vector_char16_extract.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -4453,7 +4453,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/vector_char16_insert.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -4461,7 +4461,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/vector_char16_insert.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -4469,7 +4469,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/vector_double2_extract.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -4477,7 +4477,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/vector_double2_extract.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -4485,7 +4485,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/vector_double2_insert.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -4493,7 +4493,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/vector_double2_insert.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -4501,7 +4501,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/vector_float4_extract.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -4509,7 +4509,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/vector_float4_extract.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -4517,7 +4517,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/vector_float4_insert.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -4525,7 +4525,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/vector_float4_insert.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -4533,7 +4533,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/vector_half8_extract.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -4541,7 +4541,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/vector_half8_extract.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -4549,7 +4549,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/vector_half8_insert.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -4557,7 +4557,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/vector_half8_insert.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -4565,7 +4565,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/vector_int4_extract.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -4573,7 +4573,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/vector_int4_extract.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -4581,7 +4581,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/vector_int4_insert.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -4589,7 +4589,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/vector_int4_insert.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -4597,7 +4597,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/vector_long2_extract.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -4605,7 +4605,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/vector_long2_extract.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -4613,7 +4613,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/vector_long2_insert.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -4621,7 +4621,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/vector_long2_insert.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -4629,7 +4629,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/vector_times_scalar_double.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -4637,7 +4637,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/vector_times_scalar_double.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -4645,7 +4645,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/vector_times_scalar_float.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -4653,7 +4653,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/vector_times_scalar_float.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -4661,7 +4661,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/vector_times_scalar_half.spvasm32"],
     output_extension: "spv32",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 gensrcs {
@@ -4669,7 +4669,7 @@ gensrcs {
     cmd: "$(location) --target-env spv1.0 $(in) -o $(out)",
     srcs: ["test_conformance/spirv_new/spirv_asm/vector_times_scalar_half.spvasm64"],
     output_extension: "spv64",
-    tools: ["//external/SPIRV-Tools:spirv-as"],
+    tools: ["spirv-as"],
 }
 
 filegroup {
