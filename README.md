@@ -50,6 +50,10 @@
 
 # Supported projects
 
+Supported projects are not supposed to work with any version of the project/Android. They have been tested with the project version in the corresponding `checkout.sh` script (used in continuous integration) & Android top-of-tree (not publicly available) at the time of submission/update of the `checkout.sh` script.
+
+For any other version, supported projects are expected to work, but might require slight changes.
+
 | Project | Ninja Generator | Targets |
 |-|-|-|
 | [angle](https://github.com/google/angle) (WIP) | `GN` | `libEGL_angle.so`, `libGLESv2_angle.so`, `libGLESv1_CM_angle.so` |
@@ -58,12 +62,12 @@
 | [clvk](https://github.com/kpet/clvk) | `CMake` | `libclvk.so` |
 | [fwupd](https://github.com/fwupd/fwupd.git) (WIP) | `Meson` | `fwupdmgr` & `fwupd-binder` |
 | [libclc](https://libclc.llvm.org/) | `CMake` | `clspv` dependencies |
-| [llvm-project](https://github.com/llvm/llvm-project) | `CMake` | `clvk`, `clspv` dependencies & `libclc` dependencies |
+| [llvm-project](https://github.com/llvm/llvm-project) | `CMake` | `clvk`, `clspv` & `libclc` dependencies |
 | [mesa](https://www.mesa3d.org/) | `meson` | `libgallium_dri.so`, `libglapi.so`, `libEGL_mesa.so`, `libGLESv2_mesa.so`, `libGLESv1_CM_mesa.so`, `libvulkan_${VENDOR}.so` |
 | [OpenCL-CTS](https://github.com/KhronosGroup/OpenCL-CTS) | `CMake` | Every binary in `test_conformance/opencl_conformance_tests_full.csv` |
 | [OpenCL-ICD-Loader](https://github.com/KhronosGroup/OpenCL-ICD-Loader) | `CMake` | `libOpenCL.so` |
-| [SPIRV-Tools](https://github.com/KhronosGroup/SPIRV-Tools) | `CMake` | `clvk` dependencies & `spirv-val` (for `OpenCL-CTS`) |
-| [SPIRV-Headers](https://github.com/KhronosGroup/SPIRV-Headers) | `CMake` | `clspv` & `SPIRV-Tools` dependencies |
+| [SPIRV-Tools](https://github.com/KhronosGroup/SPIRV-Tools) | `CMake` | `clvk` & `OpenCL-CTS` dependencies |
+| [SPIRV-Headers](https://github.com/KhronosGroup/SPIRV-Headers) | `CMake` | `clspv`, `OpenCL-CTS` & `SPIRV-Tools` dependencies |
 
 ## Adding a project
 
