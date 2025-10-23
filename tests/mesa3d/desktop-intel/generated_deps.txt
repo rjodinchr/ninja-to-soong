@@ -1,6 +1,4 @@
 [
-    "src/gallium/auxiliary/tr_util.c",
-    "src/gallium/auxiliary/tr_util.h",
     "src/git_sha1.h",
     "src/intel/genxml/genX_bits.h",
     "src/intel/shaders/intel_gfx110_shaders_binding.cpp",

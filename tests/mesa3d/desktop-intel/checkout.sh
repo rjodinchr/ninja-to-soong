@@ -5,8 +5,9 @@ set -xe
 [ $# -eq 1 ]
 DEST="$1"
 SCRIPT_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
+DEST_DIR="${DEST}/vendor/google/graphics/mesa3d/desktop-intel"
 
-bash "${SCRIPT_DIR}/../../checkout.sh" https://gitlab.freedesktop.org/mesa/mesa 62f9be9a657a493b8416534feea20294d0e98539 "${DEST}/vendor/google/graphics/mesa3d/desktop-intel"
+bash "${SCRIPT_DIR}/../../checkout.sh" https://gitlab.freedesktop.org/mesa/mesa 62f9be9a657a493b8416534feea20294d0e98539 "${DEST_DIR}"
 
 for patch in \
     "mesa-0719638dfdc.patch" \
@@ -15,9 +16,10 @@ for patch in \
     "mesa-a8ab696033e.patch" \
     "mesa-2f9fd1768ae.patch" \
     "mesa-c0f332f1cba.patch" \
+    "mesa-a25e88cd84b.patch" \
     "mesa-c8b10b4512c.patch" 
 do
-    git -C "${DEST}/vendor/google/graphics/mesa3d/desktop-intel" apply "${SCRIPT_DIR}/../patches/${patch}"
+    git -C "${DEST_DIR}" apply "${SCRIPT_DIR}/../patches/${patch}"
 done
 
 MAJOR_VERSION=19
