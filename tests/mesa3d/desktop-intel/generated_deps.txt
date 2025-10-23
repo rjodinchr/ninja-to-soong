@@ -1,6 +1,5 @@
 [
     "src/git_sha1.h",
-    "src/intel/genxml/genX_bits.h",
     "src/intel/shaders/intel_gfx110_shaders_binding.cpp",
     "src/intel/shaders/intel_gfx110_shaders_binding.h",
     "src/intel/shaders/intel_gfx120_shaders_binding.cpp",

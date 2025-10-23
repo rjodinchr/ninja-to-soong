@@ -23,8 +23,6 @@ impl mesa3d_desktop::Mesa3dProject for Mesa3DDesktopIntel {
     fn asset_filter(&self, asset: &Path) -> bool {
         let asset = path_to_string(asset);
         for name in [
-            // unsupported command arguments "$$"
-            "genX_bits.h",
             // vtn_bindgen2
             "_shaders_binding.cpp",
             "_shaders_binding.h",
