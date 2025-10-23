@@ -23,9 +23,6 @@ impl mesa3d_desktop::Mesa3dProject for Mesa3DDesktopIntel {
     fn asset_filter(&self, asset: &Path) -> bool {
         let asset = path_to_string(asset);
         for name in [
-            // https://gitlab.freedesktop.org/mesa/mesa/-/merge_requests/37785
-            "tr_util.c",
-            "tr_util.h",
             // unsupported command arguments "$$"
             "genX_bits.h",
             // vtn_bindgen2
