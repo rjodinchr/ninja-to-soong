@@ -181,6 +181,12 @@ soong_namespace {
                 _ => (),
             }
         }
+        module.update_prop("cmd", |prop| {
+            Ok(match prop {
+                SoongProp::Str(cmd) => SoongProp::Str(cmd.replace("$ ", " ")),
+                _ => prop,
+            })
+        })?;
         Ok(module.add_prop("vendor_available", SoongProp::Bool(true)))
     }
     fn extend_python_binary_host(
