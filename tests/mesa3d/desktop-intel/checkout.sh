@@ -7,7 +7,7 @@ DEST="$1"
 SCRIPT_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
 DEST_DIR="${DEST}/vendor/google/graphics/mesa3d/desktop-intel"
 
-bash "${SCRIPT_DIR}/../../checkout.sh" https://gitlab.freedesktop.org/mesa/mesa 62f9be9a657a493b8416534feea20294d0e98539 "${DEST_DIR}"
+bash "${SCRIPT_DIR}/../../checkout.sh" https://gitlab.freedesktop.org/mesa/mesa ab462ae6b7064ed63b8c94f31d5e3be60dcfede6 "${DEST_DIR}"
 
 for patch in \
     "mesa-0719638dfdc.patch" \
