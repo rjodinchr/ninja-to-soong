@@ -4,6 +4,8 @@
 use super::*;
 use std::str;
 
+const DEFAULTS: &str = "libclc-defaults";
+
 #[derive(Default)]
 pub struct LibCLC {
     src_path: PathBuf,
@@ -59,7 +61,31 @@ impl Project for LibCLC {
             .map(|tool| path_to_string(strip_prefix(tool, "llvm-project")))
             .collect();
 
-        package.print(ctx)
+        package
+            .add_raw_suffix(&format!(
+                r#"
+cc_genrule_defaults {{
+    name: "{DEFAULTS}",
+    srcs: [
+        "CMakeLists.txt",
+        "opencl/include/*.h",
+        "opencl/include/**/*.h",
+        "opencl/include/**/*.inc",
+        "opencl/lib/generic/*.h",
+        "opencl/lib/generic/**/*.h",
+        "opencl/lib/generic/**/*.inc",
+        "opencl/lib/clspv/**/*.inc",
+        "clc/include/clc/*.h",
+        "clc/include/clc/**/*.h",
+        "clc/include/clc/**/*.inc",
+        "clc/lib/generic/**/*.h",
+        "clc/lib/generic/**/*.inc",
+    ],
+    vendor_available: true,
+}}
+"#
+            ))
+            .print(ctx)
     }
 
     fn get_deps(&self, _dep: Dep) -> Vec<NinjaTargetToGen> {
@@ -100,26 +126,7 @@ impl Project for LibCLC {
                     );
                 }
                 module.update_prop("cmd", |_| Ok(SoongProp::Str(cmd.clone())))?;
-                module
-                    .extend_prop(
-                        "srcs",
-                        vec![
-                            "CMakeLists.txt",
-                            "opencl/include/*.h",
-                            "opencl/include/**/*.h",
-                            "opencl/include/**/*.inc",
-                            "opencl/lib/generic/*.h",
-                            "opencl/lib/generic/**/*.h",
-                            "opencl/lib/generic/**/*.inc",
-                            "opencl/lib/clspv/**/*.inc",
-                            "clc/include/clc/*.h",
-                            "clc/include/clc/**/*.h",
-                            "clc/include/clc/**/*.inc",
-                            "clc/lib/generic/**/*.h",
-                            "clc/lib/generic/**/*.inc",
-                        ],
-                    )?
-                    .add_prop("vendor_available", SoongProp::Bool(true))
+                module.add_prop("defaults", SoongProp::VecStr(vec![String::from(DEFAULTS)]))
             }
             _ => module,
         })
