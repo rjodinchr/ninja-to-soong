@@ -126,3 +126,7 @@ pub fn get_sources(inputs: &Vec<PathBuf>, build_path: &Path) -> Vec<PathBuf> {
         .map(|input| canonicalize_path(input, build_path))
         .collect()
 }
+
+pub fn get_cmd(cmd: &str) -> String {
+    cmd.replace("$ ", " ")
+}

@@ -7,14 +7,14 @@ use super::*;
 pub struct MesonNinjaTarget(NinjaTargetCommon);
 
 impl MesonNinjaTarget {
-    fn get_command(&self, command: &String) -> String {
+    fn get_command(&self, command: &str) -> String {
         let Some(split) = command.split_once(" -- ") else {
-            return command.clone();
+            return common::get_cmd(command);
         };
         let Some(capture) = split.0.split_once("--capture ") else {
-            return String::from(split.1);
+            return common::get_cmd(split.1);
         };
-        return String::from(split.1)
+        return common::get_cmd(split.1)
             + " > "
             + if let Some(output) = capture.1.split_once(" ") {
                 output.0
