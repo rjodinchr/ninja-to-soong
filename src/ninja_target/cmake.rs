@@ -36,7 +36,7 @@ impl NinjaTarget for CmakeNinjaTarget {
                     NinjaRule::None
                 } else {
                     NinjaRule::CustomCommand(NinjaRuleCmd {
-                        command: String::from(command),
+                        command: common::get_cmd(command),
                         rsp_info: None,
                     })
                 }

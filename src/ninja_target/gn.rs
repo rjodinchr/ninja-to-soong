@@ -31,9 +31,10 @@ impl NinjaTarget for GnNinjaTarget {
         } else if self.common.rule == STATIC_LIB {
             NinjaRule::StaticLibrary
         } else if self.common.rule.ends_with("__rule") {
-            let Some(command) = self.rule_cmd.clone() else {
+            let Some(mut command) = self.rule_cmd.clone() else {
                 return error!("No command in: {self:#?}");
             };
+            command.command = common::get_cmd(&command.command);
             NinjaRule::CustomCommand(command)
         } else {
             NinjaRule::None
