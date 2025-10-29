@@ -104,7 +104,6 @@ where
         }
 
         package.filter_gen_deps(MESON_GENERATED, &gen_deps)?;
-        common::clean_gen_deps(&gen_deps, &build_path, ctx)?;
         common::copy_gen_deps(gen_deps, MESON_GENERATED, &build_path, ctx, self)?;
 
         let default_module = self.get_default_module(&package)?;
