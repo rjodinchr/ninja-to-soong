@@ -87,6 +87,16 @@ impl mesa3d_desktop::Mesa3dProject for Mesa3DDesktopIntel {
                     "mesa3d_desktop-intel_libgpudataproducer",
                     "libgpudataproducer"
                 ),
+                target!(
+                    "src/intel/tools/aubinator_error_decode",
+                    "mesa3d_desktop-intel_tools_aubinator_error_decode",
+                    "aubinator_error_decode"
+                ),
+                target!(
+                    "src/intel/tools/intel_hang_replay",
+                    "mesa3d_desktop-intel_tools_intel_hang_replay",
+                    "intel_hang_replay"
+                ),
             ]),
             parse_build_ninja::<MesonNinjaTarget>(&build_path)?,
             &self.src_path,
@@ -114,7 +124,11 @@ impl mesa3d_desktop::Mesa3dProject for Mesa3DDesktopIntel {
 cc_defaults {{
     name: "{RAW_DEFAULTS}",
     soc_specific: true,
-    static_libs: ["libperfetto_client_experimental"],
+    static_libs: [
+        "libexpat",
+        "libperfetto_client_experimental",
+        "libz",
+    ],
     header_libs: [
         "libcutils_headers",
         "libhardware_headers",
