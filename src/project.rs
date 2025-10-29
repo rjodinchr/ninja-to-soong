@@ -29,7 +29,8 @@ define_ProjectId!(
     (OpenclIcdLoader, opencl_icd_loader),
     (SpirvHeaders, spirv_headers),
     (SpirvTools, spirv_tools),
-    (UnitTest, unittest)
+    (UnitTest, unittest),
+    (Vkoverhead, vkoverhead)
 );
 impl ProjectId {
     pub fn get_deps(&self) -> Vec<ProjectId> {
