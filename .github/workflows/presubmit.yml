@@ -48,7 +48,7 @@ jobs:
             projects="fwupd"
             echo "prefix=N2S_NDK=android-ndk-r27c" >> $GITHUB_ENV
           elif [ "${{ matrix.project }}" == "mesa" ]; then
-            projects="mesa3d/desktop-intel mesa3d/desktop-panvk"
+            projects="mesa3d/desktop-intel mesa3d/desktop-panvk vkoverhead"
           elif [ "${{ matrix.project }}" == "angle" ]; then
             key_folders="${key_folders} tests/angle/build-*"
             projects="angle"

@@ -68,6 +68,7 @@ For any other version, supported projects are expected to work, but might requir
 | [OpenCL-ICD-Loader](https://github.com/KhronosGroup/OpenCL-ICD-Loader) | `CMake` | `libOpenCL.so` |
 | [SPIRV-Tools](https://github.com/KhronosGroup/SPIRV-Tools) | `CMake` | `clvk` & `OpenCL-CTS` dependencies |
 | [SPIRV-Headers](https://github.com/KhronosGroup/SPIRV-Headers) | `CMake` | `clspv`, `OpenCL-CTS` & `SPIRV-Tools` dependencies |
+| [vkoverhead](https://github.com/zmike/vkoverhead) | `Meson` | `vkoverhead` |
 
 ## Adding a project
 
