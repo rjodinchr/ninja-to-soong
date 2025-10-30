@@ -37,7 +37,7 @@ meson setup \
     -Degl-lib-suffix=_mesa \
     -Dgles-lib-suffix=_mesa \
     -Dcpp_rtti=false \
-    -Dtools= \
+    -Dtools=intel \
     -Dvulkan-drivers=intel \
     -Dgallium-drivers=iris \
     -Dgallium-rusticl=false \
