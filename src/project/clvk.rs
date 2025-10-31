@@ -5,7 +5,76 @@ use super::*;
 
 #[derive(Default)]
 pub struct Clvk {
+    patched_assets: std::collections::HashMap<String, String>,
     gen_libs: HashMap<Dep, Vec<String>>,
+}
+
+impl Clvk {
+    fn get_patch_modules_from(
+        &mut self,
+        dir: PathBuf,
+        src_path: &Path,
+        patch_root_path: &Path,
+    ) -> Vec<SoongModule> {
+        let patch_full_path = dir.join("patch");
+        if patch_full_path.exists() {
+            let patch_string = path_to_string(strip_prefix(patch_full_path, src_path));
+            let name = path_to_id(strip_prefix(&dir, src_path.join("android").join("patches")));
+
+            let input_path = path_to_string(strip_prefix(&dir, patch_root_path));
+            let input = match self.patched_assets.get(&input_path) {
+                Some(input) => Some(format!(":{input}")),
+                None => {
+                    if src_path.join(&input_path).exists() {
+                        Some(path_to_string(&input_path))
+                    } else {
+                        None
+                    }
+                }
+            };
+            self.patched_assets.insert(input_path, name.clone());
+            let mut inputs = vec![patch_string.clone()];
+            let cmd = match input {
+                Some(input) => {
+                    inputs.push(input.clone());
+                    format!("cp $(location {input}) . && ")
+                }
+                None => String::new(),
+            } + &format!(
+                "patch -i $(location {patch_string}) && cp {0} $(out)",
+                file_name(&dir)
+            );
+            return vec![SoongModule::new("cc_genrule")
+                .add_prop("name", SoongProp::Str(name))
+                .add_prop("cmd", SoongProp::Str(cmd))
+                .add_prop("srcs", SoongProp::VecStr(inputs))
+                .add_prop("out", SoongProp::VecStr(vec![file_name(&dir)]))
+                .add_prop("soc_specific", SoongProp::Bool(true))];
+        }
+        let mut modules = Vec::new();
+        for subdir in ls_dir(&dir) {
+            modules.extend(self.get_patch_modules_from(subdir, src_path, patch_root_path));
+        }
+        return modules;
+    }
+    fn get_copy_module_for(&mut self, asset: &Path, src_path: &Path) -> Option<SoongModule> {
+        let asset = strip_prefix(asset, src_path);
+        let asset_str = path_to_string(&asset);
+        if !self.patched_assets.contains_key(&asset_str) {
+            let name = path_to_id(asset.clone());
+            self.patched_assets.insert(asset_str.clone(), name.clone());
+            Some(
+                SoongModule::new("cc_genrule")
+                    .add_prop("name", SoongProp::Str(name))
+                    .add_prop("cmd", SoongProp::Str(String::from("cp $(in) $(out)")))
+                    .add_prop("srcs", SoongProp::VecStr(vec![asset_str]))
+                    .add_prop("out", SoongProp::VecStr(vec![file_name(&asset)]))
+                    .add_prop("soc_specific", SoongProp::Bool(true)),
+            )
+        } else {
+            None
+        }
+    }
 }
 
 impl Project for Clvk {
@@ -40,6 +109,25 @@ impl Project for Clvk {
             )?;
         }
 
+        let mut patch_modules = Vec::new();
+        let mut dirs = ls_dir(&src_path.join("android").join("patches"));
+        if dirs.len() > 0 {
+            dirs.sort_unstable();
+            for dir in dirs {
+                patch_modules.extend(self.get_patch_modules_from(dir.clone(), &src_path, &dir));
+            }
+            for src in ls_regex(&src_path.join("src/*.cpp")) {
+                if let Some(module) = self.get_copy_module_for(&src, &src_path) {
+                    patch_modules.push(module);
+                }
+            }
+            for src in ls_regex(&src_path.join("src/*.hpp")) {
+                if let Some(module) = self.get_copy_module_for(&src, &src_path) {
+                    patch_modules.push(module);
+                }
+            }
+        }
+
         const LIBCLVK: &str = "libclvk";
         let mut package = SoongPackage::new(
             &[],
@@ -64,6 +152,10 @@ impl Project for Clvk {
         .add_visibilities(vec![
             ProjectId::OpenclIcdLoader.get_visibility(projects_map)?
         ]);
+
+        for module in patch_modules {
+            package = package.add_module(module);
+        }
 
         let gen_libs = package.get_dep_libs();
         for (dep, prefix) in [
@@ -132,7 +224,47 @@ prebuilt_etc {{
                 SoongProp::Str(String::from("android/simple_test.xml")),
             );
         } else if target.ends_with("libOpenCL.so") {
-            module = module.extend_prop("shared_libs", vec!["libz"])?;
+            module.update_prop("srcs", |prop| match prop {
+                SoongProp::VecStr(srcs) => Ok(SoongProp::VecStr(
+                    srcs.into_iter()
+                        .filter(|src| !self.patched_assets.contains_key(src))
+                        .collect(),
+                )),
+                _ => Ok(prop),
+            })?;
+            module = module
+                .extend_prop("shared_libs", vec!["libz"])?
+                .extend_prop("cflags", vec!["-DCL_ENABLE_BETA_EXTENSIONS"])?
+                .add_prop(
+                    "generated_sources",
+                    SoongProp::VecStr(
+                        self.patched_assets
+                            .iter()
+                            .filter_map(|(asset, module_id)| {
+                                if asset.ends_with(".cpp") {
+                                    Some(module_id.clone())
+                                } else {
+                                    None
+                                }
+                            })
+                            .collect(),
+                    ),
+                )
+                .add_prop(
+                    "generated_headers",
+                    SoongProp::VecStr(
+                        self.patched_assets
+                            .iter()
+                            .filter_map(|(asset, module_id)| {
+                                if !asset.ends_with(".cpp") {
+                                    Some(module_id.clone())
+                                } else {
+                                    None
+                                }
+                            })
+                            .collect(),
+                    ),
+                );
         }
         Ok(module
             .add_prop("soc_specific", SoongProp::Bool(true))
