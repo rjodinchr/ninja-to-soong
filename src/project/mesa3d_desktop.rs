@@ -89,7 +89,7 @@ where
             .collect();
 
         common::ninja_build(&build_path, &gen_deps, ctx)?;
-        // Clean libdrm and expat to prevent Soong from parsing blueprints that 
+        // Clean libdrm and expat to prevent Soong from parsing blueprints that
         // came with it.
         if !ctx.skip_gen_ninja {
             for libname in ["libdrm", "expat"] {
