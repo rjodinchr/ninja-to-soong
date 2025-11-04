@@ -17,7 +17,8 @@ for patch in \
     "mesa-2f9fd1768ae.patch" \
     "mesa-c0f332f1cba.patch" \
     "mesa-a25e88cd84b.patch" \
-    "mesa-c8b10b4512c.patch" 
+    "mesa-c8b10b4512c.patch" \
+    "mesa-be9e0f2f6a3.patch"
 do
     git -C "${DEST_DIR}" apply "${SCRIPT_DIR}/../patches/${patch}"
 done
