@@ -24,7 +24,6 @@ pub trait Mesa3dProject {
         let str = path_to_string(asset);
         self.asset_filter(asset)
             && !str.contains("libdrm") // dependency
-            && !str.contains("expat") // dependency
             && !str.starts_with("src/android_stub") // dependencies
             && !str.ends_with("git_sha1.h") // git
     }
@@ -91,7 +90,7 @@ where
 
         common::ninja_build(&build_path, &gen_deps, ctx)?;
         // Clean libdrm and expat to prevent Soong from parsing blueprints that 
-        // came with it
+        // came with it.
         if !ctx.skip_gen_ninja {
             for libname in ["libdrm", "expat"] {
                 execute_cmd!(

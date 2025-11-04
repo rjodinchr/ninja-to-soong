@@ -31,6 +31,10 @@ impl mesa3d_desktop::Mesa3dProject for Mesa3DDesktopIntel {
                 return false;
             }
         }
+        if asset.contains("expat") {
+            return false;
+        }
+
         true
     }
 
