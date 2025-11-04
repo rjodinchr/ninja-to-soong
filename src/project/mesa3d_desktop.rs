@@ -89,18 +89,21 @@ where
             .collect();
 
         common::ninja_build(&build_path, &gen_deps, ctx)?;
-        // Clean libdrm to prevent Soong from parsing blueprints that came with it
+        // Clean libdrm and expat to prevent Soong from parsing blueprints that
+        // came with it.
         if !ctx.skip_gen_ninja {
-            execute_cmd!(
-                "git",
-                [
-                    "-C",
-                    &path_to_string(&src_path),
-                    "clean",
-                    "-xfd",
-                    "subprojects/libdrm*"
-                ]
-            )?;
+            for libname in ["libdrm", "expat"] {
+                execute_cmd!(
+                    "git",
+                    [
+                        "-C",
+                        &path_to_string(&src_path),
+                        "clean",
+                        "-xfd",
+                        format!("subprojects/{}*", libname).as_str()
+                    ]
+                )?;
+            }
         }
 
         package.filter_gen_deps(MESON_GENERATED, &gen_deps)?;
