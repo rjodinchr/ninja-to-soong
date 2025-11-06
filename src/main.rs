@@ -34,7 +34,9 @@ fn generate_project(
 
         print_debug!("Writing soong file...");
         let file_path = if !ctx.copy_to_aosp {
-            ctx.get_test_path(project.as_ref()).join("Android.bp.n2s")
+            let test_path = ctx.get_test_path(project.as_ref());
+            create_dir(&test_path)?;
+            test_path.join("Android.bp.n2s")
         } else {
             ctx.get_android_path(project.as_ref())?.join("Android.bp")
         };
