@@ -18,7 +18,12 @@ fn get_libs(libs: &str, target: Library) -> Vec<PathBuf> {
             if lib.is_empty() || lib == "-pthread" {
                 return None;
             } else if let Some(library) = lib.strip_prefix("-l") {
-                if library == "dl" || library == "m" || library == "c" {
+                if library == "dl"
+                    || library == "m"
+                    || library == "c"
+                    || library == "pthread"
+                    || library == "atomic"
+                {
                     return None;
                 }
                 if state == Some(target.clone()) || (target == Library::Shared && state.is_none()) {

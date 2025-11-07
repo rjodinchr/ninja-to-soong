@@ -323,9 +323,6 @@ cc_test {{
         !include.ends_with("OpenCL-Headers")
             && path_to_string(include).starts_with(&path_to_string(&self.src_path))
     }
-    fn filter_lib(&self, lib: &str) -> bool {
-        !lib.contains("atomic")
-    }
     fn filter_link_flag(&self, _flag: &str) -> bool {
         false
     }

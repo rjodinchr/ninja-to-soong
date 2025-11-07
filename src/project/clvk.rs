@@ -292,7 +292,7 @@ prebuilt_etc {{
         include.ends_with("src")
     }
     fn filter_lib(&self, lib: &str) -> bool {
-        lib != "libatomic" && !lib.contains("gtest")
+        !lib.contains("gtest")
     }
     fn filter_link_flag(&self, flag: &str) -> bool {
         flag == "-Wl,-Bsymbolic"
