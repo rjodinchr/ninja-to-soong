@@ -198,9 +198,6 @@ cc_defaults {{
     fn filter_gen_header(&self, _header: &Path) -> bool {
         false
     }
-    fn filter_lib(&self, lib: &str) -> bool {
-        !lib.contains("atomic")
-    }
     fn filter_link_flag(&self, _flag: &str) -> bool {
         false
     }

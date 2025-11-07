@@ -165,9 +165,6 @@ impl Project for Fwupd {
     fn filter_include(&self, include: &Path) -> bool {
         include != self.build_path.join("subprojects/libxmlb/src/libxmlb")
     }
-    fn filter_lib(&self, lib: &str) -> bool {
-        !lib.contains("libatomic")
-    }
     fn filter_link_flag(&self, _flag: &str) -> bool {
         false
     }
