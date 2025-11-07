@@ -22,6 +22,7 @@ define_ProjectId!(
     (Fwupd, fwupd),
     (LibCLC, libclc),
     (LlvmProject, llvm_project),
+    (MediaDriver, media_driver),
     (Mesa3DDesktopIntel, mesa3d_desktop_intel),
     (Mesa3DDesktopPanVK, mesa3d_desktop_panvk),
     (OpenclCts, opencl_cts),

@@ -63,6 +63,7 @@ For any other version, supported projects are expected to work, but might requir
 | [fwupd](https://github.com/fwupd/fwupd.git) (WIP) | `Meson` | `fwupdmgr` & `fwupd-binder` |
 | [libclc](https://libclc.llvm.org/) | `CMake` | `clspv` dependencies |
 | [llvm-project](https://github.com/llvm/llvm-project) | `CMake` | `clvk`, `clspv` & `libclc` dependencies |
+| [media-driver](https://github.com/intel/media-driver) | `CMake` | `libiHD_drv_video.so` |
 | [mesa](https://www.mesa3d.org/) | `meson` | `libgallium_dri.so`, `libglapi.so`, `libEGL_mesa.so`, `libGLESv2_mesa.so`, `libGLESv1_CM_mesa.so`, `libvulkan_${VENDOR}.so` |
 | [OpenCL-CTS](https://github.com/KhronosGroup/OpenCL-CTS) | `CMake` | Every binary in `test_conformance/opencl_conformance_tests_full.csv` |
 | [OpenCL-ICD-Loader](https://github.com/KhronosGroup/OpenCL-ICD-Loader) | `CMake` | `libOpenCL.so` |

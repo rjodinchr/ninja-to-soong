@@ -26,7 +26,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        project: [OpenCL, fwupd, mesa, angle, unittests, external-project]
+        project: [OpenCL, fwupd, media-driver, mesa, angle, unittests, external-project]
     steps:
       - uses: actions/checkout@v5
         with:
@@ -47,6 +47,8 @@ jobs:
             key_folders="${key_folders} tests/fwupd/build.ninja"
             projects="fwupd"
             echo "prefix=N2S_NDK=android-ndk-r27c" >> $GITHUB_ENV
+          elif [ "${{ matrix.project }}" == "media-driver" ]; then
+            projects="media-driver"
           elif [ "${{ matrix.project }}" == "mesa" ]; then
             projects="mesa3d/desktop-intel mesa3d/desktop-panvk vkoverhead"
           elif [ "${{ matrix.project }}" == "angle" ]; then
