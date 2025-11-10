@@ -7,7 +7,7 @@ const MESA_PYTHON_DEFAULT: &str = "mesa_python_default";
 
 pub trait Mesa3dProject {
     fn get_name(&self) -> &'static str;
-    fn get_subprojects_path(&self) -> String;
+    fn get_src_path(&self) -> PathBuf;
     fn create_package(
         &mut self,
         ctx: &Context,
@@ -198,7 +198,12 @@ soong_namespace {
         Some(file_name(output))
     }
     fn map_lib(&self, library: &Path) -> Option<PathBuf> {
-        if library.starts_with("src/android_stub")
+        let libname = file_name(library);
+        if let Some(suffix) = libname.strip_prefix("libSPIRV-Tools") {
+            Some(PathBuf::from(
+                String::from("SPIRV-Tools_source_") + &suffix[1..suffix.len() - 1] + &libname,
+            ))
+        } else if library.starts_with("src/android_stub")
             || (!library.starts_with("src") && !library.starts_with("subprojects/perfetto"))
         {
             Some(PathBuf::from(file_stem(library)))
@@ -211,7 +216,9 @@ soong_namespace {
         cflag == "-mclflushopt"
     }
     fn filter_include(&self, include: &Path) -> bool {
-        !path_to_string(include).contains(&self.get_subprojects_path())
+        let src_path = self.get_src_path();
+        let subprojects_path = path_to_string(src_path.join("subprojects"));
+        !path_to_string(include).contains(&subprojects_path) && include.starts_with(src_path)
     }
     fn filter_link_flag(&self, flag: &str) -> bool {
         flag == "-Wl,--build-id=sha1"

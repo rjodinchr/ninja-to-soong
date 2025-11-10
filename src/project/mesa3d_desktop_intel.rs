@@ -16,8 +16,8 @@ impl mesa3d_desktop::Mesa3dProject for Mesa3DDesktopIntel {
         "mesa3d/desktop-intel"
     }
 
-    fn get_subprojects_path(&self) -> String {
-        path_to_string(&self.src_path.join("subprojects"))
+    fn get_src_path(&self) -> PathBuf {
+        self.src_path.clone()
     }
 
     fn asset_filter(&self, asset: &Path) -> bool {

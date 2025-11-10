@@ -16,8 +16,8 @@ impl mesa3d_desktop::Mesa3dProject for Mesa3DDesktopPanVK {
         "mesa3d/desktop-panvk"
     }
 
-    fn get_subprojects_path(&self) -> String {
-        path_to_string(&self.src_path.join("subprojects"))
+    fn get_src_path(&self) -> PathBuf {
+        self.src_path.clone()
     }
 
     fn asset_filter(&self, asset: &Path) -> bool {
@@ -46,23 +46,11 @@ impl mesa3d_desktop::Mesa3dProject for Mesa3DDesktopPanVK {
             &["licenses/Apache-2.0", "licenses/MIT", "licenses/BSL-1.0"],
         )
         .generate(
-            NinjaTargetsToGenMap::from(&[
-                target!(
-                    "src/panfrost/vulkan/libvulkan_panfrost.so",
-                    "mesa3d_desktop-panvk_libvulkan_panfrost",
-                    "vulkan.panfrost"
-                ),
-                target!(
-                    "src/tool/pps/pps-producer",
-                    "mesa3d_desktop-panvk_pps-producer",
-                    "pps-producer"
-                ),
-                target!(
-                    "src/tool/pps/libgpudataproducer.so",
-                    "mesa3d_desktop-panvk_libgpudataproducer",
-                    "libgpudataproducer_panfrost"
-                ),
-            ]),
+            NinjaTargetsToGenMap::from(&[target!(
+                "src/gallium/targets/lavapipe/libvulkan_lvp.so",
+                "mesa3d_desktop_panvk_vulkan_lvp",
+                "vulkan.lvp"
+            )]),
             parse_build_ninja::<MesonNinjaTarget>(&build_path)?,
             &self.src_path,
             &ndk_path,
@@ -76,7 +64,10 @@ impl mesa3d_desktop::Mesa3dProject for Mesa3DDesktopPanVK {
     fn get_default_module(&self, package: &SoongPackage) -> Result<SoongModule, String> {
         Ok(SoongModule::new("cc_defaults")
             .add_prop("name", SoongProp::Str(String::from(DEFAULTS)))
-            .add_props(package.get_props("mesa3d_desktop-panvk_pps-producer", vec!["cflags"])?)
+            .add_props(package.get_props(
+                "mesa3d_desktop-panvk_src_x11_libloader_x11_a",
+                vec!["cflags"],
+            )?)
             .add_prop(
                 "defaults",
                 SoongProp::VecStr(vec![String::from(RAW_DEFAULTS)]),
@@ -108,10 +99,12 @@ cc_defaults {{
             _ => Ok(prop),
         })?;
 
-        if target.ends_with("libvulkan_panfrost.so") {
+        let mut defaults = vec![String::from(DEFAULTS)];
+        if target.ends_with("libvulkan_lvp.so") {
             module = module
                 .add_prop("relative_install_path", SoongProp::Str(String::from("hw")))
-                .add_prop("afdo", SoongProp::Bool(true))
+                .add_prop("afdo", SoongProp::Bool(true));
+            defaults.push(CcDefaults::Llvm.str());
         }
 
         let mut cflags = vec![
@@ -132,7 +125,7 @@ cc_defaults {{
             module = module.extend_prop("shared_libs", vec!["libz"])?;
         }
         module
-            .add_prop("defaults", SoongProp::VecStr(vec![String::from(DEFAULTS)]))
+            .add_prop("defaults", SoongProp::VecStr(defaults))
             .extend_prop("cflags", cflags)
     }
 }
