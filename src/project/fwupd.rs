@@ -31,19 +31,17 @@ impl Project for Fwupd {
         self.build_path = ctx.get_temp_path(Path::new(self.get_name()))?;
         let ndk_path = get_ndk_path(ctx)?;
 
-        if !ctx.skip_gen_ninja {
-            execute_cmd!(
-                "bash",
-                [
-                    &path_to_string(ctx.get_script_path(self).join("gen-ninja.sh")),
-                    &path_to_string(&self.src_path),
-                    &path_to_string(&self.build_path),
-                    &path_to_string(&ndk_path),
-                    &path_to_string(ctx.get_test_path(self)),
-                    if ctx.copy_to_aosp { "copy_to_aosp" } else { "" },
-                ]
-            )?;
-        }
+        common::gen_ninja(
+            vec![
+                path_to_string(&self.src_path),
+                path_to_string(&self.build_path),
+                path_to_string(&ndk_path),
+                path_to_string(ctx.get_test_path(self)),
+                String::from(if ctx.copy_to_aosp { "copy_to_aosp" } else { "" }),
+            ],
+            ctx,
+            self,
+        )?;
 
         let mut package = SoongPackage::new(
             &["//visibility:public"],

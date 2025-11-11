@@ -27,16 +27,12 @@ impl Project for LibCLC {
         self.src_path = ctx.get_android_path(self)?;
         let build_path = ctx.get_temp_path(Path::new(self.get_name()))?;
 
-        if !ctx.skip_gen_ninja {
-            execute_cmd!(
-                "bash",
-                [
-                    &path_to_string(ctx.get_script_path(self).join("gen-ninja.sh")),
-                    &path_to_string(&self.src_path),
-                    &path_to_string(&build_path),
-                ]
-            )?;
-        }
+        common::gen_ninja(
+            vec![path_to_string(&self.src_path), path_to_string(&build_path)],
+            ctx,
+            self,
+        )?;
+
         let mut package = SoongPackage::new(
             &[],
             "llvm-project_libclc_license",

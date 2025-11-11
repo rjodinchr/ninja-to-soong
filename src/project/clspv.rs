@@ -29,20 +29,18 @@ impl Project for Clspv {
         self.spirv_headers_path = ProjectId::SpirvHeaders.get_android_path(projects_map, ctx)?;
         self.llvm_project_path = ProjectId::LlvmProject.get_android_path(projects_map, ctx)?;
 
-        if !ctx.skip_gen_ninja {
-            execute_cmd!(
-                "bash",
-                [
-                    &path_to_string(ctx.get_script_path(self).join("gen-ninja.sh")),
-                    &path_to_string(&src_path),
-                    &path_to_string(&self.build_path),
-                    &path_to_string(&ndk_path),
-                    &path_to_string(&self.spirv_headers_path),
-                    &path_to_string(ProjectId::SpirvTools.get_android_path(projects_map, ctx)?),
-                    &path_to_string(&self.llvm_project_path),
-                ]
-            )?;
-        }
+        common::gen_ninja(
+            vec![
+                path_to_string(&src_path),
+                path_to_string(&self.build_path),
+                path_to_string(&ndk_path),
+                path_to_string(&self.spirv_headers_path),
+                path_to_string(ProjectId::SpirvTools.get_android_path(projects_map, ctx)?),
+                path_to_string(&self.llvm_project_path),
+            ],
+            ctx,
+            self,
+        )?;
 
         let mut package = SoongPackage::new(
             &[],

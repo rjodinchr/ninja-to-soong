@@ -65,18 +65,16 @@ where
             script_path.clone()
         };
 
-        if !ctx.skip_gen_ninja {
-            execute_cmd!(
-                "bash",
-                [
-                    &path_to_string(script_path.join("gen-ninja.sh")),
-                    &path_to_string(&src_path),
-                    &path_to_string(&build_path),
-                    &path_to_string(mesa_clc_path),
-                    &path_to_string(&ndk_path)
-                ]
-            )?;
-        }
+        common::gen_ninja(
+            vec![
+                path_to_string(&src_path),
+                path_to_string(&build_path),
+                path_to_string(mesa_clc_path),
+                path_to_string(&ndk_path),
+            ],
+            ctx,
+            self,
+        )?;
 
         const MESON_GENERATED: &str = "meson_generated";
         let mut package =
