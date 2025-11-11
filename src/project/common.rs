@@ -41,6 +41,17 @@ pub fn ninja_build(build_path: &Path, targets: &Vec<PathBuf>, ctx: &Context) -> 
         args.push(path_to_string(target));
     }
     let args: Vec<_> = args.iter().map(|target| target.as_str()).collect();
-    execute_cmd!("ninja", &args)?;
-    Ok(())
+    execute_cmd!("ninja", &args)
+}
+
+pub fn gen_ninja(args: Vec<String>, ctx: &Context, project: &dyn Project) -> Result<(), String> {
+    if ctx.skip_gen_ninja {
+        return Ok(());
+    }
+    let script = path_to_string(ctx.get_script_path(project).join("gen-ninja.sh"));
+    let mut all_args = vec![script.as_str()];
+    for arg in &args {
+        all_args.push(arg.as_str());
+    }
+    execute_cmd!("bash", &all_args)
 }

@@ -46,23 +46,21 @@ impl Angle {
         target_cpu: &str,
     ) -> Result<SoongPackage, String> {
         self.build_path = ctx.get_temp_path(&Path::new(self.get_name()).join(target_cpu))?;
-        if !ctx.skip_gen_ninja {
-            execute_cmd!(
-                "bash",
-                [
-                    &path_to_string(ctx.get_script_path(self).join("gen-ninja.sh")),
-                    &path_to_string(&self.src_path),
-                    &path_to_string(&self.build_path),
-                    &path_to_string(ctx.get_test_path(self)),
-                    target_cpu,
-                    if ctx.skip_build {
-                        "skip_build"
-                    } else {
-                        "build"
-                    },
-                ]
-            )?;
-        }
+        common::gen_ninja(
+            vec![
+                path_to_string(&self.src_path),
+                path_to_string(&self.build_path),
+                path_to_string(ctx.get_test_path(self)),
+                String::from(target_cpu),
+                String::from(if ctx.skip_build {
+                    "skip_build"
+                } else {
+                    "build"
+                }),
+            ],
+            ctx,
+            self,
+        )?;
 
         let targets_so = TARGETS
             .iter()

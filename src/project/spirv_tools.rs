@@ -27,17 +27,15 @@ impl Project for SpirvTools {
         let ndk_path = PathBuf::from("SPIRV-Tools-ndk");
         self.spirv_headers_path = ProjectId::SpirvHeaders.get_android_path(projects_map, ctx)?;
 
-        if !ctx.skip_gen_ninja {
-            execute_cmd!(
-                "bash",
-                [
-                    &path_to_string(ctx.get_script_path(self).join("gen-ninja.sh")),
-                    &path_to_string(&src_path),
-                    &path_to_string(&self.build_path),
-                    &path_to_string(&self.spirv_headers_path),
-                ]
-            )?;
-        }
+        common::gen_ninja(
+            vec![
+                path_to_string(&src_path),
+                path_to_string(&self.build_path),
+                path_to_string(&self.spirv_headers_path),
+            ],
+            ctx,
+            self,
+        )?;
 
         const GENERATED_TABLES_BODY: &str = "SPIRV-Tools_core_tables_body";
         const GENERATED_TABLES_HEADER: &str = "SPIRV-Tools_core_tables_header";

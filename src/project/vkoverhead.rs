@@ -22,17 +22,15 @@ impl Project for Vkoverhead {
         let build_path = ctx.get_temp_path(Path::new(self.get_name()))?;
         let ndk_path = get_ndk_path(ctx)?;
 
-        if !ctx.skip_gen_ninja {
-            execute_cmd!(
-                "bash",
-                [
-                    &path_to_string(ctx.get_script_path(self).join("gen-ninja.sh")),
-                    &path_to_string(&src_path),
-                    &path_to_string(&build_path),
-                    &path_to_string(&ndk_path),
-                ]
-            )?;
-        }
+        common::gen_ninja(
+            vec![
+                path_to_string(&src_path),
+                path_to_string(&build_path),
+                path_to_string(&ndk_path),
+            ],
+            ctx,
+            self,
+        )?;
 
         const MESON_GENERATED: &str = "meson_generated";
         let mut package = SoongPackage::new(

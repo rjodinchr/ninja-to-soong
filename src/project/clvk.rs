@@ -93,21 +93,19 @@ impl Project for Clvk {
         let build_path = ctx.get_temp_path(Path::new(self.get_name()))?;
         let ndk_path = get_ndk_path(ctx)?;
 
-        if !ctx.skip_gen_ninja {
-            execute_cmd!(
-                "bash",
-                [
-                    &path_to_string(ctx.get_script_path(self).join("gen-ninja.sh")),
-                    &path_to_string(&src_path),
-                    &path_to_string(&build_path),
-                    &path_to_string(&ndk_path),
-                    &path_to_string(ProjectId::SpirvHeaders.get_android_path(projects_map, ctx)?),
-                    &path_to_string(ProjectId::SpirvTools.get_android_path(projects_map, ctx)?),
-                    &path_to_string(ProjectId::LlvmProject.get_android_path(projects_map, ctx)?),
-                    &path_to_string(ProjectId::Clspv.get_android_path(projects_map, ctx)?),
-                ]
-            )?;
-        }
+        common::gen_ninja(
+            vec![
+                path_to_string(&src_path),
+                path_to_string(&build_path),
+                path_to_string(&ndk_path),
+                path_to_string(ProjectId::SpirvHeaders.get_android_path(projects_map, ctx)?),
+                path_to_string(ProjectId::SpirvTools.get_android_path(projects_map, ctx)?),
+                path_to_string(ProjectId::LlvmProject.get_android_path(projects_map, ctx)?),
+                path_to_string(ProjectId::Clspv.get_android_path(projects_map, ctx)?),
+            ],
+            ctx,
+            self,
+        )?;
 
         let mut patch_modules = Vec::new();
         let mut dirs = ls_dir(&src_path.join("android").join("patches"));
