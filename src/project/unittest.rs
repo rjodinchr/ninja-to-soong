@@ -51,6 +51,7 @@ impl Project for UnitTest {
         let Some(ninja_generator) = lines.nth(0) else {
             return error!("Could not get ninja_generator from config file");
         };
+        self.targets_to_gen.clear();
         while let Some(target) = lines.nth(0) {
             self.targets_to_gen.push(target!(target));
         }
