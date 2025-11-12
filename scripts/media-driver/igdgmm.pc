@@ -1,0 +1,4 @@
+Name: igdgmm
+Description: Intel(R) Graphics Memory Management Library
+Version: 12.8.0
+Libs: -ligdgmm

@@ -1,0 +1,4 @@
+Name: libva
+Description: Userspace Video Acceleration (VA) core interface
+Version: 1.23.0
+Libs: -lva
