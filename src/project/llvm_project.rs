@@ -114,6 +114,10 @@ impl Project for LlvmProject {
         }
 
         let mut gen_deps = package.get_dep_gen_assets();
+        gen_deps.extend([
+            PathBuf::from("include/llvm/Support/VCSRevision.h"),
+            PathBuf::from("tools/clang/lib/Basic/VCSVersion.inc"),
+        ]);
         common::ninja_build(&build_path, &gen_deps, ctx)?;
         gen_deps.extend(
             [
@@ -126,8 +130,6 @@ impl Project for LlvmProject {
                 "include/llvm/Config/Disassemblers.def",
                 "include/llvm/Config/TargetMCAs.def",
                 "include/llvm/Support/Extension.def",
-                "include/llvm/Support/VCSRevision.h",
-                "tools/clang/lib/Basic/VCSVersion.inc",
                 "tools/clang/include/clang/Basic/Version.inc",
                 "tools/clang/include/clang/Config/config.h",
                 "tools/clang/tools/driver/clang-driver.cpp",

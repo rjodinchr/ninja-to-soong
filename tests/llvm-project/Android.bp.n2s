@@ -51,6 +51,7 @@ cc_library_static {
         "llvm/lib/Support/ARMAttributeParser.cpp",
         "llvm/lib/Support/ARMBuildAttributes.cpp",
         "llvm/lib/Support/ARMWinEH.cpp",
+        "llvm/lib/Support/AllocToken.cpp",
         "llvm/lib/Support/Allocator.cpp",
         "llvm/lib/Support/Atomic.cpp",
         "llvm/lib/Support/AutoConvert.cpp",
@@ -845,6 +846,17 @@ cc_library_static {
 }
 
 cc_library_static {
+    name: "llvm-project_lib_libLLVMDebugInfoDWARFLowLevel_a",
+    srcs: [
+        "llvm/lib/DebugInfo/DWARF/LowLevel/DWARFCFIProgram.cpp",
+        "llvm/lib/DebugInfo/DWARF/LowLevel/DWARFExpression.cpp",
+        "llvm/lib/DebugInfo/DWARF/LowLevel/DWARFUnwindTable.cpp",
+    ],
+    local_include_dirs: ["llvm/lib/DebugInfo/DWARF/LowLevel"],
+    defaults: ["llvm-project-defaults"],
+}
+
+cc_library_static {
     name: "llvm-project_lib_libLLVMIRReader_a",
     srcs: ["llvm/lib/IRReader/IRReader.cpp"],
     local_include_dirs: ["llvm/lib/IRReader"],
@@ -954,6 +966,7 @@ cc_library_static {
 cc_library_static {
     name: "llvm-project_lib_libLLVMAsmParser_a",
     srcs: [
+        "llvm/lib/AsmParser/AsmParserContext.cpp",
         "llvm/lib/AsmParser/LLLexer.cpp",
         "llvm/lib/AsmParser/LLParser.cpp",
         "llvm/lib/AsmParser/Parser.cpp",
@@ -1142,17 +1155,6 @@ cc_library_static {
         "llvm/lib/DebugInfo/GSYM/ObjectFileTransformer.cpp",
     ],
     local_include_dirs: ["llvm/lib/DebugInfo/GSYM"],
-    defaults: ["llvm-project-defaults"],
-}
-
-cc_library_static {
-    name: "llvm-project_lib_libLLVMDebugInfoDWARFLowLevel_a",
-    srcs: [
-        "llvm/lib/DebugInfo/DWARF/LowLevel/DWARFCFIProgram.cpp",
-        "llvm/lib/DebugInfo/DWARF/LowLevel/DWARFExpression.cpp",
-        "llvm/lib/DebugInfo/DWARF/LowLevel/DWARFUnwindTable.cpp",
-    ],
-    local_include_dirs: ["llvm/lib/DebugInfo/DWARF/LowLevel"],
     defaults: ["llvm-project-defaults"],
 }
 
@@ -1664,6 +1666,7 @@ cc_library_static {
         "clang/lib/AST/ExternalASTMerger.cpp",
         "clang/lib/AST/ExternalASTSource.cpp",
         "clang/lib/AST/FormatString.cpp",
+        "clang/lib/AST/InferAlloc.cpp",
         "clang/lib/AST/InheritViz.cpp",
         "clang/lib/AST/ItaniumCXXABI.cpp",
         "clang/lib/AST/ItaniumMangle.cpp",
@@ -1716,6 +1719,27 @@ cc_library_static {
 }
 
 cc_library_static {
+    name: "llvm-project_lib_libclangAnalysisLifetimeSafety_a",
+    srcs: [
+        "clang/lib/Analysis/LifetimeSafety/Checker.cpp",
+        "clang/lib/Analysis/LifetimeSafety/Facts.cpp",
+        "clang/lib/Analysis/LifetimeSafety/FactsGenerator.cpp",
+        "clang/lib/Analysis/LifetimeSafety/LifetimeAnnotations.cpp",
+        "clang/lib/Analysis/LifetimeSafety/LifetimeSafety.cpp",
+        "clang/lib/Analysis/LifetimeSafety/LiveOrigins.cpp",
+        "clang/lib/Analysis/LifetimeSafety/LoanPropagation.cpp",
+        "clang/lib/Analysis/LifetimeSafety/Loans.cpp",
+        "clang/lib/Analysis/LifetimeSafety/Origins.cpp",
+    ],
+    local_include_dirs: [
+        "clang/include",
+        "clang/lib/Analysis/LifetimeSafety",
+        "cmake_generated/tools/clang/include",
+    ],
+    defaults: ["llvm-project-defaults"],
+}
+
+cc_library_static {
     name: "llvm-project_lib_libclangAnalysis_a",
     srcs: [
         "clang/lib/Analysis/AnalysisDeclContext.cpp",
@@ -1735,8 +1759,6 @@ cc_library_static {
         "clang/lib/Analysis/FixitUtil.cpp",
         "clang/lib/Analysis/IntervalPartition.cpp",
         "clang/lib/Analysis/IssueHash.cpp",
-        "clang/lib/Analysis/LifetimeAnnotations.cpp",
-        "clang/lib/Analysis/LifetimeSafety.cpp",
         "clang/lib/Analysis/LiveVariables.cpp",
         "clang/lib/Analysis/MacroExpansionContext.cpp",
         "clang/lib/Analysis/ObjCNoReturn.cpp",
@@ -1765,7 +1787,6 @@ cc_library_static {
     srcs: [
         "clang/lib/ASTMatchers/ASTMatchFinder.cpp",
         "clang/lib/ASTMatchers/ASTMatchersInternal.cpp",
-        "clang/lib/ASTMatchers/GtestMatchers.cpp",
         "clang/lib/ASTMatchers/LowLevelHelpers.cpp",
     ],
     local_include_dirs: [
@@ -2434,6 +2455,7 @@ cc_library_static {
         "llvm/lib/CodeGen/MLRegAllocPriorityAdvisor.cpp",
         "llvm/lib/CodeGen/MachineBasicBlock.cpp",
         "llvm/lib/CodeGen/MachineBlockFrequencyInfo.cpp",
+        "llvm/lib/CodeGen/MachineBlockHashInfo.cpp",
         "llvm/lib/CodeGen/MachineBlockPlacement.cpp",
         "llvm/lib/CodeGen/MachineBranchProbabilityInfo.cpp",
         "llvm/lib/CodeGen/MachineCFGPrinter.cpp",
@@ -2917,6 +2939,7 @@ cc_binary {
         "llvm-project_lib_libclangAPINotes_a",
         "llvm-project_lib_libclangASTMatchers_a",
         "llvm-project_lib_libclangAST_a",
+        "llvm-project_lib_libclangAnalysisLifetimeSafety_a",
         "llvm-project_lib_libclangAnalysis_a",
         "llvm-project_lib_libclangBasic_a",
         "llvm-project_lib_libclangCodeGen_a",
@@ -3463,6 +3486,7 @@ cc_defaults {
         "llvm-project_lib_libclangAPINotes_a",
         "llvm-project_lib_libclangASTMatchers_a",
         "llvm-project_lib_libclangAST_a",
+        "llvm-project_lib_libclangAnalysisLifetimeSafety_a",
         "llvm-project_lib_libclangAnalysis_a",
         "llvm-project_lib_libclangBasic_a",
         "llvm-project_lib_libclangCodeGen_a",
