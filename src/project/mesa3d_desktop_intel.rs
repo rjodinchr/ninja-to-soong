@@ -171,8 +171,12 @@ cc_defaults {{
         if target.ends_with("libmesa_util.a") {
             module = module.extend_prop("shared_libs", vec!["libz"])?;
         }
-        if !["libintel_decoder_brw.a", "libintel_decoder_elk.a"]
-            .contains(&file_name(target).as_str())
+        if ![
+            "libintel_decoder_brw.a",
+            "libintel_decoder_elk.a",
+            "libintel_decoder_stub_brw.a",
+        ]
+        .contains(&file_name(target).as_str())
         {
             module.add_prop("defaults", SoongProp::VecStr(vec![String::from(DEFAULTS)]))
         } else {
