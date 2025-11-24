@@ -7,17 +7,11 @@ DEST="$1"
 SCRIPT_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
 DEST_DIR="${DEST}/vendor/google/graphics/mesa3d/desktop-intel"
 
-bash "${SCRIPT_DIR}/../../checkout.sh" https://gitlab.freedesktop.org/mesa/mesa 3f12436d8018aa5f271ef67125807137995d5916 "${DEST_DIR}"
+bash "${SCRIPT_DIR}/../../checkout.sh" https://gitlab.freedesktop.org/mesa/mesa 96dabf35b88207909f2f386307d658db40218c3a "${DEST_DIR}"
 
 for patch in \
-    "mesa-0719638dfdc.patch" \
-    "mesa-d0de915c0c7.patch" \
-    "mesa-ed0c18ae4aa.patch" \
-    "mesa-a8ab696033e.patch" \
-    "mesa-2f9fd1768ae.patch" \
     "mesa-c0f332f1cba.patch" \
     "mesa-a25e88cd84b.patch" \
-    "mesa-c8b10b4512c.patch" \
     "mesa-be9e0f2f6a3.patch"
 do
     git -C "${DEST_DIR}" apply "${SCRIPT_DIR}/../patches/${patch}"
