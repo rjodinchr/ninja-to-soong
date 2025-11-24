@@ -3504,6 +3504,7 @@ cc_library_shared {
         "libz",
     ],
     static_libs: [
+        "libexpat",
         "libperfetto_client_experimental",
         "mesa3d_desktop-intel_src_c11_impl_libmesa_util_c11_a",
         "mesa3d_desktop-intel_src_compiler_glsl_glcpp_libglcpp_a",
@@ -8000,6 +8001,8 @@ cc_library_static {
         "src/intel/decoder/intel_batch_decoder.c",
         "src/intel/decoder/intel_decoder.c",
     ],
+    shared_libs: ["libz"],
+    static_libs: ["libexpat"],
     local_include_dirs: [
         "include",
         "include/android_stub",
@@ -10610,6 +10613,7 @@ cc_library_shared {
         "libz",
     ],
     static_libs: [
+        "libexpat",
         "libperfetto_client_experimental",
         "mesa3d_desktop-intel_src_c11_impl_libmesa_util_c11_a",
         "mesa3d_desktop-intel_src_compiler_libcompiler_a",
@@ -13161,6 +13165,7 @@ cc_binary {
         "libz",
     ],
     static_libs: [
+        "libexpat",
         "libperfetto_client_experimental",
         "mesa3d_desktop-intel_src_c11_impl_libmesa_util_c11_a",
         "mesa3d_desktop-intel_src_compiler_libcompiler_a",
@@ -13319,6 +13324,7 @@ cc_binary {
         "libz",
     ],
     static_libs: [
+        "libexpat",
         "libperfetto_client_experimental",
         "mesa3d_desktop-intel_src_c11_impl_libmesa_util_c11_a",
         "mesa3d_desktop-intel_src_compiler_libcompiler_a",
@@ -13700,9 +13706,7 @@ cc_defaults {
     name: "mesa3d-desktop-intel-raw-defaults",
     soc_specific: true,
     static_libs: [
-        "libexpat",
         "libperfetto_client_experimental",
-        "libz",
     ],
     header_libs: [
         "libcutils_headers",
