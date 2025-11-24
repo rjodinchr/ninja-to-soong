@@ -102,30 +102,25 @@ cc_genrule_defaults {{
         let Some(cmd_prop) = module.get_prop("cmd") else {
             return Ok(module);
         };
-        Ok(match cmd_prop.get_prop() {
-            SoongProp::Str(mut cmd) => {
-                let src_path = path_to_string(&self.src_path);
-                let include = String::from("-I") + &src_path;
-                while let Some(begin) = cmd.find(&include) {
-                    let include = match str::from_utf8(&cmd.as_bytes()[begin..]).unwrap().find(" ")
-                    {
-                        Some(end) => {
-                            str::from_utf8(&cmd.as_bytes()[(begin + 2)..(begin + end)]).unwrap()
-                        }
-                        None => str::from_utf8(&cmd.as_bytes()[(begin + 2)..]).unwrap(),
-                    };
-                    let local_include = strip_prefix(include, &self.src_path);
-                    cmd = cmd.replace(
-                        include,
-                        &(String::from("$$(dirname $(location CMakeLists.txt))/")
-                            + &path_to_string(&local_include)),
-                    );
-                }
-                module.update_prop("cmd", |_| Ok(SoongProp::Str(cmd.clone())))?;
-                module.add_prop("defaults", SoongProp::VecStr(vec![String::from(DEFAULTS)]))
-            }
-            _ => module,
-        })
+        let SoongProp::Str(mut cmd) = cmd_prop.get_prop() else {
+            return Ok(module);
+        };
+        let src_path = path_to_string(&self.src_path);
+        let include = String::from("-I") + &src_path;
+        while let Some(begin) = cmd.find(&include) {
+            let include = match str::from_utf8(&cmd.as_bytes()[begin..]).unwrap().find(" ") {
+                Some(end) => str::from_utf8(&cmd.as_bytes()[(begin + 2)..(begin + end)]).unwrap(),
+                None => str::from_utf8(&cmd.as_bytes()[(begin + 2)..]).unwrap(),
+            };
+            let local_include = strip_prefix(include, &self.src_path);
+            cmd = cmd.replace(
+                include,
+                &(String::from("$$(dirname $(location CMakeLists.txt))/")
+                    + &path_to_string(&local_include)),
+            );
+        }
+        module.update_prop("cmd", |_| Ok(SoongProp::Str(cmd.clone())))?;
+        Ok(module.add_prop("defaults", SoongProp::VecStr(vec![String::from(DEFAULTS)])))
     }
 
     fn map_tool_module(&self, tool_module: &Path) -> Option<PathBuf> {

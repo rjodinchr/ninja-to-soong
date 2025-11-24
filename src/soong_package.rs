@@ -90,8 +90,11 @@ impl SoongPackage {
                 set.insert(path.clone());
             }
         }
-        let filter = |prop| match prop {
-            SoongProp::VecStr(dirs) => Ok(SoongProp::VecStr(
+        let filter = |prop| {
+            let SoongProp::VecStr(dirs) = prop else {
+                return Ok(prop);
+            };
+            Ok(SoongProp::VecStr(
                 dirs.into_iter()
                     .filter(|dir| {
                         if let Ok(strip) = Path::new(&dir).strip_prefix(prefix) {
@@ -102,8 +105,7 @@ impl SoongPackage {
                         return true;
                     })
                     .collect(),
-            )),
-            _ => Ok(prop),
+            ))
         };
         for module in &mut self.modules {
             module.update_prop("local_include_dirs", filter)?;
@@ -116,16 +118,14 @@ impl SoongPackage {
         let Some(default_names_prop) = module.get_prop("defaults") else {
             return Ok(module);
         };
-        match default_names_prop.get_prop() {
-            SoongProp::VecStr(default_names) => {
-                for default_name in default_names {
-                    let Some(default_module) = self.get_module(&default_name) else {
-                        return Ok(module);
-                    };
-                    module.filter_default(default_module)?;
-                }
-            }
-            _ => return error!("Unexpected property"),
+        let SoongProp::VecStr(default_names) = default_names_prop.get_prop() else {
+            return error!("Unexpected property");
+        };
+        for default_name in default_names {
+            let Some(default_module) = self.get_module(&default_name) else {
+                return Ok(module);
+            };
+            module.filter_default(default_module)?;
         }
         Ok(module)
     }
@@ -149,13 +149,11 @@ impl SoongPackage {
             let Some(module_name_prop) = module.get_prop("name") else {
                 continue;
             };
-            match module_name_prop.get_prop() {
-                SoongProp::Str(module_name) => {
-                    if module_name == name {
-                        return Some(module);
-                    }
-                }
-                _ => continue,
+            let SoongProp::Str(module_name) = module_name_prop.get_prop() else {
+                continue;
+            };
+            if module_name == name {
+                return Some(module);
             }
         }
         None
@@ -167,13 +165,11 @@ impl SoongPackage {
             let Some(module_name_prop) = module.get_prop("name") else {
                 continue;
             };
-            match module_name_prop.get_prop() {
-                SoongProp::Str(module_name) => {
-                    if module_name == name {
-                        return Some(self.modules.remove(idx));
-                    }
-                }
-                _ => continue,
+            let SoongProp::Str(module_name) = module_name_prop.get_prop() else {
+                continue;
+            };
+            if module_name == name {
+                return Some(self.modules.remove(idx));
             }
         }
         None

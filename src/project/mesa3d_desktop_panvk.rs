@@ -97,15 +97,15 @@ cc_defaults {{
     }
 
     fn extend_module(&self, target: &Path, mut module: SoongModule) -> Result<SoongModule, String> {
-        module.update_prop("generated_headers", |prop| match prop {
-            SoongProp::VecStr(mut vec) => {
-                vec.push(path_to_id(
-                    Path::new(mesa3d_desktop::Mesa3dProject::get_name(self))
-                        .join("src/util/shader_stats.h"),
-                ));
-                Ok(SoongProp::VecStr(vec))
-            }
-            _ => Ok(prop),
+        module.update_prop("generated_headers", |prop| {
+            let SoongProp::VecStr(mut vec) = prop else {
+                return Ok(prop);
+            };
+            vec.push(path_to_id(
+                Path::new(mesa3d_desktop::Mesa3dProject::get_name(self))
+                    .join("src/util/shader_stats.h"),
+            ));
+            Ok(SoongProp::VecStr(vec))
         })?;
 
         if target.ends_with("libvulkan_panfrost.so") {
