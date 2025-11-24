@@ -125,9 +125,7 @@ cc_defaults {{
     name: "{RAW_DEFAULTS}",
     soc_specific: true,
     static_libs: [
-        "libexpat",
         "libperfetto_client_experimental",
-        "libz",
     ],
     header_libs: [
         "libcutils_headers",
@@ -162,6 +160,39 @@ cc_defaults {{
 
         if target.ends_with("libvulkan_intel.so") {
             module = module.add_prop("afdo", SoongProp::Bool(true))
+        }
+
+        // Add intel tools dependencies.
+        if target.ends_with("intel_hang_replay") || target.ends_with("aubinator_error_decode") {
+            module = module.extend_prop("static_libs", vec!["libexpat"])?;
+        }
+        if target.ends_with("libintel_decoder.a") || target.ends_with("libgallium_dri.so") {
+            module = module
+                .extend_prop("static_libs", vec!["libexpat"])?
+                .extend_prop("shared_libs", vec!["libz"])?;
+        }
+
+        // Add intel tools dependencies if libvulkan_intel.so depends on the real decoder library.
+        if target.ends_with("libvulkan_intel.so") {
+            let mut contain_decoder = false;
+
+            let optional_static_libs = module.get_prop("static_libs");
+            if !optional_static_libs.is_none() {
+                let static_libs = optional_static_libs.unwrap().get_prop();
+                if let SoongProp::VecStr(libs) = static_libs {
+                    for dep in &libs {
+                        if dep.contains("libintel_decoder_a") {
+                            contain_decoder = true;
+                            break;
+                        }
+                    }
+                }
+            }
+            if contain_decoder {
+                module = module
+                    .extend_prop("static_libs", vec!["libexpat"])?
+                    .extend_prop("shared_libs", vec!["libz"])?;
+            }
         }
 
         let mut cflags = vec!["-Wno-non-virtual-dtor", "-Wno-error"];
