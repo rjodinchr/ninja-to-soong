@@ -2,21 +2,21 @@
 
 set -xe
 
-[ $# -eq 4 ]
+[ $# -eq 5 ]
 
 SCRIPT_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
 SRC_PATH="$1"
 BUILD_PATH="$2"
 NDK_PATH="$3"
-COPY_TO_AOSP="$4"
+TEST_PATH="$4"
+COPY_TO_AOSP="$5"
 
 if [ -z "${COPY_TO_AOSP}" ]; then
     mkdir -p "${BUILD_PATH}"
-    cp -r "${SCRIPT_DIR}/build.ninja" "${BUILD_PATH}"
+    cp -r "${TEST_PATH}/build.ninja" "${BUILD_PATH}"
     exit 0
 fi
 
-SCRIPT_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
 MESON_LOCAL_PATH="${HOME}/.local/share/meson/cross"
 AOSP_AMD64="aosp-amd64"
 ANDROID_PLATFORM="35"
@@ -33,4 +33,4 @@ meson setup \
     "${SRC_PATH}"
 
 REAL_SRC_PATH="$(grep -e '--internal regenerate' ${BUILD_PATH}/build.ninja | sed 's|^.*--internal regenerate \([^ ]*\) .*|\1|')"
-sed "s|../../..${REAL_SRC_PATH}|/ninja-to-soong-fwupd|g" "${BUILD_PATH}/build.ninja" | sed "s|${REAL_SRC_PATH}|/ninja-to-soong-fwupd|g" | sed "s|${HOME}|/home|g" > "${SCRIPT_DIR}/build.ninja"
+sed "s|../../..${REAL_SRC_PATH}|/ninja-to-soong-fwupd|g" "${BUILD_PATH}/build.ninja" | sed "s|${REAL_SRC_PATH}|/ninja-to-soong-fwupd|g" | sed "s|${HOME}|/home|g" > "${TEST_PATH}/build.ninja"

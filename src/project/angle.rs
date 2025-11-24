@@ -45,23 +45,22 @@ impl Angle {
         ndk_path: &Path,
         target_cpu: &str,
     ) -> Result<SoongPackage, String> {
-        self.build_path = ctx.temp_path.join(self.get_name()).join(target_cpu);
-        if !ctx.skip_gen_ninja {
-            execute_cmd!(
-                "bash",
-                [
-                    &path_to_string(self.get_test_path(ctx)?.join("gen-ninja.sh")),
-                    &path_to_string(&self.src_path),
-                    &path_to_string(&self.build_path),
-                    target_cpu,
-                    if ctx.skip_build {
-                        "skip_build"
-                    } else {
-                        "build"
-                    },
-                ]
-            )?;
-        }
+        self.build_path = ctx.get_temp_path(&Path::new(self.get_name()).join(target_cpu))?;
+        common::gen_ninja(
+            vec![
+                path_to_string(&self.src_path),
+                path_to_string(&self.build_path),
+                path_to_string(ctx.get_test_path(self)),
+                String::from(target_cpu),
+                String::from(if ctx.skip_build {
+                    "skip_build"
+                } else {
+                    "build"
+                }),
+            ],
+            ctx,
+            self,
+        )?;
 
         let targets_so = TARGETS
             .iter()
@@ -94,9 +93,6 @@ impl Project for Angle {
     }
     fn get_android_path(&self) -> Result<PathBuf, String> {
         Ok(Path::new("external").join(self.get_name()))
-    }
-    fn get_test_path(&self, ctx: &Context) -> Result<PathBuf, String> {
-        Ok(ctx.test_path.join(self.get_name()))
     }
     fn generate_package(
         &mut self,
@@ -387,8 +383,8 @@ android_app {{
             .extend_prop("shared_libs", libs)
     }
 
-    fn map_cmd_output(&self, output: &Path) -> PathBuf {
-        PathBuf::from(file_name(output))
+    fn map_cmd_output(&self, output: &Path) -> Option<String> {
+        Some(file_name(output))
     }
     fn map_lib(&self, library: &Path) -> Option<PathBuf> {
         if library.starts_with("obj/third_party/spirv-tools") {

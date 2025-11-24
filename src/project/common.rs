@@ -12,7 +12,7 @@ pub fn copy_gen_deps(
 ) -> Result<(), String> {
     if !ctx.copy_to_aosp {
         write_file(
-            &project.get_test_path(ctx)?.join("generated_deps.txt"),
+            &ctx.get_test_path(project).join("generated_deps.txt"),
             &format!("{0:#?}", &gen_deps),
         )?;
     } else {
@@ -32,34 +32,6 @@ pub fn copy_gen_deps(
     Ok(())
 }
 
-pub fn clean_gen_deps(
-    gen_deps: &Vec<PathBuf>,
-    build_path: &Path,
-    ctx: &Context,
-) -> Result<(), String> {
-    if !ctx.copy_to_aosp {
-        return Ok(());
-    }
-    for gen_dep in gen_deps {
-        let file_path = build_path.join(gen_dep);
-        let file_extension = file_path.extension().unwrap().to_str().unwrap();
-        if !["c", "cpp", "h"].contains(&file_extension) {
-            continue;
-        }
-        write_file(
-            &file_path,
-            &read_file(&file_path)?
-                .lines()
-                .into_iter()
-                .filter(|line| !line.starts_with("#line"))
-                .chain(std::iter::once(""))
-                .collect::<Vec<&str>>()
-                .join("\n"),
-        )?;
-    }
-    Ok(())
-}
-
 pub fn ninja_build(build_path: &Path, targets: &Vec<PathBuf>, ctx: &Context) -> Result<(), String> {
     if ctx.skip_build {
         return Ok(());
@@ -69,6 +41,17 @@ pub fn ninja_build(build_path: &Path, targets: &Vec<PathBuf>, ctx: &Context) -> 
         args.push(path_to_string(target));
     }
     let args: Vec<_> = args.iter().map(|target| target.as_str()).collect();
-    execute_cmd!("ninja", &args)?;
-    Ok(())
+    execute_cmd!("ninja", &args)
+}
+
+pub fn gen_ninja(args: Vec<String>, ctx: &Context, project: &dyn Project) -> Result<(), String> {
+    if ctx.skip_gen_ninja {
+        return Ok(());
+    }
+    let script = path_to_string(ctx.get_script_path(project).join("gen-ninja.sh"));
+    let mut all_args = vec![script.as_str()];
+    for arg in &args {
+        all_args.push(arg.as_str());
+    }
+    execute_cmd!("bash", &all_args)
 }

@@ -2,14 +2,15 @@
 
 set -xe
 
-[ $# -eq 4 ]
+[ $# -eq 5 ]
 
 SCRIPT_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
 SRC_PATH="$1"
 BUILD_PATH="$2"
-TARGET_CPU="$3"
-BUILD="$4"
-BUILD_DIR="${SCRIPT_DIR}/build-${TARGET_CPU}"
+TEST_PATH="$3"
+TARGET_CPU="$4"
+BUILD="$5"
+BUILD_DIR="${TEST_PATH}/build-${TARGET_CPU}"
 
 if [ -z "${N2S_ANGLE_PATH}" ]; then
     mkdir -p "${BUILD_PATH}"

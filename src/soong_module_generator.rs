@@ -11,9 +11,12 @@ use crate::utils::*;
 
 #[derive(Default)]
 pub struct SoongModuleGeneratorInternals {
-    pub deps: Vec<PathBuf>,
+    pub gen_assets: Vec<PathBuf>,
     pub libs: Vec<PathBuf>,
+    pub custom_cmd_inputs: Vec<PathBuf>,
+    pub tools_module: Vec<PathBuf>,
     python_binaries: std::collections::HashSet<String>,
+    python_libraries: std::collections::HashSet<String>,
 }
 
 pub struct SoongModuleGenerator<'a, T>
@@ -150,37 +153,57 @@ where
             })
             .collect()
     }
-    fn get_generated_headers(&mut self, target: &T) -> Result<Vec<String>, String> {
-        let mut gen_headers = Vec::new();
+    fn get_generated_assets(
+        &mut self,
+        target: &T,
+        filter_header: bool,
+    ) -> Result<Vec<String>, String> {
+        let mut gen_assets = Vec::new();
         self.targets_map
-            .traverse_from(target.get_outputs().clone(), |target| {
+            .traverse_from(target.get_outputs().clone(), !filter_header, |target| {
+                if target.get_outputs().len() > 1 {
+                    return Ok(false);
+                }
                 match target.get_rule()? {
                     NinjaRule::CustomCommand(_) => {
-                        gen_headers.extend(target.get_outputs().clone());
+                        gen_assets.extend(target.get_outputs().clone());
                         Ok(true)
                     }
                     _ => Ok(true),
                 }
             })?;
-        Ok(gen_headers
+        Ok(gen_assets
             .iter()
-            .filter_map(|header| {
-                debug_project!("filter_gen_header({header:#?})");
-                if !self.project.filter_gen_header(header) {
-                    self.internals.deps.push(PathBuf::from(header));
-                    return None;
-                } else if self.targets_map.get(header).is_none() {
+            .filter_map(|asset| {
+                if file_ext(asset).starts_with(if filter_header { "c" } else { "h" }) {
                     return None;
                 }
-                Some(match self.targets_to_gen.get_name(header) {
+                debug_project!(
+                    "filter_gen_{0}({asset:#?})",
+                    if filter_header { "header" } else { "source" }
+                );
+                if (filter_header && !self.project.filter_gen_header(asset))
+                    || (!filter_header && !self.project.filter_gen_source(asset))
+                {
+                    self.internals.gen_assets.push(PathBuf::from(asset));
+                    return None;
+                }
+                let Some(target) = self.targets_map.get(asset) else {
+                    self.internals.gen_assets.push(PathBuf::from(asset));
+                    return None;
+                };
+                Some(match self.targets_to_gen.get_name(asset) {
                     Some(name) => path_to_string(name),
-                    None => path_to_id(
-                        Path::new(self.project.get_name())
-                            .join(self.targets_map.get(header).unwrap().get_name()),
-                    ),
+                    None => path_to_id(Path::new(self.project.get_name()).join(target.get_name())),
                 })
             })
             .collect())
+    }
+    fn get_generated_headers(&mut self, target: &T) -> Result<Vec<String>, String> {
+        self.get_generated_assets(target, true)
+    }
+    fn get_generated_sources(&mut self, target: &T) -> Result<Vec<String>, String> {
+        self.get_generated_assets(target, false)
     }
     fn defines_conflict(
         defines: &mut std::collections::HashMap<String, String>,
@@ -239,9 +262,7 @@ where
 
             let mut input_cflags = self.get_defines(input_target.get_defines());
             input_cflags.extend(self.get_cflags(input_target.get_cflags()));
-            if self.project.filter_input_target(input)
-                && !Self::defines_conflict(&mut defines, &input_cflags)
-            {
+            if !Self::defines_conflict(&mut defines, &input_cflags) {
                 whole_static_libs
                     .extend(self.get_libs(input_target.get_libs_static_whole(), &module_name));
                 static_libs.extend(self.get_libs(input_target.get_libs_static(), &module_name));
@@ -260,6 +281,7 @@ where
         cflags.extend(self.get_cflags(target.get_cflags()));
 
         let generated_headers = self.get_generated_headers(target)?;
+        let generated_sources = self.get_generated_sources(target)?;
         let (version_script, link_flags) = target.get_link_flags();
         let link_flags = self.get_link_flags(link_flags);
         whole_static_libs.extend(self.get_libs(target.get_libs_static_whole(), &module_name));
@@ -293,12 +315,127 @@ where
             .add_prop("static_libs", SoongProp::VecStr(static_libs))
             .add_prop("whole_static_libs", SoongProp::VecStr(whole_static_libs))
             .add_prop("local_include_dirs", SoongProp::VecStr(includes))
+            .add_prop("generated_sources", SoongProp::VecStr(generated_sources))
             .add_prop("generated_headers", SoongProp::VecStr(generated_headers));
 
         modules.push(self.project.extend_module(&target_name, module)?);
         Ok(modules)
     }
 
+    fn map_cmd_output(&self, output: &Path) -> String {
+        if output.starts_with("n2s") {
+            path_to_string(output)
+        } else if let Some(output) = self.project.map_cmd_output(output) {
+            output
+        } else {
+            path_to_string(output)
+        }
+    }
+    fn replace_in_splitted_cmd(
+        &self,
+        cmd: &str,
+        inputs: &Vec<PathBuf>,
+        outputs: &Vec<PathBuf>,
+        deps: &Vec<(PathBuf, String)>,
+    ) -> String {
+        let cmd = String::from(cmd);
+        for input in inputs {
+            let canonicalize_input = path_to_string(canonicalize_path(input, self.build_path));
+            let input_string = path_to_string(&input);
+            let froms = if input_string.contains(&canonicalize_input) {
+                vec![input_string, canonicalize_input]
+            } else {
+                vec![canonicalize_input, input_string]
+            };
+            if froms.contains(&cmd) {
+                return format!(
+                    "$(location {0})",
+                    path_to_string(strip_prefix(
+                        canonicalize_path(input, self.build_path),
+                        self.src_path,
+                    ))
+                );
+            }
+        }
+        for (dep, dep_target_name) in deps {
+            if vec![
+                path_to_string(canonicalize_path(&dep, self.build_path)),
+                path_to_string(&dep),
+            ]
+            .contains(&cmd)
+            {
+                return format!("$(location :{dep_target_name})");
+            }
+        }
+        for output in outputs {
+            if vec![
+                path_to_string(canonicalize_path(output, self.build_path)),
+                path_to_string(output),
+                file_name(output),
+            ]
+            .contains(&cmd)
+            {
+                return format!(
+                    "$(location {0})",
+                    path_to_string(self.map_cmd_output(output))
+                );
+            }
+        }
+        for input in inputs {
+            let canonicalize_input = canonicalize_path(input, self.build_path);
+            for from in vec![
+                path_to_string(canonicalize_input.parent().unwrap()),
+                path_to_string(input.parent().unwrap()),
+            ] {
+                if let Some(suffix) = cmd.strip_prefix(&from) {
+                    return format!(
+                        "$$(dirname $(location {0})){1}",
+                        path_to_string(strip_prefix(&canonicalize_input, self.src_path,)),
+                        suffix,
+                    );
+                }
+            }
+        }
+        for output in outputs {
+            let output_string = path_to_string(output.parent().unwrap());
+            let canonicalize_output = canonicalize_path(&output_string, self.build_path);
+            let stripped_output = strip_prefix(&canonicalize_output, self.build_path.join("n2s"));
+            let mut froms = vec![
+                path_to_string(&canonicalize_output),
+                path_to_string(canonicalize_path(&stripped_output, self.build_path)),
+            ];
+            if !output_string.is_empty() {
+                froms.push(output_string);
+            }
+            for from in froms {
+                if let Some(suffix) = cmd.strip_prefix(&from) {
+                    return format!(
+                        "$$(dirname $(location {0})){1}",
+                        path_to_string(self.map_cmd_output(output)),
+                        suffix,
+                    );
+                }
+            }
+        }
+        cmd
+    }
+    fn split_cmd(
+        &self,
+        mut separators: Vec<&str>,
+        cmd: &str,
+        inputs: &Vec<PathBuf>,
+        outputs: &Vec<PathBuf>,
+        deps: &Vec<(PathBuf, String)>,
+    ) -> String {
+        let Some(separator) = separators.pop() else {
+            return self.replace_in_splitted_cmd(cmd, inputs, outputs, deps);
+        };
+        cmd.split(separator)
+            .into_iter()
+            .map(|split| self.split_cmd(separators.clone(), split, inputs, outputs, deps))
+            .collect::<Vec<_>>()
+            .join(separator)
+    }
     fn get_cmd(
         &self,
         mut cmd: String,
@@ -307,30 +444,7 @@ where
         outputs: &Vec<PathBuf>,
         deps: Vec<(PathBuf, String)>,
     ) -> String {
-        for output in outputs {
-            let marker = "<output>";
-            let replace_output = path_to_string(self.project.map_cmd_output(output));
-            cmd = cmd
-                .replace(&path_to_string(output), marker)
-                .replace(&format!(" {0}", file_name(output)), &format!(" {marker}"))
-                .replace(marker, &format!("$(location {replace_output})"));
-        }
-        for input in &inputs {
-            let replace_input = path_to_string(strip_prefix(
-                canonicalize_path(input, self.build_path),
-                self.src_path,
-            ));
-            cmd = cmd.replace(
-                &path_to_string(input),
-                &format!("$(location {replace_input})"),
-            )
-        }
-        for (dep, dep_target_name) in deps {
-            cmd = cmd.replace(
-                &path_to_string(&dep),
-                &format!("$(location :{dep_target_name})"),
-            )
-        }
+        cmd = self.split_cmd(vec![" ", "=", "-I", ","], &cmd, &inputs, outputs, &deps);
         if let Some((rsp_file, rsp_content)) = rule_cmd.rsp_info {
             let rsp_inputs = rsp_content
                 .split(" ")
@@ -362,6 +476,19 @@ where
         }
         cmd
     }
+    fn get_dep_id(&self, input: &Path) -> String {
+        let Some(target) = self.targets_map.get(&input) else {
+            return path_to_id(Path::new(self.project.get_name()).join(&input));
+        };
+        return if target.get_outputs().len() > 1 {
+            path_to_id(Path::new(self.project.get_name()).join(target.get_name()))
+                + "{"
+                + &path_to_string(&input)
+                + "}"
+        } else {
+            path_to_id(Path::new(self.project.get_name()).join(target.get_name()))
+        };
+    }
     fn get_cmd_inputs(
         &self,
         inputs: Vec<PathBuf>,
@@ -370,16 +497,12 @@ where
         inputs
             .into_iter()
             .filter_map(|input| {
-                for (prefix, dep) in self.project.get_deps_prefix() {
-                    if input.starts_with(&prefix) {
-                        let dep_id = dep.get_id(&input, &prefix, self.build_path);
-                        deps.push((input, dep_id));
-                        return None;
-                    }
+                if let Some(mapped_input) = self.project.map_cmd_input(&input) {
+                    deps.push((input, mapped_input));
+                    return None;
                 }
                 if canonicalize_path(&input, self.build_path).starts_with(self.build_path) {
-                    let dep_id = path_to_id(Path::new(self.project.get_name()).join(&input));
-                    deps.push((input, dep_id));
+                    deps.push((input.clone(), self.get_dep_id(&input)));
                     return None;
                 }
                 Some(input)
@@ -388,25 +511,76 @@ where
     }
     fn get_tool_module(
         &mut self,
-        tool: &str,
+        tool: &Path,
+        python_inputs: Vec<PathBuf>,
     ) -> Result<Option<(String, Option<Vec<SoongModule>>)>, String> {
-        if !tool.ends_with(".py") {
+        if let Some(tool_module) = self.project.map_tool_module(tool) {
+            self.internals.tools_module.push(tool_module.clone());
+            return Ok(Some((path_to_id(tool_module), None)));
+        } else if let Ok(tool_target_path) = Path::new(tool).strip_prefix(self.build_path) {
+            return Ok(Some((
+                String::from(":") + &self.get_dep_id(tool_target_path),
+                None,
+            )));
+        } else if !file_name(tool).ends_with(".py") {
             return Ok(None);
         }
-        let tool_module = path_to_id(Path::new(self.project.get_name()).join(&tool));
+        let tool_module = path_to_id(Path::new(self.project.get_name()).join(tool));
         if !self.internals.python_binaries.contains(&tool_module) {
-            let Some(module) = self.project.extend_python_binary_host(
-                &self.src_path.join(&tool),
-                SoongModule::new("python_binary_host")
-                    .add_prop("name", SoongProp::Str(tool_module.clone()))
-                    .add_prop("main", SoongProp::Str(String::from(tool)))
-                    .add_prop("srcs", SoongProp::VecStr(vec![String::from(tool)])),
-            )?
-            else {
-                return Ok(None);
+            let mut modules = Vec::new();
+            let (src, main) = if file_stem(tool).contains(".") {
+                let new_tool = path_to_id(PathBuf::from(tool)) + ".py";
+                let name = path_to_id(Path::new(self.project.get_name()).join(&new_tool));
+                modules.push(
+                    SoongModule::new("genrule")
+                        .add_prop("name", SoongProp::Str(name.clone()))
+                        .add_prop("cmd", SoongProp::Str(String::from("cp $(in) $(out)")))
+                        .add_prop("srcs", SoongProp::VecStr(vec![path_to_string(tool)]))
+                        .add_prop("out", SoongProp::VecStr(vec![new_tool.clone()])),
+                );
+                (String::from(":") + &name, new_tool)
+            } else {
+                (path_to_string(tool), path_to_string(tool))
             };
+
+            let mut srcs = Vec::new();
+            for python_input in python_inputs {
+                let name = path_to_id(
+                    Path::new(self.project.get_name())
+                        .join(&python_input)
+                        .join("cp"),
+                );
+                let lib_full_name = path_to_string(&python_input);
+                if !self.internals.python_libraries.contains(&lib_full_name) {
+                    modules.push(
+                        SoongModule::new("genrule")
+                            .add_prop("name", SoongProp::Str(name.clone()))
+                            .add_prop("cmd", SoongProp::Str(String::from("cp $(in) $(out)")))
+                            .add_prop("srcs", SoongProp::VecStr(vec![lib_full_name.clone()]))
+                            .add_prop("out", SoongProp::VecStr(vec![file_name(&python_input)])),
+                    );
+                    self.internals.python_libraries.insert(lib_full_name);
+                }
+                srcs.push(String::from(":") + &name);
+            }
+
+            srcs.push(src);
+            srcs.sort_unstable();
+            srcs.dedup();
+            let multiple_srcs = srcs.len() > 1;
+            let module = SoongModule::new("python_binary_host")
+                .add_prop("name", SoongProp::Str(tool_module.clone()))
+                .add_prop("main", SoongProp::Str(main))
+                .add_prop("srcs", SoongProp::VecStr(srcs));
+            let extended_module = self
+                .project
+                .extend_python_binary_host(&self.src_path.join(&tool), module.clone())?;
+            if !multiple_srcs && module == extended_module {
+                return Ok(None);
+            }
             self.internals.python_binaries.insert(tool_module.clone());
-            return Ok(Some((tool_module, Some(vec![module]))));
+            modules.push(extended_module);
+            return Ok(Some((tool_module, Some(modules))));
         }
         Ok(Some((tool_module, None)))
     }
@@ -431,16 +605,30 @@ where
                 None => cmd.replace(str::from_utf8(&cmd.as_bytes()[begin..]).unwrap(), ""),
             };
         }
-        cmd = cmd.replace(&path_to_string_with_separator(self.build_path), "");
         let tool_location = String::from("$(location) ");
         let (tool, mut cmd) = if let Some((tool, cmd)) = cmd.split_once(" ") {
             (String::from(tool), tool_location + cmd)
         } else {
             (String::from(cmd), tool_location)
         };
+        let mut tool_modules = Vec::new();
+        let glslang_validator = String::from("glslangValidator");
+        let tool_location = String::from("$(location ") + &tool + ")";
         for idx in 0..inputs.len() {
             if path_to_string(&inputs[idx]) == tool {
                 inputs.remove(idx);
+                break;
+            }
+        }
+        for idx in 0..inputs.len() {
+            if inputs[idx].ends_with(&glslang_validator) {
+                let input = path_to_string(&inputs[idx]);
+                inputs.remove(idx);
+                tool_modules.push(glslang_validator.clone());
+                cmd = cmd.replace("$(location)", &tool_location).replace(
+                    &input,
+                    &(String::from("$(location ") + &glslang_validator + ")"),
+                );
                 break;
             }
         }
@@ -452,20 +640,53 @@ where
         if tool.ends_with(".py") {
             cmd = String::from("python3 ") + &cmd;
         }
-        let tool = path_to_string(strip_prefix(
-            canonicalize_path(&tool, self.build_path),
-            self.src_path,
-        ));
+        let tool = strip_prefix(canonicalize_path(&tool, self.build_path), self.src_path);
+        let python_inputs = inputs
+            .iter()
+            .filter_map(|input| {
+                if path_to_string(input).ends_with(".py") {
+                    Some(strip_prefix(
+                        canonicalize_path(input, self.build_path),
+                        self.src_path,
+                    ))
+                } else {
+                    None
+                }
+            })
+            .collect::<Vec<_>>();
 
-        if let Some((tool_module, some_modules)) = self.get_tool_module(&tool)? {
-            if let Some(modules) = some_modules {
-                Ok((Vec::new(), vec![tool_module], modules, cmd))
+        if let Some((tool_module, some_modules)) = self.get_tool_module(&tool, python_inputs)? {
+            cmd = cmd.replace(
+                &tool_location,
+                &(String::from("$(location ") + &tool_module + ")"),
+            );
+            tool_modules.push(tool_module);
+            return if let Some(modules) = some_modules {
+                Ok((Vec::new(), tool_modules, modules, cmd))
             } else {
-                Ok((Vec::new(), vec![tool_module], Vec::new(), cmd))
-            }
-        } else {
-            Ok((vec![tool], Vec::new(), Vec::new(), cmd))
+                Ok((Vec::new(), tool_modules, Vec::new(), cmd))
+            };
         }
+        let tool_name = file_name(&tool);
+        if ["bison", "flex"].contains(&tool_name.as_str()) {
+            tool_modules.push(tool_name.clone());
+            tool_modules.push(String::from("m4"));
+            return Ok((
+                Vec::new(),
+                tool_modules,
+                Vec::new(),
+                String::from("M4=$(location m4) ")
+                    + &cmd.replace(
+                        "$(location)",
+                        &(String::from("$(location ") + &tool_name + ")"),
+                    ),
+            ));
+        }
+        if tool_name == "glslangValidator" {
+            tool_modules.push(glslang_validator.clone());
+            return Ok((Vec::new(), tool_modules, Vec::new(), cmd));
+        }
+        Ok((vec![path_to_string(tool)], tool_modules, Vec::new(), cmd))
     }
     pub fn generate_custom_command(
         &mut self,
@@ -488,14 +709,23 @@ where
             })
             .collect::<Vec<String>>();
         for (dep, dep_target_name) in &deps {
-            sources.push(format!(":{dep_target_name}"));
-            self.internals.deps.push(dep.clone());
+            let src = format!(":{dep_target_name}");
+            if !tool_modules.contains(&src) {
+                sources.push(src);
+            }
+            if let Some(dep_target) = self.targets_map.get(dep) {
+                if !self.filter_target(dep_target) {
+                    self.internals.custom_cmd_inputs.push(dep.clone());
+                }
+            } else {
+                self.internals.custom_cmd_inputs.push(dep.clone());
+            }
         }
         let target_outputs = target.get_outputs();
         let cmd = self.get_cmd(cmd, rule_cmd, inputs, target_outputs, deps);
         let outputs = target_outputs
             .iter()
-            .map(|output| path_to_string(self.project.map_cmd_output(output)))
+            .map(|output| path_to_string(self.map_cmd_output(output)))
             .collect();
         let target_name = target.get_name();
         let module_name = match self.targets_to_gen.get_name(&target_name) {

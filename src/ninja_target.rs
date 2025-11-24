@@ -183,6 +183,7 @@ where
     pub fn traverse_from<F>(
         &self,
         mut targets: Vec<PathBuf>,
+        only_inputs: bool,
         mut filter_target: F,
     ) -> Result<(), String>
     where
@@ -201,8 +202,10 @@ where
             targets_seen.extend(target.get_implicit_ouputs().clone());
             if filter_target(target)? {
                 targets.extend(target.get_inputs().clone());
-                targets.extend(target.get_implicit_deps().clone());
-                targets.extend(target.get_order_only_deps().clone());
+                if !only_inputs {
+                    targets.extend(target.get_implicit_deps().clone());
+                    targets.extend(target.get_order_only_deps().clone());
+                }
             }
         }
         Ok(())

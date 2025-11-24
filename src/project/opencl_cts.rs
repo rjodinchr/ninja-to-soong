@@ -3,9 +3,12 @@
 
 use super::*;
 
+const SPIRV_AS: &str = "spirv-as";
+
 #[derive(Default)]
 pub struct OpenclCts {
     src_path: PathBuf,
+    build_path: PathBuf,
     spirv_headers_path: PathBuf,
     gen_deps: Vec<String>,
 }
@@ -53,38 +56,34 @@ impl Project for OpenclCts {
     fn get_android_path(&self) -> Result<PathBuf, String> {
         Ok(Path::new("external").join(self.get_name()))
     }
-    fn get_test_path(&self, ctx: &Context) -> Result<PathBuf, String> {
-        Ok(ctx.test_path.join(self.get_name()))
-    }
     fn generate_package(
         &mut self,
         ctx: &Context,
         projects_map: &ProjectsMap,
     ) -> Result<String, String> {
         self.src_path = ctx.get_android_path(self)?;
-        let build_path = ctx.temp_path.join(self.get_name());
-        let ndk_path = get_ndk_path(&ctx.temp_path, ctx)?;
+        self.build_path = ctx.get_temp_path(Path::new(self.get_name()))?;
+        let ndk_path = get_ndk_path(ctx)?;
         self.spirv_headers_path = ProjectId::SpirvHeaders.get_android_path(projects_map, ctx)?;
 
+        common::gen_ninja(
+            vec![
+                path_to_string(&self.src_path),
+                path_to_string(&self.build_path),
+                path_to_string(&ndk_path),
+                path_to_string(&self.spirv_headers_path),
+            ],
+            ctx,
+            self,
+        )?;
+
         const CSV_FILENAME: &str = "opencl_conformance_tests_full.csv";
-        let csv_file_path = build_path.join(CSV_FILENAME);
-        if !ctx.skip_gen_ninja {
-            execute_cmd!(
-                "bash",
-                [
-                    &path_to_string(self.get_test_path(ctx)?.join("gen-ninja.sh")),
-                    &path_to_string(&self.src_path),
-                    &path_to_string(&build_path),
-                    &path_to_string(&ndk_path),
-                    &path_to_string(&self.spirv_headers_path),
-                ]
-            )?;
-            write_file(
-                &csv_file_path,
-                &read_file(&self.src_path.join("test_conformance").join(CSV_FILENAME))?,
-            )?;
+        let csv_file_dst_path = self.build_path.join(CSV_FILENAME);
+        let csv_file_src_path = self.src_path.join("test_conformance").join(CSV_FILENAME);
+        if csv_file_src_path.exists() {
+            write_file(&csv_file_dst_path, &read_file(&csv_file_src_path)?)?;
         }
-        let tests = parse_tests(&csv_file_path)?
+        let tests = parse_tests(&csv_file_dst_path)?
             .into_iter()
             .map(|test| {
                 (
@@ -110,16 +109,16 @@ impl Project for OpenclCts {
         )
         .generate(
             NinjaTargetsToGenMap::from(&targets),
-            parse_build_ninja::<CmakeNinjaTarget>(&build_path)?,
+            parse_build_ninja::<CmakeNinjaTarget>(&self.build_path)?,
             &self.src_path,
             &ndk_path,
-            &build_path,
+            &self.build_path,
             None,
             self,
             ctx,
         )?;
 
-        let gen_deps = package.get_gen_deps();
+        let gen_deps = package.get_dep_gen_assets();
         let mut spirv_new_data = Vec::new();
         for dep in gen_deps {
             if dep.ends_with("spirv.core.grammar.json") {
@@ -151,14 +150,11 @@ impl Project for OpenclCts {
                     )
                     .add_prop("srcs", SoongProp::VecStr(vec![path_to_string(source)]))
                     .add_prop("output_extension", SoongProp::Str(file_ext(&dep)))
-                    .add_prop(
-                        "tools",
-                        SoongProp::VecStr(vec![String::from("//external/SPIRV-Tools:spirv-as")]),
-                    ),
+                    .add_prop("tools", SoongProp::VecStr(vec![String::from(SPIRV_AS)])),
             );
         }
         self.gen_deps = package
-            .get_gen_deps()
+            .get_dep_gen_assets()
             .into_iter()
             .filter_map(|dep| {
                 if let Ok(strip) = dep.strip_prefix(&self.spirv_headers_path) {
@@ -245,16 +241,11 @@ cc_test {{
             .print(ctx)
     }
 
-    fn get_deps_prefix(&self) -> Vec<(PathBuf, Dep)> {
-        vec![(self.spirv_headers_path.clone(), Dep::SpirvHeaders)]
-    }
     fn get_deps(&self, dep: Dep) -> Vec<NinjaTargetToGen> {
         match dep {
-            Dep::SpirvToolsTargets => vec![target_typed!(
-                "tools/spirv-as",
-                "cc_binary_host",
-                "spirv-as"
-            )],
+            Dep::SpirvToolsTargets => {
+                vec![target_typed!("tools/spirv-as", "cc_binary_host", SPIRV_AS)]
+            }
             Dep::SpirvHeaders => self.gen_deps.iter().map(|lib| target!(lib)).collect(),
             _ => Vec::new(),
         }
@@ -301,8 +292,18 @@ cc_test {{
             .add_prop("host_supported", SoongProp::Bool(true)))
     }
 
-    fn map_cmd_output(&self, output: &Path) -> PathBuf {
-        PathBuf::from(file_name(output))
+    fn map_cmd_input(&self, input: &Path) -> Option<String> {
+        if input.starts_with(&self.spirv_headers_path) {
+            return Some(Dep::SpirvHeaders.get_id(
+                input,
+                &self.spirv_headers_path,
+                &self.build_path,
+            ));
+        }
+        None
+    }
+    fn map_cmd_output(&self, output: &Path) -> Option<String> {
+        Some(file_name(output))
     }
     fn map_lib(&self, lib: &Path) -> Option<PathBuf> {
         if lib.ends_with("libOpenCL") {
@@ -320,9 +321,6 @@ cc_test {{
     fn filter_include(&self, include: &Path) -> bool {
         !include.ends_with("OpenCL-Headers")
             && path_to_string(include).starts_with(&path_to_string(&self.src_path))
-    }
-    fn filter_lib(&self, lib: &str) -> bool {
-        !lib.contains("atomic")
     }
     fn filter_link_flag(&self, _flag: &str) -> bool {
         false

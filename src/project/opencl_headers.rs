@@ -13,9 +13,6 @@ impl Project for OpenclHeaders {
     fn get_android_path(&self) -> Result<PathBuf, String> {
         error!("Should not be called")
     }
-    fn get_test_path(&self, ctx: &Context) -> Result<PathBuf, String> {
-        Ok(ctx.test_path.join(self.get_name()))
-    }
     fn generate_package(
         &mut self,
         _ctx: &Context,

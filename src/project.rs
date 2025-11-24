@@ -20,7 +20,9 @@ define_ProjectId!(
     (Clvk, clvk),
     (Clspv, clspv),
     (Fwupd, fwupd),
+    (LibCLC, libclc),
     (LlvmProject, llvm_project),
+    (MediaDriver, media_driver),
     (Mesa3DDesktopIntel, mesa3d_desktop_intel),
     (Mesa3DDesktopPanVK, mesa3d_desktop_panvk),
     (OpenclCts, opencl_cts),
@@ -28,7 +30,8 @@ define_ProjectId!(
     (OpenclIcdLoader, opencl_icd_loader),
     (SpirvHeaders, spirv_headers),
     (SpirvTools, spirv_tools),
-    (UnitTest, unittest)
+    (UnitTest, unittest),
+    (Vkoverhead, vkoverhead)
 );
 impl ProjectId {
     pub fn get_deps(&self) -> Vec<ProjectId> {
@@ -52,8 +55,8 @@ impl ProjectId {
 define_Dep!(
     (ClangHeaders, LlvmProject, (Clspv)),
     (ClspvTargets, Clspv, (Clvk)),
-    (LibclcBins, LlvmProject, (Clspv)),
-    (LlvmProjectTargets, LlvmProject, (Clvk)),
+    (LibclcBins, LibCLC, (Clspv)),
+    (LlvmProjectTargets, LlvmProject, (Clvk, LibCLC)),
     (SpirvHeaders, SpirvHeaders, (Clspv, SpirvTools, OpenclCts)),
     (SpirvToolsTargets, SpirvTools, (Clvk, OpenclCts))
 );
@@ -122,16 +125,12 @@ pub trait Project {
     // MANDATORY FUNCTIONS
     fn get_name(&self) -> &'static str;
     fn get_android_path(&self) -> Result<PathBuf, String>;
-    fn get_test_path(&self, ctx: &Context) -> Result<PathBuf, String>;
     fn generate_package(
         &mut self,
         ctx: &Context,
         projects_map: &ProjectsMap,
     ) -> Result<String, String>;
     // DEPENDENCIES FUNCTIONS
-    fn get_deps_prefix(&self) -> Vec<(PathBuf, Dep)> {
-        Vec::new()
-    }
     fn get_deps(&self, _dep: Dep) -> Vec<NinjaTargetToGen> {
         Vec::new()
     }
@@ -149,15 +148,21 @@ pub trait Project {
     fn extend_python_binary_host(
         &self,
         _python_binary_path: &Path,
-        _module: SoongModule,
-    ) -> Result<Option<SoongModule>, String> {
-        Ok(None)
+        module: SoongModule,
+    ) -> Result<SoongModule, String> {
+        Ok(module)
     }
     // MAP FUNCTIONS
-    fn map_cmd_output(&self, output: &Path) -> PathBuf {
-        PathBuf::from(output)
+    fn map_cmd_input(&self, _input: &Path) -> Option<String> {
+        None
+    }
+    fn map_cmd_output(&self, _output: &Path) -> Option<String> {
+        None
     }
     fn map_lib(&self, _lib: &Path) -> Option<PathBuf> {
+        None
+    }
+    fn map_tool_module(&self, _tool_module: &Path) -> Option<PathBuf> {
         None
     }
     // FILTER FUNCTIONS
@@ -170,10 +175,10 @@ pub trait Project {
     fn filter_gen_header(&self, _header: &Path) -> bool {
         true
     }
-    fn filter_include(&self, _include: &Path) -> bool {
+    fn filter_gen_source(&self, _source: &Path) -> bool {
         true
     }
-    fn filter_input_target(&self, _input_target: &Path) -> bool {
+    fn filter_include(&self, _include: &Path) -> bool {
         true
     }
     fn filter_lib(&self, _lib: &str) -> bool {

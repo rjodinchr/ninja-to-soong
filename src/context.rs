@@ -10,10 +10,12 @@ use crate::utils::*;
 #[derive(Default, Clone)]
 pub struct Context {
     pub projects_to_generate: VecDeque<ProjectId>,
-    pub temp_path: PathBuf,
-    pub test_path: PathBuf,
+    temp_path: PathBuf,
+    clean_gen_ninja: bool,
+    n2s_path: PathBuf,
     android_path: Option<PathBuf>,
     external_project_path: Option<PathBuf>,
+    pub unittest_path: Option<PathBuf>,
     pub exe_path: PathBuf,
     pub skip_gen_ninja: bool,
     pub skip_build: bool,
@@ -22,13 +24,43 @@ pub struct Context {
 }
 
 const AOSP_PATH: &str = "--aosp-path";
+const AOSP_PATH_SHORT: &str = "-p";
 const EXT_PROJ_PATH: &str = "--ext-proj-path";
+const EXT_PROJ_PATH_SHORT: &str = "-e";
 const CLEAN_TMP: &str = "--clean-tmp";
+const CLEAN_TMP_SHORT: &str = "-C";
+const CLEAN_GEN_NINJA: &str = "--clean-gen-ninja";
+const CLEAN_GEN_NINJA_SHORT: &str = "-c";
 const COPY_TO_AOSP: &str = "--copy-to-aosp";
+const COPY_TO_AOSP_SHORT: &str = "-a";
 const SKIP_BUILD: &str = "--skip-build";
+const SKIP_BUILD_SHORT: &str = "-s";
 const SKIP_GEN_NINJA: &str = "--skip-gen-ninja";
+const SKIP_GEN_NINJA_SHORT: &str = "-S";
+const HELP: &str = "--help";
+const HELP_SHORT: &str = "-h";
+
+const TESTS_FOLDER: &str = "tests";
+const SCRIPTS_FOLDER: &str = "scripts";
+const TARGET_FOLDER: &str = "target";
 
 impl Context {
+    pub fn get_temp_path(&self, build_path: &Path) -> Result<PathBuf, String> {
+        let path = self.temp_path.join(build_path);
+        if self.clean_gen_ninja && path != self.temp_path && remove_dir(&path)? {
+            print_info!("{0:#?} removed", path);
+        }
+        Ok(path)
+    }
+
+    pub fn get_test_path(&self, project: &dyn Project) -> PathBuf {
+        self.n2s_path.join(TESTS_FOLDER).join(project.get_name())
+    }
+
+    pub fn get_script_path(&self, project: &dyn Project) -> PathBuf {
+        self.n2s_path.join(SCRIPTS_FOLDER).join(project.get_name())
+    }
+
     pub fn get_android_path(&self, project: &dyn Project) -> Result<PathBuf, String> {
         match &self.android_path {
             Some(android_path) => Ok(android_path.clone().join(project.get_android_path()?)),
@@ -72,7 +104,7 @@ impl Context {
         let mut ctx = Self::default();
         while let Some(arg) = iter.next() {
             match arg.as_str() {
-                AOSP_PATH => {
+                AOSP_PATH_SHORT | AOSP_PATH => {
                     let Some(path) = iter.next() else {
                         return error!("<path> missing for {AOSP_PATH}");
                     };
@@ -82,7 +114,7 @@ impl Context {
                     }
                     ctx.android_path = Some(android_path);
                 }
-                EXT_PROJ_PATH => {
+                EXT_PROJ_PATH_SHORT | EXT_PROJ_PATH => {
                     let Some(path) = iter.next() else {
                         return error!("<path> missing for {EXT_PROJ_PATH}");
                     };
@@ -93,17 +125,18 @@ impl Context {
                     ctx.projects_to_generate.push_back(ProjectId::External);
                     ctx.external_project_path = Some(path);
                 }
-                SKIP_GEN_NINJA => {
+                SKIP_GEN_NINJA_SHORT | SKIP_GEN_NINJA => {
                     ctx.skip_gen_ninja = true;
                     ctx.skip_build = true
                 }
-                SKIP_BUILD => ctx.skip_build = true,
-                COPY_TO_AOSP => {
+                SKIP_BUILD_SHORT | SKIP_BUILD => ctx.skip_build = true,
+                COPY_TO_AOSP_SHORT | COPY_TO_AOSP => {
                     ctx.copy_to_aosp = true;
                     ctx.wildcardize_paths = true;
                 }
-                CLEAN_TMP => clean_tmp = true,
-                "-h" | "--help" => {
+                CLEAN_GEN_NINJA_SHORT | CLEAN_GEN_NINJA => ctx.clean_gen_ninja = true,
+                CLEAN_TMP_SHORT | CLEAN_TMP => clean_tmp = true,
+                HELP_SHORT | HELP => {
                     let mut projects_help = projects_map
                         .iter()
                         .map(|(_, project)| format!("  {0}\n", project.get_name()))
@@ -116,13 +149,14 @@ USAGE: {exec} [OPTIONS] [PROJECTS]
 PROJECTS:
 {0}
 OPTIONS:
-{AOSP_PATH} <path>       Path to Android tree
-{EXT_PROJ_PATH} <path>   Path to external project rust file
-{CLEAN_TMP}              Remove temporary directory before running
-{COPY_TO_AOSP}           Copy generated Soong files into the Android tree
-{SKIP_BUILD}             Skip build step
-{SKIP_GEN_NINJA}         Skip generation of Ninja files
--h, --help               Display the help and exit
+{AOSP_PATH_SHORT}, {AOSP_PATH} <path>\t\tPath to Android tree
+{EXT_PROJ_PATH_SHORT}, {EXT_PROJ_PATH} <path>\tPath to external project rust file
+{CLEAN_TMP_SHORT}, {CLEAN_TMP}\t\t\tRemove temporary directory before running
+{CLEAN_GEN_NINJA_SHORT}, {CLEAN_GEN_NINJA}\t\tRemove selected projects old build directories before running
+{COPY_TO_AOSP_SHORT}, {COPY_TO_AOSP}\t\tCopy generated Soong files into the Android tree
+{SKIP_BUILD_SHORT}, {SKIP_BUILD}\t\tSkip build step
+{SKIP_GEN_NINJA_SHORT}, {SKIP_GEN_NINJA}\t\tSkip generation of Ninja files
+{HELP_SHORT}, {HELP}\t\t\tDisplay the help and exit
 ",
                         projects_help.concat()
                     );
@@ -135,6 +169,9 @@ OPTIONS:
                     },
                 },
             }
+        }
+        if (clean_tmp || ctx.clean_gen_ninja) && ctx.skip_gen_ninja {
+            return error!("Clean & skip Ninja generation are incompatible");
         }
         // TEMP_PATH
         ctx.temp_path = if let Ok(dir) = env::var("N2S_TMP_PATH") {
@@ -153,27 +190,26 @@ OPTIONS:
         match env::current_exe() {
             Ok(exe_path) => {
                 ctx.exe_path = PathBuf::from(exe_path.parent().unwrap());
-                ctx.test_path = ctx
+                let target = ctx
                     .exe_path // <ninja-to-soong>/target/<build-mode>
                     .parent() // <ninja-to-soong>/target
-                    .unwrap()
-                    .parent() // <ninja-to-soong>
-                    .unwrap()
-                    .join("tests"); // <ninja-to-soong>/tests
+                    .unwrap();
+                if file_name(target) != TARGET_FOLDER {
+                    return error!("Executable is not in its expected build folder. Cannot figure out where test folder is.");
+                }
+                ctx.n2s_path = PathBuf::from(target.parent().unwrap());
+                let root_contents = ls_dir(&ctx.n2s_path);
+                for entry in [TESTS_FOLDER, SCRIPTS_FOLDER, TARGET_FOLDER] {
+                    if !root_contents.contains(&ctx.n2s_path.join(entry)) {
+                        return error!("Executable is not in its expected build folder. Cannot figure out where test folder is.");
+                    }
+                }
             }
             Err(err) => return error!("Could not get current executable path: {err}"),
         };
-        if ctx.android_path.is_none()
-            && ctx
-                .test_path
-                .parent()
-                .unwrap()
-                .ends_with("external/rust/ninja-to-soong")
-        {
+        if ctx.android_path.is_none() && ctx.n2s_path.ends_with("external/rust/ninja-to-soong") {
             ctx.android_path = Some(PathBuf::from(
-                ctx.test_path // <aosp>/external/rust/ninja-to-soong/tests
-                    .parent() // <aosp>/external/rust/ninja-to-soong
-                    .unwrap()
+                ctx.n2s_path // <aosp>/external/rust/ninja-to-soong
                     .parent() // <aosp>/external/rust
                     .unwrap()
                     .parent() // <aosp>/external
@@ -181,11 +217,6 @@ OPTIONS:
                     .parent() // <aosp>
                     .unwrap(),
             ));
-        }
-        // PROJECTS_TO_GENERATE
-        if ctx.projects_to_generate.len() == 0 {
-            ctx.projects_to_generate =
-                VecDeque::from_iter(projects_map.iter().map(|(key, _)| *key));
         }
 
         Ok(ctx)

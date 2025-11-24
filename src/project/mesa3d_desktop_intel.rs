@@ -20,6 +20,24 @@ impl mesa3d_desktop::Mesa3dProject for Mesa3DDesktopIntel {
         path_to_string(&self.src_path.join("subprojects"))
     }
 
+    fn asset_filter(&self, asset: &Path) -> bool {
+        let asset = path_to_string(asset);
+        for name in [
+            // vtn_bindgen2
+            "_shaders_binding.cpp",
+            "_shaders_binding.h",
+        ] {
+            if asset.ends_with(name) {
+                return false;
+            }
+        }
+        if asset.contains("expat") {
+            return false;
+        }
+
+        true
+    }
+
     fn create_package(
         &mut self,
         ctx: &Context,

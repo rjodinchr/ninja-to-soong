@@ -80,35 +80,34 @@ impl SoongPackage {
         self
     }
 
-    pub fn filter_local_include_dirs(
-        &mut self,
-        prefix: &str,
-        files: &Vec<PathBuf>,
-    ) -> Result<(), String> {
+    pub fn filter_gen_deps(&mut self, prefix: &str, files: &Vec<PathBuf>) -> Result<(), String> {
         let mut set = std::collections::HashSet::new();
         for file in files {
             let mut path = file.clone();
+            set.insert(path.clone());
             while let Some(parent) = path.parent() {
                 path = PathBuf::from(parent);
                 set.insert(path.clone());
             }
         }
-        for module in &mut self.modules {
-            module.update_prop("local_include_dirs", |prop| match prop {
-                SoongProp::VecStr(dirs) => Ok(SoongProp::VecStr(
-                    dirs.into_iter()
-                        .filter(|dir| {
-                            if let Ok(strip) = Path::new(&dir).strip_prefix(prefix) {
-                                if !set.contains(strip) {
-                                    return false;
-                                }
+        let filter = |prop| match prop {
+            SoongProp::VecStr(dirs) => Ok(SoongProp::VecStr(
+                dirs.into_iter()
+                    .filter(|dir| {
+                        if let Ok(strip) = Path::new(&dir).strip_prefix(prefix) {
+                            if !set.contains(strip) {
+                                return false;
                             }
-                            return true;
-                        })
-                        .collect(),
-                )),
-                _ => Ok(prop),
-            })?;
+                        }
+                        return true;
+                    })
+                    .collect(),
+            )),
+            _ => Ok(prop),
+        };
+        for module in &mut self.modules {
+            module.update_prop("local_include_dirs", filter)?;
+            module.update_prop("srcs", filter)?;
         }
         Ok(())
     }
@@ -237,16 +236,28 @@ impl SoongPackage {
         Ok(package)
     }
 
-    pub fn get_gen_deps(&mut self) -> Vec<PathBuf> {
-        self.internals.deps.sort_unstable();
-        self.internals.deps.dedup();
-        std::mem::take(&mut self.internals.deps)
+    pub fn get_dep_gen_assets(&mut self) -> Vec<PathBuf> {
+        self.internals.gen_assets.sort_unstable();
+        self.internals.gen_assets.dedup();
+        std::mem::take(&mut self.internals.gen_assets)
     }
 
-    pub fn get_gen_libs(&mut self) -> Vec<PathBuf> {
+    pub fn get_dep_libs(&mut self) -> Vec<PathBuf> {
         self.internals.libs.sort_unstable();
         self.internals.libs.dedup();
         std::mem::take(&mut self.internals.libs)
+    }
+
+    pub fn get_dep_custom_cmd_inputs(&mut self) -> Vec<PathBuf> {
+        self.internals.custom_cmd_inputs.sort_unstable();
+        self.internals.custom_cmd_inputs.dedup();
+        std::mem::take(&mut self.internals.custom_cmd_inputs)
+    }
+
+    pub fn get_dep_tools_module(&mut self) -> Vec<PathBuf> {
+        self.internals.tools_module.sort_unstable();
+        self.internals.tools_module.dedup();
+        std::mem::take(&mut self.internals.tools_module)
     }
 
     pub fn generate<T>(
@@ -273,7 +284,7 @@ impl SoongPackage {
             &targets_to_gen,
             project,
         );
-        targets_map.traverse_from(targets_to_gen.get_targets(), |target| {
+        targets_map.traverse_from(targets_to_gen.get_targets(), false, |target| {
             if !gen.filter_target(target) {
                 return Ok(false);
             }

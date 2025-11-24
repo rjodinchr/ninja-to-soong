@@ -22,7 +22,18 @@ impl CcLibraryHeaders {
     }
 }
 
-#[derive(Debug, Clone)]
+pub enum CcDefaults {
+    Llvm,
+}
+impl CcDefaults {
+    pub fn str(self) -> String {
+        String::from(match self {
+            Self::Llvm => "llvm-project-all-libs-defaults",
+        })
+    }
+}
+
+#[derive(Debug, Clone, PartialEq)]
 pub enum SoongProp {
     Str(String),
     VecStr(Vec<String>),
@@ -31,7 +42,7 @@ pub enum SoongProp {
     None,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq)]
 pub struct SoongNamedProp {
     name: String,
     prop: SoongProp,
@@ -187,7 +198,7 @@ impl SoongNamedProp {
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone, PartialEq)]
 pub struct SoongModule {
     name: String,
     props: Vec<SoongNamedProp>,
@@ -206,6 +217,7 @@ impl SoongModule {
             .add_prop("name", SoongProp::Str(name.str()))
             .add_prop("export_include_dirs", SoongProp::VecStr(include_dirs))
             .add_prop("vendor_available", SoongProp::Bool(true))
+            .add_prop("host_supported", SoongProp::Bool(true))
     }
 
     pub fn new_filegroup(name: String, files: Vec<String>) -> Self {
@@ -257,10 +269,12 @@ impl SoongModule {
     {
         for index in 0..self.props.len() {
             if self.props[index].name == name {
-                let prop = self.props.remove(index).prop;
+                let named_prop = self.props.remove(index);
+                let prop = named_prop.prop;
                 let updated_prop = f(prop)?;
-                self.props
-                    .insert(index, SoongNamedProp::new(name, updated_prop));
+                let mut updated_named_prop = SoongNamedProp::new(name, updated_prop);
+                updated_named_prop.wildcard_src_path = named_prop.wildcard_src_path;
+                self.props.insert(index, updated_named_prop);
                 return Ok(true);
             }
         }

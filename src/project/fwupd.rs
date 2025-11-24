@@ -18,9 +18,6 @@ impl Project for Fwupd {
     fn get_android_path(&self) -> Result<PathBuf, String> {
         Ok(Path::new("external").join(self.get_name()))
     }
-    fn get_test_path(&self, ctx: &Context) -> Result<PathBuf, String> {
-        Ok(ctx.test_path.join(self.get_name()))
-    }
     fn generate_package(
         &mut self,
         ctx: &Context,
@@ -31,21 +28,20 @@ impl Project for Fwupd {
         } else {
             PathBuf::from("/ninja-to-soong-fwupd")
         };
-        self.build_path = ctx.temp_path.join(self.get_name());
-        let ndk_path = get_ndk_path(&ctx.temp_path, ctx)?;
+        self.build_path = ctx.get_temp_path(Path::new(self.get_name()))?;
+        let ndk_path = get_ndk_path(ctx)?;
 
-        if !ctx.skip_gen_ninja {
-            execute_cmd!(
-                "bash",
-                [
-                    &path_to_string(self.get_test_path(ctx)?.join("gen-ninja.sh")),
-                    &path_to_string(&self.src_path),
-                    &path_to_string(&self.build_path),
-                    &path_to_string(&ndk_path),
-                    if ctx.copy_to_aosp { "copy_to_aosp" } else { "" },
-                ]
-            )?;
-        }
+        common::gen_ninja(
+            vec![
+                path_to_string(&self.src_path),
+                path_to_string(&self.build_path),
+                path_to_string(&ndk_path),
+                path_to_string(ctx.get_test_path(self)),
+                String::from(if ctx.copy_to_aosp { "copy_to_aosp" } else { "" }),
+            ],
+            ctx,
+            self,
+        )?;
 
         let mut package = SoongPackage::new(
             &["//visibility:public"],
@@ -67,7 +63,7 @@ impl Project for Fwupd {
             ctx,
         )?;
 
-        let mut gen_deps = package.get_gen_deps();
+        let mut gen_deps = package.get_dep_gen_assets();
         common::ninja_build(&self.build_path, &gen_deps, ctx)?;
         gen_deps.extend(
             [
@@ -114,7 +110,7 @@ impl Project for Fwupd {
             ]
             .map(|dep| PathBuf::from(dep)),
         );
-        package.filter_local_include_dirs(MESON_GENERATED, &gen_deps)?;
+        package.filter_gen_deps(MESON_GENERATED, &gen_deps)?;
         common::copy_gen_deps(gen_deps, MESON_GENERATED, &self.build_path, ctx, self)?;
         package.print(ctx)
     }
@@ -161,11 +157,11 @@ impl Project for Fwupd {
     fn filter_gen_header(&self, _header: &Path) -> bool {
         false
     }
+    fn filter_gen_source(&self, _source: &Path) -> bool {
+        false
+    }
     fn filter_include(&self, include: &Path) -> bool {
         include != self.build_path.join("subprojects/libxmlb/src/libxmlb")
-    }
-    fn filter_lib(&self, lib: &str) -> bool {
-        !lib.contains("libatomic")
     }
     fn filter_link_flag(&self, _flag: &str) -> bool {
         false

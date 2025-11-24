@@ -1750,10 +1750,6 @@ cc_library_shared {
     shared_libs: ["liblog"],
     static_libs: ["angle_obj_libangle_common_a"],
     local_include_dirs: [""],
-    generated_headers: [
-        "angle_gen_angle_ANGLEShaderProgramVersion_h",
-        "angle_gen_angle_angle_commit_h",
-    ],
     defaults: ["angle-common-defaults"],
 }
 
@@ -1798,10 +1794,6 @@ cc_library_shared {
     local_include_dirs: [
         "include",
         "src",
-    ],
-    generated_headers: [
-        "angle_gen_angle_ANGLEShaderProgramVersion_h",
-        "angle_gen_angle_angle_commit_h",
     ],
     stl: "libc++_static",
     arch: {
@@ -2131,10 +2123,6 @@ cc_library_shared {
         "src/third_party/volk",
         "third_party/vulkan-headers/src/include",
         "third_party/vulkan_memory_allocator/include",
-    ],
-    generated_headers: [
-        "angle_gen_angle_ANGLEShaderProgramVersion_h",
-        "angle_gen_angle_angle_commit_h",
     ],
     defaults: ["angle-common-defaults"],
     arch: {
@@ -2580,10 +2568,6 @@ cc_library_shared {
         "third_party/googletest/src/googletest",
         "third_party/googletest/src/googletest/include",
         "third_party/vulkan-headers/src/include",
-    ],
-    generated_headers: [
-        "angle_gen_angle_ANGLEShaderProgramVersion_h",
-        "angle_gen_angle_angle_commit_h",
     ],
     defaults: ["angle-common-defaults"],
 }

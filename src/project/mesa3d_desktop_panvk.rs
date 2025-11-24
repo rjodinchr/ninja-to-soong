@@ -9,7 +9,7 @@ pub struct Mesa3DDesktopPanVK {
 }
 
 const DEFAULTS: &str = "mesa3d-desktop-panvk-defaults";
-const RAW_DEFAULTS: &str = "mesa3d-desktop-intel-raw-defaults";
+const RAW_DEFAULTS: &str = "mesa3d-desktop-panvk-raw-defaults";
 
 impl mesa3d_desktop::Mesa3dProject for Mesa3DDesktopPanVK {
     fn get_name(&self) -> &'static str {
@@ -18,6 +18,12 @@ impl mesa3d_desktop::Mesa3dProject for Mesa3DDesktopPanVK {
 
     fn get_subprojects_path(&self) -> String {
         path_to_string(&self.src_path.join("subprojects"))
+    }
+
+    fn asset_filter(&self, asset: &Path) -> bool {
+        let asset = path_to_string(asset);
+        // mesa_clc
+        !asset.contains("libpan/libpan_v") && !asset.contains("libpan/libpan_shaders_v")
     }
 
     fn create_package(
@@ -50,6 +56,11 @@ impl mesa3d_desktop::Mesa3dProject for Mesa3DDesktopPanVK {
                     "src/tool/pps/pps-producer",
                     "mesa3d_desktop-panvk_pps-producer",
                     "pps-producer"
+                ),
+                target!(
+                    "src/tool/pps/libgpudataproducer.so",
+                    "mesa3d_desktop-panvk_libgpudataproducer",
+                    "libgpudataproducer_panfrost"
                 ),
             ]),
             parse_build_ninja::<MesonNinjaTarget>(&build_path)?,
@@ -86,6 +97,17 @@ cc_defaults {{
     }
 
     fn extend_module(&self, target: &Path, mut module: SoongModule) -> Result<SoongModule, String> {
+        module.update_prop("generated_headers", |prop| match prop {
+            SoongProp::VecStr(mut vec) => {
+                vec.push(path_to_id(
+                    Path::new(mesa3d_desktop::Mesa3dProject::get_name(self))
+                        .join("src/util/shader_stats.h"),
+                ));
+                Ok(SoongProp::VecStr(vec))
+            }
+            _ => Ok(prop),
+        })?;
+
         if target.ends_with("libvulkan_panfrost.so") {
             module = module
                 .add_prop("relative_install_path", SoongProp::Str(String::from("hw")))

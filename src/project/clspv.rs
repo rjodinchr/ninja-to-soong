@@ -18,34 +18,29 @@ impl Project for Clspv {
     fn get_android_path(&self) -> Result<PathBuf, String> {
         Ok(Path::new("external").join(self.get_name()))
     }
-    fn get_test_path(&self, ctx: &Context) -> Result<PathBuf, String> {
-        Ok(ctx.test_path.join(self.get_name()))
-    }
     fn generate_package(
         &mut self,
         ctx: &Context,
         projects_map: &ProjectsMap,
     ) -> Result<String, String> {
         let src_path = ctx.get_android_path(self)?;
-        self.build_path = ctx.temp_path.join(self.get_name());
-        let ndk_path = get_ndk_path(&ctx.temp_path, ctx)?;
+        self.build_path = ctx.get_temp_path(Path::new(self.get_name()))?;
+        let ndk_path = get_ndk_path(ctx)?;
         self.spirv_headers_path = ProjectId::SpirvHeaders.get_android_path(projects_map, ctx)?;
         self.llvm_project_path = ProjectId::LlvmProject.get_android_path(projects_map, ctx)?;
 
-        if !ctx.skip_gen_ninja {
-            execute_cmd!(
-                "bash",
-                [
-                    &path_to_string(self.get_test_path(ctx)?.join("gen-ninja.sh")),
-                    &path_to_string(&src_path),
-                    &path_to_string(&self.build_path),
-                    &path_to_string(&ndk_path),
-                    &path_to_string(&self.spirv_headers_path),
-                    &path_to_string(ProjectId::SpirvTools.get_android_path(projects_map, ctx)?),
-                    &path_to_string(&self.llvm_project_path),
-                ]
-            )?;
-        }
+        common::gen_ninja(
+            vec![
+                path_to_string(&src_path),
+                path_to_string(&self.build_path),
+                path_to_string(&ndk_path),
+                path_to_string(&self.spirv_headers_path),
+                path_to_string(ProjectId::SpirvTools.get_android_path(projects_map, ctx)?),
+                path_to_string(&self.llvm_project_path),
+            ],
+            ctx,
+            self,
+        )?;
 
         let mut package = SoongPackage::new(
             &[],
@@ -65,7 +60,7 @@ impl Project for Clspv {
         )?
         .add_visibilities(Dep::ClspvTargets.get_visibilities(projects_map)?);
 
-        let gen_deps = package.get_gen_deps();
+        let gen_deps = package.get_dep_custom_cmd_inputs();
         self.gen_deps.insert(
             Dep::ClangHeaders,
             gen_deps
@@ -83,8 +78,9 @@ impl Project for Clspv {
             gen_deps
                 .iter()
                 .filter_map(|dep| {
-                    if file_name(dep) == "clspv--.bc" || file_name(dep) == "clspv64--.bc" {
-                        return Some(path_to_string(strip_prefix(dep, "third_party/llvm")));
+                    let file_name = file_name(dep);
+                    if file_name == "clspv--.bc" || file_name == "clspv64--.bc" {
+                        return Some(file_name);
                     }
                     None
                 })
@@ -106,13 +102,6 @@ impl Project for Clspv {
         package.print(ctx)
     }
 
-    fn get_deps_prefix(&self) -> Vec<(PathBuf, Dep)> {
-        vec![
-            (self.spirv_headers_path.clone(), Dep::SpirvHeaders),
-            (self.llvm_project_path.join("clang"), Dep::ClangHeaders),
-            (PathBuf::from("third_party/llvm"), Dep::LibclcBins),
-        ]
-    }
     fn get_deps(&self, dep: Dep) -> Vec<NinjaTargetToGen> {
         match self.gen_deps.get(&dep) {
             Some(gen_deps) => gen_deps.iter().map(|lib| target!(lib)).collect(),
@@ -142,15 +131,29 @@ impl Project for Clspv {
         Ok(module.add_prop("vendor_available", SoongProp::Bool(true)))
     }
 
-    fn map_cmd_output(&self, output: &Path) -> PathBuf {
+    fn map_cmd_input(&self, input: &Path) -> Option<String> {
+        for (prefix, dep) in [
+            (&self.spirv_headers_path, Dep::SpirvHeaders),
+            (&self.llvm_project_path.join("clang"), Dep::ClangHeaders),
+        ] {
+            if input.starts_with(&prefix) {
+                return Some(dep.get_id(&input, prefix, &self.build_path));
+            }
+        }
+        if let Ok(prefix) = input.strip_prefix(PathBuf::from("/libclc")) {
+            return Some(path_to_id(PathBuf::from("libclc").join(prefix)));
+        }
+        None
+    }
+    fn map_cmd_output(&self, output: &Path) -> Option<String> {
         let mut prefix = output;
         while let Some(parent) = prefix.parent() {
             prefix = parent;
             if file_name(prefix) == "include" {
-                return strip_prefix(output, prefix);
+                return Some(path_to_string(strip_prefix(output, prefix)));
             }
         }
-        PathBuf::from(output)
+        Some(path_to_string(output))
     }
 
     fn filter_cflag(&self, _cflag: &str) -> bool {

@@ -5,10 +5,18 @@ set -xe
 [ $# -eq 1 ]
 DEST="$1"
 SCRIPT_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
+DEST_DIR="${DEST}/vendor/google/graphics/mesa3d/desktop-panvk"
 
-bash "${SCRIPT_DIR}/../../../utils/checkout.sh" https://gitlab.freedesktop.org/zzyiwei/mesa 28b4239987f18c8ad8fa5572602dab1417cfa878 "${DEST}/vendor/google/graphics/mesa3d/desktop-panvk"
+bash "${SCRIPT_DIR}/../../checkout.sh" https://gitlab.freedesktop.org/mesa/mesa 29ccbb21f30553d6a39967ae013748063b73005a "${DEST_DIR}"
 
-MAJOR_VERSION=18
+for patch in \
+    "mesa-c8b10b4512c.patch" \
+    "mesa-762be5eae1e.patch"
+do
+    git -C "${DEST_DIR}" apply "${SCRIPT_DIR}/../patches/${patch}"
+done
+
+MAJOR_VERSION=19
 sudo apt install \
      meson-1.5 \
      libclang-${MAJOR_VERSION}-dev \

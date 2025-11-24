@@ -64,6 +64,7 @@ cc_library_shared {
     cflags: [
         "-DCLSPV_ONLINE_COMPILER=1",
         "-DCLVK_PERFETTO_ENABLE",
+        "-DCL_ENABLE_BETA_EXTENSIONS",
         "-DCOMPILER_AVAILABLE=1",
     ],
     ldflags: ["-Wl,-Bsymbolic"],
@@ -139,6 +140,7 @@ cc_library_shared {
         "llvm-project_lib_libclangAPINotes_a",
         "llvm-project_lib_libclangASTMatchers_a",
         "llvm-project_lib_libclangAST_a",
+        "llvm-project_lib_libclangAnalysisLifetimeSafety_a",
         "llvm-project_lib_libclangAnalysis_a",
         "llvm-project_lib_libclangBasic_a",
         "llvm-project_lib_libclangCodeGen_a",
@@ -179,10 +181,7 @@ cc_test {
         "-DCOMPILER_AVAILABLE=1",
         "-Wno-missing-braces",
     ],
-    shared_libs: [
-        "libclvk",
-        "libz",
-    ],
+    shared_libs: ["libclvk"],
     static_libs: [
         "llvm-project_lib_libLLVMDemangle_a",
         "llvm-project_lib_libLLVMSupport_a",

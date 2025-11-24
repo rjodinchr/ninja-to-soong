@@ -30,17 +30,13 @@ impl NinjaTarget for CmakeNinjaTarget {
                 };
                 let mut split = command.split(" && ");
                 let split_count = split.clone().count();
-                if split_count < 2 {
-                    return error!(
-                    "Could not find enough split in command (expected at least 2, got {split_count}"
-                );
-                }
-                let command = split.nth(1).unwrap();
+                let command = split.nth(if split_count < 2 { 0 } else { 1 }).unwrap();
+
                 if command.contains("bin/cmake ") {
                     NinjaRule::None
                 } else {
                     NinjaRule::CustomCommand(NinjaRuleCmd {
-                        command: String::from(command),
+                        command: common::get_cmd(command),
                         rsp_info: None,
                     })
                 }
