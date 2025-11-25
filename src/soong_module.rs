@@ -59,10 +59,9 @@ impl SoongNamedProp {
     }
 
     pub fn enable_wildcard(&mut self, src_path: &Path) -> Result<(), String> {
-        match &self.prop {
-            SoongProp::VecStr(_) => (),
-            _ => return error!("Could not wildcardize a non-VecStr property"),
-        }
+        let SoongProp::VecStr(_) = &self.prop else {
+            return error!("Could not wildcardize a non-VecStr property");
+        };
         self.wildcard_src_path = Some(PathBuf::from(src_path));
         Ok(())
     }
@@ -251,17 +250,14 @@ impl SoongModule {
     }
 
     pub fn extend_prop(mut self, name: &str, vec_str: Vec<&str>) -> Result<SoongModule, String> {
-        let merge_prop = |prop: SoongProp| match &prop {
-            SoongProp::VecStr(existing_vec_str) => {
-                let mut new_vec = existing_vec_str.clone();
-                new_vec.extend(vec_str.iter().map(|str| String::from(*str)));
-                return Ok(SoongProp::VecStr(new_vec));
-            }
-            _ => {
+        let merge_prop = |prop: SoongProp| {
+            let SoongProp::VecStr(mut new_vec_str) = prop.clone() else {
                 return error!(
                     "Cannot extend {name}, only VecStr can be extended through 'extend_prop'"
-                )
-            }
+                );
+            };
+            new_vec_str.extend(vec_str.iter().map(|str| String::from(*str)));
+            return Ok(SoongProp::VecStr(new_vec_str));
         };
         if !self.update_prop(&name, merge_prop)? {
             self.props.push(SoongNamedProp::new(
@@ -306,9 +302,11 @@ impl SoongModule {
     }
 
     pub fn filter_default(&mut self, default: &SoongModule) -> Result<(), String> {
-        let my_name = match self.get_prop("name").unwrap().prop {
-            SoongProp::Str(name) => name,
-            _ => return error!("Unexpected SoongProp 'name' in {default:#?}"),
+        let Some(named_prop) = self.get_prop("name") else {
+            return error!("No 'name' property in {self:#?}");
+        };
+        let SoongProp::Str(my_name) = named_prop.prop else {
+            return error!("Unexpected SoongProp 'name' in {self:#?}");
         };
         let find_prop_idx = |name: &str, props: &Vec<SoongNamedProp>| {
             for idx in 0..props.len() {

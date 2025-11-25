@@ -143,42 +143,39 @@ soong_namespace {
         mut module: SoongModule,
     ) -> Result<SoongModule, String> {
         if let Some(prop) = module.get_prop("out") {
-            match prop.get_prop() {
-                SoongProp::VecStr(mut outs) => {
-                    if outs.len() == 1 && file_ext(Path::new(&outs[0])).starts_with("h") {
-                        let mut target = target.parent().unwrap();
-                        let mut cmd_suffix = String::new();
-                        while !target.ends_with("src") {
-                            let prefix = file_name(&target);
-                            target = target.parent().unwrap();
-                            let prev_out = outs.last().unwrap();
-                            let new_out = path_to_string(Path::new(&prefix).join(prev_out));
-                            cmd_suffix = cmd_suffix
-                                + "; cp $(location "
-                                + prev_out
-                                + ") $(location "
-                                + &new_out
-                                + ")";
-                            outs.push(new_out);
-                        }
-                        module.update_prop("out", |_| Ok(SoongProp::VecStr(outs.clone())))?;
-                        module.update_prop("cmd", |prop| {
-                            match prop {
-                                SoongProp::Str(cmd) => {
-                                    return Ok(SoongProp::Str(
-                                        cmd.replace(
-                                            "$(out)",
-                                            &(String::from("$(location ") + &outs[0] + ")"),
-                                        ) + &cmd_suffix,
-                                    ));
-                                }
-                                _ => (),
-                            }
-                            return Ok(prop);
-                        })?;
+            if let SoongProp::VecStr(mut outs) = prop.get_prop() {
+                if outs.len() == 1 && file_ext(Path::new(&outs[0])).starts_with("h") {
+                    let mut target = target.parent().unwrap();
+                    let mut cmd_suffix = String::new();
+                    while !target.ends_with("src") {
+                        let prefix = file_name(&target);
+                        target = target.parent().unwrap();
+                        let prev_out = outs.last().unwrap();
+                        let new_out = path_to_string(Path::new(&prefix).join(prev_out));
+                        cmd_suffix = cmd_suffix
+                            + "; cp $(location "
+                            + prev_out
+                            + ") $(location "
+                            + &new_out
+                            + ")";
+                        outs.push(new_out);
                     }
+                    module.update_prop("out", |_| Ok(SoongProp::VecStr(outs.clone())))?;
+                    module.update_prop("cmd", |prop| {
+                        match prop {
+                            SoongProp::Str(cmd) => {
+                                return Ok(SoongProp::Str(
+                                    cmd.replace(
+                                        "$(out)",
+                                        &(String::from("$(location ") + &outs[0] + ")"),
+                                    ) + &cmd_suffix,
+                                ));
+                            }
+                            _ => (),
+                        }
+                        return Ok(prop);
+                    })?;
                 }
-                _ => (),
             }
         }
         Ok(module.add_prop("vendor_available", SoongProp::Bool(true)))
