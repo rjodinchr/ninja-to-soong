@@ -157,6 +157,11 @@ cc_defaults {{
     }
 
     fn extend_module(&self, target: &Path, mut module: SoongModule) -> Result<SoongModule, String> {
+        let static_libs_contain = |module: &SoongModule, s: &str| -> bool {
+            module
+                .get_prop("static_libs")
+                .is_some_and(|prop| prop.is_any_str_contain(s))
+        };
         let relative_install = |module: SoongModule| -> SoongModule {
             for lib in [
                 "libGLESv1_CM_mesa.so.1.1.0",
@@ -192,21 +197,7 @@ cc_defaults {{
 
         // Add intel tools dependencies if libvulkan_intel.so depends on the real decoder library.
         if target.ends_with("libvulkan_intel.so") {
-            let mut contain_decoder = false;
-
-            let optional_static_libs = module.get_prop("static_libs");
-            if !optional_static_libs.is_none() {
-                let static_libs = optional_static_libs.unwrap().get_prop();
-                if let SoongProp::VecStr(libs) = static_libs {
-                    for dep in &libs {
-                        if dep.contains("libintel_decoder_a") {
-                            contain_decoder = true;
-                            break;
-                        }
-                    }
-                }
-            }
-            if contain_decoder {
+            if static_libs_contain(&module, "libintel_decoder_a") {
                 module = module
                     .extend_prop("static_libs", vec!["libexpat"])?
                     .extend_prop("shared_libs", vec!["libz"])?;

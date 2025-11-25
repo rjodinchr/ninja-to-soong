@@ -71,6 +71,30 @@ impl SoongNamedProp {
         self.prop.clone()
     }
 
+    // A helper method to check whether the type of `prop` is `VecStr` and
+    // whether any string `s` in `prop` has f(s) returning true.
+    // The type F must implement the Fn trait, which is the trait for closures
+    // that take an immutable reference to &str and return a bool.
+    pub fn is_any_str<F>(&self, f: F) -> bool
+    where
+        F: Fn(&str) -> bool,
+    {
+        if let SoongProp::VecStr(strs) = &self.prop {
+            for s in strs {
+                if f(&s) {
+                    return true;
+                }
+            }
+        }
+        false
+    }
+
+    // Check whether the type of `prop` is `VecStr` and whether any string `s`
+    // in `prop` contains `substr`.
+    pub fn is_any_str_contain(&self, substr: &str) -> bool {
+        self.is_any_str(|s| s.contains(substr))
+    }
+
     pub fn filter_default(
         mut self,
         default_prop: SoongProp,
