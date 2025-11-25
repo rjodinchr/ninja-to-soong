@@ -143,9 +143,7 @@ cc_defaults {{
     name: "{RAW_DEFAULTS}",
     soc_specific: true,
     static_libs: [
-        "libexpat",
         "libperfetto_client_experimental",
-        "libz",
     ],
     header_libs: [
         "libcutils_headers",
@@ -182,6 +180,27 @@ cc_defaults {{
             module = module.add_prop("afdo", SoongProp::Bool(true))
         }
 
+        // Add intel tools dependencies.
+        if target.ends_with("intel_hang_replay") || target.ends_with("aubinator_error_decode") {
+            module = module.extend_prop("static_libs", vec!["libexpat"])?;
+        }
+        if target.ends_with("libintel_decoder.a") || target.ends_with("libgallium_dri.so") {
+            module = module
+                .extend_prop("static_libs", vec!["libexpat"])?
+                .extend_prop("shared_libs", vec!["libz"])?;
+        }
+
+        // Add intel tools dependencies if libvulkan_intel.so depends on the real decoder library.
+        if target.ends_with("libvulkan_intel.so")
+            && module
+                .get_prop("static_libs")
+                .is_some_and(|prop| prop.is_any_str_contain("libintel_decoder_a"))
+        {
+            module = module
+                .extend_prop("static_libs", vec!["libexpat"])?
+                .extend_prop("shared_libs", vec!["libz"])?;
+        }
+
         let mut cflags = vec!["-Wno-non-virtual-dtor", "-Wno-error"];
         if target.ends_with("libvulkan_lite_runtime.a") {
             cflags.push("-Wno-unreachable-code-loop-increment");
@@ -189,8 +208,12 @@ cc_defaults {{
         if target.ends_with("libmesa_util.a") {
             module = module.extend_prop("shared_libs", vec!["libz"])?;
         }
-        if !["libintel_decoder_brw.a", "libintel_decoder_elk.a"]
-            .contains(&file_name(target).as_str())
+        if ![
+            "libintel_decoder_brw.a",
+            "libintel_decoder_elk.a",
+            "libintel_decoder_stub_brw.a",
+        ]
+        .contains(&file_name(target).as_str())
         {
             module.add_prop("defaults", SoongProp::VecStr(vec![String::from(DEFAULTS)]))
         } else {
