@@ -157,11 +157,6 @@ cc_defaults {{
     }
 
     fn extend_module(&self, target: &Path, mut module: SoongModule) -> Result<SoongModule, String> {
-        let static_libs_contain = |module: &SoongModule, s: &str| -> bool {
-            module
-                .get_prop("static_libs")
-                .is_some_and(|prop| prop.is_any_str_contain(s))
-        };
         let relative_install = |module: SoongModule| -> SoongModule {
             for lib in [
                 "libGLESv1_CM_mesa.so.1.1.0",
@@ -196,12 +191,14 @@ cc_defaults {{
         }
 
         // Add intel tools dependencies if libvulkan_intel.so depends on the real decoder library.
-        if target.ends_with("libvulkan_intel.so") {
-            if static_libs_contain(&module, "libintel_decoder_a") {
-                module = module
-                    .extend_prop("static_libs", vec!["libexpat"])?
-                    .extend_prop("shared_libs", vec!["libz"])?;
-            }
+        if target.ends_with("libvulkan_intel.so")
+            && module
+                .get_prop("static_libs")
+                .is_some_and(|prop| prop.is_any_str_contain("libintel_decoder_a"))
+        {
+            module = module
+                .extend_prop("static_libs", vec!["libexpat"])?
+                .extend_prop("shared_libs", vec!["libz"])?;
         }
 
         let mut cflags = vec!["-Wno-non-virtual-dtor", "-Wno-error"];
