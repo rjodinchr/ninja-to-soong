@@ -194,11 +194,13 @@ soong_namespace {
     fn map_cmd_output(&self, output: &Path) -> Option<String> {
         Some(file_name(output))
     }
-    fn map_lib(&self, library: &Path) -> Option<PathBuf> {
-        if library.starts_with("src/android_stub")
+    fn map_lib(&self, library: &Path, kind: LibraryKind) -> Option<(PathBuf, LibraryKind)> {
+        if path_to_string(library).starts_with("subprojects/expat") {
+            Some((PathBuf::from("libexpat"), LibraryKind::Static))
+        } else if library.starts_with("src/android_stub")
             || (!library.starts_with("src") && !library.starts_with("subprojects/perfetto"))
         {
-            Some(PathBuf::from(file_stem(library)))
+            Some((PathBuf::from(file_stem(library)), kind))
         } else {
             None
         }
