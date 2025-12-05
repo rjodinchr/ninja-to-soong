@@ -12,38 +12,21 @@ const DEFAULTS: &str = "mesa3d-desktop-intel-defaults";
 const RAW_DEFAULTS: &str = "mesa3d-desktop-intel-raw-defaults";
 
 impl Mesa3DDesktopIntel {
-    fn get_intel_tools(&self, build_path: &Path) -> Result<Vec<String>, std::io::Error> {
-        let intel_tools_path = build_path.join("src/intel/tools");
-        let mut intel_tools: Vec<String> = Vec::new();
-        for entry in std::fs::read_dir(intel_tools_path)? {
-            let entry = entry?;
-            let path = entry.path();
-            if path.is_dir() {
-                if let Some(stem) = path.file_stem() {
-                    let stem_str = stem.to_str().unwrap_or("");
-                    if stem_str.starts_with("lib") || stem_str.is_empty() {
-                        continue;
-                    }
-                    intel_tools.push(stem_str.to_string());
+    fn get_intel_tools_targets(&self, build_path: &Path) -> Vec<NinjaTargetToGen> {
+        ls_dir(&build_path.join("src/intel/tools"))
+            .into_iter()
+            .filter_map(|entry| {
+                let name = file_stem(&entry);
+                if name.starts_with("lib") {
+                    return None;
                 }
-            }
-        }
-        Ok(intel_tools)
-    }
-
-    fn get_intel_tools_targets(&self, build_path: &Path) -> Result<Vec<NinjaTargetToGen>, String> {
-        let intel_tools_names = self
-            .get_intel_tools(build_path)
-            .map_err(|e| e.to_string())?;
-        let mut targets: Vec<NinjaTargetToGen> = Vec::new();
-        for name in intel_tools_names {
-            targets.push(target!(
-                format!("src/intel/tools/{}", name),
-                format!("mesa3d_desktop-intel_tools_{}", name),
-                name
-            ));
-        }
-        Ok(targets)
+                Some(target!(
+                    format!("src/intel/tools/{name}"),
+                    format!("mesa3d_desktop-intel_tools_{name}"),
+                    name
+                ))
+            })
+            .collect::<Vec<_>>()
     }
 }
 
@@ -84,8 +67,49 @@ impl mesa3d_desktop::Mesa3dProject for Mesa3DDesktopIntel {
     ) -> Result<SoongPackage, String> {
         self.src_path = PathBuf::from(src_path);
 
-        let intel_tools_targets = self.get_intel_tools_targets(build_path)?;
-
+        let mut targets = vec![
+            target!(
+                "src/mapi/shared-glapi/libglapi.so.0.0.0",
+                "mesa3d_desktop-intel_libglapi",
+                "libglapi"
+            ),
+            target!(
+                "src/gallium/targets/dri/libgallium_dri.so",
+                "mesa3d_desktop-intel_libgallium_dri",
+                "libgallium_dri"
+            ),
+            target!(
+                "src/egl/libEGL_mesa.so.1.0.0",
+                "mesa3d_desktop-intel_libEGL_mesa",
+                "libEGL_mesa"
+            ),
+            target!(
+                "src/mapi/es2api/libGLESv2_mesa.so.2.0.0",
+                "mesa3d_desktop-intel_libGLESv2_mesa",
+                "libGLESv2_mesa"
+            ),
+            target!(
+                "src/mapi/es1api/libGLESv1_CM_mesa.so.1.1.0",
+                "mesa3d_desktop-intel_libGLESv1_CM_mesa",
+                "libGLESv1_CM_mesa"
+            ),
+            target!(
+                "src/intel/vulkan/libvulkan_intel.so",
+                "mesa3d_desktop-intel_libvulkan_intel",
+                "vulkan.intel"
+            ),
+            target!(
+                "src/tool/pps/pps-producer",
+                "mesa3d_desktop-intel_pps-producer",
+                "pps-producer"
+            ),
+            target!(
+                "src/tool/pps/libgpudataproducer.so",
+                "mesa3d_desktop-intel_libgpudataproducer",
+                "libgpudataproducer"
+            ),
+        ];
+        targets.extend(self.get_intel_tools_targets(build_path));
         SoongPackage::new(
             &["//visibility:public"],
             "mesa3d_desktop_intel_licenses",
@@ -103,55 +127,7 @@ impl mesa3d_desktop::Mesa3dProject for Mesa3DDesktopIntel {
             ],
         )
         .generate(
-            NinjaTargetsToGenMap::from(
-                [
-                    vec![
-                        target!(
-                            "src/mapi/shared-glapi/libglapi.so.0.0.0",
-                            "mesa3d_desktop-intel_libglapi",
-                            "libglapi"
-                        ),
-                        target!(
-                            "src/gallium/targets/dri/libgallium_dri.so",
-                            "mesa3d_desktop-intel_libgallium_dri",
-                            "libgallium_dri"
-                        ),
-                        target!(
-                            "src/egl/libEGL_mesa.so.1.0.0",
-                            "mesa3d_desktop-intel_libEGL_mesa",
-                            "libEGL_mesa"
-                        ),
-                        target!(
-                            "src/mapi/es2api/libGLESv2_mesa.so.2.0.0",
-                            "mesa3d_desktop-intel_libGLESv2_mesa",
-                            "libGLESv2_mesa"
-                        ),
-                        target!(
-                            "src/mapi/es1api/libGLESv1_CM_mesa.so.1.1.0",
-                            "mesa3d_desktop-intel_libGLESv1_CM_mesa",
-                            "libGLESv1_CM_mesa"
-                        ),
-                        target!(
-                            "src/intel/vulkan/libvulkan_intel.so",
-                            "mesa3d_desktop-intel_libvulkan_intel",
-                            "vulkan.intel"
-                        ),
-                        target!(
-                            "src/tool/pps/pps-producer",
-                            "mesa3d_desktop-intel_pps-producer",
-                            "pps-producer"
-                        ),
-                        target!(
-                            "src/tool/pps/libgpudataproducer.so",
-                            "mesa3d_desktop-intel_libgpudataproducer",
-                            "libgpudataproducer"
-                        ),
-                    ],
-                    intel_tools_targets,
-                ]
-                .concat()
-                .as_slice(),
-            ),
+            NinjaTargetsToGenMap::from(&targets),
             parse_build_ninja::<MesonNinjaTarget>(&build_path)?,
             &self.src_path,
             &ndk_path,
