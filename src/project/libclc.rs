@@ -145,6 +145,9 @@ cc_genrule_defaults {{
     fn filter_include(&self, _include: &Path) -> bool {
         false
     }
+    fn filter_lib(&self, lib: &str) -> bool {
+        !lib.contains("libLLVM")
+    }
     fn filter_link_flag(&self, _flag: &str) -> bool {
         false
     }

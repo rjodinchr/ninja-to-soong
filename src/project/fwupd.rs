@@ -139,11 +139,11 @@ impl Project for Fwupd {
         )
     }
 
-    fn map_lib(&self, lib: &Path) -> Option<PathBuf> {
+    fn map_lib(&self, lib: &Path, kind: LibraryKind) -> Option<(PathBuf, LibraryKind)> {
         if lib.ends_with("libbinder_ndk.so") {
-            return Some(PathBuf::from("libbinder_ndk"));
+            return Some((PathBuf::from("libbinder_ndk"), kind));
         } else if lib.ends_with("libz") {
-            return Some(PathBuf::from("libz"));
+            return Some((PathBuf::from("libz"), kind));
         }
         None
     }

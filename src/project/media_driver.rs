@@ -99,9 +99,9 @@ cc_defaults {{
         Ok(module.add_prop("defaults", SoongProp::VecStr(vec![String::from(DEFAULTS)])))
     }
 
-    fn map_lib(&self, lib: &Path) -> Option<PathBuf> {
+    fn map_lib(&self, lib: &Path, kind: LibraryKind) -> Option<(PathBuf, LibraryKind)> {
         if lib.ends_with("libigdgmm") {
-            return Some(PathBuf::from("libigdgmm_android"));
+            return Some((PathBuf::from("libigdgmm_android"), kind));
         }
         None
     }

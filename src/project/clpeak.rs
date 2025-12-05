@@ -61,9 +61,12 @@ impl Project for Clpeak {
             .extend_prop("cflags", vec!["-fexceptions"])
     }
 
-    fn map_lib(&self, lib: &Path) -> Option<PathBuf> {
+    fn map_lib(&self, lib: &Path, kind: LibraryKind) -> Option<(PathBuf, LibraryKind)> {
         if lib.ends_with("libOpenCL") {
-            return Some(PathBuf::from("//external/OpenCL-ICD-Loader:libOpenCL"));
+            return Some((
+                PathBuf::from("//external/OpenCL-ICD-Loader:libOpenCL"),
+                kind,
+            ));
         }
         None
     }
