@@ -198,7 +198,7 @@ OPTIONS:
                     return error!("Executable is not in its expected build folder. Cannot figure out where test folder is.");
                 }
                 ctx.n2s_path = PathBuf::from(target.parent().unwrap());
-                let root_contents = ls_dir(&ctx.n2s_path);
+                let root_contents = ls_dir(&ctx.n2s_path)?;
                 for entry in [TESTS_FOLDER, SCRIPTS_FOLDER, TARGET_FOLDER] {
                     if !root_contents.contains(&ctx.n2s_path.join(entry)) {
                         return error!("Executable is not in its expected build folder. Cannot figure out where test folder is.");

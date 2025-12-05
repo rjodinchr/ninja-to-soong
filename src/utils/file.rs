@@ -60,31 +60,43 @@ pub fn read_file(file_path: &Path) -> Result<String, String> {
     }
 }
 
-pub fn ls_regex(regex: &Path) -> Vec<PathBuf> {
-    let mut files = Vec::new();
-    let Ok(entries) = read_dir(regex.parent().unwrap()) else {
-        return files;
+pub fn ls_regex(regex: &Path) -> Result<Vec<PathBuf>, String> {
+    let Some(parent) = regex.parent() else {
+        return error!("invalid regex {regex:#?}");
     };
-    for entry in entries {
-        let path = entry.expect("Failed to read entry").path();
-        if regex == wildcardize_path(&path) {
-            files.push(path);
-        }
-    }
-    files
+    let Ok(entries) = read_dir(parent) else {
+        return Ok(Vec::new());
+    };
+    Ok(entries
+        .into_iter()
+        .filter_map(|entry| {
+            let Ok(entry) = entry else {
+                return None;
+            };
+            let path = entry.path();
+            if regex != wildcardize_path(&path) {
+                return None;
+            }
+            Some(path)
+        })
+        .collect())
 }
 
-pub fn ls_dir(path: &Path) -> Vec<PathBuf> {
-    let mut dirs = Vec::new();
+pub fn ls_dir(path: &Path) -> Result<Vec<PathBuf>, String> {
     let Ok(entries) = read_dir(path) else {
-        return dirs;
+        return Ok(Vec::new());
     };
-    for entry in entries {
-        let dir = entry.expect("Failed to read entry");
-        if !dir.file_type().unwrap().is_dir() {
-            continue;
-        }
-        dirs.push(dir.path());
-    }
-    dirs
+    Ok(entries
+        .into_iter()
+        .filter_map(|entry| {
+            let Ok(dir) = entry else {
+                return None;
+            };
+            let path = dir.path();
+            if !path.is_dir() {
+                return None;
+            }
+            Some(path)
+        })
+        .collect())
 }

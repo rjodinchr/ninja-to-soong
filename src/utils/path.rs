@@ -108,7 +108,9 @@ pub fn wildcardize_paths(paths: Vec<String>, src_path: &Path) -> Vec<String> {
         .collect::<Vec<_>>();
     'outer: while let Some(path) = paths.pop() {
         let wildcard = wildcardize_path(&path);
-        let files = ls_regex(&wildcard);
+        let Ok(files) = ls_regex(&wildcard) else {
+            continue;
+        };
         if files.len() <= 1 {
             wildcardized_paths.push(path_to_string(&path));
             continue;
