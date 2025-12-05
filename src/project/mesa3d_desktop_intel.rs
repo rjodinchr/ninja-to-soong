@@ -115,6 +115,11 @@ impl mesa3d_desktop::Mesa3dProject for Mesa3DDesktopIntel {
                     "mesa3d_desktop-intel_tools_intel_hang_replay",
                     "intel_hang_replay"
                 ),
+                target!(
+                    "src/intel/tools/intel_error2hangdump",
+                    "mesa3d_desktop-intel_tools_intel_error2hangdump",
+                    "intel_error2hangdump"
+                ),
             ]),
             parse_build_ninja::<MesonNinjaTarget>(&build_path)?,
             &self.src_path,
