@@ -305,9 +305,12 @@ cc_test {{
     fn map_cmd_output(&self, output: &Path) -> Option<String> {
         Some(file_name(output))
     }
-    fn map_lib(&self, lib: &Path) -> Option<PathBuf> {
+    fn map_lib(&self, lib: &Path, kind: LibraryKind) -> Option<(PathBuf, LibraryKind)> {
         if lib.ends_with("libOpenCL") {
-            return Some(PathBuf::from("//external/OpenCL-ICD-Loader:libOpenCL"));
+            return Some((
+                PathBuf::from("//external/OpenCL-ICD-Loader:libOpenCL"),
+                kind,
+            ));
         }
         None
     }

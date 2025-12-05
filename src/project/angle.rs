@@ -386,17 +386,20 @@ android_app {{
     fn map_cmd_output(&self, output: &Path) -> Option<String> {
         Some(file_name(output))
     }
-    fn map_lib(&self, library: &Path) -> Option<PathBuf> {
+    fn map_lib(&self, library: &Path, kind: LibraryKind) -> Option<(PathBuf, LibraryKind)> {
         if library.starts_with("obj/third_party/spirv-tools") {
-            Some(PathBuf::from("SPIRV-Tools/source/libSPIRV-Tools.a"))
+            Some((PathBuf::from("SPIRV-Tools/source/libSPIRV-Tools.a"), kind))
         } else if library.starts_with("obj/third_party/zlib") {
-            Some(PathBuf::from("zlib_google_compression_utils_portable"))
+            Some((
+                PathBuf::from("zlib_google_compression_utils_portable"),
+                kind,
+            ))
         } else if library.starts_with("obj/third_party/cpu_features") {
-            Some(PathBuf::from("cpufeatures"))
+            Some((PathBuf::from("cpufeatures"), kind))
         } else if library.starts_with("obj") {
             None
         } else {
-            Some(PathBuf::from(library))
+            Some((PathBuf::from(library), kind))
         }
     }
 

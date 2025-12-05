@@ -5,6 +5,7 @@ use std::collections::HashMap;
 
 use crate::context::*;
 use crate::ninja_parser::*;
+use crate::ninja_target::common::*;
 use crate::ninja_target::*;
 use crate::soong_module::*;
 use crate::soong_package::*;
@@ -159,7 +160,7 @@ pub trait Project {
     fn map_cmd_output(&self, _output: &Path) -> Option<String> {
         None
     }
-    fn map_lib(&self, _lib: &Path) -> Option<PathBuf> {
+    fn map_lib(&self, _lib: &Path, _kind: LibraryKind) -> Option<(PathBuf, LibraryKind)> {
         None
     }
     fn map_tool_module(&self, _tool_module: &Path) -> Option<PathBuf> {
