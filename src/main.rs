@@ -122,7 +122,7 @@ fn generate_projects(mut projects_map: ProjectsMap, ctx: &Context) -> Result<(),
             }
             ProjectId::UnitTest => {
                 let mut project = projects_map.remove(&project_id)?;
-                for dir in ls_dir(&ctx.get_test_path(project.as_ref())) {
+                for dir in ls_dir(&ctx.get_test_path(project.as_ref()))? {
                     let mut test_ctx = ctx.clone();
                     test_ctx.unittest_path = Some(dir);
                     test_ctx.wildcardize_paths = true;

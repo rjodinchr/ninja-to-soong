@@ -12,8 +12,8 @@ const DEFAULTS: &str = "mesa3d-desktop-intel-defaults";
 const RAW_DEFAULTS: &str = "mesa3d-desktop-intel-raw-defaults";
 
 impl Mesa3DDesktopIntel {
-    fn get_intel_tools_targets(&self, build_path: &Path) -> Vec<NinjaTargetToGen> {
-        ls_dir(&build_path.join("src/intel/tools"))
+    fn get_intel_tools_targets(&self, build_path: &Path) -> Result<Vec<NinjaTargetToGen>, String> {
+        Ok(ls_dir(&build_path.join("src/intel/tools"))?
             .into_iter()
             .filter_map(|entry| {
                 let name = file_stem(&entry);
@@ -26,7 +26,7 @@ impl Mesa3DDesktopIntel {
                     name
                 ))
             })
-            .collect::<Vec<_>>()
+            .collect::<Vec<_>>())
     }
 }
 
@@ -109,7 +109,7 @@ impl mesa3d_desktop::Mesa3dProject for Mesa3DDesktopIntel {
                 "libgpudataproducer"
             ),
         ];
-        targets.extend(self.get_intel_tools_targets(build_path));
+        targets.extend(self.get_intel_tools_targets(build_path)?);
         SoongPackage::new(
             &["//visibility:public"],
             "mesa3d_desktop_intel_licenses",

@@ -15,7 +15,7 @@ impl Clvk {
         dir: PathBuf,
         src_path: &Path,
         patch_root_path: &Path,
-    ) -> Vec<SoongModule> {
+    ) -> Result<Vec<SoongModule>, String> {
         let patch_full_path = dir.join("patch");
         if patch_full_path.exists() {
             let patch_string = path_to_string(strip_prefix(patch_full_path, src_path));
@@ -44,18 +44,18 @@ impl Clvk {
                 "patch -i $(location {patch_string}) && cp {0} $(out)",
                 file_name(&dir)
             );
-            return vec![SoongModule::new("cc_genrule")
+            return Ok(vec![SoongModule::new("cc_genrule")
                 .add_prop("name", SoongProp::Str(name))
                 .add_prop("cmd", SoongProp::Str(cmd))
                 .add_prop("srcs", SoongProp::VecStr(inputs))
                 .add_prop("out", SoongProp::VecStr(vec![file_name(&dir)]))
-                .add_prop("soc_specific", SoongProp::Bool(true))];
+                .add_prop("soc_specific", SoongProp::Bool(true))]);
         }
         let mut modules = Vec::new();
-        for subdir in ls_dir(&dir) {
-            modules.extend(self.get_patch_modules_from(subdir, src_path, patch_root_path));
+        for subdir in ls_dir(&dir)? {
+            modules.extend(self.get_patch_modules_from(subdir, src_path, patch_root_path)?);
         }
-        return modules;
+        return Ok(modules);
     }
     fn get_copy_module_for(&mut self, asset: &Path, src_path: &Path) -> Option<SoongModule> {
         let asset = strip_prefix(asset, src_path);
@@ -108,18 +108,18 @@ impl Project for Clvk {
         )?;
 
         let mut patch_modules = Vec::new();
-        let mut dirs = ls_dir(&src_path.join("android").join("patches"));
+        let mut dirs = ls_dir(&src_path.join("android").join("patches"))?;
         if dirs.len() > 0 {
             dirs.sort_unstable();
             for dir in dirs {
-                patch_modules.extend(self.get_patch_modules_from(dir.clone(), &src_path, &dir));
+                patch_modules.extend(self.get_patch_modules_from(dir.clone(), &src_path, &dir)?);
             }
-            for src in ls_regex(&src_path.join("src/*.cpp")) {
+            for src in ls_regex(&src_path.join("src/*.cpp"))? {
                 if let Some(module) = self.get_copy_module_for(&src, &src_path) {
                     patch_modules.push(module);
                 }
             }
-            for src in ls_regex(&src_path.join("src/*.hpp")) {
+            for src in ls_regex(&src_path.join("src/*.hpp"))? {
                 if let Some(module) = self.get_copy_module_for(&src, &src_path) {
                     patch_modules.push(module);
                 }
