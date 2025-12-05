@@ -146,10 +146,7 @@ impl Project for Clvk {
             None,
             self,
             ctx,
-        )?
-        .add_visibilities(vec![
-            ProjectId::OpenclIcdLoader.get_visibility(projects_map)?
-        ]);
+        )?;
 
         for module in patch_modules {
             package = package.add_module(module);
