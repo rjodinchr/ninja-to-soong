@@ -11,6 +11,42 @@ pub struct Mesa3DDesktopIntel {
 const DEFAULTS: &str = "mesa3d-desktop-intel-defaults";
 const RAW_DEFAULTS: &str = "mesa3d-desktop-intel-raw-defaults";
 
+impl Mesa3DDesktopIntel {
+    fn get_intel_tools(&self, build_path: &Path) -> Result<Vec<String>, std::io::Error> {
+        let intel_tools_path = build_path.join("src/intel/tools");
+        let mut intel_tools: Vec<String> = Vec::new();
+        for entry in std::fs::read_dir(intel_tools_path)? {
+            let entry = entry?;
+            let path = entry.path();
+            if path.is_dir() {
+                if let Some(stem) = path.file_stem() {
+                    let stem_str = stem.to_str().unwrap_or("");
+                    if stem_str.starts_with("lib") || stem_str.is_empty() {
+                        continue;
+                    }
+                    intel_tools.push(stem_str.to_string());
+                }
+            }
+        }
+        Ok(intel_tools)
+    }
+
+    fn get_intel_tools_targets(&self, build_path: &Path) -> Result<Vec<NinjaTargetToGen>, String> {
+        let intel_tools_names = self
+            .get_intel_tools(build_path)
+            .map_err(|e| e.to_string())?;
+        let mut targets: Vec<NinjaTargetToGen> = Vec::new();
+        for name in intel_tools_names {
+            targets.push(target!(
+                format!("src/intel/tools/{}", name),
+                format!("mesa3d_desktop-intel_tools_{}", name),
+                name
+            ));
+        }
+        Ok(targets)
+    }
+}
+
 impl mesa3d_desktop::Mesa3dProject for Mesa3DDesktopIntel {
     fn get_name(&self) -> &'static str {
         "mesa3d/desktop-intel"
@@ -47,6 +83,9 @@ impl mesa3d_desktop::Mesa3dProject for Mesa3DDesktopIntel {
         meson_generated: &str,
     ) -> Result<SoongPackage, String> {
         self.src_path = PathBuf::from(src_path);
+
+        let intel_tools_targets = self.get_intel_tools_targets(build_path)?;
+
         SoongPackage::new(
             &["//visibility:public"],
             "mesa3d_desktop_intel_licenses",
@@ -64,58 +103,55 @@ impl mesa3d_desktop::Mesa3dProject for Mesa3DDesktopIntel {
             ],
         )
         .generate(
-            NinjaTargetsToGenMap::from(&[
-                target!(
-                    "src/mapi/shared-glapi/libglapi.so.0.0.0",
-                    "mesa3d_desktop-intel_libglapi",
-                    "libglapi"
-                ),
-                target!(
-                    "src/gallium/targets/dri/libgallium_dri.so",
-                    "mesa3d_desktop-intel_libgallium_dri",
-                    "libgallium_dri"
-                ),
-                target!(
-                    "src/egl/libEGL_mesa.so.1.0.0",
-                    "mesa3d_desktop-intel_libEGL_mesa",
-                    "libEGL_mesa"
-                ),
-                target!(
-                    "src/mapi/es2api/libGLESv2_mesa.so.2.0.0",
-                    "mesa3d_desktop-intel_libGLESv2_mesa",
-                    "libGLESv2_mesa"
-                ),
-                target!(
-                    "src/mapi/es1api/libGLESv1_CM_mesa.so.1.1.0",
-                    "mesa3d_desktop-intel_libGLESv1_CM_mesa",
-                    "libGLESv1_CM_mesa"
-                ),
-                target!(
-                    "src/intel/vulkan/libvulkan_intel.so",
-                    "mesa3d_desktop-intel_libvulkan_intel",
-                    "vulkan.intel"
-                ),
-                target!(
-                    "src/tool/pps/pps-producer",
-                    "mesa3d_desktop-intel_pps-producer",
-                    "pps-producer"
-                ),
-                target!(
-                    "src/tool/pps/libgpudataproducer.so",
-                    "mesa3d_desktop-intel_libgpudataproducer",
-                    "libgpudataproducer"
-                ),
-                target!(
-                    "src/intel/tools/aubinator_error_decode",
-                    "mesa3d_desktop-intel_tools_aubinator_error_decode",
-                    "aubinator_error_decode"
-                ),
-                target!(
-                    "src/intel/tools/intel_hang_replay",
-                    "mesa3d_desktop-intel_tools_intel_hang_replay",
-                    "intel_hang_replay"
-                ),
-            ]),
+            NinjaTargetsToGenMap::from(
+                [
+                    vec![
+                        target!(
+                            "src/mapi/shared-glapi/libglapi.so.0.0.0",
+                            "mesa3d_desktop-intel_libglapi",
+                            "libglapi"
+                        ),
+                        target!(
+                            "src/gallium/targets/dri/libgallium_dri.so",
+                            "mesa3d_desktop-intel_libgallium_dri",
+                            "libgallium_dri"
+                        ),
+                        target!(
+                            "src/egl/libEGL_mesa.so.1.0.0",
+                            "mesa3d_desktop-intel_libEGL_mesa",
+                            "libEGL_mesa"
+                        ),
+                        target!(
+                            "src/mapi/es2api/libGLESv2_mesa.so.2.0.0",
+                            "mesa3d_desktop-intel_libGLESv2_mesa",
+                            "libGLESv2_mesa"
+                        ),
+                        target!(
+                            "src/mapi/es1api/libGLESv1_CM_mesa.so.1.1.0",
+                            "mesa3d_desktop-intel_libGLESv1_CM_mesa",
+                            "libGLESv1_CM_mesa"
+                        ),
+                        target!(
+                            "src/intel/vulkan/libvulkan_intel.so",
+                            "mesa3d_desktop-intel_libvulkan_intel",
+                            "vulkan.intel"
+                        ),
+                        target!(
+                            "src/tool/pps/pps-producer",
+                            "mesa3d_desktop-intel_pps-producer",
+                            "pps-producer"
+                        ),
+                        target!(
+                            "src/tool/pps/libgpudataproducer.so",
+                            "mesa3d_desktop-intel_libgpudataproducer",
+                            "libgpudataproducer"
+                        ),
+                    ],
+                    intel_tools_targets,
+                ]
+                .concat()
+                .as_slice(),
+            ),
             parse_build_ninja::<MesonNinjaTarget>(&build_path)?,
             &self.src_path,
             &ndk_path,
@@ -181,7 +217,10 @@ cc_defaults {{
         }
 
         // Add intel tools dependencies.
-        if target.ends_with("intel_hang_replay") || target.ends_with("aubinator_error_decode") {
+        if target.ends_with("intel_hang_replay")
+            || target.ends_with("aubinator_error_decode")
+            || target.ends_with("aubinator")
+        {
             module = module.extend_prop("static_libs", vec!["libexpat"])?;
         }
         if target.ends_with("libintel_decoder.a") || target.ends_with("libgallium_dri.so") {
