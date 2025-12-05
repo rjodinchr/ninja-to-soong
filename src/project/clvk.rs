@@ -146,10 +146,7 @@ impl Project for Clvk {
             None,
             self,
             ctx,
-        )?
-        .add_visibilities(vec![
-            ProjectId::OpenclIcdLoader.get_visibility(projects_map)?
-        ]);
+        )?;
 
         for module in patch_modules {
             package = package.add_module(module);
@@ -215,12 +212,16 @@ prebuilt_etc {{
                     "test_config",
                     SoongProp::Str(String::from("android/api_tests.xml")),
                 )
+                .add_prop("test_suites", SoongProp::VecStr(vec![String::from("dts")]))
                 .extend_prop("cflags", vec!["-Wno-missing-braces"])?;
         } else if target.ends_with("simple_test") {
-            module = module.add_prop("gtest", SoongProp::Bool(false)).add_prop(
-                "test_config",
-                SoongProp::Str(String::from("android/simple_test.xml")),
-            );
+            module = module
+                .add_prop("gtest", SoongProp::Bool(false))
+                .add_prop(
+                    "test_config",
+                    SoongProp::Str(String::from("android/simple_test.xml")),
+                )
+                .add_prop("test_suites", SoongProp::VecStr(vec![String::from("dts")]));
         } else if target.ends_with("libOpenCL.so") {
             module.update_prop("srcs", |prop| match prop {
                 SoongProp::VecStr(srcs) => Ok(SoongProp::VecStr(

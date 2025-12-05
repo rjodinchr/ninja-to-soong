@@ -11,7 +11,6 @@
 //
 
 package {
-    default_visibility: ["//external/OpenCL-ICD-Loader"],
     default_applicable_licenses: ["clvk_license"],
 }
 
@@ -32,6 +31,7 @@ cc_test {
     shared_libs: ["libclvk"],
     gtest: false,
     test_config: "android/simple_test.xml",
+    test_suites: ["dts"],
     soc_specific: true,
     header_libs: ["OpenCL-Headers"],
 }
@@ -188,6 +188,7 @@ cc_test {
     ],
     local_include_dirs: ["tests/../src"],
     test_config: "android/api_tests.xml",
+    test_suites: ["dts"],
     soc_specific: true,
     header_libs: [
         "OpenCL-Headers",
