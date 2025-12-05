@@ -77,14 +77,12 @@ pub trait NinjaTarget: std::fmt::Debug {
     }
 }
 
-#[derive(Clone)]
 pub struct NinjaTargetToGenMapEntry {
     pub name: Option<PathBuf>,
     pub stem: Option<String>,
     pub module_type: Option<String>,
 }
 
-#[derive(Clone)]
 pub struct NinjaTargetToGen {
     pub path: String,
     pub entry: NinjaTargetToGenMapEntry,
