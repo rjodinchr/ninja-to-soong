@@ -11,7 +11,6 @@
 //
 
 package {
-    default_visibility: ["//external/OpenCL-ICD-Loader"],
     default_applicable_licenses: ["clvk_license"],
 }
 
