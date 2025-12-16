@@ -69,31 +69,6 @@ impl mesa3d_desktop::Mesa3dProject for Mesa3DDesktopIntel {
 
         let mut targets = vec![
             target!(
-                "src/mapi/shared-glapi/libglapi.so.0.0.0",
-                "mesa3d_desktop-intel_libglapi",
-                "libglapi"
-            ),
-            target!(
-                "src/gallium/targets/dri/libgallium_dri.so",
-                "mesa3d_desktop-intel_libgallium_dri",
-                "libgallium_dri"
-            ),
-            target!(
-                "src/egl/libEGL_mesa.so.1.0.0",
-                "mesa3d_desktop-intel_libEGL_mesa",
-                "libEGL_mesa"
-            ),
-            target!(
-                "src/mapi/es2api/libGLESv2_mesa.so.2.0.0",
-                "mesa3d_desktop-intel_libGLESv2_mesa",
-                "libGLESv2_mesa"
-            ),
-            target!(
-                "src/mapi/es1api/libGLESv1_CM_mesa.so.1.1.0",
-                "mesa3d_desktop-intel_libGLESv1_CM_mesa",
-                "libGLESv1_CM_mesa"
-            ),
-            target!(
                 "src/intel/vulkan/libvulkan_intel.so",
                 "mesa3d_desktop-intel_libvulkan_intel",
                 "vulkan.intel"
@@ -169,48 +144,13 @@ cc_defaults {{
     }
 
     fn extend_module(&self, target: &Path, mut module: SoongModule) -> Result<SoongModule, String> {
-        let relative_install = |module: SoongModule| -> SoongModule {
-            for lib in [
-                "libGLESv1_CM_mesa.so.1.1.0",
-                "libGLESv2_mesa.so.2.0.0",
-                "libEGL_mesa.so.1.0.0",
-            ] {
-                if target.ends_with(lib) {
-                    return module
-                        .add_prop("relative_install_path", SoongProp::Str(String::from("egl")));
-                }
-            }
-            if target.ends_with("libvulkan_intel.so") {
-                return module
-                    .add_prop("relative_install_path", SoongProp::Str(String::from("hw")));
-            }
-            module
-        };
-        module = relative_install(module);
-
         if target.ends_with("libvulkan_intel.so") {
-            module = module.add_prop("afdo", SoongProp::Bool(true))
-        }
-
-        // Add intel tools dependencies.
-        if target.ends_with("intel_hang_replay")
-            || target.ends_with("aubinator_error_decode")
-            || target.ends_with("aubinator")
-        {
-            module = module.extend_prop("static_libs", vec!["libexpat"])?;
-        }
-        if target.ends_with("libintel_decoder.a") || target.ends_with("libgallium_dri.so") {
             module = module
-                .extend_prop("static_libs", vec!["libexpat"])?
-                .extend_prop("shared_libs", vec!["libz"])?;
+                .add_prop("relative_install_path", SoongProp::Str(String::from("hw")))
+                .add_prop("afdo", SoongProp::Bool(true));
         }
 
-        // Add intel tools dependencies if libvulkan_intel.so depends on the real decoder library.
-        if target.ends_with("libvulkan_intel.so")
-            && module
-                .get_prop("static_libs")
-                .is_some_and(|prop| prop.is_any_str_contain("libintel_decoder_a"))
-        {
+        if target.ends_with("libintel_decoder.a") {
             module = module
                 .extend_prop("static_libs", vec!["libexpat"])?
                 .extend_prop("shared_libs", vec!["libz"])?;

@@ -163,7 +163,12 @@ impl Project for Clvk {
                 gen_libs
                     .iter()
                     .filter_map(|lib| {
-                        if let Ok(strip) = self.map_lib(lib).unwrap().strip_prefix(prefix) {
+                        if let Ok(strip) = self
+                            .map_lib(lib, LibraryKind::Unspecified)
+                            .unwrap()
+                            .0
+                            .strip_prefix(prefix)
+                        {
                             return Some(path_to_string(strip));
                         }
                         None
@@ -266,14 +271,19 @@ prebuilt_etc {{
             .add_prop("header_libs", SoongProp::VecStr(header_libs)))
     }
 
-    fn map_lib(&self, library: &Path) -> Option<PathBuf> {
-        Some(strip_prefix(
-            if let Ok(strip) = library.strip_prefix(Path::new("external/clspv/third_party/llvm")) {
-                Path::new("llvm-project").join(strip)
-            } else {
-                PathBuf::from(library)
-            },
-            "external",
+    fn map_lib(&self, library: &Path, kind: LibraryKind) -> Option<(PathBuf, LibraryKind)> {
+        Some((
+            strip_prefix(
+                if let Ok(strip) =
+                    library.strip_prefix(Path::new("external/clspv/third_party/llvm"))
+                {
+                    Path::new("llvm-project").join(strip)
+                } else {
+                    PathBuf::from(library)
+                },
+                "external",
+            ),
+            kind,
         ))
     }
 

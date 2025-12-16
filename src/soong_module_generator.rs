@@ -4,6 +4,7 @@
 use std::str;
 
 use crate::context::*;
+use crate::ninja_target::common::*;
 use crate::ninja_target::*;
 use crate::project::*;
 use crate::soong_module::*;
@@ -115,7 +116,12 @@ where
             Some(path_to_string(include))
         }))
     }
-    fn get_libs(&mut self, libs: Vec<PathBuf>, module_name: &String) -> Vec<String> {
+    fn get_libs(
+        &mut self,
+        libs: Vec<PathBuf>,
+        module_name: &String,
+        kind: LibraryKind,
+    ) -> Vec<(String, LibraryKind)> {
         libs.into_iter()
             .filter_map(|lib| {
                 debug_project!("filter_lib({lib:#?})");
@@ -123,23 +129,24 @@ where
                     return None;
                 }
                 Some(if lib.starts_with(&self.ndk_path) {
-                    file_stem(&lib)
+                    (file_stem(&lib), kind)
                 } else {
-                    let lib_id = path_to_id(match self.project.map_lib(&lib) {
-                        Some(map_lib) => match self.targets_to_gen.get_name(&map_lib) {
-                            Some(name) => name,
-                            None => map_lib,
+                    let (lib_path, lib_kind) = match self.project.map_lib(&lib, kind) {
+                        Some((map_lib, lib_kind)) => match self.targets_to_gen.get_name(&map_lib) {
+                            Some(name) => (name, lib_kind),
+                            None => (map_lib, lib_kind),
                         },
                         None => match self.targets_to_gen.get_name(&lib) {
-                            Some(name) => name,
-                            None => Path::new(self.project.get_name()).join(&lib),
+                            Some(name) => (name, kind),
+                            None => (Path::new(self.project.get_name()).join(&lib), kind),
                         },
-                    });
+                    };
+                    let lib_id = path_to_id(lib_path);
                     if lib_id == *module_name {
                         return None;
                     }
                     self.internals.libs.push(lib);
-                    lib_id
+                    (lib_id, lib_kind)
                 })
             })
             .collect()
@@ -247,9 +254,8 @@ where
         let mut cflags = Vec::new();
         let mut includes = Vec::new();
         let mut sources = Vec::new();
+        let mut libs = Vec::new();
         let mut whole_static_libs = Vec::new();
-        let mut static_libs = Vec::new();
-        let mut shared_libs = Vec::new();
         let mut defines = std::collections::HashMap::new();
         for input in target.get_inputs() {
             let Some(input_target) = self.targets_map.get(input) else {
@@ -263,10 +269,21 @@ where
             let mut input_cflags = self.get_defines(input_target.get_defines());
             input_cflags.extend(self.get_cflags(input_target.get_cflags()));
             if !Self::defines_conflict(&mut defines, &input_cflags) {
-                whole_static_libs
-                    .extend(self.get_libs(input_target.get_libs_static_whole(), &module_name));
-                static_libs.extend(self.get_libs(input_target.get_libs_static(), &module_name));
-                shared_libs.extend(self.get_libs(input_target.get_libs_shared(), &module_name));
+                libs.extend(self.get_libs(
+                    input_target.get_libs_static_whole(),
+                    &module_name,
+                    LibraryKind::StaticWhole,
+                ));
+                libs.extend(self.get_libs(
+                    input_target.get_libs_static(),
+                    &module_name,
+                    LibraryKind::Static,
+                ));
+                libs.extend(self.get_libs(
+                    input_target.get_libs_shared(),
+                    &module_name,
+                    LibraryKind::Shared,
+                ));
                 sources.extend(self.get_sources(input_target.get_sources(self.build_path)?));
                 includes.extend(self.get_includes(input_target.get_includes(self.build_path)));
                 cflags.extend(input_cflags);
@@ -284,9 +301,37 @@ where
         let generated_sources = self.get_generated_sources(target)?;
         let (version_script, link_flags) = target.get_link_flags();
         let link_flags = self.get_link_flags(link_flags);
-        whole_static_libs.extend(self.get_libs(target.get_libs_static_whole(), &module_name));
-        static_libs.extend(self.get_libs(target.get_libs_static(), &module_name));
-        shared_libs.extend(self.get_libs(target.get_libs_shared(), &module_name));
+        libs.extend(self.get_libs(
+            target.get_libs_static_whole(),
+            &module_name,
+            LibraryKind::StaticWhole,
+        ));
+        libs.extend(self.get_libs(target.get_libs_static(), &module_name, LibraryKind::Static));
+        libs.extend(self.get_libs(target.get_libs_shared(), &module_name, LibraryKind::Shared));
+        whole_static_libs.extend(libs.iter().filter_map(|(lib, kind)| {
+            if *kind != LibraryKind::StaticWhole {
+                return None;
+            }
+            Some(lib.clone())
+        }));
+        let static_libs = libs
+            .iter()
+            .filter_map(|(lib, kind)| {
+                if *kind != LibraryKind::Static {
+                    return None;
+                }
+                Some(lib.clone())
+            })
+            .collect();
+        let shared_libs = libs
+            .iter()
+            .filter_map(|(lib, kind)| {
+                if *kind != LibraryKind::Shared {
+                    return None;
+                }
+                Some(lib.clone())
+            })
+            .collect();
 
         let module_type = match self.targets_to_gen.get_module_name(&target_name) {
             Some(module_type) => module_type,

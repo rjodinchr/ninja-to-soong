@@ -70,24 +70,6 @@ impl SoongNamedProp {
         self.prop.clone()
     }
 
-    pub fn is_any_str<F>(&self, f: F) -> bool
-    where
-        F: Fn(&str) -> bool,
-    {
-        if let SoongProp::VecStr(strs) = &self.prop {
-            for s in strs {
-                if f(&s) {
-                    return true;
-                }
-            }
-        }
-        false
-    }
-
-    pub fn is_any_str_contain(&self, substr: &str) -> bool {
-        self.is_any_str(|s| s.contains(substr))
-    }
-
     pub fn filter_default(
         mut self,
         default_prop: SoongProp,
