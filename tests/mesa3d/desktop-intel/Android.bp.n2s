@@ -4763,10 +4763,7 @@ cc_library_static {
         "src/vulkan/runtime/vk_video.c",
         "src/vulkan/runtime/vk_ycbcr_conversion.c",
     ],
-    cflags: [
-        "-DVK_USE_PLATFORM_ANDROID_KHR",
-        "-Wno-unreachable-code-loop-increment",
-    ],
+    cflags: ["-DVK_USE_PLATFORM_ANDROID_KHR"],
     local_include_dirs: [
         "include",
         "include/android_stub",
@@ -5375,7 +5372,7 @@ cc_genrule {
 
 cc_genrule {
     name: "mesa3d_desktop-intel_n2s_src_intel_vulkan_anv_entrypoints_h",
-    cmd: "python3 $(location) --xml $(location src/vulkan/registry/vk.xml) --proto --weak --out-h $(location n2s/src/intel/vulkan/anv_entrypoints.h) --out-c $(location n2s/src/intel/vulkan/anv_entrypoints.c) --prefix anv --beta false --device-prefix gfx9 --device-prefix gfx11 --device-prefix gfx12 --device-prefix gfx125 --device-prefix gfx20 --device-prefix gfx30 --device-prefix anv_doom64 --device-prefix anv_hitman3 --device-prefix anv_android --device-prefix anv_rmv",
+    cmd: "python3 $(location) --xml $(location src/vulkan/registry/vk.xml) --proto --weak --out-h $(location n2s/src/intel/vulkan/anv_entrypoints.h) --out-c $(location n2s/src/intel/vulkan/anv_entrypoints.c) --prefix anv --beta false --device-prefix gfx9 --device-prefix gfx11 --device-prefix gfx12 --device-prefix gfx125 --device-prefix gfx20 --device-prefix gfx30 --device-prefix anv_doom64 --device-prefix anv_furmark --device-prefix anv_hitman3 --device-prefix anv_android --device-prefix anv_rmv",
     srcs: [
         "src/vulkan/registry/vk.xml",
         "src/vulkan/util/vk_entrypoints.py",
@@ -6113,6 +6110,7 @@ cc_library_static {
         "src/intel/vulkan/i915/anv_queue.c",
         "src/intel/vulkan/layers/anv_android_layer.c",
         "src/intel/vulkan/layers/anv_doom64.c",
+        "src/intel/vulkan/layers/anv_furmark.c",
         "src/intel/vulkan/layers/anv_hitman3.c",
         "src/intel/vulkan/layers/anv_rmv_layer.c",
         "src/intel/vulkan/xe/anv_batch_chain.c",
@@ -6445,7 +6443,7 @@ cc_library_static {
         "-DMESA_SYSTEM_HAS_KMS_DRM=1",
         "-DNDEBUG",
         "-DPACKAGE_BUGREPORT=\"https://gitlab.freedesktop.org/mesa/mesa/-/issues\"",
-        "-DPACKAGE_VERSION=\"25.3.0\"",
+        "-DPACKAGE_VERSION=\"25.3.2\"",
         "-DSUPPORT_INTEL_INTEGRATED_GPUS",
         "-DTHREAD_SANITIZER=0",
         "-DUSE_GCC_ATOMIC_BUILTINS",
@@ -6464,8 +6462,6 @@ cc_library_static {
         "-D__STDC_CONSTANT_MACROS",
         "-D__STDC_FORMAT_MACROS",
         "-D__STDC_LIMIT_MACROS",
-        "-Wno-error",
-        "-Wno-non-virtual-dtor",
     ],
     local_include_dirs: [
         "include",
@@ -8152,7 +8148,7 @@ cc_defaults {
         "-DMESA_SYSTEM_HAS_KMS_DRM=1",
         "-DNDEBUG",
         "-DPACKAGE_BUGREPORT=\"https://gitlab.freedesktop.org/mesa/mesa/-/issues\"",
-        "-DPACKAGE_VERSION=\"25.3.0\"",
+        "-DPACKAGE_VERSION=\"25.3.2\"",
         "-DSUPPORT_INTEL_INTEGRATED_GPUS",
         "-DTHREAD_SANITIZER=0",
         "-DUSE_GCC_ATOMIC_BUILTINS",
@@ -8171,14 +8167,13 @@ cc_defaults {
         "-D__STDC_CONSTANT_MACROS",
         "-D__STDC_FORMAT_MACROS",
         "-D__STDC_LIMIT_MACROS",
-        "-Wno-error",
-        "-Wno-non-virtual-dtor",
     ],
     defaults: ["mesa3d-desktop-intel-raw-defaults"],
 }
 
 cc_defaults {
     name: "mesa3d-desktop-intel-raw-defaults",
+    cflags: ["Wno-error"],
     soc_specific: true,
     static_libs: [
         "libperfetto_client_experimental",

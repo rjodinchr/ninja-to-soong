@@ -128,6 +128,7 @@ impl mesa3d_desktop::Mesa3dProject for Mesa3DDesktopIntel {
             r#"
 cc_defaults {{
     name: "{RAW_DEFAULTS}",
+    cflags: ["Wno-error"],
     soc_specific: true,
     static_libs: [
         "libperfetto_client_experimental",
@@ -156,14 +157,10 @@ cc_defaults {{
                 .extend_prop("shared_libs", vec!["libz"])?;
         }
 
-        let mut cflags = vec!["-Wno-non-virtual-dtor", "-Wno-error"];
-        if target.ends_with("libvulkan_lite_runtime.a") {
-            cflags.push("-Wno-unreachable-code-loop-increment");
-        }
         if target.ends_with("libmesa_util.a") {
             module = module.extend_prop("shared_libs", vec!["libz"])?;
         }
-        if ![
+        module = if ![
             "libintel_decoder_brw.a",
             "libintel_decoder_elk.a",
             "libintel_decoder_stub_brw.a",
@@ -176,7 +173,7 @@ cc_defaults {{
                 "defaults",
                 SoongProp::VecStr(vec![String::from(RAW_DEFAULTS)]),
             )
-        }
-        .extend_prop("cflags", cflags)
+        };
+        Ok(module)
     }
 }
