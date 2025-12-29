@@ -8173,7 +8173,7 @@ cc_defaults {
 
 cc_defaults {
     name: "mesa3d-desktop-intel-raw-defaults",
-    cflags: ["Wno-error"],
+    cflags: ["-Wno-error"],
     soc_specific: true,
     static_libs: [
         "libperfetto_client_experimental",
