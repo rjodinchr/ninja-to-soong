@@ -128,7 +128,7 @@ impl mesa3d_desktop::Mesa3dProject for Mesa3DDesktopIntel {
             r#"
 cc_defaults {{
     name: "{RAW_DEFAULTS}",
-    cflags: ["Wno-error"],
+    cflags: ["-Wno-error"],
     soc_specific: true,
     static_libs: [
         "libperfetto_client_experimental",
