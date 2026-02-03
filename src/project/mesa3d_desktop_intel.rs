@@ -6,6 +6,7 @@ use super::*;
 #[derive(Default)]
 pub struct Mesa3DDesktopIntel {
     src_path: PathBuf,
+    assets_to_filter: Vec<PathBuf>,
 }
 
 const DEFAULTS: &str = "mesa3d-desktop-intel-defaults";
@@ -40,21 +41,8 @@ impl mesa3d_desktop::Mesa3dProject for Mesa3DDesktopIntel {
     }
 
     fn asset_filter(&self, asset: &Path) -> bool {
-        let asset = path_to_string(asset);
-        for name in [
-            // vtn_bindgen2
-            "_shaders_binding.cpp",
-            "_shaders_binding.h",
-        ] {
-            if asset.ends_with(name) {
-                return false;
-            }
-        }
-        if asset.contains("expat") {
-            return false;
-        }
-
-        true
+        !self.assets_to_filter.contains(&PathBuf::from(asset))
+            && !path_to_string(asset).contains("expat")
     }
 
     fn create_package(
@@ -64,6 +52,7 @@ impl mesa3d_desktop::Mesa3dProject for Mesa3DDesktopIntel {
         build_path: &Path,
         ndk_path: &Path,
         meson_generated: &str,
+        targets_map: NinjaTargetsMap<MesonNinjaTarget>,
     ) -> Result<SoongPackage, String> {
         self.src_path = PathBuf::from(src_path);
 
@@ -85,6 +74,8 @@ impl mesa3d_desktop::Mesa3dProject for Mesa3DDesktopIntel {
             ),
         ];
         targets.extend(self.get_intel_tools_targets(build_path)?);
+        let targets_to_gen = NinjaTargetsToGenMap::from(&targets);
+        self.assets_to_filter = Self::extract_assets_to_filter(&targets_to_gen, &targets_map)?;
         SoongPackage::new(
             &["//visibility:public"],
             "mesa3d_desktop_intel_licenses",
@@ -101,9 +92,9 @@ impl mesa3d_desktop::Mesa3dProject for Mesa3DDesktopIntel {
                 "licenses/GPL-2.0-only",
             ],
         )
-        .generate(
-            NinjaTargetsToGenMap::from(&targets),
-            parse_build_ninja::<MesonNinjaTarget>(&build_path)?,
+        .generate_from_map(
+            targets_to_gen,
+            targets_map,
             &self.src_path,
             &ndk_path,
             &build_path,

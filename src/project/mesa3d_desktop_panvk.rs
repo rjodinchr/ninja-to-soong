@@ -6,6 +6,7 @@ use super::*;
 #[derive(Default)]
 pub struct Mesa3DDesktopPanVK {
     src_path: PathBuf,
+    assets_to_filter: Vec<PathBuf>,
 }
 
 const DEFAULTS: &str = "mesa3d-desktop-panvk-defaults";
@@ -21,9 +22,7 @@ impl mesa3d_desktop::Mesa3dProject for Mesa3DDesktopPanVK {
     }
 
     fn asset_filter(&self, asset: &Path) -> bool {
-        let asset = path_to_string(asset);
-        // mesa_clc
-        !asset.contains("libpan/libpan_v") && !asset.contains("libpan/libpan_shaders_v")
+        !self.assets_to_filter.contains(&PathBuf::from(asset))
     }
 
     fn create_package(
@@ -33,8 +32,27 @@ impl mesa3d_desktop::Mesa3dProject for Mesa3DDesktopPanVK {
         build_path: &Path,
         ndk_path: &Path,
         meson_generated: &str,
+        targets_map: NinjaTargetsMap<MesonNinjaTarget>,
     ) -> Result<SoongPackage, String> {
         self.src_path = PathBuf::from(src_path);
+        let targets_to_gen = NinjaTargetsToGenMap::from(&[
+            target!(
+                "src/panfrost/vulkan/libvulkan_panfrost.so",
+                "mesa3d_desktop-panvk_libvulkan_panfrost",
+                "vulkan.panfrost"
+            ),
+            target!(
+                "src/tool/pps/pps-producer",
+                "mesa3d_desktop-panvk_pps-producer",
+                "pps-producer"
+            ),
+            target!(
+                "src/tool/pps/libgpudataproducer.so",
+                "mesa3d_desktop-panvk_libgpudataproducer",
+                "libgpudataproducer_panfrost"
+            ),
+        ]);
+        self.assets_to_filter = Self::extract_assets_to_filter(&targets_to_gen, &targets_map)?;
         SoongPackage::new(
             &["//visibility:public"],
             "mesa3d_desktop_panvk_licenses",
@@ -45,25 +63,9 @@ impl mesa3d_desktop::Mesa3dProject for Mesa3DDesktopPanVK {
             ],
             &["licenses/Apache-2.0", "licenses/MIT", "licenses/BSL-1.0"],
         )
-        .generate(
-            NinjaTargetsToGenMap::from(&[
-                target!(
-                    "src/panfrost/vulkan/libvulkan_panfrost.so",
-                    "mesa3d_desktop-panvk_libvulkan_panfrost",
-                    "vulkan.panfrost"
-                ),
-                target!(
-                    "src/tool/pps/pps-producer",
-                    "mesa3d_desktop-panvk_pps-producer",
-                    "pps-producer"
-                ),
-                target!(
-                    "src/tool/pps/libgpudataproducer.so",
-                    "mesa3d_desktop-panvk_libgpudataproducer",
-                    "libgpudataproducer_panfrost"
-                ),
-            ]),
-            parse_build_ninja::<MesonNinjaTarget>(&build_path)?,
+        .generate_from_map(
+            targets_to_gen,
+            targets_map,
             &self.src_path,
             &ndk_path,
             &build_path,
