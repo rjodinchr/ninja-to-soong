@@ -171,13 +171,10 @@ where
                 if target.get_outputs().len() > 1 {
                     return Ok(false);
                 }
-                match target.get_rule()? {
-                    NinjaRule::CustomCommand(_) => {
-                        gen_assets.extend(target.get_outputs().clone());
-                        Ok(true)
-                    }
-                    _ => Ok(true),
+                if let NinjaRule::CustomCommand(_) = target.get_rule()? {
+                    gen_assets.extend(target.get_outputs().clone())
                 }
+                Ok(true)
             })?;
         Ok(gen_assets
             .iter()

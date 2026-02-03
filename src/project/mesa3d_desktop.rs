@@ -15,6 +15,7 @@ pub trait Mesa3dProject {
         build_path: &Path,
         ndk_path: &Path,
         meson_generated: &str,
+        targets_map: NinjaTargetsMap<MesonNinjaTarget>,
     ) -> Result<SoongPackage, String>;
     fn get_default_module(&self, package: &SoongPackage) -> Result<SoongModule, String>;
     fn get_raw_suffix(&self) -> String;
@@ -26,6 +27,34 @@ pub trait Mesa3dProject {
             && !str.contains("libdrm") // dependency
             && !str.starts_with("src/android_stub") // dependencies
             && !str.ends_with("git_sha1.h") // git
+    }
+    fn extract_assets_to_filter(
+        targets: &NinjaTargetsToGenMap,
+        targets_map: &NinjaTargetsMap<MesonNinjaTarget>,
+    ) -> Result<Vec<PathBuf>, String> {
+        let mut assets = Vec::new();
+        targets_map.traverse_from(targets.get_targets(), false, |target| {
+            if let NinjaRule::CustomCommand(custom_command) = target.get_rule()? {
+                if custom_command.command.split(" ").any(|split| {
+                    for tool in ["panfrost_compile", "mesa_clc", "vtn_bindgen2"] {
+                        if split.ends_with(tool) {
+                            return true;
+                        }
+                    }
+                    false
+                }) {
+                    let mut outputs = target.get_outputs().clone();
+                    outputs.extend(target.get_implicit_ouputs().clone());
+                    assets.extend(
+                        outputs
+                            .into_iter()
+                            .map(|output| strip_prefix(output, "n2s")),
+                    );
+                }
+            }
+            Ok(true)
+        })?;
+        Ok(assets)
     }
 }
 
@@ -76,9 +105,16 @@ where
             self,
         )?;
 
+        let targets = parse_build_ninja::<MesonNinjaTarget>(&build_path)?;
         const MESON_GENERATED: &str = "meson_generated";
-        let mut package =
-            self.create_package(ctx, &src_path, &build_path, &ndk_path, MESON_GENERATED)?;
+        let mut package = self.create_package(
+            ctx,
+            &src_path,
+            &build_path,
+            &ndk_path,
+            MESON_GENERATED,
+            NinjaTargetsMap::new(&targets),
+        )?;
 
         let gen_deps = package
             .get_dep_gen_assets()

@@ -256,10 +256,10 @@ impl SoongPackage {
         std::mem::take(&mut self.internals.tools_module)
     }
 
-    pub fn generate<T>(
+    pub fn generate_from_map<T>(
         mut self,
         targets_to_gen: NinjaTargetsToGenMap,
-        targets: Vec<T>,
+        targets_map: NinjaTargetsMap<T>,
         src_path: &Path,
         ndk_path: &Path,
         build_path: &Path,
@@ -270,7 +270,6 @@ impl SoongPackage {
     where
         T: NinjaTarget,
     {
-        let targets_map = NinjaTargetsMap::new(&targets);
         let mut gen = SoongModuleGenerator::new(
             src_path,
             ndk_path,
@@ -302,5 +301,32 @@ impl SoongPackage {
         self.internals = gen.delete();
 
         Ok(self)
+    }
+
+    pub fn generate<T>(
+        self,
+        targets_to_gen: NinjaTargetsToGenMap,
+        targets: Vec<T>,
+        src_path: &Path,
+        ndk_path: &Path,
+        build_path: &Path,
+        gen_build_prefix: Option<&str>,
+        project: &dyn Project,
+        ctx: &Context,
+    ) -> Result<SoongPackage, String>
+    where
+        T: NinjaTarget,
+    {
+        let targets_map = NinjaTargetsMap::new(&targets);
+        self.generate_from_map(
+            targets_to_gen,
+            targets_map,
+            src_path,
+            ndk_path,
+            build_path,
+            gen_build_prefix,
+            project,
+            ctx,
+        )
     }
 }
