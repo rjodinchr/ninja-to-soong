@@ -7,13 +7,7 @@ DEST="$1"
 SCRIPT_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
 DEST_DIR="${DEST}/vendor/google/graphics/mesa3d/desktop-panvk"
 
-bash "${SCRIPT_DIR}/../../checkout.sh" https://gitlab.freedesktop.org/mesa/mesa ad3759f342ee988929ef32022d5486f99484221f "${DEST_DIR}"
-
-for patch in \
-    "mesa-762be5eae1e.patch"
-do
-    git -C "${DEST_DIR}" apply "${SCRIPT_DIR}/../patches/${patch}"
-done
+bash "${SCRIPT_DIR}/../../checkout.sh" https://gitlab.freedesktop.org/mesa/mesa 4ac24ba7e5a813349082ef87a9a23ec13bf42ea1 "${DEST_DIR}"
 
 MAJOR_VERSION=19
 sudo apt install \
