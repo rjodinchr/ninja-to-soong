@@ -50,7 +50,7 @@ jobs:
           elif [ "${{ matrix.project }}" == "media-driver" ]; then
             projects="media-driver"
           elif [ "${{ matrix.project }}" == "mesa" ]; then
-            projects="mesa3d/desktop-intel mesa3d/desktop-panvk vkoverhead"
+            projects="desktop/mesa3d/intel mesa3d/desktop-panvk vkoverhead"
           elif [ "${{ matrix.project }}" == "angle" ]; then
             key_folders="${key_folders} tests/angle/build-*"
             projects="angle"
