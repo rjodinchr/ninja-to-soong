@@ -9,8 +9,8 @@ pub struct Mesa3DDesktopIntel {
     assets_to_filter: Vec<PathBuf>,
 }
 
-const DEFAULTS: &str = "mesa3d-desktop-intel-defaults";
-const RAW_DEFAULTS: &str = "mesa3d-desktop-intel-raw-defaults";
+const DEFAULTS: &str = "desktop-mesa3d-intel-defaults";
+const RAW_DEFAULTS: &str = "desktop-mesa3d-intel-raw-defaults";
 
 impl Mesa3DDesktopIntel {
     fn get_intel_tools_targets(&self, build_path: &Path) -> Result<Vec<NinjaTargetToGen>, String> {
@@ -23,7 +23,7 @@ impl Mesa3DDesktopIntel {
                 }
                 Some(target!(
                     format!("src/intel/tools/{name}"),
-                    format!("mesa3d_desktop-intel_tools_{name}"),
+                    format!("desktop_mesa3d_intel_tools_{name}"),
                     name
                 ))
             })
@@ -33,7 +33,7 @@ impl Mesa3DDesktopIntel {
 
 impl mesa3d_desktop::Mesa3dProject for Mesa3DDesktopIntel {
     fn get_name(&self) -> &'static str {
-        "mesa3d/desktop-intel"
+        "desktop/mesa3d/intel"
     }
 
     fn get_subprojects_path(&self) -> String {
@@ -59,17 +59,17 @@ impl mesa3d_desktop::Mesa3dProject for Mesa3DDesktopIntel {
         let mut targets = vec![
             target!(
                 "src/intel/vulkan/libvulkan_intel.so",
-                "mesa3d_desktop-intel_libvulkan_intel",
+                "desktop_mesa3d_intel_libvulkan_intel",
                 "vulkan.intel"
             ),
             target!(
                 "src/tool/pps/pps-producer",
-                "mesa3d_desktop-intel_pps-producer",
+                "desktop_mesa3d_intel_pps-producer",
                 "pps-producer"
             ),
             target!(
                 "src/tool/pps/libgpudataproducer.so",
-                "mesa3d_desktop-intel_libgpudataproducer",
+                "desktop_mesa3d_intel_libgpudataproducer",
                 "libgpudataproducer"
             ),
         ];
@@ -78,7 +78,7 @@ impl mesa3d_desktop::Mesa3dProject for Mesa3DDesktopIntel {
         self.assets_to_filter = Self::extract_assets_to_filter(&targets_to_gen, &targets_map)?;
         SoongPackage::new(
             &["//visibility:public"],
-            "mesa3d_desktop_intel_licenses",
+            "desktop_mesa3d_intel_licenses",
             &[
                 "SPDX-license-identifier-MIT",
                 "SPDX-license-identifier-Apache-2.0",
@@ -107,7 +107,7 @@ impl mesa3d_desktop::Mesa3dProject for Mesa3DDesktopIntel {
     fn get_default_module(&self, package: &SoongPackage) -> Result<SoongModule, String> {
         Ok(SoongModule::new("cc_defaults")
             .add_prop("name", SoongProp::Str(String::from(DEFAULTS)))
-            .add_props(package.get_props("mesa3d_desktop-intel_pps-producer", vec!["cflags"])?)
+            .add_props(package.get_props("desktop_mesa3d_intel_pps-producer", vec!["cflags"])?)
             .add_prop(
                 "defaults",
                 SoongProp::VecStr(vec![String::from(RAW_DEFAULTS)]),
