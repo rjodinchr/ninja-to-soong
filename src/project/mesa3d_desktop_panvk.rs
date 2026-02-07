@@ -9,12 +9,12 @@ pub struct Mesa3DDesktopPanVK {
     assets_to_filter: Vec<PathBuf>,
 }
 
-const DEFAULTS: &str = "mesa3d-desktop-panvk-defaults";
-const RAW_DEFAULTS: &str = "mesa3d-desktop-panvk-raw-defaults";
+const DEFAULTS: &str = "desktop-mesa3d-panvk-defaults";
+const RAW_DEFAULTS: &str = "desktop-mesa3d-panvk-raw-defaults";
 
 impl mesa3d_desktop::Mesa3dProject for Mesa3DDesktopPanVK {
     fn get_name(&self) -> &'static str {
-        "mesa3d/desktop-panvk"
+        "desktop/mesa3d/panvk"
     }
 
     fn get_subprojects_path(&self) -> String {
@@ -38,17 +38,17 @@ impl mesa3d_desktop::Mesa3dProject for Mesa3DDesktopPanVK {
         let targets_to_gen = NinjaTargetsToGenMap::from(&[
             target!(
                 "src/panfrost/vulkan/libvulkan_panfrost.so",
-                "mesa3d_desktop-panvk_libvulkan_panfrost",
+                "desktop-mesa3d_panvk_libvulkan_panfrost",
                 "vulkan.panfrost"
             ),
             target!(
                 "src/tool/pps/pps-producer",
-                "mesa3d_desktop-panvk_pps-producer",
+                "desktop-mesa3d_panvk_pps-producer",
                 "pps-producer"
             ),
             target!(
                 "src/tool/pps/libgpudataproducer.so",
-                "mesa3d_desktop-panvk_libgpudataproducer",
+                "desktop-mesa3d_panvk_libgpudataproducer",
                 "libgpudataproducer_panfrost"
             ),
         ]);
@@ -78,7 +78,7 @@ impl mesa3d_desktop::Mesa3dProject for Mesa3DDesktopPanVK {
     fn get_default_module(&self, package: &SoongPackage) -> Result<SoongModule, String> {
         Ok(SoongModule::new("cc_defaults")
             .add_prop("name", SoongProp::Str(String::from(DEFAULTS)))
-            .add_props(package.get_props("mesa3d_desktop-panvk_pps-producer", vec!["cflags"])?)
+            .add_props(package.get_props("desktop-mesa3d_panvk_pps-producer", vec!["cflags"])?)
             .add_prop(
                 "defaults",
                 SoongProp::VecStr(vec![String::from(RAW_DEFAULTS)]),
