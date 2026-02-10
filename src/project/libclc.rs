@@ -10,6 +10,7 @@ const DEFAULTS: &str = "libclc-defaults";
 pub struct LibCLC {
     src_path: PathBuf,
     host_tools: Vec<String>,
+    opencl_c_base: String,
 }
 
 impl Project for LibCLC {
@@ -32,6 +33,13 @@ impl Project for LibCLC {
             ctx,
             self,
         )?;
+
+        self.opencl_c_base = String::from(":")
+            + &Dep::ClangHeaders.get_id(
+                Path::new("lib/Headers/opencl-c-base.h"),
+                Path::new(""),
+                Path::new(""),
+            );
 
         let mut package = SoongPackage::new(
             &[],
@@ -76,10 +84,12 @@ cc_genrule_defaults {{
         "clc/include/clc/**/*.inc",
         "clc/lib/generic/**/*.h",
         "clc/lib/generic/**/*.inc",
+        "{0}",
     ],
     vendor_available: true,
 }}
-"#
+"#,
+                self.opencl_c_base,
             ))
             .print(ctx)
     }
@@ -119,6 +129,13 @@ cc_genrule_defaults {{
                     + &path_to_string(&local_include)),
             );
         }
+
+        // TODO: to be updated once we update libclc above 5b4f424454a0b83411111224b349e3e28f8d58f8
+        cmd = cmd.replace(
+            "-Xclang -finclude-default-header",
+            &(String::from("-include $(location ") + &self.opencl_c_base + ")"),
+        );
+
         module.update_prop("cmd", |_| Ok(SoongProp::Str(cmd.clone())))?;
         Ok(module.add_prop("defaults", SoongProp::VecStr(vec![String::from(DEFAULTS)])))
     }
@@ -126,7 +143,7 @@ cc_genrule_defaults {{
     fn map_tool_module(&self, tool_module: &Path) -> Option<PathBuf> {
         let tool_module = path_to_string(tool_module);
         Some(PathBuf::from(if tool_module.contains("clang") {
-            "llvm-project/bin/clang-22"
+            "llvm-project/bin/clang-23"
         } else if tool_module.contains("llvm-link") {
             "llvm-project/bin/llvm-link"
         } else if tool_module.contains("opt") {
