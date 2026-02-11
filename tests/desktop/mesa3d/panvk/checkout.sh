@@ -7,7 +7,7 @@ DEST="$1"
 SCRIPT_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
 DEST_DIR="${DEST}/vendor/google/graphics/desktop/mesa3d/panvk"
 
-bash "${SCRIPT_DIR}/../../../checkout.sh" https://gitlab.freedesktop.org/mesa/mesa 4ac24ba7e5a813349082ef87a9a23ec13bf42ea1 "${DEST_DIR}"
+bash "${SCRIPT_DIR}/../../../checkout.sh" https://gitlab.freedesktop.org/mesa/mesa 8794fced82a8a28c985d8aaaf8a137fdeada0cbf "${DEST_DIR}"
 
 MAJOR_VERSION=19
 sudo apt install \
