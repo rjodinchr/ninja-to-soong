@@ -47,6 +47,11 @@ filegroup {
 }
 
 filegroup {
+    name: "SpirvHeaders_include_spirv_unified1_extinst_arm_motion-engine_100_grammar_json",
+    srcs: ["include/spirv/unified1/extinst.arm.motion-engine.100.grammar.json"],
+}
+
+filegroup {
     name: "SpirvHeaders_include_spirv_unified1_extinst_debuginfo_grammar_json",
     srcs: ["include/spirv/unified1/extinst.debuginfo.grammar.json"],
 }
