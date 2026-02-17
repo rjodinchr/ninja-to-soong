@@ -112,6 +112,7 @@ cc_library_static {
         "source/val/validate_invalid_type.cpp",
         "source/val/validate_layout.cpp",
         "source/val/validate_literals.cpp",
+        "source/val/validate_logical_pointers.cpp",
         "source/val/validate_logicals.cpp",
         "source/val/validate_memory.cpp",
         "source/val/validate_memory_semantics.cpp",
@@ -229,8 +230,9 @@ python_binary_host {
 
 cc_genrule {
     name: "SPIRV-Tools_n2s_core_tables_body_inc",
-    cmd: "python3 $(location) --core-tables-body-output=$(location n2s/core_tables_body.inc) --core-tables-header-output=$(location n2s/core_tables_header.inc) --spirv-core-grammar=$(location :SpirvHeaders_include_spirv_unified1_spirv_core_grammar_json) --extinst=,$(location :SpirvHeaders_include_spirv_unified1_extinst_glsl_std_450_grammar_json) --extinst=,$(location :SpirvHeaders_include_spirv_unified1_extinst_opencl_std_100_grammar_json) --extinst=CLDEBUG100_,$(location :SpirvHeaders_include_spirv_unified1_extinst_opencl_debuginfo_100_grammar_json) --extinst=SHDEBUG100_,$(location :SpirvHeaders_include_spirv_unified1_extinst_nonsemantic_shader_debuginfo_100_grammar_json) --extinst=,$(location :SpirvHeaders_include_spirv_unified1_extinst_spv-amd-shader-explicit-vertex-parameter_grammar_json) --extinst=,$(location :SpirvHeaders_include_spirv_unified1_extinst_spv-amd-shader-trinary-minmax_grammar_json) --extinst=,$(location :SpirvHeaders_include_spirv_unified1_extinst_spv-amd-gcn-shader_grammar_json) --extinst=,$(location :SpirvHeaders_include_spirv_unified1_extinst_spv-amd-shader-ballot_grammar_json) --extinst=,$(location :SpirvHeaders_include_spirv_unified1_extinst_debuginfo_grammar_json) --extinst=,$(location :SpirvHeaders_include_spirv_unified1_extinst_nonsemantic_clspvreflection_grammar_json) --extinst=,$(location :SpirvHeaders_include_spirv_unified1_extinst_nonsemantic_vkspreflection_grammar_json) --extinst=TOSA_,$(location :SpirvHeaders_include_spirv_unified1_extinst_tosa_001000_1_grammar_json)",
+    cmd: "python3 $(location) --core-tables-body-output=$(location n2s/core_tables_body.inc) --core-tables-header-output=$(location n2s/core_tables_header.inc) --spirv-core-grammar=$(location :SpirvHeaders_include_spirv_unified1_spirv_core_grammar_json) --extinst=,$(location :SpirvHeaders_include_spirv_unified1_extinst_glsl_std_450_grammar_json) --extinst=,$(location :SpirvHeaders_include_spirv_unified1_extinst_opencl_std_100_grammar_json) --extinst=CLDEBUG100_,$(location :SpirvHeaders_include_spirv_unified1_extinst_opencl_debuginfo_100_grammar_json) --extinst=SHDEBUG100_,$(location :SpirvHeaders_include_spirv_unified1_extinst_nonsemantic_shader_debuginfo_100_grammar_json) --extinst=,$(location :SpirvHeaders_include_spirv_unified1_extinst_spv-amd-shader-explicit-vertex-parameter_grammar_json) --extinst=,$(location :SpirvHeaders_include_spirv_unified1_extinst_spv-amd-shader-trinary-minmax_grammar_json) --extinst=,$(location :SpirvHeaders_include_spirv_unified1_extinst_spv-amd-gcn-shader_grammar_json) --extinst=,$(location :SpirvHeaders_include_spirv_unified1_extinst_spv-amd-shader-ballot_grammar_json) --extinst=,$(location :SpirvHeaders_include_spirv_unified1_extinst_debuginfo_grammar_json) --extinst=,$(location :SpirvHeaders_include_spirv_unified1_extinst_nonsemantic_clspvreflection_grammar_json) --extinst=,$(location :SpirvHeaders_include_spirv_unified1_extinst_nonsemantic_vkspreflection_grammar_json) --extinst=TOSA_,$(location :SpirvHeaders_include_spirv_unified1_extinst_tosa_001000_1_grammar_json) --extinst=,$(location :SpirvHeaders_include_spirv_unified1_extinst_arm_motion-engine_100_grammar_json)",
     srcs: [
+        ":SpirvHeaders_include_spirv_unified1_extinst_arm_motion-engine_100_grammar_json",
         ":SpirvHeaders_include_spirv_unified1_extinst_debuginfo_grammar_json",
         ":SpirvHeaders_include_spirv_unified1_extinst_glsl_std_450_grammar_json",
         ":SpirvHeaders_include_spirv_unified1_extinst_nonsemantic_clspvreflection_grammar_json",
@@ -332,6 +334,7 @@ cc_library_static {
         "source/opt/folding_rules.cpp",
         "source/opt/freeze_spec_constant_value_pass.cpp",
         "source/opt/function.cpp",
+        "source/opt/graph.cpp",
         "source/opt/graphics_robust_access_pass.cpp",
         "source/opt/if_conversion.cpp",
         "source/opt/inline_exhaustive_pass.cpp",
