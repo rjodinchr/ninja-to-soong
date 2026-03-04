@@ -44,6 +44,7 @@ meson setup \
     -Dprecomp-compiler=system \
     -Dallow-fallback-for=libdrm,perfetto \
     -Dstrip=true \
+    -Dspirv-tools=disabled \
     --reconfigure \
     --wipe \
     "${BUILD_PATH}" \

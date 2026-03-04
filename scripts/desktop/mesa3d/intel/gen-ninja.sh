@@ -47,6 +47,7 @@ meson setup \
     -Dintel-rt=enabled \
     -Dintel-elk=false \
     -Dstrip=true \
+    -Dspirv-tools=disabled \
     --reconfigure \
     --wipe \
     "${BUILD_PATH}" \
