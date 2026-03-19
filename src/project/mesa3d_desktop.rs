@@ -5,18 +5,6 @@ use super::*;
 
 const MESA_PYTHON_DEFAULT: &str = "mesa_python_default";
 
-fn get_default_product_variables() -> SoongProp {
-    let platform_sdk_version_props = vec![SoongNamedProp::new(
-        "cflags",
-        SoongProp::VecStr(vec![String::from("-DANDROID_API_LEVEL=%d")]),
-    )];
-    let product_variables_props = vec![SoongNamedProp::new(
-        "platform_sdk_version",
-        SoongProp::Prop(Box::new(platform_sdk_version_props)),
-    )];
-    SoongProp::Prop(Box::new(product_variables_props))
-}
-
 pub trait Mesa3dProject {
     fn get_name(&self) -> &'static str;
     fn get_subprojects_path(&self) -> String;
@@ -30,13 +18,8 @@ pub trait Mesa3dProject {
         targets_map: NinjaTargetsMap<MesonNinjaTarget>,
     ) -> Result<SoongPackage, String>;
     fn get_default_module(&self, package: &SoongPackage) -> Result<SoongModule, String>;
-    fn get_raw_suffix(&self) -> String;
-    fn extend_module(
-        &self,
-        target: &Path,
-        module: SoongModule,
-        product_variables: SoongProp,
-    ) -> Result<SoongModule, String>;
+    fn get_raw_suffix(&self, common_raw_prop: &'static str) -> String;
+    fn extend_module(&self, target: &Path, module: SoongModule) -> Result<SoongModule, String>;
     fn asset_filter(&self, asset: &Path) -> bool;
     fn mesa_filter(&self, asset: &Path) -> bool {
         let str = path_to_string(asset);
@@ -159,17 +142,19 @@ where
 
         package.filter_gen_deps(MESON_GENERATED, &gen_deps)?;
         common::copy_gen_deps(gen_deps, MESON_GENERATED, &build_path, ctx, self)?;
-        let default_module = self.get_default_module(&package)?.add_prop(
-            "product_variables",
-            get_default_product_variables(),
-        );
+        let default_module = self.get_default_module(&package)?;
 
         package
             .add_module(default_module)
             .add_raw_suffix(
-                &(self.get_raw_suffix()
-                    + &format!(
-                        r#"
+                &(self.get_raw_suffix(
+                    r#"    product_variables: {
+        platform_sdk_version: {
+            cflags: ["-DANDROID_API_LEVEL=%d"],
+        },
+    },"#,
+                ) + &format!(
+                    r#"
 python_defaults {{
     name: "{MESA_PYTHON_DEFAULT}",
     libs: [
@@ -178,7 +163,7 @@ python_defaults {{
     ],
 }}
 "#
-                    )),
+                )),
             )
             .add_raw_prefix(
                 r#"
@@ -190,9 +175,8 @@ soong_namespace {
     }
 
     fn extend_module(&self, target: &Path, module: SoongModule) -> Result<SoongModule, String> {
-        self.extend_module(target, module, get_default_product_variables())
+        self.extend_module(target, module)
     }
-
     fn extend_custom_command(
         &self,
         target: &Path,

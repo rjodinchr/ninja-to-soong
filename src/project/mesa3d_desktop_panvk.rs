@@ -85,7 +85,7 @@ impl mesa3d_desktop::Mesa3dProject for Mesa3DDesktopPanVK {
             ))
     }
 
-    fn get_raw_suffix(&self) -> String {
+    fn get_raw_suffix(&self, common_raw_prop: &'static str) -> String {
         format!(
             r#"
 cc_defaults {{
@@ -93,12 +93,13 @@ cc_defaults {{
     soc_specific: true,
     header_libs: ["libdrm_headers"],
     static_libs: ["libperfetto_client_experimental"],
+{common_raw_prop}
 }}
 "#
         )
     }
 
-    fn extend_module(&self, target: &Path, mut module: SoongModule, product_variables: SoongProp) -> Result<SoongModule, String> {
+    fn extend_module(&self, target: &Path, mut module: SoongModule) -> Result<SoongModule, String> {
         module.update_prop("generated_headers", |prop| {
             let SoongProp::VecStr(mut vec) = prop else {
                 return Ok(prop);
@@ -130,13 +131,10 @@ cc_defaults {{
         if target.ends_with("libvulkan_lite_runtime.a") {
             cflags.push("-Wno-unreachable-code-loop-increment");
         }
-
         if target.ends_with("libmesa_util.a") {
             module = module.extend_prop("shared_libs", vec!["libz"])?;
         }
-
         module
-            .add_prop("product_variables", product_variables)
             .add_prop("defaults", SoongProp::VecStr(vec![String::from(DEFAULTS)]))
             .extend_prop("cflags", cflags)
     }

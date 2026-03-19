@@ -114,7 +114,7 @@ impl mesa3d_desktop::Mesa3dProject for Mesa3DDesktopIntel {
             ))
     }
 
-    fn get_raw_suffix(&self) -> String {
+    fn get_raw_suffix(&self, common_raw_prop: &'static str) -> String {
         format!(
             r#"
 cc_defaults {{
@@ -130,12 +130,13 @@ cc_defaults {{
         "liblog_headers",
         "libdrm_headers",
     ],
+{common_raw_prop}
 }}
 "#,
         )
     }
 
-    fn extend_module(&self, target: &Path, mut module: SoongModule, product_variables: SoongProp) -> Result<SoongModule, String> {
+    fn extend_module(&self, target: &Path, mut module: SoongModule) -> Result<SoongModule, String> {
         if target.ends_with("libvulkan_intel.so") {
             module = module
                 .add_prop("relative_install_path", SoongProp::Str(String::from("hw")))
@@ -151,7 +152,6 @@ cc_defaults {{
         if target.ends_with("libmesa_util.a") {
             module = module.extend_prop("shared_libs", vec!["libz"])?;
         }
-
         module = if ![
             "libintel_decoder_brw.a",
             "libintel_decoder_elk.a",
@@ -159,9 +159,7 @@ cc_defaults {{
         ]
         .contains(&file_name(target).as_str())
         {
-            module
-                .add_prop("product_variables", product_variables)
-                .add_prop("defaults", SoongProp::VecStr(vec![String::from(DEFAULTS)]))
+            module.add_prop("defaults", SoongProp::VecStr(vec![String::from(DEFAULTS)]))
         } else {
             module.add_prop(
                 "defaults",

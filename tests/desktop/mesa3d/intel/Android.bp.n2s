@@ -6361,7 +6361,6 @@ cc_library_static {
     srcs: ["src/intel/decoder/intel_batch_decoder_brw.c"],
     cflags: [
         "-DAMD_LLVM_AVAILABLE=0",
-        "-DANDROID_API_LEVEL=35",
         "-DANDROID_LIBPERFETTO",
         "-DANDROID_STRICT",
         "-DDRAW_LLVM_AVAILABLE=0",
@@ -8066,7 +8065,6 @@ cc_defaults {
     name: "desktop-mesa3d-intel-defaults",
     cflags: [
         "-DAMD_LLVM_AVAILABLE=0",
-        "-DANDROID_API_LEVEL=35",
         "-DANDROID_LIBPERFETTO",
         "-DANDROID_STRICT",
         "-DDRAW_LLVM_AVAILABLE=0",
@@ -8184,6 +8182,11 @@ cc_defaults {
         "liblog_headers",
         "libdrm_headers",
     ],
+    product_variables: {
+        platform_sdk_version: {
+            cflags: ["-DANDROID_API_LEVEL=%d"],
+        },
+    },
 }
 
 python_defaults {
