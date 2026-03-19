@@ -676,7 +676,7 @@ where
         }
         *inputs = inputs
             .into_iter()
-            .filter(|input| !input.ends_with("python3"))
+            .filter(|input| !file_name(input).starts_with("python"))
             .map(|input| input.clone())
             .collect();
         if tool.ends_with(".py") {
