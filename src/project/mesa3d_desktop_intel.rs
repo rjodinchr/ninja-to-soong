@@ -114,7 +114,7 @@ impl mesa3d_desktop::Mesa3dProject for Mesa3DDesktopIntel {
             ))
     }
 
-    fn get_raw_suffix(&self) -> String {
+    fn get_raw_suffix(&self, common_raw_prop: &'static str) -> String {
         format!(
             r#"
 cc_defaults {{
@@ -130,6 +130,7 @@ cc_defaults {{
         "liblog_headers",
         "libdrm_headers",
     ],
+{common_raw_prop}
 }}
 "#,
         )

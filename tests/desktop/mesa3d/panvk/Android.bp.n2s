@@ -4916,7 +4916,6 @@ cc_defaults {
     name: "desktop-mesa3d-panvk-defaults",
     cflags: [
         "-DAMD_LLVM_AVAILABLE=0",
-        "-DANDROID_API_LEVEL=35",
         "-DANDROID_LIBPERFETTO",
         "-DANDROID_STRICT",
         "-DDRAW_LLVM_AVAILABLE=0",
@@ -5032,6 +5031,11 @@ cc_defaults {
     soc_specific: true,
     header_libs: ["libdrm_headers"],
     static_libs: ["libperfetto_client_experimental"],
+    product_variables: {
+        platform_sdk_version: {
+            cflags: ["-DANDROID_API_LEVEL=%d"],
+        },
+    },
 }
 
 python_defaults {

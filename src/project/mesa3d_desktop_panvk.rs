@@ -85,7 +85,7 @@ impl mesa3d_desktop::Mesa3dProject for Mesa3DDesktopPanVK {
             ))
     }
 
-    fn get_raw_suffix(&self) -> String {
+    fn get_raw_suffix(&self, common_raw_prop: &'static str) -> String {
         format!(
             r#"
 cc_defaults {{
@@ -93,6 +93,7 @@ cc_defaults {{
     soc_specific: true,
     header_libs: ["libdrm_headers"],
     static_libs: ["libperfetto_client_experimental"],
+{common_raw_prop}
 }}
 "#
         )

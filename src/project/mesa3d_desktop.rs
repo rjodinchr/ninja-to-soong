@@ -18,7 +18,7 @@ pub trait Mesa3dProject {
         targets_map: NinjaTargetsMap<MesonNinjaTarget>,
     ) -> Result<SoongPackage, String>;
     fn get_default_module(&self, package: &SoongPackage) -> Result<SoongModule, String>;
-    fn get_raw_suffix(&self) -> String;
+    fn get_raw_suffix(&self, common_raw_prop: &'static str) -> String;
     fn extend_module(&self, target: &Path, module: SoongModule) -> Result<SoongModule, String>;
     fn asset_filter(&self, asset: &Path) -> bool;
     fn mesa_filter(&self, asset: &Path) -> bool {
@@ -142,15 +142,19 @@ where
 
         package.filter_gen_deps(MESON_GENERATED, &gen_deps)?;
         common::copy_gen_deps(gen_deps, MESON_GENERATED, &build_path, ctx, self)?;
-
         let default_module = self.get_default_module(&package)?;
 
         package
             .add_module(default_module)
             .add_raw_suffix(
-                &(self.get_raw_suffix()
-                    + &format!(
-                        r#"
+                &(self.get_raw_suffix(
+                    r#"    product_variables: {
+        platform_sdk_version: {
+            cflags: ["-DANDROID_API_LEVEL=%d"],
+        },
+    },"#,
+                ) + &format!(
+                    r#"
 python_defaults {{
     name: "{MESA_PYTHON_DEFAULT}",
     libs: [
@@ -159,7 +163,7 @@ python_defaults {{
     ],
 }}
 "#
-                    )),
+                )),
             )
             .add_raw_prefix(
                 r#"
@@ -242,6 +246,9 @@ soong_namespace {
         }
     }
 
+    fn filter_define(&self, define: &str) -> bool {
+        !define.starts_with("ANDROID_API_LEVEL=")
+    }
     fn filter_cflag(&self, cflag: &str) -> bool {
         cflag == "-mclflushopt"
     }
