@@ -42,6 +42,7 @@ cc_library_static {
         "lib/DeclarePushConstantsPass.cpp",
         "lib/DefineOpenCLWorkItemBuiltinsPass.cpp",
         "lib/DescriptorCounter.cpp",
+        "lib/DestructurizeGEPPass.cpp",
         "lib/DirectResourceAccessPass.cpp",
         "lib/FeatureMacro.cpp",
         "lib/FixupBuiltinsPass.cpp",
@@ -91,6 +92,7 @@ cc_library_static {
         "lib/SplatArgPass.cpp",
         "lib/SplatSelectCondition.cpp",
         "lib/StripFreezePass.cpp",
+        "lib/StructurizeGEPPass.cpp",
         "lib/ThreeElementVectorLoweringPass.cpp",
         "lib/Types.cpp",
         "lib/UBOTypeTransformPass.cpp",
@@ -152,8 +154,8 @@ cc_genrule {
 
 cc_genrule {
     name: "clspv_include_clspv_clspv_builtin_library_h",
-    cmd: "python3 $(location) --input-header-file=$(location :libclc_clspv--_bc) --output-file=$(location clspv/clspv_builtin_library.h) --header-var=clspv_builtin_library_data --header-size=clspv_builtin_library_size",
-    srcs: [":libclc_clspv--_bc"],
+    cmd: "python3 $(location) --input-header-file=$(location :libclc_spir--_libclc_bc) --output-file=$(location clspv/clspv_builtin_library.h) --header-var=clspv_builtin_library_data --header-size=clspv_builtin_library_size",
+    srcs: [":libclc_spir--_libclc_bc"],
     out: ["clspv/clspv_builtin_library.h"],
     tool_files: ["cmake/bake_file.py"],
     vendor_available: true,
@@ -181,8 +183,8 @@ cc_genrule {
 
 cc_genrule {
     name: "clspv_include_clspv_clspv64_builtin_library_h",
-    cmd: "python3 $(location) --input-header-file=$(location :libclc_clspv64--_bc) --output-file=$(location clspv/clspv64_builtin_library.h) --header-var=clspv64_builtin_library_data --header-size=clspv64_builtin_library_size",
-    srcs: [":libclc_clspv64--_bc"],
+    cmd: "python3 $(location) --input-header-file=$(location :libclc_spir64--_libclc_bc) --output-file=$(location clspv/clspv64_builtin_library.h) --header-var=clspv64_builtin_library_data --header-size=clspv64_builtin_library_size",
+    srcs: [":libclc_spir64--_libclc_bc"],
     out: ["clspv/clspv64_builtin_library.h"],
     tool_files: ["cmake/bake_file.py"],
     vendor_available: true,

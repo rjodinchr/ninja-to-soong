@@ -30,9 +30,9 @@ impl Project for Clspv {
         self.llvm_project_path = ProjectId::LlvmProject.get_android_path(projects_map, ctx)?;
 
         common::gen_ninja(
+            &src_path,
+            &self.build_path,
             vec![
-                path_to_string(&src_path),
-                path_to_string(&self.build_path),
                 path_to_string(&ndk_path),
                 path_to_string(&self.spirv_headers_path),
                 path_to_string(ProjectId::SpirvTools.get_android_path(projects_map, ctx)?),
@@ -79,8 +79,8 @@ impl Project for Clspv {
                 .iter()
                 .filter_map(|dep| {
                     let file_name = file_name(dep);
-                    if file_name == "clspv--.bc" || file_name == "clspv64--.bc" {
-                        return Some(file_name);
+                    if file_name == "libclc.bc" {
+                        return Some(path_to_string(strip_prefix(dep, "/libclc")));
                     }
                     None
                 })

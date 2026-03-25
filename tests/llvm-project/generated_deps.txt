@@ -31,6 +31,8 @@
     "include/llvm/TargetParser/ARMTargetParserDef.inc",
     "include/llvm/TargetParser/PPCGenTargetFeatures.inc",
     "include/llvm/TargetParser/RISCVTargetParserDef.inc",
+    "lib/ToolDrivers/llvm-dlltool/Options.inc",
+    "lib/ToolDrivers/llvm-lib/Options.inc",
     "tools/clang/include/clang/AST/AbstractBasicReader.inc",
     "tools/clang/include/clang/AST/AbstractBasicWriter.inc",
     "tools/clang/include/clang/AST/AbstractTypeReader.inc",
@@ -124,6 +126,7 @@
     "tools/clang/include/clang/Basic/DiagnosticSerializationEnums.inc",
     "tools/clang/include/clang/Basic/DiagnosticSerializationInterface.inc",
     "tools/clang/include/clang/Basic/DiagnosticSerializationKinds.inc",
+    "tools/clang/include/clang/Basic/DiagnosticStableIDs.inc",
     "tools/clang/include/clang/Basic/DiagnosticTrapCompatIDs.inc",
     "tools/clang/include/clang/Basic/DiagnosticTrapEnums.inc",
     "tools/clang/include/clang/Basic/DiagnosticTrapInterface.inc",
@@ -191,4 +194,5 @@
     "tools/clang/include/clang/Basic/Version.inc",
     "tools/clang/include/clang/Config/config.h",
     "tools/clang/tools/driver/clang-driver.cpp",
+    "tools/llvm-ar/llvm-ar-driver.cpp",
 ]

@@ -14,5 +14,6 @@ SCRIPT_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
 cmake -G Ninja \
     -S "${SRC_PATH}" \
     -B "${BUILD_PATH}" \
-    -DLIBCLC_CUSTOM_LLVM_TOOLS_BINARY_DIR="${SCRIPT_DIR}" \
+    -DLLVM_DIR="${SCRIPT_DIR}" \
+    -DCMAKE_CLC_COMPILER="${SCRIPT_DIR}/clang" \
     -DLIBCLC_TARGETS_TO_BUILD="clspv--;clspv64--"

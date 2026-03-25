@@ -94,9 +94,9 @@ impl Project for Clvk {
         let ndk_path = get_ndk_path(ctx)?;
 
         common::gen_ninja(
+            &src_path,
+            &build_path,
             vec![
-                path_to_string(&src_path),
-                path_to_string(&build_path),
                 path_to_string(&ndk_path),
                 path_to_string(ProjectId::SpirvHeaders.get_android_path(projects_map, ctx)?),
                 path_to_string(ProjectId::SpirvTools.get_android_path(projects_map, ctx)?),

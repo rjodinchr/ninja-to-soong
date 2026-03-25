@@ -32,9 +32,9 @@ impl Project for Fwupd {
         let ndk_path = get_ndk_path(ctx)?;
 
         common::gen_ninja(
+            &self.src_path,
+            &self.build_path,
             vec![
-                path_to_string(&self.src_path),
-                path_to_string(&self.build_path),
                 path_to_string(&ndk_path),
                 path_to_string(ctx.get_test_path(self)),
                 String::from(if ctx.copy_to_aosp { "copy_to_aosp" } else { "" }),

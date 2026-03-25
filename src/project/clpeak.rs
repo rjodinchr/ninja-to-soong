@@ -25,11 +25,9 @@ impl Project for Clpeak {
         let ndk_path = get_ndk_path(ctx)?;
 
         common::gen_ninja(
-            vec![
-                path_to_string(&self.src_path),
-                path_to_string(&build_path),
-                path_to_string(&ndk_path),
-            ],
+            &self.src_path,
+            &build_path,
+            vec![path_to_string(&ndk_path)],
             ctx,
             self,
         )?;

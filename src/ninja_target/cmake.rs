@@ -24,6 +24,34 @@ impl NinjaTarget for CmakeNinjaTarget {
                 || self.0.rule.starts_with("C_STATIC_LIBRARY")
             {
                 NinjaRule::StaticLibrary
+            } else if self.0.rule.starts_with("CLC_STATIC_LIBRARY") {
+                let command = String::from("llvm-ar qc ")
+                    + &path_to_string(self.0.outputs[0].clone())
+                    + &self.0.inputs.iter().fold(String::new(), |str, input| {
+                        str + " " + &path_to_string(input)
+                    });
+                NinjaRule::CustomCommand(NinjaRuleCmd {
+                    command,
+                    rsp_info: None,
+                })
+            } else if self.0.rule.starts_with("CLC_COMPILER") {
+                let default = String::new();
+                let command = String::from("clang -x cl -c ")
+                    + self.0.variables.get("FLAGS").unwrap_or(&default)
+                    + " "
+                    + self.0.variables.get("DEFINES").unwrap_or(&default)
+                    + " "
+                    + self.0.variables.get("INCLUDES").unwrap_or(&default)
+                    + " "
+                    + " -o "
+                    + &path_to_string(self.0.outputs[0].clone())
+                    + &self.0.inputs.iter().fold(String::new(), |str, input| {
+                        str + " " + &path_to_string(input)
+                    });
+                NinjaRule::CustomCommand(NinjaRuleCmd {
+                    command,
+                    rsp_info: None,
+                })
             } else if self.0.rule.starts_with("CUSTOM_COMMAND") {
                 let Some(command) = self.0.variables.get("COMMAND") else {
                     return error!("No command in: {self:#?}");

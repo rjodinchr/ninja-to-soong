@@ -95,12 +95,9 @@ where
         };
 
         common::gen_ninja(
-            vec![
-                path_to_string(&src_path),
-                path_to_string(&build_path),
-                path_to_string(mesa_clc_path),
-                path_to_string(&ndk_path),
-            ],
+            &src_path,
+            &build_path,
+            vec![path_to_string(mesa_clc_path), path_to_string(&ndk_path)],
             ctx,
             self,
         )?;
