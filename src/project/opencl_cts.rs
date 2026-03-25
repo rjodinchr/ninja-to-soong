@@ -67,9 +67,9 @@ impl Project for OpenclCts {
         self.spirv_headers_path = ProjectId::SpirvHeaders.get_android_path(projects_map, ctx)?;
 
         common::gen_ninja(
+            &self.src_path,
+            &self.build_path,
             vec![
-                path_to_string(&self.src_path),
-                path_to_string(&self.build_path),
                 path_to_string(&ndk_path),
                 path_to_string(&self.spirv_headers_path),
             ],

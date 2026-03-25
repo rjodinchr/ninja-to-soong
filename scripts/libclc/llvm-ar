@@ -2,4 +2,4 @@
 # Copyright 2026 ninja-to-soong authors
 # SPDX-License-Identifier: Apache-2.0
 
-echo "This is a fake llvm-as"
+echo "This is a fake llvm-ar"

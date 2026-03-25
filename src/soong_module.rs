@@ -22,17 +22,6 @@ impl CcLibraryHeaders {
     }
 }
 
-pub enum CcDefaults {
-    Llvm,
-}
-impl CcDefaults {
-    pub fn str(self) -> String {
-        String::from(match self {
-            Self::Llvm => "llvm-project-all-libs-defaults",
-        })
-    }
-}
-
 #[derive(Debug, Clone, PartialEq)]
 pub enum SoongProp {
     Str(String),

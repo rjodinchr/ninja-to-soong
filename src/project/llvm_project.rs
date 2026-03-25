@@ -26,11 +26,9 @@ impl Project for LlvmProject {
         let ndk_path = get_ndk_path(ctx)?;
 
         common::gen_ninja(
-            vec![
-                path_to_string(src_path.join("llvm")),
-                path_to_string(&build_path),
-                path_to_string(&ndk_path),
-            ],
+            &src_path.join("llvm"),
+            &build_path,
+            vec![path_to_string(&ndk_path)],
             ctx,
             self,
         )?;
@@ -84,28 +82,7 @@ impl Project for LlvmProject {
                     SoongProp::VecStr(vec![String::from(RAW_DEFAULTS)]),
                 ),
         );
-        let llvm_static_libs = package
-            .get_modules_name()
-            .into_iter()
-            .filter(|module| module.starts_with("llvm-project_lib_lib"))
-            .collect();
-        package = package.add_module(
-            SoongModule::new("cc_defaults")
-                .add_prop("name", SoongProp::Str(CcDefaults::Llvm.str()))
-                .add_prop(
-                    "header_libs",
-                    SoongProp::VecStr(vec![
-                        CcLibraryHeaders::Llvm.str(),
-                        CcLibraryHeaders::Clang.str(),
-                    ]),
-                )
-                .add_prop("static_libs", SoongProp::VecStr(llvm_static_libs))
-                .add_prop("shared_libs", SoongProp::VecStr(vec![String::from("libz")]))
-                .add_prop(
-                    "cflags",
-                    SoongProp::VecStr(vec![String::from("-DHAVE_LLVM=0x1700")]),
-                ),
-        );
+
         for clang_header in Dep::ClangHeaders.get(projects_map)? {
             package = package.add_module(SoongModule::new_filegroup(
                 Dep::ClangHeaders.get_id(&clang_header, Path::new("clang"), &build_path),
@@ -133,6 +110,7 @@ impl Project for LlvmProject {
                 "tools/clang/include/clang/Basic/Version.inc",
                 "tools/clang/include/clang/Config/config.h",
                 "tools/clang/tools/driver/clang-driver.cpp",
+                "tools/llvm-ar/llvm-ar-driver.cpp",
             ]
             .map(|dep| PathBuf::from(dep)),
         );
@@ -202,6 +180,7 @@ cc_defaults {{
         false
     }
     fn filter_target(&self, input: &Path) -> bool {
-        input.starts_with("lib") || input.starts_with("bin")
+        (input.starts_with("lib") || input.starts_with("bin"))
+            && !file_name(input).ends_with(".inc")
     }
 }

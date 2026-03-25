@@ -28,11 +28,9 @@ impl Project for SpirvTools {
         self.spirv_headers_path = ProjectId::SpirvHeaders.get_android_path(projects_map, ctx)?;
 
         common::gen_ninja(
-            vec![
-                path_to_string(&src_path),
-                path_to_string(&self.build_path),
-                path_to_string(&self.spirv_headers_path),
-            ],
+            &src_path,
+            &self.build_path,
+            vec![path_to_string(&self.spirv_headers_path)],
             ctx,
             self,
         )?;

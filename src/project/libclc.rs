@@ -28,11 +28,7 @@ impl Project for LibCLC {
         self.src_path = ctx.get_android_path(self)?;
         let build_path = ctx.get_temp_path(Path::new(self.get_name()))?;
 
-        common::gen_ninja(
-            vec![path_to_string(&self.src_path), path_to_string(&build_path)],
-            ctx,
-            self,
-        )?;
+        common::gen_ninja(&self.src_path, &build_path, Vec::new(), ctx, self)?;
 
         self.opencl_c_base = String::from(":")
             + &Dep::ClangHeaders.get_id(
@@ -48,8 +44,7 @@ impl Project for LibCLC {
             &["LICENSE.TXT"],
         )
         .generate(
-            NinjaTargetsToGenMap::from(&Dep::LibclcBins.get_ninja_targets(projects_map)?)
-                .push(target_typed!("utils/prepare_builtins", "cc_binary_host")),
+            NinjaTargetsToGenMap::from(&Dep::LibclcBins.get_ninja_targets(projects_map)?),
             parse_build_ninja::<CmakeNinjaTarget>(&build_path)?,
             &self.src_path,
             Path::new("<no_sdk>"),
@@ -102,7 +97,7 @@ cc_genrule_defaults {{
     }
 
     fn extend_module(&self, _target: &Path, module: SoongModule) -> Result<SoongModule, String> {
-        Ok(module.add_prop("defaults", SoongProp::VecStr(vec![CcDefaults::Llvm.str()])))
+        Ok(module.add_prop("vendor_available", SoongProp::Bool(true)))
     }
     fn extend_custom_command(
         &self,
@@ -130,10 +125,9 @@ cc_genrule_defaults {{
             );
         }
 
-        // TODO: to be updated once we update libclc above 5b4f424454a0b83411111224b349e3e28f8d58f8
         cmd = cmd.replace(
-            "-Xclang -finclude-default-header",
-            &(String::from("-include $(location ") + &self.opencl_c_base + ")"),
+            "opencl-c-base.h",
+            &(String::from("$(location ") + &self.opencl_c_base + ")"),
         );
 
         module.update_prop("cmd", |_| Ok(SoongProp::Str(cmd.clone())))?;
@@ -148,24 +142,10 @@ cc_genrule_defaults {{
             "llvm-project/bin/llvm-link"
         } else if tool_module.contains("opt") {
             "llvm-project/bin/opt"
+        } else if tool_module.contains("llvm-ar") {
+            "llvm-project/bin/llvm-ar"
         } else {
             return None;
         }))
-    }
-
-    fn filter_cflag(&self, _cflag: &str) -> bool {
-        false
-    }
-    fn filter_define(&self, _define: &str) -> bool {
-        false
-    }
-    fn filter_include(&self, _include: &Path) -> bool {
-        false
-    }
-    fn filter_lib(&self, lib: &str) -> bool {
-        !lib.contains("libLLVM")
-    }
-    fn filter_link_flag(&self, _flag: &str) -> bool {
-        false
     }
 }

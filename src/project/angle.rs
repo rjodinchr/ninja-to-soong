@@ -47,9 +47,9 @@ impl Angle {
     ) -> Result<SoongPackage, String> {
         self.build_path = ctx.get_temp_path(&Path::new(self.get_name()).join(target_cpu))?;
         common::gen_ninja(
+            &self.src_path,
+            &self.build_path,
             vec![
-                path_to_string(&self.src_path),
-                path_to_string(&self.build_path),
                 path_to_string(ctx.get_test_path(self)),
                 String::from(target_cpu),
                 String::from(if ctx.skip_build {
