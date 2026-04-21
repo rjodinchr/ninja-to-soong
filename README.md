@@ -1,3 +1,16 @@
+# Repository Migration Notice
+**This repository was archived on April 17, 2026. It is now read-only.**
+
+The project has been migrated to the Google Open Source organization. Please find the active codebase, issues, and future releases at the new canonical home:
+
+### [google/ninja-to-soong](https://github.com/google/ninja-to-soong)
+
+---
+*If you have a local clone of this repository, you can update your remote to point to the new location:*
+```bash
+git remote set-url origin https://github.com/google/ninja-to-soong.git
+```
+
 # Ninja to Soong [![CI badge](https://github.com/rjodinchr/ninja-to-soong/actions/workflows/presubmit.yml/badge.svg?branch=main)](https://github.com/rjodinchr/ninja-to-soong/actions/workflows/presubmit.yml?query=branch%3Amain++)
 
 `ninja-to-soong` is a project to generate `Soong` files (`Android.bp`) for the Android build system.
